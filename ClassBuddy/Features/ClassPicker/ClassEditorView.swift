@@ -31,9 +31,9 @@ struct ClassEditorView: View {
         !shortName.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
-    /// Vorschläge plus eigene Fächer, die nicht in der Vorschlagsliste stehen.
-    private var subjectOptions: [String] {
-        SchoolClass.suggestedSubjects + subjects.filter { !SchoolClass.suggestedSubjects.contains($0) }
+    /// Vorschläge, die noch nicht ausgewählt sind.
+    private var remainingSuggestions: [String] {
+        SchoolClass.suggestedSubjects.filter { !subjects.contains($0) }
     }
 
     var body: some View {
@@ -55,26 +55,32 @@ struct ClassEditorView: View {
                 }
 
                 Section {
-                    FlowLayout(spacing: 8) {
-                        ForEach(subjectOptions, id: \.self) { subject in
-                            SubjectChip(title: subject, isSelected: subjects.contains(subject)) {
-                                toggle(subject)
-                            }
-                        }
+                    ForEach(subjects, id: \.self) { subject in
+                        Text(subject)
                     }
-                    .padding(.vertical, 6)
+                    .onDelete { subjects.remove(atOffsets: $0) }
+                    .onMove { subjects.move(fromOffsets: $0, toOffset: $1) }
+
+                    Menu {
+                        ForEach(remainingSuggestions, id: \.self) { subject in
+                            Button(subject) { subjects.append(subject) }
+                        }
+                    } label: {
+                        Label("Fach hinzufügen", systemImage: "plus.circle.fill")
+                    }
+                    .disabled(remainingSuggestions.isEmpty)
 
                     HStack {
-                        TextField("Weiteres Fach", text: $customSubject)
+                        TextField("Eigenes Fach", text: $customSubject)
                             .onSubmit(addCustomSubject)
-                        Button("Hinzufügen", systemImage: "plus.circle.fill", action: addCustomSubject)
+                        Button("Hinzufügen", systemImage: "return", action: addCustomSubject)
                             .labelStyle(.iconOnly)
                             .disabled(customSubject.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
                 } header: {
                     Text("Fächer")
                 } footer: {
-                    Text("Tippe auf ein Fach, um es an- oder abzuwählen.")
+                    Text("Zum Entfernen nach links wischen.")
                 }
 
                 Section("Farbe") {
@@ -116,14 +122,6 @@ struct ClassEditorView: View {
         }
     }
 
-    private func toggle(_ subject: String) {
-        if let index = subjects.firstIndex(of: subject) {
-            subjects.remove(at: index)
-        } else {
-            subjects.append(subject)
-        }
-    }
-
     private func addCustomSubject() {
         let subject = customSubject.trimmingCharacters(in: .whitespaces)
         guard !subject.isEmpty else { return }
@@ -144,29 +142,5 @@ struct ClassEditorView: View {
         try? modelContext.save()
         onSave(target)
         dismiss()
-    }
-}
-
-private struct SubjectChip: View {
-    let title: String
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Label(title, systemImage: isSelected ? "checkmark" : "plus")
-                .font(.subheadline.weight(isSelected ? .semibold : .regular))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 7)
-                .foregroundStyle(isSelected ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
-                .background(
-                    isSelected ? AnyShapeStyle(.tint) : AnyShapeStyle(.fill.tertiary),
-                    in: .capsule
-                )
-                .contentShape(.capsule)
-        }
-        .buttonStyle(.plain)
-        .hoverEffect(.highlight)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
