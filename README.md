@@ -1,8 +1,16 @@
 # ClassBuddy
 
 [![Build IPA](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml)
-![Platform](https://img.shields.io/badge/platform-iPadOS%2026-9c6830)
-![Swift](https://img.shields.io/badge/Swift-6-orange)
+[![Latest release](https://img.shields.io/github/v/release/undeaDD/ClassBuddy?label=version&color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/undeaDD/ClassBuddy/total?color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases)
+![iPadOS](https://img.shields.io/badge/iPadOS-26%2B-000000?logo=apple)
+![Device](https://img.shields.io/badge/device-iPad-lightgrey?logo=ipad)
+![Swift](https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white)
+![SwiftUI](https://img.shields.io/badge/UI-SwiftUI-0A84FF)
+![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
+![Price](https://img.shields.io/badge/price-free-brightgreen)
+![Privacy](https://img.shields.io/badge/data-local%20only-brightgreen)
+![Language](https://img.shields.io/badge/app%20language-German-blue)
 [![License: PolyForm Strict](https://img.shields.io/badge/license-PolyForm%20Strict-blue)](LICENSE)
 
 **ClassBuddy** is a privacy-first classroom companion for teachers on the iPad.
@@ -25,7 +33,7 @@ protected by Face ID, with a one-tap privacy mode for when students are looking 
 
 - **Classes** – short name, school year, colour and multiple subjects per class
 - **Students** – A–Z list with search, gender, birthday and notes
-- **Dashboard per class** – stat cards, next lesson, plus your own cards (documents, images, websites with favicon);
+- **Dashboard per class** – card gallery with stats, next lesson, current-lesson countdown, next birthday, random student picker, timer, plus your own cards (documents, images, websites with favicon);
   reorder and hide cards in *Anordnen* mode
 - **Weekly calendar** – lesson grid generated from your school's timetable (start, lesson length, breaks),
   weekly or one-off lessons, appointments, class focus mode
