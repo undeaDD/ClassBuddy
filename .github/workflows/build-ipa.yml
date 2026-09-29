@@ -21,7 +21,7 @@ jobs:
   build:
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Newest installed Xcode (incl. betas): the app icon is an Icon Composer file
       # from Xcode 27, older actool versions crash on it.
