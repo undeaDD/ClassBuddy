@@ -129,6 +129,130 @@ struct ImageCard: View {
     }
 }
 
+/// Einfache Inhalts-Kachel (Überschrift + Detail), z. B. für Vorschauen in der Galerie.
+struct ContentCard: View {
+    let title: String
+    let symbol: AppSymbol
+    let heading: String
+    let detail: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            CardHeader(title: title, symbol: symbol, showsChevron: true)
+            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(heading).font(.title2.weight(.bold)).lineLimit(2)
+                Text(detail).font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
+            }
+        }
+        .cardStyle()
+    }
+}
+
+/// Bild-Kachel ohne echtes Bild (Galerie-Vorschau).
+struct ImagePlaceholderCard: View {
+    let title: String
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            LinearGradient(
+                colors: [Color.accentColor.opacity(0.55), Color.accentColor.opacity(0.2)],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
+            Image(systemName: "photo")
+                .font(.system(size: 44))
+                .foregroundStyle(.white.opacity(0.8))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            Text(title)
+                .font(.headline)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(.regularMaterial, in: .capsule)
+                .padding(12)
+        }
+        .frame(maxWidth: .infinity, minHeight: cardMinHeight)
+        .clipShape(cardShape)
+    }
+}
+
+/// Zufallsauswahl: antippen wählt eine Schülerin / einen Schüler der Klasse.
+struct RandomStudentCard: View {
+    let students: [Student]
+
+    @State private var picked: Student?
+
+    var body: some View {
+        StatCard(
+            title: DashboardBuiltInCard.randomStudent.title,
+            value: picked.map(Self.shortName) ?? "?",
+            detail: students.isEmpty ? "Noch keine Schüler" : (picked == nil ? "Antippen zum Auswählen" : "Antippen für neue Auswahl"),
+            symbol: DashboardBuiltInCard.randomStudent.symbol
+        ) {
+            pick()
+        }
+        .id(picked?.id)
+        .transition(.scale(scale: 0.96).combined(with: .opacity))
+    }
+
+    private func pick() {
+        // Nicht zweimal hintereinander dieselbe Person.
+        let candidates = students.count > 1 ? students.filter { $0.id != picked?.id } : students
+        withAnimation(.bouncy) { picked = candidates.randomElement() }
+    }
+
+    static func shortName(_ student: Student) -> String {
+        [student.firstName, student.lastName.first.map { "\($0)." }].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " ")
+    }
+}
+
+/// Aktuelle Stunde: Restzeit (Stunden + Minuten) der laufenden Stunde, sonst Hinweis.
+struct CurrentLessonCard: View {
+    let schedule: LessonSchedule
+    let visibleWeekdays: [Int]
+    let action: () -> Void
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 15)) { context in
+            let state = currentState(at: context.date)
+            StatCard(
+                title: DashboardBuiltInCard.currentLesson.title,
+                value: state.value,
+                detail: state.detail,
+                symbol: DashboardBuiltInCard.currentLesson.symbol,
+                action: action
+            )
+        }
+    }
+
+    private func currentState(at now: Date) -> (value: String, detail: String) {
+        let calendar = Calendar.school
+        let minute = calendar.component(.hour, from: now) * 60 + calendar.component(.minute, from: now)
+        let second = calendar.component(.second, from: now)
+        let isSchoolDay = visibleWeekdays.contains(calendar.mondayBasedWeekday(of: now)) && schedule.holiday(on: now) == nil
+
+        guard isSchoolDay,
+              let slot = schedule.slots.first(where: { $0.start <= minute && minute < $0.end })
+        else {
+            let next = isSchoolDay ? schedule.slots.first(where: { $0.start > minute }) : nil
+            return ("Keine aktive Stunde", next.map { "Nächste: \($0.number). Stunde um \($0.start.clockString)" } ?? "Heute kein Unterricht mehr")
+        }
+
+        // Auf volle Minuten aufrunden: 22:10 übrig → „23 min“.
+        let remainingSeconds = slot.end * 60 - (minute * 60 + second)
+        let remaining = (remainingSeconds + 59) / 60
+        let value = remaining >= 60 ? "\(remaining / 60) h \(remaining % 60) min" : "\(remaining) min"
+
+        var parts = ["\(slot.number). Stunde"]
+        if let lesson = schedule.lesson(on: now, slotIndex: slot.index), let schoolClass = lesson.schoolClass {
+            parts.append(schoolClass.shortName)
+            if !lesson.subject.isEmpty { parts.append(lesson.subject) }
+        } else {
+            parts.append("frei")
+        }
+        return (value, parts.joined(separator: " · "))
+    }
+}
+
 /// „+“-Kachel am Ende des Grids.
 struct AddCard: View {
     let action: () -> Void
@@ -151,7 +275,7 @@ struct AddCard: View {
     }
 }
 
-private struct CardHeader: View {
+struct CardHeader: View {
     let title: String
     let symbol: AppSymbol
     let showsChevron: Bool

@@ -22,7 +22,10 @@ struct DashboardView: View {
     @Query private var classes: [SchoolClass]
 
     @State private var isArranging = false
-    @State private var isAddDialogPresented = false
+    @State private var isGalleryPresented = false
+    /// In der Galerie gewählte Vorlage – wird erst nach dem Schließen der Galerie
+    /// ausgeführt (sonst kollidieren Sheet und Picker/Editor).
+    @State private var pendingTemplate: CardTemplate?
     @State private var isFileImporterPresented = false
     @State private var isImageImporterPresented = false
     @State private var isPhotoPickerPresented = false
@@ -30,15 +33,6 @@ struct DashboardView: View {
     @State private var linkEditorRoute: LinkEditorRoute?
     @State private var previewURL: URL?
     @State private var importError: String?
-
-    /// Fest eingebaute Kacheln. Neue Kacheln mit `isHiddenByDefault` erscheinen
-    /// zunächst nur im Bereich „Ausgeblendet“.
-    private enum BuiltInCard: String, CaseIterable {
-        case students = "stat.students"
-        case nextLesson = "stat.nextLesson"
-
-        var isHiddenByDefault: Bool { false }
-    }
 
     private var canEdit: Bool { !security.isPrivacyModeOn }
 
@@ -100,7 +94,7 @@ struct DashboardView: View {
             if isOn {
                 isArranging = false
                 linkEditorRoute = nil
-                isAddDialogPresented = false
+                isGalleryPresented = false
                 previewURL = nil
             }
         }
@@ -122,12 +116,14 @@ struct DashboardView: View {
             if showsAddCard {
                 // Im Privatsphäre-Modus nur ausblenden, nicht entfernen: Verschwindet
                 // der Anker eines offenen Dialogs, stürzt UIKit beim Schließen ab.
-                AddCard { isAddDialogPresented = true }
-                    .confirmationDialog("Kachel hinzufügen", isPresented: $isAddDialogPresented) {
-                        Button("Bild aus „Fotos“") { isPhotoPickerPresented = true }
-                        Button("Bild aus „Dateien“") { isImageImporterPresented = true }
-                        Button("Dokument aus „Dateien“") { isFileImporterPresented = true }
-                        Button("Website") { linkEditorRoute = .newWebsite(schoolClass) }
+                AddCard { isGalleryPresented = true }
+                    .sheet(isPresented: $isGalleryPresented, onDismiss: { performPendingTemplate(in: schoolClass) }) {
+                        CardGalleryView(
+                            visibleBuiltIns: Set(visibleCardIDs(for: schoolClass).compactMap(DashboardBuiltInCard.init(rawValue:)))
+                        ) { template in
+                            pendingTemplate = template
+                        }
+                        .presentationSizing(.page)
                     }
                     .opacity(canEdit ? 1 : 0)
                     .allowsHitTesting(canEdit)
@@ -199,7 +195,7 @@ struct DashboardView: View {
 
     @ViewBuilder
     private func card(_ cardID: String, in schoolClass: SchoolClass) -> some View {
-        switch BuiltInCard(rawValue: cardID) {
+        switch DashboardBuiltInCard(rawValue: cardID) {
         case .students:
             StatCard(
                 title: "Schüler",
@@ -211,6 +207,27 @@ struct DashboardView: View {
             }
         case .nextLesson:
             nextLessonCard(for: schoolClass)
+        case .nextBirthday:
+            nextBirthdayCard(for: schoolClass)
+        case .randomStudent:
+            RandomStudentCard(students: schoolClass.students)
+        case .timer:
+            StatCard(
+                title: DashboardBuiltInCard.timer.title,
+                value: "Starten",
+                detail: "Öffnet die Uhr-App",
+                symbol: DashboardBuiltInCard.timer.symbol
+            ) {
+                // Öffnet direkt den Timer-Tab der Uhr-App.
+                if let url = URL(string: "clock-timer://") { openURL(url) }
+            }
+        case .currentLesson:
+            CurrentLessonCard(
+                schedule: LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots),
+                visibleWeekdays: settings.visibleWeekdays
+            ) {
+                app.openCalendar(focusing: nil, at: .now)
+            }
         case nil:
             if let link = schoolClass.dashboardLinks.first(where: { $0.cardID == cardID }) {
                 Group {
@@ -249,6 +266,44 @@ struct DashboardView: View {
         }
     }
 
+    /// Nächster Geburtstag in der Klasse (heute zählt mit).
+    private func nextBirthdayCard(for schoolClass: SchoolClass) -> some View {
+        let calendar = Calendar.school
+        let today = calendar.startOfDay(for: .now)
+        let upcoming = schoolClass.students.compactMap { student -> (student: Student, date: Date)? in
+            guard let birthday = student.birthday else { return nil }
+            let parts = calendar.dateComponents([.month, .day], from: birthday)
+            let yesterday = calendar.date(byAdding: .day, value: -1, to: today) ?? today
+            guard let next = calendar.nextDate(after: yesterday, matching: parts, matchingPolicy: .nextTime) else { return nil }
+            return (student, next)
+        }
+        .sorted { $0.date < $1.date }
+
+        let detail: String
+        if let first = upcoming.first, let birthday = first.student.birthday {
+            let days = calendar.dateComponents([.day], from: today, to: first.date).day ?? 0
+            let age = calendar.component(.year, from: first.date) - calendar.component(.year, from: birthday)
+            let when = switch days {
+            case 0: "Heute 🎉"
+            case 1: "Morgen"
+            default: "in \(days) Tagen"
+            }
+            let sameDay = upcoming.filter { calendar.isDate($0.date, inSameDayAs: first.date) }.count - 1
+            detail = "\(when) · wird \(age)" + (sameDay > 0 ? " · +\(sameDay)" : "")
+        } else {
+            detail = "Keine Geburtstage eingetragen"
+        }
+
+        return StatCard(
+            title: DashboardBuiltInCard.nextBirthday.title,
+            value: upcoming.first.map { RandomStudentCard.shortName($0.student) } ?? "–",
+            detail: detail,
+            symbol: DashboardBuiltInCard.nextBirthday.symbol
+        ) {
+            app.open(.students)
+        }
+    }
+
     /// „♀ 46 % · ♂ 46 % · ⚧ 8 %“ (Anteile gerundet; ohne Angabe als „?“).
     private func genderBreakdown(_ students: [Student]) -> String {
         guard !students.isEmpty else { return "Noch keine Schüler" }
@@ -274,7 +329,7 @@ struct DashboardView: View {
 
     /// Alle Kacheln in gespeicherter Reihenfolge; neue hinten, gelöschte fallen raus.
     private func orderedCardIDs(for schoolClass: SchoolClass) -> [String] {
-        let available = BuiltInCard.allCases.map(\.rawValue)
+        let available = DashboardBuiltInCard.allCases.map(\.rawValue)
             + schoolClass.dashboardLinks.sorted { $0.createdAt < $1.createdAt }.map(\.cardID)
         let saved = schoolClass.dashboardOrder.filter(available.contains)
         return saved + available.filter { !saved.contains($0) }
@@ -292,7 +347,7 @@ struct DashboardView: View {
     private func registerNewCards(in schoolClass: SchoolClass) {
         let new = orderedCardIDs(for: schoolClass).filter { !schoolClass.dashboardKnownCards.contains($0) }
         guard !new.isEmpty else { return }
-        let hiddenByDefault = new.filter { BuiltInCard(rawValue: $0)?.isHiddenByDefault == true }
+        let hiddenByDefault = new.filter { DashboardBuiltInCard(rawValue: $0)?.isHiddenByDefault == true }
         schoolClass.dashboardKnownCards += new
         schoolClass.dashboardHidden += hiddenByDefault.filter { !schoolClass.dashboardHidden.contains($0) }
         try? modelContext.save()
@@ -313,6 +368,25 @@ struct DashboardView: View {
         schoolClass.dashboardHidden.removeAll { $0 == cardID }
         if hidden { schoolClass.dashboardHidden.append(cardID) }
         try? modelContext.save()
+    }
+
+    // MARK: Galerie
+
+    private func performPendingTemplate(in schoolClass: SchoolClass) {
+        guard let template = pendingTemplate else { return }
+        pendingTemplate = nil
+        switch template {
+        case .builtIn(let card):
+            setHidden(false, card.rawValue, in: schoolClass)
+        case .photo:
+            isPhotoPickerPresented = true
+        case .imageFile:
+            isImageImporterPresented = true
+        case .document:
+            isFileImporterPresented = true
+        case .website:
+            linkEditorRoute = .newWebsite(schoolClass)
+        }
     }
 
     // MARK: Eigene Kacheln
