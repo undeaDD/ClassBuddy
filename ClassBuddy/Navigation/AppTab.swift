@@ -25,7 +25,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         switch self {
         case .dashboard: .custom(.homeAlt)
         case .calendar: .custom(.calendar)
-        case .students: .system("person.3")
+        case .students: .custom(.community)
         case .settings: .custom(.settings)
         }
     }
