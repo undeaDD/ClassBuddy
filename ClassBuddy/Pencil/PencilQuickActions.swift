@@ -62,8 +62,6 @@ private struct PencilQuickActionsModifier: ViewModifier {
         [
             QuickAction(id: "dashboard", title: "Übersicht", symbol: AppTab.dashboard.symbol) { app.open(.dashboard) },
             QuickAction(id: "seating", title: "Sitzplan", symbol: AppTab.seating.symbol) { app.open(.seating) },
-            QuickAction(id: "attendance", title: "Anwesenheit", symbol: AppTab.attendance.symbol) { app.open(.attendance) },
-            QuickAction(id: "notes", title: "Notiz", symbol: AppTab.notes.symbol) { app.open(.notes) },
             QuickAction(id: "class", title: "Klasse", symbol: .system("arrow.left.arrow.right")) {
                 app.isClassPickerPresented = true
             },

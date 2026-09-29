@@ -41,6 +41,6 @@ struct PlaceholderView: View {
 
 #Preview {
     NavigationStack {
-        PlaceholderView(tab: .grades)
+        PlaceholderView(tab: .seating)
     }
 }

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		041EDD8E52FC9A70B471C5CD /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6AB5A47C4368067847CE31 /* AppTabView.swift */; };
 		12C5344E306BEED40087F828 /* ClassBuddy.icon in Resources */ = {isa = PBXBuildFile; fileRef = 12C5344D306BEED40087F828 /* ClassBuddy.icon */; };
-		19A4D9C9FE27C74F05E89685 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBBFF9F58E42D5756F90FD7 /* SettingsView.swift */; };
 		1F038FAF7CB75D5DFBAFBCE0 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3788C18526F115CA2D3BA045 /* AppTab.swift */; };
 		2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B1F9ED4838514B91933B244 /* Assets.xcassets */; };
 		48424236A19117119B9B2833 /* ClassPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52FF26FC3386B96682B298C6 /* ClassPickerView.swift */; };
@@ -35,7 +34,6 @@
 		0A24D388FE7E9FD196AC2985 /* ClassBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassBuddyApp.swift; sourceTree = "<group>"; };
 		12C5344D306BEED40087F828 /* ClassBuddy.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ClassBuddy.icon; sourceTree = "<group>"; };
 		1D8B9109166A9748354DC9CF /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
-		1FBBFF9F58E42D5756F90FD7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2446899A0B153251C0E2C851 /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
 		25255560972480F461747B91 /* SchoolClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolClass.swift; sourceTree = "<group>"; };
 		2B1F9ED4838514B91933B244 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -56,14 +54,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		06875A1D8009CCBFF2201EFF /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				1FBBFF9F58E42D5756F90FD7 /* SettingsView.swift */,
-			);
-			path = Settings;
-			sourceTree = "<group>";
-		};
 		220AE937DB9F143BC25C2101 /* Features */ = {
 			isa = PBXGroup;
 			children = (
@@ -71,7 +61,6 @@
 				ED866CB00345985B1E112F36 /* Dashboard */,
 				DFC52AC249F52C349D9BECC9 /* Placeholder */,
 				B65EA5DACD9BE79FECB5B50D /* Seating */,
-				06875A1D8009CCBFF2201EFF /* Settings */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -281,7 +270,6 @@
 				FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */,
 				7D161D3F8A7DAAFA1742A797 /* SeatingView.swift in Sources */,
 				9CFB32BA7C1FF3D07DAE9AD2 /* Sensitive.swift in Sources */,
-				19A4D9C9FE27C74F05E89685 /* SettingsView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */

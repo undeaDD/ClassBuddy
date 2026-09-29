@@ -52,34 +52,8 @@ struct DashboardView: View {
                     alignment: .leading,
                     spacing: 16
                 ) {
-                    DashboardCard(title: "Heute", symbol: AppTab.schedule.symbol, destination: .schedule) {
-                        CardEmptyHint(text: "Noch kein Stundenplan hinterlegt.")
-                    }
-
-                    DashboardCard(title: "Klasse", symbol: AppTab.students.symbol, destination: .students) {
-                        HStack(spacing: 0) {
-                            StatTile(value: "0", label: "Schüler")
-                            Divider().frame(height: 36)
-                            StatTile(value: "–", label: "Fehlend heute").sensitive()
-                            Divider().frame(height: 36)
-                            StatTile(value: "–", label: "Ø Note").sensitive()
-                        }
-                    }
-
-                    DashboardCard(title: "Schnellzugriff", symbol: .system("bolt"), destination: nil) {
-                        QuickLinksGrid(tabs: [.seating, .attendance, .grades, .notes])
-                    }
-
                     DashboardCard(title: "Sitzplan", symbol: AppTab.seating.symbol, destination: .seating) {
                         CardEmptyHint(text: "Noch keine Sitzordnung angelegt.")
-                    }
-
-                    DashboardCard(title: "Termine", symbol: AppTab.events.symbol, destination: .events) {
-                        CardEmptyHint(text: "Keine anstehenden Termine.")
-                    }
-
-                    DashboardCard(title: "Notizen", symbol: AppTab.notes.symbol, destination: .notes) {
-                        CardEmptyHint(text: "Noch keine Notizen.")
                     }
                 }
             }
@@ -155,23 +129,6 @@ struct DashboardCard<Content: View>: View {
     }
 }
 
-private struct StatTile: View {
-    let value: String
-    let label: String
-
-    var body: some View {
-        VStack(spacing: 2) {
-            Text(value)
-                .font(.title.bold())
-                .monospacedDigit()
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-    }
-}
-
 private struct CardEmptyHint: View {
     let text: String
 
@@ -180,29 +137,5 @@ private struct CardEmptyHint: View {
             .font(.subheadline)
             .foregroundStyle(.tertiary)
             .frame(maxWidth: .infinity, minHeight: 60)
-    }
-}
-
-private struct QuickLinksGrid: View {
-    @Environment(AppModel.self) private var app
-    let tabs: [AppTab]
-
-    var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-            ForEach(tabs) { tab in
-                Button {
-                    app.open(tab)
-                } label: {
-                    Label(tab.title, symbol: tab.symbol)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 12)
-                        .background(.tint.opacity(0.1), in: .rect(cornerRadius: 12))
-                        .contentShape(.hoverEffect, .rect(cornerRadius: 12))
-                }
-                .buttonStyle(.plain)
-                .hoverEffect(.highlight)
-            }
-        }
     }
 }
