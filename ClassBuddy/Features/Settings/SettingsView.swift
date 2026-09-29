@@ -1,4 +1,5 @@
 import SwiftUI
+import WebKit
 
 struct SettingsView: View {
     @Environment(AppSecurity.self) private var security
@@ -16,7 +17,7 @@ struct SettingsView: View {
                 NavigationLink {
                     SchoolSettingsView()
                 } label: {
-                    Label("Schuleinstellungen", systemImage: "building.columns")
+                    Label("Schuleinstellungen", image: .bank)
                 }
             } footer: {
                 Text("Stundenraster, Pausen, Wochenende, Ferien & Feiertage.")
@@ -24,7 +25,7 @@ struct SettingsView: View {
 
             Section {
                 Toggle(isOn: appLockBinding) {
-                    Label("Mit \(security.biometryName) sperren", systemImage: security.biometrySymbol)
+                    Label("Mit \(security.biometryName) sperren", image: .fingerprintLockCircle)
                 }
                 .disabled(security.isAuthenticating)
             } header: {
@@ -33,8 +34,16 @@ struct SettingsView: View {
                 Text("Sperrt die App beim Start und beim Wechsel in den Hintergrund. Ausschalten erfordert \(security.biometryName).")
             }
 
+            Section("Rechtliches") {
+                ForEach(LegalDocument.allCases) { document in
+                    NavigationLink(document.title) {
+                        LegalDocumentView(document: document)
+                    }
+                }
+            }
+
             Section {
-                LabeledContent("Version", value: Bundle.main.versionString)
+                LabeledContent("Version", value: AppInfo.version)
             }
         }
         .navigationTitle(AppTab.settings.title)
@@ -42,10 +51,33 @@ struct SettingsView: View {
     }
 }
 
-private extension Bundle {
-    var versionString: String {
-        let version = infoDictionary?["CFBundleShortVersionString"] as? String ?? "–"
-        let build = infoDictionary?["CFBundleVersion"] as? String ?? "–"
-        return "\(version) (\(build))"
+/// Lokale HTML-Dateien in `Resources/Legal`.
+enum LegalDocument: String, CaseIterable, Identifiable {
+    case imprint
+    case privacy
+    case licenses
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .imprint: "Impressum"
+        case .privacy: "Datenschutz"
+        case .licenses: "Lizenzen"
+        }
+    }
+
+    var url: URL? {
+        Bundle.main.url(forResource: rawValue, withExtension: "html")
+    }
+}
+
+struct LegalDocumentView: View {
+    let document: LegalDocument
+
+    var body: some View {
+        WebView(url: document.url)
+            .navigationTitle(document.title)
+            .navigationBarTitleDisplayMode(.inline)
     }
 }

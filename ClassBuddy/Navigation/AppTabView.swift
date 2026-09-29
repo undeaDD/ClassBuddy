@@ -4,11 +4,25 @@ import SwiftUI
 /// Neue Seiten: Case in `AppTab` ergänzen und hier in `destination(for:)` zuordnen.
 struct AppTabView: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.openURL) private var openURL
     @AppStorage("navigation.tabCustomization") private var customization = TabViewCustomization()
 
+    /// Aktions-Tabs (Feedback) lösen ihre Aktion aus, ohne die Auswahl zu ändern.
+    private var selection: Binding<AppTab> {
+        Binding(
+            get: { app.selectedTab },
+            set: { tab in
+                if tab.isAction {
+                    perform(tab)
+                } else {
+                    app.selectedTab = tab
+                }
+            }
+        )
+    }
+
     var body: some View {
-        @Bindable var app = app
-        TabView(selection: $app.selectedTab) {
+        TabView(selection: selection) {
             ForEach(AppTab.allCases) { tab in
                 Tab(value: tab) {
                     root(for: tab)
@@ -42,6 +56,14 @@ struct AppTabView: View {
         case .calendar: CalendarView()
         case .students: StudentsView()
         case .settings: SettingsView()
+        case .feedback: EmptyView()
+        }
+    }
+
+    private func perform(_ tab: AppTab) {
+        switch tab {
+        case .feedback: openURL(AppInfo.feedbackMailURL)
+        default: break
         }
     }
 }

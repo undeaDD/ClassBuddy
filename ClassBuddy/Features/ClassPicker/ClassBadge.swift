@@ -16,6 +16,7 @@ struct ClassBadge: View {
             } else {
                 Text(shortName)
                     .font(.system(size: size * 0.4, weight: .bold, design: .rounded))
+                    .sensitive()
             }
         }
             .monospacedDigit()
@@ -56,9 +57,11 @@ struct ClassPickerButton: View {
                     Text(selectedClass?.title ?? "Klasse auswählen")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.primary)
+                        .sensitive()
                     Text(selectedClass?.detailLine ?? "Keine Klasse aktiv")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .sensitive()
                 }
                 .lineLimit(1)
             }
