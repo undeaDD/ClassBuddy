@@ -3,3 +3,8 @@ xcuserdata/
 DerivedData/
 build/
 *.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+
+# CI
+Payload/
+*.ipa
+build.log

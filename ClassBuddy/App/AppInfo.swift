@@ -6,8 +6,8 @@ enum AppInfo {
     /// Empfänger für „Feedback“.
     static let feedbackEmail = "dominic.drees@live.de"
 
-    /// Quellcode auf GitHub (vorerst die Startseite, Repo-Link folgt).
-    static let sourceCodeURL = URL(string: "https://github.com")!
+    /// Quellcode auf GitHub.
+    static let sourceCodeURL = URL(string: "https://github.com/undeaDD/ClassBuddy")!
 
     /// Spendenlink (vorerst die PayPal-Startseite, persönlicher Link folgt).
     static let donationURL = URL(string: "https://www.paypal.com")!
