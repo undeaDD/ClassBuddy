@@ -50,10 +50,12 @@ struct SettingsView: View {
             Section {
                 ExternalLinkRow(title: "Quellcode auf GitHub", image: .githubCircle, url: AppInfo.sourceCodeURL)
                 ExternalLinkRow(title: "Einen Kaffee spendieren (PayPal)", image: .donate, url: AppInfo.donationURL)
-                NavigationLink {
-                    FeedbackView()
+                // Einfacher mailto-Link; Titel und Icon in der Akzentfarbe.
+                Button {
+                    openURL(AppInfo.feedbackMailURL)
                 } label: {
                     Label("Feedback senden", image: .sendMail)
+                        .foregroundStyle(Color.accentColor)
                 }
                 // Antippen kopiert Version, iPadOS-Version und Gerät (z. B. für Fehlerberichte).
                 Button {
