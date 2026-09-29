@@ -10,7 +10,7 @@ struct RootView: View {
         AppTabView()
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
             // Gesperrt / im Hintergrund: Inhalt stark unscharf, darüber Milchglas.
-            .blur(radius: security.isLocked || scenePhase != .active ? 28 : 0)
+            .blur(radius: security.isLocked || scenePhase != .active ? 12 : 0)
             .pencilQuickActions()
             .overlay {
                 if security.isLocked {
@@ -21,6 +21,8 @@ struct RootView: View {
                 }
             }
             .animation(.smooth(duration: 0.25), value: security.isLocked)
+            // Toasts über allem, auch über der Sperre (z. B. Fehlermeldungen beim Entsperren).
+            .overlay(alignment: .top) { ToastOverlay() }
             .onChange(of: appearance, initial: true) { _, appearance in
                 appearance.apply()
             }

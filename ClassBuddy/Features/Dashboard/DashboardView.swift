@@ -17,6 +17,7 @@ struct DashboardView: View {
     @Environment(SchoolSettings.self) private var settings
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
+    @Environment(ToastCenter.self) private var toasts
     @Query private var lessons: [Lesson]
     @Query private var holidays: [Holiday]
     @Query private var classes: [SchoolClass]
@@ -32,7 +33,6 @@ struct DashboardView: View {
     @State private var photoSelection: PhotosPickerItem?
     @State private var linkEditorRoute: LinkEditorRoute?
     @State private var previewURL: URL?
-    @State private var importError: String?
 
     private var canEdit: Bool { !security.isPrivacyModeOn }
 
@@ -64,6 +64,14 @@ struct DashboardView: View {
                 importFile(result, kind: .image, into: schoolClass)
             }
             .photosPicker(isPresented: $isPhotoPickerPresented, selection: $photoSelection, matching: .images)
+            .sheet(isPresented: $isGalleryPresented, onDismiss: { performPendingTemplate(in: schoolClass) }, content: {
+                CardGalleryView(
+                    visibleBuiltIns: Set(visibleCardIDs(for: schoolClass).compactMap(DashboardBuiltInCard.init(rawValue:)))
+                ) { template in
+                    pendingTemplate = template
+                }
+                .presentationSizing(.page)
+            })
             .onChange(of: photoSelection) { _, item in
                 guard let item else { return }
                 photoSelection = nil
@@ -74,22 +82,16 @@ struct DashboardView: View {
         .navigationTitle(AppTab.dashboard.title)
         .appChrome(tab: .dashboard) {
             if selectedClass != nil {
-                Button(isArranging ? "Fertig" : "Anordnen") { isArranging.toggle() }
-                    .disabled(!canEdit)
+                Button(isArranging ? "Fertig" : "Kacheln anordnen", image: isArranging ? .check : .editPencil) {
+                    isArranging.toggle()
+                }
+                .disabled(!canEdit)
             }
         }
         .sheet(item: $linkEditorRoute) { route in
             LinkEditorView(route: route)
         }
         .quickLookPreview($previewURL)
-        .alert("Import fehlgeschlagen", isPresented: Binding(
-            get: { importError != nil },
-            set: { if !$0 { importError = nil } }
-        )) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(importError ?? "")
-        }
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
             if isOn {
                 isArranging = false
@@ -113,21 +115,10 @@ struct DashboardView: View {
                 arrangeableCard(cardID, in: schoolClass)
             }
 
-            if showsAddCard {
-                // Im Privatsphäre-Modus nur ausblenden, nicht entfernen: Verschwindet
-                // der Anker eines offenen Dialogs, stürzt UIKit beim Schließen ab.
+            // Nicht beim Anordnen und nicht im Privatsphäre-Modus. Die Galerie hängt am Grid
+            // (nicht an dieser Kachel), damit ihr Anker nie verschwindet.
+            if showsAddCard, !isArranging, canEdit {
                 AddCard { isGalleryPresented = true }
-                    .sheet(isPresented: $isGalleryPresented, onDismiss: { performPendingTemplate(in: schoolClass) }, content: {
-                        CardGalleryView(
-                            visibleBuiltIns: Set(visibleCardIDs(for: schoolClass).compactMap(DashboardBuiltInCard.init(rawValue:)))
-                        ) { template in
-                            pendingTemplate = template
-                        }
-                        .presentationSizing(.page)
-                    })
-                    .opacity(canEdit ? 1 : 0)
-                    .allowsHitTesting(canEdit)
-                    .accessibilityHidden(!canEdit)
             }
         }
     }
@@ -279,8 +270,9 @@ struct DashboardView: View {
             let title = source.deletingPathExtension().lastPathComponent
             modelContext.insert(DashboardLink(title: title, kind: kind, location: path, schoolClass: schoolClass))
             try modelContext.save()
+            toasts.success(kind == .image ? "Bild hinzugefügt" : "Dokument hinzugefügt")
         } catch {
-            importError = error.localizedDescription
+            toasts.error("Import fehlgeschlagen: \(error.localizedDescription)")
         }
     }
 
@@ -291,15 +283,21 @@ struct DashboardView: View {
             let path = try LinkFileStore.importData(data, filename: "Foto.\(fileExtension)")
             modelContext.insert(DashboardLink(title: "", kind: .image, location: path, schoolClass: schoolClass))
             try modelContext.save()
+            toasts.success("Foto hinzugefügt")
         } catch {
-            importError = error.localizedDescription
+            toasts.error("Foto konnte nicht übernommen werden: \(error.localizedDescription)")
         }
     }
 
     private func remove(_ link: DashboardLink) {
         LinkFileStore.removeFile(of: link)
         modelContext.delete(link)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            toasts.success("Kachel entfernt")
+        } catch {
+            toasts.error("Entfernen fehlgeschlagen: \(error.localizedDescription)")
+        }
     }
 }
 
@@ -334,10 +332,7 @@ extension DashboardView {
         case .randomStudent:
             RandomStudentCard(students: schoolClass.students)
         case .timer:
-            StatCard(title: card.title, value: "Starten", detail: "Öffnet die Uhr-App", symbol: card.symbol) {
-                // Öffnet direkt den Timer-Tab der Uhr-App.
-                if let url = URL(string: "clock-timer://") { openURL(url) }
-            }
+            TimerCard()
         case .currentLesson:
             CurrentLessonCard(
                 schedule: LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots),
@@ -347,6 +342,15 @@ extension DashboardView {
             }
         case .dateTime:
             DateTimeCard()
+        case .weeklyHours:
+            TimelineView(.periodic(from: .now, by: 60)) { context in
+                WeeklyHoursCard(result: WeeklyWorkload.compute(
+                    schedule: LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots),
+                    now: context.date
+                )) {
+                    app.openCalendar(focusing: nil, at: .now)
+                }
+            }
         case .weather:
             WeatherCard(
                 school: settings.values.school,

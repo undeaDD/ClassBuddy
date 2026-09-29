@@ -43,16 +43,15 @@ struct AppSettingsView: View {
     @Environment(AppSecurity.self) private var security
     @Environment(SchoolSettings.self) private var settings
     @Environment(\.modelContext) private var modelContext
+    @Environment(ToastCenter.self) private var toasts
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
 
     @State private var dataSize: Int64?
     @State private var isDeleteConfirmationPresented = false
-    @State private var deleteMessage: String?
     @State private var exportFile: SpreadsheetFile?
     @State private var isExporterPresented = false
     @State private var isImporterPresented = false
     @State private var pendingImport: Data?
-    @State private var transferMessage: String?
 
     private static let deleteInfo = """
         Löscht Klassen, Schüler, Stunden, Termine, Ferien, Kacheln und Dokumente sowie \
@@ -102,7 +101,7 @@ struct AppSettingsView: View {
             } header: {
                 Text("Export & Import")
             } footer: {
-                Text(transferMessage ?? Self.transferInfo)
+                Text(Self.transferInfo)
             }
             .disabled(security.isPrivacyModeOn)
 
@@ -121,7 +120,7 @@ struct AppSettingsView: View {
             } header: {
                 Text("Daten")
             } footer: {
-                Text(deleteMessage ?? Self.deleteInfo)
+                Text(Self.deleteInfo)
             }
         }
         .navigationTitle("App-Einstellungen")
@@ -144,9 +143,9 @@ struct AppSettingsView: View {
             defaultFilename: "ClassBuddy-Export-\(Date.now.formatted(.iso8601.year().month().day()))"
         ) { result in
             if case .failure(let error) = result {
-                transferMessage = "Export fehlgeschlagen: \(error.localizedDescription)"
+                toasts.error("Export fehlgeschlagen: \(error.localizedDescription)")
             } else {
-                transferMessage = "Export gespeichert."
+                toasts.success("Export gespeichert")
             }
         }
         .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: [.xlsx]) { result in
@@ -156,7 +155,7 @@ struct AppSettingsView: View {
                 defer { if accessing { url.stopAccessingSecurityScopedResource() } }
                 pendingImport = try Data(contentsOf: url)
             } catch {
-                transferMessage = "Datei konnte nicht gelesen werden: \(error.localizedDescription)"
+                toasts.error("Datei konnte nicht gelesen werden: \(error.localizedDescription)")
             }
         }
         .confirmationDialog(
@@ -179,7 +178,7 @@ struct AppSettingsView: View {
             exportFile = SpreadsheetFile(data: data)
             isExporterPresented = true
         } catch {
-            transferMessage = "Export fehlgeschlagen: \(error.localizedDescription)"
+            toasts.error("Export fehlgeschlagen: \(error.localizedDescription)")
         }
     }
 
@@ -196,10 +195,10 @@ struct AppSettingsView: View {
                 app.selectedClassID = classIDs.first
             }
             app.calendarFocusClassID = nil
-            transferMessage = result.summary.text
+            toasts.success(result.summary.text)
         } catch {
             modelContext.rollback()
-            transferMessage = "Import fehlgeschlagen: \(error.localizedDescription)"
+            toasts.error("Import fehlgeschlagen: \(error.localizedDescription)")
         }
         await refreshDataSize()
     }
@@ -216,9 +215,9 @@ struct AppSettingsView: View {
             app.selectedClassID = nil
             app.calendarFocusClassID = nil
             UserDefaults.standard.removeObject(forKey: AppTabView.customizationKey)
-            deleteMessage = "Alle lokalen Daten wurden gelöscht."
+            toasts.success("Alle lokalen Daten wurden gelöscht")
         } catch {
-            deleteMessage = "Löschen fehlgeschlagen: \(error.localizedDescription)"
+            toasts.error("Löschen fehlgeschlagen: \(error.localizedDescription)")
         }
         await refreshDataSize()
     }

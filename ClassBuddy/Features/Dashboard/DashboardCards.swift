@@ -252,6 +252,106 @@ struct CurrentLessonCard: View {
     }
 }
 
+/// Timer-Kachel: Dauer wählen, Countdown, verlängern oder stoppen (über ein Menü).
+struct TimerCard: View {
+    @Environment(ClassTimer.self) private var timer
+
+    var body: some View {
+        Menu {
+            if timer.isRunning {
+                Button("+1 Minute", image: .plus) { timer.extend(byMinutes: 1) }
+                Button("+5 Minuten", image: .plus) { timer.extend(byMinutes: 5) }
+                Button("Stoppen", image: .xmark, role: .destructive) { timer.stop() }
+            } else {
+                ForEach(ClassTimer.presets, id: \.self) { minutes in
+                    Button("\(minutes) Minuten") { timer.start(minutes: minutes) }
+                }
+            }
+        } label: {
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                content(now: context.date)
+            }
+        }
+        .menuStyle(.button)
+        .buttonStyle(.plain)
+        .hoverEffect(.lift)
+    }
+
+    private func content(now: Date) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            CardHeader(title: DashboardBuiltInCard.timer.title, symbol: DashboardBuiltInCard.timer.symbol, showsChevron: true)
+            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 2) {
+                if let end = timer.endDate, end > now {
+                    Text(ClassTimer.remainingText(until: end, now: now))
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(Color.accentColor)
+                        .contentTransition(.numericText(countsDown: true))
+                    Text("\(timer.durationMinutes) min · endet um \(end.formatted(date: .omitted, time: .shortened))")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Starten")
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                    Text("Antippen, um eine Dauer zu wählen")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .lineLimit(1)
+        }
+        .cardStyle()
+    }
+}
+
+/// Wochenstunden: Fortschrittsbalken (Primärfarbe) mit erledigten und gesamten Stunden.
+struct WeeklyHoursCard: View {
+    let result: WeeklyWorkload.Result
+    var action: (() -> Void)?
+
+    var body: some View {
+        Button {
+            action?()
+        } label: {
+            VStack(alignment: .leading, spacing: 12) {
+                CardHeader(
+                    title: DashboardBuiltInCard.weeklyHours.title,
+                    symbol: DashboardBuiltInCard.weeklyHours.symbol,
+                    showsChevron: action != nil
+                )
+                Spacer(minLength: 0)
+                if result.totalMinutes == 0 {
+                    Text("Keine Stunden im Kalender")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text(result.fraction.formatted(.percent.precision(.fractionLength(0))))
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .contentTransition(.numericText())
+                    ProgressView(value: result.fraction)
+                        .tint(Color.accentColor)
+                        .scaleEffect(x: 1, y: 2, anchor: .center)
+                        .padding(.vertical, 4)
+                    HStack {
+                        Text("\(WeeklyWorkload.hours(result.doneMinutes)) erledigt")
+                        Spacer()
+                        Text("\(WeeklyWorkload.hours(result.totalMinutes)) gesamt")
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+                }
+            }
+            .cardStyle()
+        }
+        .buttonStyle(.plain)
+        .hoverEffect(.lift)
+        .disabled(action == nil)
+    }
+}
+
 /// „+“-Kachel am Ende des Grids.
 struct AddCard: View {
     let action: () -> Void

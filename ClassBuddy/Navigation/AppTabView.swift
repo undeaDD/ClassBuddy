@@ -51,7 +51,14 @@ struct AppTabView: View {
         Tab(value: tab) {
             root(for: tab)
         } label: {
-            Label(tab.title, symbol: tab.symbol)
+            // iPadOS färbt Sidebar-Symbole mit der Akzentfarbe und zeichnet sie beim Wechsel
+            // nicht zuverlässig neu. Daher: nur der ausgewählte Tab bekommt ein Template-Symbol
+            // (Akzentfarbe), alle anderen ein fest in Textfarbe gezeichnetes.
+            Label {
+                Text(tab.title)
+            } icon: {
+                tab == app.selectedTab ? tab.symbol.image : tab.symbol.fixedColorImage(.label)
+            }
         }
         .customizationID(tab.customizationID)
     }

@@ -70,3 +70,45 @@ enum LessonProgress {
         return (value, parts.joined(separator: " · "))
     }
 }
+
+/// Unterrichtszeit der aktuellen Woche laut Kalender (reine Berechnung, testbar).
+enum WeeklyWorkload {
+    struct Result: Equatable {
+        /// Bereits gehaltene Minuten (laufende Stunde anteilig).
+        let doneMinutes: Int
+        let totalMinutes: Int
+
+        var fraction: Double { totalMinutes == 0 ? 0 : Double(doneMinutes) / Double(totalMinutes) }
+    }
+
+    /// Alle Stunden der Woche von `now` (Montag bis Sonntag), Ferien und Einzelstunden berücksichtigt.
+    static func compute(schedule: LessonSchedule, now: Date) -> Result {
+        let calendar = Calendar.school
+        let weekStart = calendar.startOfWeek(for: now)
+        var done = 0
+        var total = 0
+
+        for offset in 0..<7 {
+            guard let day = calendar.date(byAdding: .day, value: offset, to: weekStart) else { continue }
+            for slot in schedule.slots where schedule.lesson(on: day, slotIndex: slot.index) != nil {
+                let length = slot.end - slot.start
+                total += length
+                guard let start = calendar.date(byAdding: .minute, value: slot.start, to: day),
+                      let end = calendar.date(byAdding: .minute, value: slot.end, to: day)
+                else { continue }
+                if now >= end {
+                    done += length
+                } else if now > start {
+                    done += Int(now.timeIntervalSince(start) / 60)
+                }
+            }
+        }
+        return Result(doneMinutes: done, totalMinutes: total)
+    }
+
+    /// Minuten → „12,5 h“ (deutsches Format, höchstens eine Nachkommastelle).
+    static func hours(_ minutes: Int) -> String {
+        let value = (Double(minutes) / 60).formatted(.number.precision(.fractionLength(0...1)).locale(Locale(identifier: "de_DE")))
+        return "\(value) h"
+    }
+}

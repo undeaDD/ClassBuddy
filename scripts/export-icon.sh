@@ -9,3 +9,8 @@ for rendition in Default Dark; do
     --platform iOS --rendition "$rendition" --width 512 --height 512 --scale 1 >/dev/null
   print "✓ $out"
 done
+# Gleiche Bilder für die Einstellungen (Kopfbereich) ins Asset-Katalog übernehmen
+preview="ClassBuddy/Resources/Assets.xcassets/AppIconPreview.imageset"
+cp docs/app-icon.png "$preview/app-icon.png"
+cp docs/app-icon-dark.png "$preview/app-icon-dark.png"
+print "✓ $preview"

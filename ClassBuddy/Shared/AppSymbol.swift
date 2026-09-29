@@ -29,6 +29,23 @@ nonisolated enum AppSymbol: Hashable, Sendable {
         }
     }
 
+    /// UIKit-Bild des Symbols (z. B. um die Farbe fest vorzugeben).
+    var uiImage: UIImage? {
+        switch self {
+        case .system(let name): UIImage(systemName: name)
+        case .private(let name, let fallback):
+            UIImage(systemName: Self.privateSymbolExists(name) ? name : fallback)
+        case .custom(let resource): UIImage(resource: resource)
+        }
+    }
+
+    /// Bild in fester Farbe (nicht mehr vom System einfärbbar); dynamische Farben
+    /// wie `.label` passen sich weiterhin an Hell/Dunkel an.
+    func fixedColorImage(_ color: UIColor) -> Image {
+        guard let uiImage else { return image }
+        return Image(uiImage: uiImage.withTintColor(color, renderingMode: .alwaysOriginal))
+    }
+
     /// Prüft, ob ein internes Symbol auf diesem OS existiert, damit bei
     /// OS-Updates nie ein leeres Icon angezeigt wird.
     private static func privateSymbolExists(_ name: String) -> Bool {

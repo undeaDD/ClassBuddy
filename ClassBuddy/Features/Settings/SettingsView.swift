@@ -6,6 +6,11 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section {
+                SettingsHero()
+            }
+            .listRowBackground(Color.clear)
+
+            Section {
                 NavigationLink {
                     TeacherProfileView()
                 } label: {
@@ -53,7 +58,8 @@ struct SettingsView: View {
                     Label("Feedback senden", image: .sendMail)
                 }
                 LabeledContent {
-                    Text(AppInfo.version)
+                    Text("\(AppInfo.version) · \(InstallInfo.osVersion) · \(InstallInfo.deviceModel)")
+                        .monospacedDigit()
                 } label: {
                     Label("App-Version", image: .version)
                 }
@@ -65,6 +71,58 @@ struct SettingsView: View {
         }
         .navigationTitle(AppTab.settings.title)
         .appChrome(tab: .settings)
+    }
+}
+
+/// Kopfbereich der Einstellungen: App-Icon, Name, Beschreibung, Installation.
+private struct SettingsHero: View {
+    @State private var installMethod: InstallInfo.Method?
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(.appIconPreview)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 112, height: 112)
+                .shadow(color: .black.opacity(0.12), radius: 10, y: 4)
+                .accessibilityHidden(true)
+
+            VStack(spacing: 4) {
+                Text("ClassBuddy")
+                    .font(.largeTitle.bold())
+                Text("Klassen, Schüler und Stundenplan im Blick – lokal auf deinem iPad, mit Face ID geschützt.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 420)
+            }
+
+            HStack(spacing: 8) {
+                if let installDate = InstallInfo.installDate {
+                    HeroChip(text: "Installiert am \(installDate.formatted(date: .long, time: .omitted))")
+                }
+                if let installMethod {
+                    HeroChip(text: "über \(installMethod.rawValue)")
+                }
+            }
+            .padding(.top, 2)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .task { installMethod = await InstallInfo.detectMethod() }
+    }
+}
+
+private struct HeroChip: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.caption.weight(.medium))
+            .foregroundStyle(.secondary)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 5)
+            .background(.fill.tertiary, in: .capsule)
     }
 }
 

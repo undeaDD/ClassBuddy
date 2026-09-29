@@ -7,6 +7,7 @@ struct StudentsView: View {
     @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
     @Environment(\.modelContext) private var modelContext
+    @Environment(ToastCenter.self) private var toasts
     @Query private var classes: [SchoolClass]
 
     @State private var searchText = ""
@@ -158,7 +159,12 @@ struct StudentsView: View {
 
     private func delete(_ student: Student) {
         modelContext.delete(student)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            toasts.success("Schüler gelöscht")
+        } catch {
+            toasts.error("Löschen fehlgeschlagen: \(error.localizedDescription)")
+        }
     }
 }
 

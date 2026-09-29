@@ -27,16 +27,19 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
+      # With the repository secret SEMGREP_APP_TOKEN: Semgrep AppSec Platform (Pro rules, policies,
+      # cross-file analysis) via "semgrep ci". Without it (e.g. forks): open-source rule sets.
       - name: Scan
-        run: >
-          semgrep scan
-          --config p/default
-          --config p/swift
-          --config p/secrets
-          --config p/github-actions
-          --metrics off
-          --error
-          --sarif --output semgrep.sarif
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        run: |
+          if [ -n "$SEMGREP_APP_TOKEN" ]; then
+            semgrep ci --sarif --sarif-output=semgrep.sarif
+          else
+            semgrep scan \
+              --config p/default --config p/swift --config p/secrets --config p/github-actions \
+              --metrics off --error --sarif --output semgrep.sarif
+          fi
 
       - name: Upload results to code scanning
         if: always()

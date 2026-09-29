@@ -102,6 +102,92 @@ struct LogicTests {
         #expect(state.value == "1 h 30 min")
     }
 
+    // MARK: Wochenstunden
+
+    @Test("Wochenstunden: erledigt / gesamt, laufende Stunde anteilig, Ferien zählen nicht")
+    func weeklyWorkload() throws {
+        let container = try ModelContainer(
+            for: SchoolClass.self, Student.self, Lesson.self, CalendarEntry.self, Holiday.self, DashboardLink.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = ModelContext(container)
+        let schoolClass = SchoolClass(shortName: "7b")
+        context.insert(schoolClass)
+        // Montag 1.+2. Stunde, Mittwoch 1. Stunde (je 45 min)
+        for (weekday, slot) in [(0, 0), (0, 1), (2, 0)] {
+            context.insert(Lesson(weekday: weekday, slotIndex: slot, subject: "", isRecurring: true, date: nil, schoolClass: schoolClass))
+        }
+        let lessons = try context.fetch(FetchDescriptor<Lesson>())
+        let slots = SchoolSettings.Values().slots
+
+        // Montag, 28.09.2026, 09:00: 1. Stunde fertig (45), 2. Stunde seit 15 min
+        let monday = WeeklyWorkload.compute(
+            schedule: LessonSchedule(lessons: lessons, holidays: [], slots: slots), now: Self.date(2026, 9, 28, 9, 0)
+        )
+        #expect(monday == WeeklyWorkload.Result(doneMinutes: 60, totalMinutes: 135))
+
+        // Sonntag danach: alles erledigt
+        let sunday = WeeklyWorkload.compute(
+            schedule: LessonSchedule(lessons: lessons, holidays: [], slots: slots), now: Self.date(2026, 10, 4, 12, 0)
+        )
+        #expect(sunday.fraction == 1)
+
+        // Mittwoch ist Feiertag → nur die zwei Montagsstunden
+        let holiday = Holiday(
+            id: "h", name: "Test", startDate: Self.date(2026, 9, 30), endDate: Self.date(2026, 9, 30), isSchoolHoliday: false
+        )
+        let withHoliday = WeeklyWorkload.compute(
+            schedule: LessonSchedule(lessons: lessons, holidays: [holiday], slots: slots), now: Self.date(2026, 9, 28, 7, 0)
+        )
+        #expect(withHoliday == WeeklyWorkload.Result(doneMinutes: 0, totalMinutes: 90))
+    }
+
+    @Test("Stundenangabe im deutschen Format", arguments: [(0, "0 h"), (45, "0,8 h"), (90, "1,5 h"), (24 * 60, "24 h")])
+    func hoursFormat(minutes: Int, expected: String) {
+        #expect(WeeklyWorkload.hours(minutes) == expected)
+    }
+
+    @Test("Ohne Stunden ist der Fortschritt 0")
+    func emptyWorkload() {
+        #expect(WeeklyWorkload.Result(doneMinutes: 0, totalMinutes: 0).fraction == 0)
+    }
+
+    // MARK: Timer & Installation
+
+    @Test("Timer-Restzeit", arguments: [(0.0, "00:00"), (59.2, "01:00"), (125, "02:05"), (3_725, "1:02:05")])
+    func timerText(seconds: Double, expected: String) {
+        let now = Self.date(2026, 9, 29, 10)
+        #expect(ClassTimer.remainingText(until: now.addingTimeInterval(seconds), now: now) == expected)
+    }
+
+    nonisolated struct InstallCase: Sendable {
+        var keys: Set<String> = []
+        var debug = false
+        var profile = false
+        var environment: String?
+        let expected: InstallInfo.Method
+    }
+
+    @Test("Installationsweg erkennen", arguments: [
+        InstallCase(keys: ["ALTDeviceID"], debug: true, profile: true, expected: .sideloaded),
+        InstallCase(debug: true, profile: true, expected: .xcode),
+        InstallCase(profile: true, expected: .developer),
+        InstallCase(environment: "Sandbox", expected: .testFlight),
+        InstallCase(environment: "Production", expected: .appStore),
+    ])
+    func installMethod(test: InstallCase) {
+        let method = InstallInfo.method(
+            infoKeys: test.keys, isDebugBuild: test.debug, hasProvisioningProfile: test.profile, storeEnvironment: test.environment
+        )
+        #expect(method == test.expected)
+    }
+
+    @Test("Gerätemodell und OS-Version sind gesetzt")
+    func deviceInfo() {
+        #expect(InstallInfo.deviceModel.hasPrefix("iPad"))
+        #expect(InstallInfo.osVersion.contains(UIDevice.current.systemVersion))
+    }
+
     // MARK: Ferien-Import
 
     @Test("Ferien-API: Datum hin und zurück, ungültige Werte")
