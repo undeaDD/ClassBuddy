@@ -13,7 +13,10 @@ struct CalendarView: View {
     @Query private var holidays: [Holiday]
     @Query private var classes: [SchoolClass]
 
+    @Environment(AppSecurity.self) private var security
+
     @State private var weekStart = Calendar.school.startOfWeek(for: .now)
+    @State private var isNewEntryPresented = false
 
     static let hourHeight: CGFloat = 64
     private static let gutterWidth: CGFloat = 56
@@ -88,9 +91,22 @@ struct CalendarView: View {
                 }
                 .tint(focusClass.color.color)
             }
+            Button("Neuer Termin", image: .plus) { isNewEntryPresented = true }
+                .disabled(security.isPrivacyModeOn)
             Button("Vorherige Woche", image: .navArrowLeft) { moveWeek(by: -1) }
             Button("Heute") { weekStart = calendar.startOfWeek(for: .now) }
             Button("Nächste Woche", image: .navArrowRight) { moveWeek(by: 1) }
+        }
+        // Sheet statt Toolbar-Popover: blockiert die Tab-Leiste während der Eingabe.
+        .sheet(isPresented: $isNewEntryPresented) {
+            let suggestion = suggestedNewEntryStart
+            EntryEditorView(entry: nil, day: suggestion.day, startMinute: suggestion.minute) { start in
+                weekStart = calendar.startOfWeek(for: start)
+            }
+            .presentationSizing(.fitted)
+        }
+        .onChange(of: security.isPrivacyModeOn) { _, isOn in
+            if isOn { isNewEntryPresented = false }
         }
         // Sprung aus der Übersicht („Nächste Stunde“) in die passende Woche.
         .onChange(of: app.calendarJumpDate, initial: true) { _, date in
@@ -153,6 +169,17 @@ struct CalendarView: View {
             }
         }
         .frame(width: Self.gutterWidth, alignment: .leading)
+    }
+
+    /// Vorschlag für „+“: in der aktuellen Woche heute zur nächsten vollen Stunde,
+    /// sonst Wochenbeginn zum Schulbeginn.
+    private var suggestedNewEntryStart: (day: Date, minute: Int) {
+        let now = Date.now
+        if calendar.isDate(now, equalTo: weekStart, toGranularity: .weekOfYear) {
+            let hour = calendar.component(.hour, from: now)
+            return (now, min(hour + 1, 23) * 60)
+        }
+        return (weekStart, settings.values.dayStart)
     }
 
     private func moveWeek(by weeks: Int) {

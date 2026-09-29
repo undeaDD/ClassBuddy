@@ -2,6 +2,8 @@ import SwiftUI
 import WebKit
 
 struct SettingsView: View {
+    @Environment(\.openURL) private var openURL
+
     var body: some View {
         Form {
             Section {
@@ -18,12 +20,10 @@ struct SettingsView: View {
                 NavigationLink {
                     AppSettingsView()
                 } label: {
-                    Label("App-Einstellungen", systemImage: "ipad")
+                    Label("App-Einstellungen", image: .app)
                 }
             } header: {
-                Text("Weitere Einstellungen")
-            } footer: {
-                Text("Profil · Schule, Stundenraster, Ferien · Darstellung, App-Sperre, Daten.")
+                Text("Kategorien")
             }
 
             Section("Rechtliches") {
@@ -35,6 +35,11 @@ struct SettingsView: View {
             }
 
             Section {
+                Button {
+                    openURL(AppInfo.feedbackMailURL)
+                } label: {
+                    Label("Feedback senden", image: .sendMail)
+                }
                 LabeledContent("Version", value: AppInfo.version)
             } footer: {
                 Text("Made with ❤️ by Devsforge.de")

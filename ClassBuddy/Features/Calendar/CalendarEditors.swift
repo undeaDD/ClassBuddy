@@ -119,14 +119,17 @@ struct EntryEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
     let entry: CalendarEntry?
+    /// Nach dem Sichern mit dem Beginn aufgerufen (z. B. um zur Woche zu springen).
+    var onSave: (Date) -> Void = { _ in }
 
     @State private var title: String
     @State private var start: Date
     @State private var duration: Int
     @State private var notes: String
 
-    init(entry: CalendarEntry?, day: Date, startMinute: Int) {
+    init(entry: CalendarEntry?, day: Date, startMinute: Int, onSave: @escaping (Date) -> Void = { _ in }) {
         self.entry = entry
+        self.onSave = onSave
         let defaultStart = Calendar.school.date(byAdding: .minute, value: startMinute, to: Calendar.school.startOfDay(for: day)) ?? day
         _title = State(initialValue: entry?.title ?? "")
         _start = State(initialValue: entry?.start ?? defaultStart)
@@ -183,6 +186,7 @@ struct EntryEditorView: View {
         target.end = start.addingTimeInterval(TimeInterval(duration * 60))
         target.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         try? modelContext.save()
+        onSave(start)
         dismiss()
     }
 

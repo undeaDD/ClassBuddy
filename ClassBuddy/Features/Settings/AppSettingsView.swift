@@ -121,7 +121,7 @@ struct AppSettingsView: View {
             settings.values = SchoolSettings.Values()
             app.selectedClassID = nil
             app.calendarFocusClassID = nil
-            UserDefaults.standard.removeObject(forKey: "navigation.tabCustomization")
+            UserDefaults.standard.removeObject(forKey: AppTabView.customizationKey)
             deleteMessage = "Alle lokalen Daten wurden gelöscht."
         } catch {
             deleteMessage = "Löschen fehlgeschlagen: \(error.localizedDescription)"
@@ -155,5 +155,6 @@ enum LocalDataStore {
         try context.delete(model: SchoolClass.self)
         try context.save()
         try? FileManager.default.removeItem(at: LinkFileStore.directory)
+        FaviconStore.removeAll()
     }
 }

@@ -5,7 +5,9 @@ import SwiftUI
 struct AppTabView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.openURL) private var openURL
-    @AppStorage("navigation.tabCustomization") private var customization = TabViewCustomization()
+    /// v2: einmal zurückgesetzt, damit neue Tabs (Räume) an ihrer Standardposition landen.
+    static let customizationKey = "navigation.tabCustomization.v2"
+    @AppStorage(AppTabView.customizationKey) private var customization = TabViewCustomization()
 
     /// Aktions-Tabs (Feedback) lösen ihre Aktion aus, ohne die Auswahl zu ändern.
     private var selection: Binding<AppTab> {
@@ -55,6 +57,7 @@ struct AppTabView: View {
         case .dashboard: DashboardView()
         case .calendar: CalendarView()
         case .students: StudentsView()
+        case .rooms: RoomsView()
         case .settings: SettingsView()
         case .feedback: EmptyView()
         }

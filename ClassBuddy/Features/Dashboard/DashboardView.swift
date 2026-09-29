@@ -265,7 +265,8 @@ private struct LinkCard: View {
                 CardHeader(
                     title: link.kind == .file ? "Dokument" : "Website",
                     symbol: link.kind == .file ? .custom(.page) : .custom(.www),
-                    showsChevron: true
+                    showsChevron: true,
+                    faviconURL: link.kind == .website ? link.url : nil
                 )
                 Spacer(minLength: 0)
                 VStack(alignment: .leading, spacing: 2) {
@@ -313,12 +314,24 @@ private struct CardHeader: View {
     let title: String
     let symbol: AppSymbol
     let showsChevron: Bool
+    /// Bei Websites: Favicon statt Symbol.
+    var faviconURL: URL?
 
     var body: some View {
         HStack {
-            Label(title, symbol: symbol)
+            if let faviconURL {
+                Label {
+                    Text(title)
+                } icon: {
+                    FaviconView(url: faviconURL, size: 24, placeholder: symbol)
+                }
                 .font(.headline)
                 .foregroundStyle(.secondary)
+            } else {
+                Label(title, symbol: symbol)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+            }
             Spacer()
             if showsChevron {
                 Image(.navArrowRight)

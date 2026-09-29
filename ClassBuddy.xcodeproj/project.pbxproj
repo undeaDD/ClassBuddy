@@ -48,6 +48,8 @@
 		4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */; };
 		C90AE7627654FA715A2928C0 /* PersonFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22B00150D405734C85B655E /* PersonFields.swift */; };
 		1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682EF27D860985CC8FFA663A /* AppSettingsView.swift */; };
+		B5771ED238B14746675E9DA3 /* RoomsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FBA887DF0FD221035505E8 /* RoomsView.swift */; };
+		31629008272B53902CD89947 /* Favicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE897C819A0937DF76AF7C8 /* Favicon.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,12 +95,15 @@
 		7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherProfileView.swift; sourceTree = "<group>"; };
 		A22B00150D405734C85B655E /* PersonFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonFields.swift; sourceTree = "<group>"; };
 		682EF27D860985CC8FFA663A /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
+		29FBA887DF0FD221035505E8 /* RoomsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsView.swift; sourceTree = "<group>"; };
+		3DE897C819A0937DF76AF7C8 /* Favicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicon.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		220AE937DB9F143BC25C2101 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				A448871486BB258B47FBECBC /* Rooms */,
 				6276EFCCA61538A20161D1C9 /* Calendar */,
 				D4570BF9AFC7A772451C1FD8 /* Students */,
 				D318CA121CD9FB8D64C14FB9 /* ClassPicker */,
@@ -225,6 +230,7 @@
 		ED866CB00345985B1E112F36 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				3DE897C819A0937DF76AF7C8 /* Favicon.swift */,
 				73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */,
 				A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */,
 			);
@@ -270,6 +276,14 @@
 				432AD3F8D6771586F8F77F14 /* imprint.html */,
 			);
 			path = Legal;
+			sourceTree = "<group>";
+		};
+		A448871486BB258B47FBECBC /* Rooms */ = {
+			isa = PBXGroup;
+			children = (
+				29FBA887DF0FD221035505E8 /* RoomsView.swift */,
+			);
+			path = Rooms;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -334,6 +348,8 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				31629008272B53902CD89947 /* Favicon.swift in Sources */,
+				B5771ED238B14746675E9DA3 /* RoomsView.swift in Sources */,
 				1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */,
 				C90AE7627654FA715A2928C0 /* PersonFields.swift in Sources */,
 				4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */,
