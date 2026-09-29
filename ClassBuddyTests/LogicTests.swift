@@ -27,7 +27,7 @@ struct LogicTests {
         #expect(upcoming.map(\.student.firstName) == ["Heute", "Übermorgen", "Gestern"])
         #expect(upcoming.map(\.daysUntil) == [0, 2, 364])
         #expect(upcoming.map(\.turningAge) == [12, 13, 13])
-        #expect(Birthdays.detail(for: upcoming) == "Heute 🎉 · wird 12")
+        #expect(Birthdays.detail(for: upcoming) == "Heute · wird 12")
     }
 
     @Test("Geburtstage: morgen, mehrere am selben Tag, leere Klasse")

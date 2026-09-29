@@ -171,16 +171,22 @@ struct DataTests {
 
     // MARK: Hilfen
 
-    @Test("Web-Adressen", arguments: [
+    @Test("Web-Adressen und App-Links", arguments: [
         ("schule.de", "https://schule.de"),
-        ("http://example.org/a", "http://example.org/a"),
+        ("https://example.org/a", "https://example.org/a"),
         ("  schule.de/plan  ", "https://schule.de/plan"),
+        ("schule.de:8080/plan", "https://schule.de:8080/plan"),
+        ("notability://open", "notability://open"),
+        ("mailto:sekretariat@schule.de", "mailto:sekretariat@schule.de"),
     ])
     func webURL(input: String, expected: String) {
         #expect(URL.web(input)?.absoluteString == expected)
     }
 
-    @Test("Ungültige Web-Adressen", arguments: ["", "mit leerzeichen.de", "   "])
+    @Test("Ungültige oder unsichere Adressen", arguments: [
+        "", "mit leerzeichen.de", "   ", "http://schule.de", "HTTP://schule.de", "ftp://server.de",
+        "file:///etc/hosts", "javascript:alert(1)", "data:text/html,x", "notability:",
+    ])
     func invalidWebURL(input: String) {
         #expect(URL.web(input) == nil)
     }

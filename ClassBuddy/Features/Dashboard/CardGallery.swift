@@ -55,12 +55,12 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         switch self {
         case .students: AppTab.students.symbol
         case .nextLesson: AppTab.calendar.symbol
-        case .nextBirthday: .system("gift")
-        case .randomStudent: .system("dice")
-        case .timer: .system("timer")
+        case .nextBirthday: .custom(.gift)
+        case .randomStudent: .custom(.dice)
+        case .timer: .custom(.timer)
         case .currentLesson: .system("hourglass")
-        case .dateTime: .system("clock")
-        case .weather: .system("cloud.sun")
+        case .dateTime: .custom(.time)
+        case .weather: .custom(.temperature)
         case .weeklyHours: .system("chart.bar.fill")
         }
     }
@@ -75,7 +75,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .timer: ("12:34", "20 min · endet um 10:15")
         case .currentLesson: ("23 min", "3. Stunde · 7b · Mathematik")
         case .dateTime: ("08:15", "Dienstag, 29. September · KW 40")
-        case .weather: ("17°", "Teilweise bewölkt · ↑ 19° ↓ 9° · Köln")
+        case .weather: ("17°", "Teilweise bewölkt · ↑ 19° ↓ 9°")
         case .weeklyHours: ("58 %", "14 h erledigt · 24 h gesamt")
         }
     }
@@ -156,15 +156,17 @@ struct CardGalleryView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 32) {
+                VStack(alignment: .leading, spacing: 40) {
                     if !availableBuiltIns.isEmpty {
                         section(
                             "Für diese Klasse",
                             footer: "Jede dieser Kacheln gibt es einmal pro Klasse.",
                             templates: availableBuiltIns
                         )
+                        Divider()
                     }
                     section("Eigene Kacheln", footer: "Beliebig oft hinzufügbar.", templates: CardTemplate.reusable)
+                    Divider()
                     section("Fehlt etwas?", footer: "Wünsche gehen per Mail an den Entwickler.", templates: [.request])
                 }
                 .padding(24)
@@ -204,14 +206,17 @@ struct CardGalleryView: View {
                 TemplatePreview(template: template)
                     .allowsHitTesting(false)
 
-                Text(template.title)
-                    .font(.headline)
-                    .lineLimit(1)
-                // Immer zwei Zeilen, damit alle Kacheln gleich hoch sind.
-                Text(template.summary)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2, reservesSpace: true)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(template.title)
+                        .font(.headline)
+                        .lineLimit(1)
+                    // Immer zwei Zeilen, damit alle Kacheln gleich hoch sind.
+                    Text(template.summary)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2, reservesSpace: true)
+                }
+                .padding(.horizontal, 10)
             }
             .contentShape(.rect)
         }

@@ -31,10 +31,10 @@ enum Birthdays {
         .sorted { $0.date < $1.date }
     }
 
-    /// „Heute 🎉 · wird 13 · +1“ für die Kachel.
+    /// „Heute · wird 13 · +1“ für die Kachel.
     static func detail(for upcoming: [Upcoming]) -> String {
         guard let first = upcoming.first else { return "Keine Geburtstage eingetragen" }
-        let when = first.daysUntil == 0 ? "Heute 🎉" : first.daysUntil == 1 ? "Morgen" : "in \(first.daysUntil) Tagen"
+        let when = first.daysUntil == 0 ? "Heute" : first.daysUntil == 1 ? "Morgen" : "in \(first.daysUntil) Tagen"
         let sameDay = upcoming.filter { $0.daysUntil == first.daysUntil }.count - 1
         return "\(when) · wird \(first.turningAge)" + (sameDay > 0 ? " · +\(sameDay)" : "")
     }

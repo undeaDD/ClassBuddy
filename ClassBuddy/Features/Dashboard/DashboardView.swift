@@ -163,8 +163,13 @@ struct DashboardView: View {
                 .allowsHitTesting(false)
                 .opacity(isHidden ? 0.55 : 1)
                 .overlay(alignment: .topTrailing) {
-                    Button(isHidden ? "Einblenden" : "Ausblenden", image: isHidden ? .eye : .eyeClosed) {
-                        setHidden(!isHidden, cardID, in: schoolClass)
+                    HStack(spacing: 8) {
+                        Button("Entfernen", image: .xmark) {
+                            removeCard(cardID, in: schoolClass)
+                        }
+                        Button(isHidden ? "Einblenden" : "Ausblenden", image: isHidden ? .eye : .eyeClosed) {
+                            setHidden(!isHidden, cardID, in: schoolClass)
+                        }
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.glass)
@@ -193,11 +198,27 @@ struct DashboardView: View {
     }
 
     private func visibleCardIDs(for schoolClass: SchoolClass) -> [String] {
-        orderedCardIDs(for: schoolClass).filter { !schoolClass.dashboardHidden.contains($0) }
+        orderedCardIDs(for: schoolClass).filter {
+            !schoolClass.dashboardHidden.contains($0) && !schoolClass.dashboardRemoved.contains($0)
+        }
     }
 
     private func hiddenCardIDs(for schoolClass: SchoolClass) -> [String] {
-        orderedCardIDs(for: schoolClass).filter { schoolClass.dashboardHidden.contains($0) }
+        orderedCardIDs(for: schoolClass).filter {
+            schoolClass.dashboardHidden.contains($0) && !schoolClass.dashboardRemoved.contains($0)
+        }
+    }
+
+    /// ✕ im Anordnen-Modus: eigene Kacheln löschen, eingebaute ganz von der Übersicht nehmen.
+    private func removeCard(_ cardID: String, in schoolClass: SchoolClass) {
+        if let link = schoolClass.dashboardLinks.first(where: { $0.cardID == cardID }) {
+            remove(link)
+            return
+        }
+        schoolClass.dashboardHidden.removeAll { $0 == cardID }
+        if !schoolClass.dashboardRemoved.contains(cardID) { schoolClass.dashboardRemoved.append(cardID) }
+        try? modelContext.save()
+        toasts.success("Kachel entfernt")
     }
 
     /// Neue Kacheln einmalig registrieren; standardmäßig ausgeblendete landen in „Ausgeblendet“.
@@ -234,6 +255,7 @@ struct DashboardView: View {
         pendingTemplate = nil
         switch template {
         case .builtIn(let card):
+            schoolClass.dashboardRemoved.removeAll { $0 == card.rawValue }
             setHidden(false, card.rawValue, in: schoolClass)
         case .photo:
             isPhotoPickerPresented = true

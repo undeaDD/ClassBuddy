@@ -79,22 +79,24 @@ private struct SettingsHero: View {
     @State private var installMethod: InstallInfo.Method?
 
     var body: some View {
-        VStack(spacing: 10) {
-            Image(.appIconPreview)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 112, height: 112)
-                .shadow(color: .black.opacity(0.12), radius: 10, y: 4)
-                .accessibilityHidden(true)
+        VStack(spacing: 12) {
+            HStack(spacing: 16) {
+                Image(.appIconPreview)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 76, height: 76)
+                    .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
+                    .accessibilityHidden(true)
 
-            VStack(spacing: 4) {
-                Text("ClassBuddy")
-                    .font(.largeTitle.bold())
-                Text("Klassen, Schüler und Stundenplan im Blick – lokal auf deinem iPad, mit Face ID geschützt.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: 420)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("ClassBuddy")
+                        .font(.title2.bold())
+                    Text("Klassen, Schüler und Stundenplan im Blick – lokal auf deinem iPad, mit Face ID geschützt.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             HStack(spacing: 8) {
@@ -105,10 +107,9 @@ private struct SettingsHero: View {
                     HeroChip(text: "über \(installMethod.rawValue)")
                 }
             }
-            .padding(.top, 2)
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
+        .padding(.vertical, 4)
         .task { installMethod = await InstallInfo.detectMethod() }
     }
 }
@@ -160,6 +161,9 @@ struct LegalDocumentView: View {
 
     var body: some View {
         WebView(page)
+            // Kein seitliches Scrollen/Zoomen auf den lokalen Textseiten.
+            .webViewMagnificationGestures(.disabled)
+            .scrollBounceBehavior(.basedOnSize, axes: .horizontal)
             .background(Color(.systemGroupedBackground))
             .navigationTitle(document.title)
             .navigationBarTitleDisplayMode(.inline)

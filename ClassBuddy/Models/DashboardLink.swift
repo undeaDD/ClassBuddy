@@ -106,11 +106,40 @@ nonisolated enum LinkFileStore {
 }
 
 extension URL {
-    /// Nutzereingabe → Web-URL („example.org“ → „https://example.org“).
+    /// Unsichere oder für Kacheln ungeeignete Schemata (Klartext, lokale Dateien, Skripte …).
+    static let blockedLinkSchemes: Set<String> = [
+        "http", "ftp", "ftps", "sftp", "file", "data", "javascript", "vbscript", "about", "blob",
+        "ws", "wss", "smb", "afp", "ssh", "telnet", "vnc",
+    ]
+
+    /// Nutzereingabe → Link für Kacheln und die Schul-Website.
+    /// Erlaubt: `https://…`, Adressen ohne Schema (werden zu https) und App-Links
+    /// (`notability://…`, `mailto:`, `tel:` …). Abgelehnt: http, ftp, file, javascript usw.
     static func web(_ input: String) -> URL? {
         let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, !trimmed.contains(" ") else { return nil }
-        let url = URL(string: trimmed.contains("://") ? trimmed : "https://\(trimmed)")
-        return url?.host() == nil ? nil : url
+
+        guard let scheme = explicitScheme(of: trimmed) else {
+            let url = URL(string: "https://\(trimmed)")
+            return url?.host() == nil ? nil : url
+        }
+        switch scheme {
+        case "https":
+            let url = URL(string: trimmed)
+            return url?.host() == nil ? nil : url
+        case _ where blockedLinkSchemes.contains(scheme):
+            return nil
+        default:
+            // App-Link: Schema plus Inhalt nötig.
+            return trimmed.count > scheme.count + 1 ? URL(string: trimmed) : nil
+        }
+    }
+
+    /// Schema einer Eingabe („https“, „notability“ …) – „schule.de:8080“ ist ein Port, kein Schema.
+    private static func explicitScheme(of text: String) -> String? {
+        guard let match = text.firstMatch(of: /^([A-Za-z][A-Za-z0-9+.\-]*):(.*)$/) else { return nil }
+        let rest = match.2
+        if rest.first?.isNumber == true { return nil }
+        return String(match.1).lowercased()
     }
 }

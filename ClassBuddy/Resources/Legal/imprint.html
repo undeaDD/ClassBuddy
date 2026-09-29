@@ -2,16 +2,133 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Impressum</title>
 <style>
-  :root { color-scheme: light dark; }
-  body { font: -apple-system-body; margin: 24px; max-width: 720px; line-height: 1.5; }
-  h1 { font: -apple-system-title1; font-weight: 700; }
+  :root {
+    color-scheme: light dark;
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #000000;
+    --secondary: #6d6d72;
+    --separator: rgba(60, 60, 67, 0.18);
+    --accent: #9c6830;
+    --pill: rgba(156, 104, 48, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --text: #ffffff;
+      --secondary: #98989f;
+      --separator: rgba(84, 84, 88, 0.6);
+      --accent: #cd9c5e;
+      --pill: rgba(205, 156, 94, 0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px 20px 40px;
+    background: var(--bg);
+    color: var(--text);
+    font: -apple-system-body;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  .intro { color: var(--secondary); font: -apple-system-subheadline; margin: 4px 16px 24px; line-height: 1.4; }
+  h2 {
+    font: -apple-system-footnote;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--secondary);
+    margin: 28px 16px 8px;
+    font-weight: 400;
+  }
+  .card { background: var(--card); border-radius: 12px; overflow: hidden; }
+  .row { padding: 12px 16px; position: relative; }
+  .row + .row::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0;
+    border-top: 0.5px solid var(--separator);
+  }
+  .row-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .name { font: -apple-system-headline; }
+  .pill {
+    font: -apple-system-caption1; font-weight: 600;
+    color: var(--accent); background: var(--pill);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .desc { color: var(--secondary); font: -apple-system-subheadline; margin-top: 4px; line-height: 1.4; }
+  a { color: var(--accent); text-decoration: none; }
+  details { margin-top: 8px; }
+  summary { color: var(--accent); font: -apple-system-subheadline; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: " ›"; }
+  details[open] summary::after { content: " ⌄"; }
+  pre {
+    white-space: pre-wrap; font: -apple-system-caption2; font-family: ui-monospace, Menlo, monospace;
+    color: var(--secondary); margin: 8px 0 0; line-height: 1.45;
+  }
+  .footnote { color: var(--secondary); font: -apple-system-footnote; margin: 8px 16px 0; line-height: 1.4; }
+  html, body { overflow-x: hidden; }
+  body { overflow-wrap: anywhere; word-break: normal; }
+  pre { max-width: 100%; overflow-x: hidden; overflow-wrap: anywhere; }
+  ul { margin: 6px 0 0; padding-left: 20px; }
+  li { margin: 4px 0; line-height: 1.4; }
+  .row p { margin: 6px 0 0; line-height: 1.45; }
+  .muted { color: var(--secondary); }
+  .ok { color: #34c759; font-weight: 600; }
+  .todo { color: #ff3b30; font-weight: 600; }
 </style>
 </head>
 <body>
-<h1>Impressum</h1>
-<!-- Inhalt folgt -->
+<main>
+  <p class="intro">Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG).</p>
+
+  <h2>Anbieter</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Dominic Drees</div>
+      <p class="muted">Devsforge.de<br>
+      <span class="todo">[Straße und Hausnummer]</span><br>
+      <span class="todo">[PLZ Ort]</span><br>
+      Deutschland</p>
+    </div>
+  </div>
+
+  <h2>Kontakt</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">E-Mail</div>
+      <p class="muted"><a href="mailto:dominic.drees@live.de">dominic.drees@live.de</a></p>
+    </div>
+  </div>
+
+  <h2>Haftung</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Haftung für Inhalte</div>
+      <p class="muted">Die App wurde mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte, insbesondere importierter Ferien-, Feiertags- und Wetterdaten, kann jedoch keine Gewähr übernommen werden. Bitte prüfen Sie wichtige Termine anhand der offiziellen Quellen Ihres Bundeslands.</p>
+    </div>
+    <div class="row">
+      <div class="name">Haftung für Links</div>
+      <p class="muted">Die App enthält Links zu externen Websites Dritter, auf deren Inhalte kein Einfluss besteht. Für diese Inhalte ist stets der jeweilige Anbieter verantwortlich.</p>
+    </div>
+  </div>
+
+  <h2>Urheberrecht</h2>
+  <div class="card">
+    <div class="row">
+      <p class="muted" style="margin-top:0">ClassBuddy steht unter der PolyForm Strict License 1.0.0: Der Quellcode ist einsehbar, darf aber nicht kopiert, verändert oder weitergegeben werden. Verwendete Inhalte Dritter und deren Lizenzen sind unter „Lizenzen“ aufgeführt.</p>
+    </div>
+  </div>
+
+  <h2>Verbraucherstreitbeilegung</h2>
+  <div class="card">
+    <div class="row">
+      <p class="muted" style="margin-top:0">Der Anbieter ist nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+    </div>
+  </div>
+</main>
 </body>
 </html>

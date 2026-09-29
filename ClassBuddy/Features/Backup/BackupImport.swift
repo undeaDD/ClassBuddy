@@ -74,7 +74,8 @@ extension Backup {
                 schoolClass.colorRaw = SchoolClass.sanitizedColorRaw(row["Farbe"])
                 schoolClass.dashboardOrder = Cell.parseList(row["Kachel-Reihenfolge"])
                 schoolClass.dashboardHidden = Cell.parseList(row["Ausgeblendete Kacheln"])
-                schoolClass.dashboardKnownCards = schoolClass.dashboardOrder + schoolClass.dashboardHidden
+                schoolClass.dashboardRemoved = Cell.parseList(row["Entfernte Kacheln"])
+                schoolClass.dashboardKnownCards = schoolClass.dashboardOrder + schoolClass.dashboardHidden + schoolClass.dashboardRemoved
                 context.insert(schoolClass)
                 classesByID[schoolClass.id] = schoolClass
                 summary.classes += 1
