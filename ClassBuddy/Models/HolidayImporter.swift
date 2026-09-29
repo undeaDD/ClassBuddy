@@ -27,18 +27,32 @@ enum HolidayImporter {
     }
 
     enum ImportError: LocalizedError {
-        case badResponse
+        case badResponse(status: Int, detail: String?)
 
-        var errorDescription: String? { "Die Ferien konnten nicht geladen werden." }
+        var errorDescription: String? {
+            switch self {
+            case .badResponse(let status, let detail):
+                "Die Ferien konnten nicht geladen werden (\(status)\(detail.map { ": \($0)" } ?? ""))."
+            }
+        }
     }
 
+    /// Fehlerantwort der API (RFC 9457 „problem details“).
+    private struct Problem: Decodable {
+        let detail: String?
+    }
+
+    /// Die API erlaubt höchstens 1095 Tage pro Anfrage (Start und Ende inklusive).
+    private static let maxRangeDays = 1094
+
     /// Ersetzt alle gespeicherten Ferien/Feiertage durch die des Bundeslands
-    /// (Zeitraum: 1 Jahr zurück bis 2 Jahre voraus). Gibt die Anzahl zurück.
+    /// (Zeitraum: ½ Jahr zurück, dann so weit voraus wie die API erlaubt, ≈ 2½ Jahre).
+    /// Gibt die Anzahl zurück.
     @discardableResult
     static func importHolidays(for stateCode: String, into context: ModelContext) async throws -> Int {
         let calendar = Calendar.school
-        let from = calendar.date(byAdding: .year, value: -1, to: .now) ?? .now
-        let to = calendar.date(byAdding: .year, value: 2, to: .now) ?? .now
+        let from = calendar.date(byAdding: .month, value: -6, to: calendar.startOfDay(for: .now)) ?? .now
+        let to = calendar.date(byAdding: .day, value: maxRangeDays, to: from) ?? .now
 
         async let school = fetch("SchoolHolidays", stateCode: stateCode, from: from, to: to)
         async let publicHolidays = fetch("PublicHolidays", stateCode: stateCode, from: from, to: to)
@@ -70,7 +84,11 @@ enum HolidayImporter {
         var request = URLRequest(url: components.url!)
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         let (data, response) = try await URLSession.shared.data(for: request)
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw ImportError.badResponse }
+        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
+        guard status == 200 else {
+            let detail = try? JSONDecoder().decode(Problem.self, from: data).detail
+            throw ImportError.badResponse(status: status, detail: detail)
+        }
         return try JSONDecoder().decode([APIHoliday].self, from: data)
     }
 

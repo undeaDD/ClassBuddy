@@ -5,9 +5,9 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     case dashboard
     case calendar
     case students
-    case settings
     /// Kein echter Tab: öffnet eine Feedback-Mail, die Auswahl bleibt unverändert.
     case feedback
+    case settings
 
     var id: String { rawValue }
 
@@ -30,7 +30,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         case .calendar: .custom(.calendar)
         case .students: .custom(.community)
         case .settings: .custom(.settings)
-        case .feedback: .system("envelope")
+        case .feedback: .custom(.sendMail)
         }
     }
 
@@ -38,8 +38,8 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     /// (lassen sich dort per Drag & Drop in die Tab-Bar ziehen).
     var isInTabBarByDefault: Bool {
         switch self {
-        case .dashboard, .calendar, .feedback: true
-        case .students, .settings: false
+        case .dashboard, .calendar: true
+        case .students, .feedback, .settings: false
         }
     }
 

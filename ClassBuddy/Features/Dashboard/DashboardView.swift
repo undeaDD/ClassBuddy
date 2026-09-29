@@ -261,7 +261,7 @@ private struct LinkCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 CardHeader(
                     title: link.kind == .file ? "Dokument" : "Website",
-                    symbol: link.kind == .file ? .system("doc") : .system("link"),
+                    symbol: link.kind == .file ? .custom(.page) : .custom(.www),
                     showsChevron: true
                 )
                 Spacer(minLength: 0)

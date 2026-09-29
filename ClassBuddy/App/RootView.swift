@@ -4,6 +4,7 @@ import SwiftUI
 struct RootView: View {
     @Environment(AppSecurity.self) private var security
     @Environment(\.scenePhase) private var scenePhase
+    @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
 
     var body: some View {
         AppTabView()
@@ -18,6 +19,9 @@ struct RootView: View {
                 }
             }
             .animation(.smooth(duration: 0.25), value: security.isLocked)
+            .onChange(of: appearance, initial: true) { _, appearance in
+                appearance.apply()
+            }
             .onChange(of: scenePhase, initial: true) { _, phase in
                 switch phase {
                 case .background: security.lock()

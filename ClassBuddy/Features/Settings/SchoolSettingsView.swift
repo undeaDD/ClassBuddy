@@ -67,7 +67,7 @@ struct SchoolSettingsView: View {
                 }
                 .onDelete { settings.values.breaks.remove(atOffsets: $0) }
 
-                Button("Pause hinzufügen", systemImage: "plus.circle.fill") {
+                Button("Pause hinzufügen", image: .plus) {
                     let start = settings.slots.last?.end ?? settings.values.dayStart
                     settings.values.breaks.append(BreakTime(start: start, duration: 15))
                 }
@@ -103,7 +103,7 @@ struct SchoolSettingsView: View {
                     Task { await importHolidays() }
                 } label: {
                     HStack {
-                        Label("Ferien & Feiertage importieren", systemImage: "arrow.down.circle")
+                        Label("Ferien & Feiertage importieren", image: .cloudDownload)
                         if isImporting {
                             Spacer()
                             ProgressView()

@@ -22,8 +22,7 @@ struct StudentEditorView: View {
 
     @State private var firstName: String
     @State private var lastName: String
-    @State private var hasBirthday: Bool
-    @State private var birthday: Date
+    @State private var birthday: Date?
     @State private var gender: Gender?
     @State private var notes: String
 
@@ -32,9 +31,7 @@ struct StudentEditorView: View {
         let student: Student? = if case .edit(let student) = route { student } else { nil }
         _firstName = State(initialValue: student?.firstName ?? "")
         _lastName = State(initialValue: student?.lastName ?? "")
-        _hasBirthday = State(initialValue: student?.birthday != nil)
-        _birthday = State(initialValue: student?.birthday
-            ?? Calendar.current.date(byAdding: .year, value: -12, to: .now) ?? .now)
+        _birthday = State(initialValue: student?.birthday)
         _gender = State(initialValue: student?.gender)
         _notes = State(initialValue: student?.notes ?? "")
     }
@@ -61,21 +58,11 @@ struct StudentEditorView: View {
                 }
 
                 Section("Geschlecht") {
-                    Picker("Geschlecht", selection: $gender) {
-                        ForEach(Gender.allCases) { option in
-                            Text(option.title).tag(Optional(option))
-                        }
-                        Text("keine Angabe").tag(Gender?.none)
-                    }
-                    .pickerStyle(.segmented)
+                    GenderPicker(selection: $gender)
                 }
 
                 Section {
-                    Toggle("Geburtstag", isOn: $hasBirthday.animation())
-                    if hasBirthday {
-                        DatePicker("Datum", selection: $birthday, in: ...Date.now, displayedComponents: .date)
-                            .sensitive()
-                    }
+                    BirthdayField(birthday: $birthday, suggestedAge: 12)
                 }
 
                 Section("Notizen") {
@@ -112,7 +99,7 @@ struct StudentEditorView: View {
         }
         student.firstName = firstName.trimmingCharacters(in: .whitespaces)
         student.lastName = lastName.trimmingCharacters(in: .whitespaces)
-        student.birthday = hasBirthday ? birthday : nil
+        student.birthday = birthday
         student.gender = gender
         student.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         try? modelContext.save()

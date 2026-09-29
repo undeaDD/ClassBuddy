@@ -46,6 +46,8 @@
 		FF3F410918400D40836BDE97 /* DashboardLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D4945472C726B775CA4248 /* DashboardLink.swift */; };
 		F56D5D0C83E6697E11CD3242 /* LinkEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */; };
 		4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */; };
+		C90AE7627654FA715A2928C0 /* PersonFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22B00150D405734C85B655E /* PersonFields.swift */; };
+		1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682EF27D860985CC8FFA663A /* AppSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +91,8 @@
 		C4D4945472C726B775CA4248 /* DashboardLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardLink.swift; sourceTree = "<group>"; };
 		73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkEditorView.swift; sourceTree = "<group>"; };
 		7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherProfileView.swift; sourceTree = "<group>"; };
+		A22B00150D405734C85B655E /* PersonFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonFields.swift; sourceTree = "<group>"; };
+		682EF27D860985CC8FFA663A /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -195,6 +199,7 @@
 		E1C1ED13D20F227E3CD813C3 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A22B00150D405734C85B655E /* PersonFields.swift */,
 				D00C330E0B4BABBCFBC77103 /* AppSymbol.swift */,
 				2EEFF2B434D6D5F8A4CE0512 /* EmptyStateView.swift */,
 			);
@@ -229,6 +234,7 @@
 		A1A4DAFDDF0D0B2BD02CD6E5 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				682EF27D860985CC8FFA663A /* AppSettingsView.swift */,
 				7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */,
 				BA5B1F6CF676098DEB914826 /* SchoolSettingsView.swift */,
 				EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */,
@@ -328,6 +334,8 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */,
+				C90AE7627654FA715A2928C0 /* PersonFields.swift in Sources */,
 				4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */,
 				F56D5D0C83E6697E11CD3242 /* LinkEditorView.swift in Sources */,
 				FF3F410918400D40836BDE97 /* DashboardLink.swift in Sources */,

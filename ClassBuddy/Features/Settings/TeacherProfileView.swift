@@ -20,33 +20,11 @@ struct TeacherProfileView: View {
             }
 
             Section("Geschlecht") {
-                Picker("Geschlecht", selection: teacher.gender) {
-                    ForEach(Gender.allCases) { option in
-                        Text(option.title).tag(Optional(option))
-                    }
-                    Text("keine Angabe").tag(Gender?.none)
-                }
-                .pickerStyle(.segmented)
+                GenderPicker(selection: teacher.gender)
             }
 
             Section {
-                Toggle("Geburtstag", isOn: Binding(
-                    get: { settings.values.teacher.birthday != nil },
-                    set: { isOn in
-                        settings.values.teacher.birthday = isOn
-                            ? Calendar.school.date(byAdding: .year, value: -35, to: .now)
-                            : nil
-                    }
-                ).animation())
-                if let birthday = settings.values.teacher.birthday {
-                    DatePicker(
-                        "Datum",
-                        selection: Binding(get: { birthday }, set: { settings.values.teacher.birthday = $0 }),
-                        in: ...Date.now,
-                        displayedComponents: .date
-                    )
-                    .sensitive()
-                }
+                BirthdayField(birthday: teacher.birthday, suggestedAge: 35)
             }
         }
         .disabled(security.isPrivacyModeOn)
