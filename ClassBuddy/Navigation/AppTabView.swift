@@ -5,8 +5,9 @@ import SwiftUI
 struct AppTabView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.openURL) private var openURL
-    /// v2: einmal zurückgesetzt, damit neue Tabs (Räume) an ihrer Standardposition landen.
-    static let customizationKey = "navigation.tabCustomization.v2"
+    /// Versioniert: bei Strukturänderungen (neue Tabs, Gruppen) hochzählen,
+    /// damit alles an der Standardposition landet. v3: Gruppen eingeführt.
+    static let customizationKey = "navigation.tabCustomization.v3"
     @AppStorage(AppTabView.customizationKey) private var customization = TabViewCustomization()
 
     /// Aktions-Tabs (Feedback) lösen ihre Aktion aus, ohne die Auswahl zu ändern.
@@ -25,16 +26,22 @@ struct AppTabView: View {
 
     var body: some View {
         TabView(selection: selection) {
-            ForEach(AppTab.allCases) { tab in
-                Tab(value: tab) {
-                    root(for: tab)
-                } label: {
-                    Label(tab.title, symbol: tab.symbol)
+            // Sidebar: einklappbare Gruppen; Tab-Leiste oben: nur die Standard-Tabs.
+            ForEach(AppTabSection.allCases) { section in
+                TabSection(section.title) {
+                    ForEach(section.tabs) { tab in
+                        Tab(value: tab) {
+                            root(for: tab)
+                        } label: {
+                            Label(tab.title, symbol: tab.symbol)
+                        }
+                        .customizationID(tab.customizationID)
+                        // Übersicht bleibt immer an erster Stelle.
+                        .customizationBehavior(tab == .dashboard ? .disabled : .automatic, for: .sidebar, .tabBar)
+                        .defaultVisibility(tab.isInTabBarByDefault ? .visible : .hidden, for: .tabBar)
+                    }
                 }
-                .customizationID(tab.customizationID)
-                // Übersicht bleibt immer an erster Stelle.
-                .customizationBehavior(tab == .dashboard ? .disabled : .automatic, for: .sidebar, .tabBar)
-                .defaultVisibility(tab.isInTabBarByDefault ? .visible : .hidden, for: .tabBar)
+                .customizationID(section.customizationID)
             }
         }
         .tabViewStyle(.sidebarAdaptable)
