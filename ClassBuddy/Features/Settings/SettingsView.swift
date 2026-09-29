@@ -37,8 +37,8 @@ struct SettingsView: View {
             }
 
             Section {
-                linkRow("Quellcode auf GitHub", symbol: .system("chevron.left.forwardslash.chevron.right"), url: AppInfo.sourceCodeURL)
-                linkRow("Spenden (PayPal)", symbol: .custom(.coinsSwap), url: AppInfo.donationURL)
+                linkRow("Quellcode auf GitHub", symbol: .custom(.githubCircle), url: AppInfo.sourceCodeURL)
+                linkRow("Spenden (PayPal)", symbol: .custom(.donate), url: AppInfo.donationURL)
                 Button {
                     openURL(AppInfo.feedbackMailURL)
                 } label: {
@@ -47,7 +47,7 @@ struct SettingsView: View {
                 LabeledContent {
                     Text(AppInfo.version)
                 } label: {
-                    Label("Version", systemImage: "number")
+                    Label("Version", image: .version)
                 }
             } footer: {
                 Text("Made with ❤️ by Devsforge.de")
@@ -85,9 +85,7 @@ enum LegalDocument: String, CaseIterable, Identifiable {
 
     var symbol: AppSymbol {
         switch self {
-        case .imprint: .system("info.circle")
-        case .privacy: .system("hand.raised")
-        case .licenses: .system("doc.text")
+        case .imprint, .privacy, .licenses: .custom(.link)
         }
     }
 
