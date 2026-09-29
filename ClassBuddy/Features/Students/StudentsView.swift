@@ -28,7 +28,7 @@ struct StudentsView: View {
         .navigationSubtitle(selectedClass.map { "\($0.students.count) Schüler" } ?? "")
         .appChrome(tab: .students) {
             if let selectedClass {
-                Button("Schüler hinzufügen", systemImage: "plus") {
+                Button("Schüler hinzufügen", image: .plus) {
                     editorRoute = .new(selectedClass)
                 }
                 .disabled(!canEdit)

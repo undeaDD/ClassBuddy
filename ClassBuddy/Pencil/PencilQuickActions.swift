@@ -69,7 +69,7 @@ private struct PencilQuickActionsModifier: ViewModifier {
             QuickAction(
                 id: "privacy",
                 title: security.isPrivacyModeOn ? "Anzeigen" : "Verbergen",
-                symbol: .system(security.isPrivacyModeOn ? "eye" : "eye.slash"),
+                symbol: .custom(security.isPrivacyModeOn ? .eye : .eyeClosed),
                 tint: .orange
             ) {
                 Task { await security.togglePrivacyMode() }

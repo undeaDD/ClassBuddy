@@ -9,8 +9,10 @@ struct ClassBadge: View {
     var body: some View {
         Group {
             if shortName.isEmpty {
-                Image(systemName: "plus")
-                    .font(.system(size: size * 0.42, weight: .semibold))
+                Image(.plus)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: size * 0.6, height: size * 0.6)
             } else {
                 Text(shortName)
                     .font(.system(size: size * 0.4, weight: .bold, design: .rounded))

@@ -58,7 +58,7 @@ struct ClassPickerView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Neue Klasse", systemImage: "plus") { editorRoute = .new }
+                    Button("Neue Klasse", image: .plus) { editorRoute = .new }
                 }
             }
             .confirmationDialog(

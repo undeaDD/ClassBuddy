@@ -23,10 +23,10 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
 
     var symbol: AppSymbol {
         switch self {
-        case .dashboard: .system("square.grid.2x2")
-        case .calendar: .system("calendar")
+        case .dashboard: .custom(.homeAlt)
+        case .calendar: .custom(.calendar)
         case .students: .system("person.3")
-        case .settings: .system("gearshape")
+        case .settings: .custom(.settings)
         }
     }
 
