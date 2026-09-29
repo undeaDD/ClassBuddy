@@ -29,7 +29,6 @@
 		FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25255560972480F461747B91 /* SchoolClass.swift */; };
 		A5FD8E517C799BD4DAC748B9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */; };
 		FC7D9A1C79DDDE97BE9A521E /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A00941CE162C824F95B7E8F /* Student.swift */; };
-		B4BF436CA6F297DE3C8535BC /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C2C9273EC38B599C30C8F72 /* FlowLayout.swift */; };
 		4CD0721372A7BA7D43623696 /* ClassEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E35B3B7628591F7C2DCD3DD3 /* ClassEditorView.swift */; };
 		A1BB765EDBE82024A07277AE /* StudentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C838201C48843117125D1F2 /* StudentsView.swift */; };
 		9D1D961672A7E5212AF210D5 /* StudentEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB87ECDFF4B646B1CAC9D192 /* StudentEditorView.swift */; };
@@ -60,7 +59,6 @@
 		D4907141D7C4A5AD78740E63 /* SeatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatingView.swift; sourceTree = "<group>"; };
 		EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		4A00941CE162C824F95B7E8F /* Student.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
-		9C2C9273EC38B599C30C8F72 /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
 		E35B3B7628591F7C2DCD3DD3 /* ClassEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassEditorView.swift; sourceTree = "<group>"; };
 		9C838201C48843117125D1F2 /* StudentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentsView.swift; sourceTree = "<group>"; };
 		CB87ECDFF4B646B1CAC9D192 /* StudentEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentEditorView.swift; sourceTree = "<group>"; };
@@ -182,7 +180,6 @@
 		E1C1ED13D20F227E3CD813C3 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				9C2C9273EC38B599C30C8F72 /* FlowLayout.swift */,
 				D00C330E0B4BABBCFBC77103 /* AppSymbol.swift */,
 				2EEFF2B434D6D5F8A4CE0512 /* EmptyStateView.swift */,
 			);
@@ -293,7 +290,6 @@
 				9D1D961672A7E5212AF210D5 /* StudentEditorView.swift in Sources */,
 				A1BB765EDBE82024A07277AE /* StudentsView.swift in Sources */,
 				4CD0721372A7BA7D43623696 /* ClassEditorView.swift in Sources */,
-				B4BF436CA6F297DE3C8535BC /* FlowLayout.swift in Sources */,
 				FC7D9A1C79DDDE97BE9A521E /* Student.swift in Sources */,
 				97291ACA1BE8C51D1F34EA18 /* AppChrome.swift in Sources */,
 				FC3137C44371AC8BA5E47A08 /* AppModel.swift in Sources */,
