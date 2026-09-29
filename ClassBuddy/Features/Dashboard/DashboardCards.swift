@@ -119,41 +119,47 @@ struct ImageCard: View {
 
     var body: some View {
         Button(action: action) {
-            ZStack(alignment: .bottomLeading) {
-                Color(.secondarySystemGroupedBackground)
-                if let thumbnail {
-                    Image(uiImage: thumbnail)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                        .clipped()
-                        .sensitiveBlur(radius: 24)
-                } else {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Feste Kartengröße; das Bild liegt als Overlay darüber (füllt, zentriert, beschnitten)
+            // und beeinflusst die Höhe der Kachel damit nicht.
+            Color(.secondarySystemGroupedBackground)
+                .frame(maxWidth: .infinity)
+                .frame(height: cardMinHeight)
+                .overlay {
+                    if let thumbnail {
+                        Image(uiImage: thumbnail)
+                            .resizable()
+                            .scaledToFill()
+                            .sensitiveBlur(radius: 24)
+                    } else {
+                        ProgressView()
+                    }
                 }
-                if !link.title.isEmpty {
-                    Text(link.title)
-                        .font(.headline)
-                        .lineLimit(2)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(.regularMaterial, in: .capsule)
-                        .padding(12)
-                        .cardPrivacy()
-                }
-            }
-            .frame(maxWidth: .infinity, minHeight: cardMinHeight)
-            .clipShape(cardShape)
-            .contentShape(.hoverEffect, cardShape)
-            .contentShape(.dragPreview, cardShape)
-            .contentShape(cardShape)
+                .clipped()
+                .overlay(alignment: .bottomLeading) { titleCapsule }
+                .clipShape(cardShape)
+                .contentShape(.hoverEffect, cardShape)
+                .contentShape(.dragPreview, cardShape)
+                .contentShape(cardShape)
         }
         .buttonStyle(.plain)
         .hoverEffect(.lift)
         .task(id: link.location) {
             guard let url = link.url else { return }
             thumbnail = await Task.detached { Thumbnail.make(from: url, maxPixelSize: 900) }.value
+        }
+    }
+
+    @ViewBuilder
+    private var titleCapsule: some View {
+        if !link.title.isEmpty {
+            Text(link.title)
+                .font(.headline)
+                .lineLimit(2)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(.regularMaterial, in: .capsule)
+                .padding(12)
+                .cardPrivacy()
         }
     }
 }
