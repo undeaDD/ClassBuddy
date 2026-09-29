@@ -5,7 +5,8 @@ import UIKit
 // Kachel-Designs der Übersicht. Inhalte sind im Privatsphäre-Modus ausgeblendet.
 
 let cardShape = RoundedRectangle(cornerRadius: 22, style: .continuous)
-let cardMinHeight: CGFloat = 150
+/// Einheitliche Höhe aller Kacheln; Inhalte passen sich an, nie umgekehrt.
+let cardHeight: CGFloat = 150
 
 /// Kennzahl-Kachel; antippen öffnet die zugehörige Seite.
 struct StatCard: View {
@@ -123,7 +124,7 @@ struct ImageCard: View {
             // und beeinflusst die Höhe der Kachel damit nicht.
             Color(.secondarySystemGroupedBackground)
                 .frame(maxWidth: .infinity)
-                .frame(height: cardMinHeight)
+                .frame(height: cardHeight)
                 .overlay {
                     if let thumbnail {
                         Image(uiImage: thumbnail)
@@ -205,7 +206,8 @@ struct ImagePlaceholderCard: View {
                 .background(.regularMaterial, in: .capsule)
                 .padding(12)
         }
-        .frame(maxWidth: .infinity, minHeight: cardMinHeight)
+        .frame(maxWidth: .infinity)
+            .frame(height: cardHeight)
         .clipShape(cardShape)
     }
 }
@@ -277,7 +279,7 @@ struct WeeklyHoursCard: View {
         Button {
             action?()
         } label: {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
                 CardHeader(
                     title: DashboardBuiltInCard.weeklyHours.title,
                     symbol: DashboardBuiltInCard.weeklyHours.symbol,
@@ -289,24 +291,23 @@ struct WeeklyHoursCard: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {
-                    Text(result.fraction.formatted(.percent.precision(.fractionLength(0))))
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .contentTransition(.numericText())
-                        .cardPrivacy()
-                        .leadingAligned()
+                    // Prozentwert und Stunden in einer Zeile, darunter der Balken: gleiche Höhe wie alle Kacheln.
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(result.fraction.formatted(.percent.precision(.fractionLength(0))))
+                            .font(.system(size: 44, weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                            .cardPrivacy()
+                        Spacer(minLength: 8)
+                        Text("\(WeeklyWorkload.hours(result.doneMinutes)) von \(WeeklyWorkload.hours(result.totalMinutes))")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                            .lineLimit(1)
+                            .cardPrivacy()
+                    }
                     // Im Privatsphäre-Modus leerer Balken (verrät nichts über den Stundenplan).
                     CapsuleProgressBar(value: redactionReasons.contains(.privacy) ? 0 : result.fraction)
-                        .padding(.vertical, 4)
-                    HStack {
-                        Text("\(WeeklyWorkload.hours(result.doneMinutes)) erledigt")
-                        Spacer()
-                        Text("\(WeeklyWorkload.hours(result.totalMinutes)) gesamt")
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
-                    .cardPrivacy()
                 }
             }
             .cardStyle()
@@ -329,7 +330,8 @@ struct AddCard: View {
                     .font(.subheadline.weight(.medium))
             }
             .foregroundStyle(.tint)
-            .frame(maxWidth: .infinity, minHeight: cardMinHeight)
+            .frame(maxWidth: .infinity)
+            .frame(height: cardHeight)
             .overlay(cardShape.strokeBorder(.tint.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [6, 5])))
             .contentShape(.hoverEffect, cardShape)
             .contentShape(cardShape)
@@ -435,7 +437,8 @@ extension View {
 
     func cardStyle() -> some View {
         padding(18)
-            .frame(maxWidth: .infinity, minHeight: cardMinHeight, alignment: .topLeading)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .frame(height: cardHeight, alignment: .topLeading)
             // Weiß (hell) bzw. Dunkelgrau (dunkel) auf dem gruppierten Hintergrund.
             .background(Color(.secondarySystemGroupedBackground), in: cardShape)
             .contentShape(.hoverEffect, cardShape)
