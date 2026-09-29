@@ -51,12 +51,13 @@ struct SettingsView: View {
                 ExternalLinkRow(title: "Quellcode auf GitHub", image: .githubCircle, url: AppInfo.sourceCodeURL)
                 ExternalLinkRow(title: "Einen Kaffee spendieren (PayPal)", image: .donate, url: AppInfo.donationURL)
                 // Einfacher mailto-Link; Titel und Icon in der Akzentfarbe.
-                Button {
-                    openURL(AppInfo.feedbackMailURL)
-                } label: {
-                    Label("Feedback senden", image: .sendMail)
-                        .foregroundStyle(Color.accentColor)
-                }
+                ExternalLinkRow(
+                    title: "Feedback senden",
+                    image: .sendMail,
+                    url: AppInfo.feedbackMailURL,
+                    titleStyle: Color.accentColor,
+                    hint: "Öffnet die Mail-App"
+                )
                 // Antippen kopiert Version, iPadOS-Version und Gerät (z. B. für Fehlerberichte).
                 Button {
                     UIPasteboard.general.string = versionText
@@ -71,6 +72,8 @@ struct SettingsView: View {
                     }
                 }
                 .accessibilityHint("Kopiert die Versionsangaben")
+            } header: {
+                Text("Sonstiges")
             } footer: {
                 Text("Made with ❤️ by Devsforge.de")
                     .frame(maxWidth: .infinity)
@@ -82,12 +85,14 @@ struct SettingsView: View {
     }
 }
 
-/// Link, der die Seite außerhalb der App öffnet (Safari); Pfeil nach rechts oben wie bei iOS üblich.
+/// Link, der außerhalb der App öffnet (Safari bzw. Mail); Pfeil nach rechts oben wie bei iOS üblich.
 private struct ExternalLinkRow: View {
     @Environment(\.openURL) private var openURL
     let title: String
     let image: ImageResource
     let url: URL
+    var titleStyle: Color = .primary
+    var hint = "Öffnet in Safari"
 
     var body: some View {
         Button {
@@ -95,18 +100,18 @@ private struct ExternalLinkRow: View {
         } label: {
             HStack {
                 Label {
-                    Text(title).foregroundStyle(.primary)
+                    Text(title).foregroundStyle(titleStyle)
                 } icon: {
                     Image(image)
                 }
                 Spacer()
-                Image(systemName: "arrow.up.forward")
-                    .font(.footnote.weight(.semibold))
+                Image(.arrowUpRight)
+                    .iconSize(18)
                     .foregroundStyle(.tertiary)
             }
             .contentShape(.rect)
         }
-        .accessibilityHint("Öffnet in Safari")
+        .accessibilityHint(hint)
     }
 }
 
@@ -187,7 +192,7 @@ nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
 
 @MainActor
 extension LegalDocument {
-    var symbol: AppSymbol { self == .collaborators ? .custom(.community) : .custom(.link) }
+    var symbol: AppSymbol { .custom(.link) }
 }
 
 /// Lokale HTML-Seite; Links nach außen öffnen in Safari statt in der App.
