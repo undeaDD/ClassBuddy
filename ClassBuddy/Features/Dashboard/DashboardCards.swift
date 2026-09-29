@@ -13,6 +13,8 @@ struct StatCard: View {
     let value: String
     var detail: String?
     let symbol: AppSymbol
+    /// Wert/Detail im Privatsphäre-Modus ausblenden (nicht bei Uhrzeit, Wetter …).
+    var isSensitive = true
     var action: (() -> Void)?
 
     var body: some View {
@@ -29,13 +31,13 @@ struct StatCard: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                         .contentTransition(.numericText())
-                        .sensitive()
+                        .privacySensitive(isSensitive)
                     if let detail {
                         Text(detail)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
-                            .sensitive()
+                            .privacySensitive(isSensitive)
                     }
                 }
             }

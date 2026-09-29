@@ -9,6 +9,8 @@ struct RootView: View {
     var body: some View {
         AppTabView()
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
+            // Gesperrt / im Hintergrund: Inhalt stark unscharf, darüber Milchglas.
+            .blur(radius: security.isLocked || scenePhase != .active ? 28 : 0)
             .pencilQuickActions()
             .overlay {
                 if security.isLocked {

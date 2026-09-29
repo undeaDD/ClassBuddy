@@ -1,26 +1,25 @@
 import SwiftUI
 
-/// Vollflächige Sperre, solange die App nicht entsperrt ist.
+/// Vollflächige Sperre, solange die App nicht entsperrt ist: Milchglas über dem zuletzt
+/// sichtbaren Bildschirm (der zusätzlich in `RootView` unscharf gezeichnet wird).
 struct LockScreenView: View {
     @Environment(AppSecurity.self) private var security
 
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(.background)
+                .fill(.regularMaterial)
                 .ignoresSafeArea()
             Rectangle()
-                .fill(Color.accentColor.opacity(0.08).gradient)
+                .fill(Color.accentColor.opacity(0.12).gradient)
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
                 Image(.fingerprintLockCircle)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 52, height: 52)
-                    .foregroundStyle(.tint)
-                    .frame(width: 96, height: 96)
-                    .glassEffect(.regular, in: .circle)
+                    .iconSize(88)
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 156, height: 156)
+                    .glassEffect(.regular.tint(Color.accentColor.opacity(0.18)), in: .circle)
 
                 VStack(spacing: 6) {
                     Text("ClassBuddy ist gesperrt")
@@ -59,8 +58,8 @@ struct PrivacyCoverView: View {
             .ignoresSafeArea()
             .overlay {
                 Image(.lock)
-                    .iconSize(56)
-                    .foregroundStyle(.secondary)
+                    .iconSize(80)
+                    .foregroundStyle(Color.accentColor)
             }
     }
 }

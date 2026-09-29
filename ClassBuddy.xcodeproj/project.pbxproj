@@ -61,6 +61,12 @@
 		405B9770BB271FE875A73717 /* KeychainGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A9ECE572B5ABDEAC810EB1 /* KeychainGate.swift */; };
 		CAC28EE70B7409F7BD7D9B12 /* BackupImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAFCF358CAD39F2E3388BA0 /* BackupImport.swift */; };
 		200AF034F81588E18D3F1B96 /* BackupCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41DC12A563B629FA7ADBEAC /* BackupCells.swift */; };
+		01CE987455CBFB4360537259 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7B56D4973387936A0E06B /* Weather.swift */; };
+		4621C345CF9ABAB580A2FA55 /* excel-edited.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 6A76053CA3209A5EDC2ED99F /* excel-edited.xlsx */; };
+		DE6A9293BA353F078A5A3E9D /* CellParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F04E1C451C09A579F79EE9 /* CellParsingTests.swift */; };
+		F02504095E0AE760637AB565 /* ModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CECCF5AB172F69E116B66A2 /* ModelTests.swift */; };
+		2C2DAF69C71A130D500C359A /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4ABB29E0AF9BA4213EA2A0 /* ConfigurationTests.swift */; };
+		9CF1C9690DB29B3A1DE00ED4 /* WeatherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B3A8C6B877F6BF42D6E223 /* WeatherTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +144,12 @@
 		27A9ECE572B5ABDEAC810EB1 /* KeychainGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainGate.swift; sourceTree = "<group>"; };
 		5CAFCF358CAD39F2E3388BA0 /* BackupImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupImport.swift; sourceTree = "<group>"; };
 		D41DC12A563B629FA7ADBEAC /* BackupCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCells.swift; sourceTree = "<group>"; };
+		82B7B56D4973387936A0E06B /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
+		6A76053CA3209A5EDC2ED99F /* excel-edited.xlsx */ = {isa = PBXFileReference; lastKnownFileType = file; path = excel-edited.xlsx; sourceTree = "<group>"; };
+		E2F04E1C451C09A579F79EE9 /* CellParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellParsingTests.swift; sourceTree = "<group>"; };
+		5CECCF5AB172F69E116B66A2 /* ModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelTests.swift; sourceTree = "<group>"; };
+		0F4ABB29E0AF9BA4213EA2A0 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
+		08B3A8C6B877F6BF42D6E223 /* WeatherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -275,6 +287,7 @@
 		ED866CB00345985B1E112F36 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				82B7B56D4973387936A0E06B /* Weather.swift */,
 				723E830E960FEC552AC32623 /* CardGallery.swift */,
 				9B3B54810C7667A2C9742973 /* DashboardCards.swift */,
 				3DE897C819A0937DF76AF7C8 /* Favicon.swift */,
@@ -348,11 +361,24 @@
 		E40A4E5EC8BC6218DA6E374B /* ClassBuddyTests */ = {
 			isa = PBXGroup;
 			children = (
+				08B3A8C6B877F6BF42D6E223 /* WeatherTests.swift */,
+				0F4ABB29E0AF9BA4213EA2A0 /* ConfigurationTests.swift */,
+				5CECCF5AB172F69E116B66A2 /* ModelTests.swift */,
+				E2F04E1C451C09A579F79EE9 /* CellParsingTests.swift */,
+				B146A764DDAE3F4E7AA52A85 /* Fixtures */,
 				C0EAD7BE6DF9D3E045D974BF /* LessonGridTests.swift */,
 				DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */,
 				95865081AE46E5F455EFB23D /* DataTests.swift */,
 			);
 			path = ClassBuddyTests;
+			sourceTree = "<group>";
+		};
+		B146A764DDAE3F4E7AA52A85 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				6A76053CA3209A5EDC2ED99F /* excel-edited.xlsx */,
+			);
+			path = Fixtures;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -433,6 +459,7 @@
 		965BE199F17AB30BA262687D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				4621C345CF9ABAB580A2FA55 /* excel-edited.xlsx in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -441,6 +468,7 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				01CE987455CBFB4360537259 /* Weather.swift in Sources */,
 				200AF034F81588E18D3F1B96 /* BackupCells.swift in Sources */,
 				CAC28EE70B7409F7BD7D9B12 /* BackupImport.swift in Sources */,
 				405B9770BB271FE875A73717 /* KeychainGate.swift in Sources */,
@@ -492,6 +520,10 @@
 		3B903BDFD3F696EA3281D92D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				9CF1C9690DB29B3A1DE00ED4 /* WeatherTests.swift in Sources */,
+				2C2DAF69C71A130D500C359A /* ConfigurationTests.swift in Sources */,
+				F02504095E0AE760637AB565 /* ModelTests.swift in Sources */,
+				DE6A9293BA353F078A5A3E9D /* CellParsingTests.swift in Sources */,
 				4B080EF0A37944D6DDC9FB02 /* LessonGridTests.swift in Sources */,
 				DBE6E730B1F16CE349CCB6A2 /* SpreadsheetTests.swift in Sources */,
 				610FEA7D9D7C2852CAA19D99 /* DataTests.swift in Sources */,
