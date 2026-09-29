@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		041EDD8E52FC9A70B471C5CD /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6AB5A47C4368067847CE31 /* AppTabView.swift */; };
-		12C5344E306BEED40087F828 /* ClassBuddy 2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 12C5344D306BEED40087F828 /* ClassBuddy 2.icon */; };
+		12C5344E306BEED40087F828 /* ClassBuddy.icon in Resources */ = {isa = PBXBuildFile; fileRef = 12C5344D306BEED40087F828 /* ClassBuddy.icon */; };
 		19A4D9C9FE27C74F05E89685 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBBFF9F58E42D5756F90FD7 /* SettingsView.swift */; };
 		1F038FAF7CB75D5DFBAFBCE0 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3788C18526F115CA2D3BA045 /* AppTab.swift */; };
 		2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B1F9ED4838514B91933B244 /* Assets.xcassets */; };
@@ -33,7 +33,7 @@
 /* Begin PBXFileReference section */
 		09ECD50CA17F661E96A9CF54 /* AppChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppChrome.swift; sourceTree = "<group>"; };
 		0A24D388FE7E9FD196AC2985 /* ClassBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassBuddyApp.swift; sourceTree = "<group>"; };
-		12C5344D306BEED40087F828 /* ClassBuddy 2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "ClassBuddy 2.icon"; sourceTree = "<group>"; };
+		12C5344D306BEED40087F828 /* ClassBuddy.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ClassBuddy.icon; sourceTree = "<group>"; };
 		1D8B9109166A9748354DC9CF /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		1FBBFF9F58E42D5756F90FD7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2446899A0B153251C0E2C851 /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
@@ -118,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				2B1F9ED4838514B91933B244 /* Assets.xcassets */,
+				12C5344D306BEED40087F828 /* ClassBuddy.icon */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -149,7 +150,6 @@
 			isa = PBXGroup;
 			children = (
 				A962AB18934B82409DC86202 /* ClassBuddy */,
-				12C5344D306BEED40087F828 /* ClassBuddy 2.icon */,
 				E30F4A85AAFD024ABEBCCFFE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -253,7 +253,7 @@
 		D2A15B5DE3EB4BE48211762D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
-				12C5344E306BEED40087F828 /* ClassBuddy 2.icon in Resources */,
+				12C5344E306BEED40087F828 /* ClassBuddy.icon in Resources */,
 				2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */,
 			);
 		};
@@ -431,6 +431,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = ClassBuddy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Face ID schützt die Schülerdaten und blendet sensible Informationen wieder ein.";
@@ -458,6 +459,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_CFBundleDisplayName = ClassBuddy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Face ID schützt die Schülerdaten und blendet sensible Informationen wieder ein.";
