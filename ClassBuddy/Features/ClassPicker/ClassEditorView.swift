@@ -73,7 +73,7 @@ struct ClassEditorView: View {
                     HStack {
                         TextField("Eigenes Fach", text: $customSubject)
                             .onSubmit(addCustomSubject)
-                        Button("Hinzufügen", systemImage: "return", action: addCustomSubject)
+                        Button("Hinzufügen", image: .check, action: addCustomSubject)
                             .labelStyle(.iconOnly)
                             .disabled(customSubject.trimmingCharacters(in: .whitespaces).isEmpty)
                     }

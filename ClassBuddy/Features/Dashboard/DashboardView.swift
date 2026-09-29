@@ -95,6 +95,7 @@ struct DashboardView: View {
             StatCard(
                 title: "Schüler",
                 value: "\(schoolClass.students.count)",
+                detail: genderBreakdown(schoolClass.students),
                 symbol: AppTab.students.symbol
             ) {
                 app.open(.students)
@@ -130,6 +131,20 @@ struct DashboardView: View {
         ) {
             app.openCalendar(focusing: schoolClass.id, at: next?.start)
         }
+    }
+
+    /// „♀ 46 % · ♂ 46 % · ⚧ 8 %“ (Anteile gerundet; ohne Angabe als „?“).
+    private func genderBreakdown(_ students: [Student]) -> String {
+        guard !students.isEmpty else { return "Noch keine Schüler" }
+        let total = Double(students.count)
+        var parts: [String] = Gender.allCases.compactMap { gender in
+            let count = students.filter { $0.gender == gender }.count
+            guard count > 0 else { return nil }
+            return "\(gender.symbol) \(Int((Double(count) / total * 100).rounded())) %"
+        }
+        let unknown = students.filter { $0.gender == nil }.count
+        if unknown > 0 { parts.append("? \(Int((Double(unknown) / total * 100).rounded())) %") }
+        return parts.joined(separator: " · ")
     }
 
     private func relativeDay(_ date: Date) -> String {

@@ -17,7 +17,7 @@ struct ClassScopedView<Content: View>: View {
                 message: classes.isEmpty
                     ? "Lege oben links deine erste Klasse an."
                     : "Wähle oben links eine Klasse aus.",
-                symbol: .system("person.2.slash")
+                symbol: .custom(.userXmark)
             )
         }
     }

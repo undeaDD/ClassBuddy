@@ -54,6 +54,14 @@ struct ClassPickerView: View {
             .navigationTitle("Klassen")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                // Keine Klasse ausgewählt → Leerzustände der Seiten.
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Abwählen") {
+                        app.selectedClassID = nil
+                        app.isClassPickerPresented = false
+                    }
+                    .disabled(app.selectedClassID == nil)
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Neue Klasse", image: .plus) { editorRoute = .new }
                         .disabled(!canEdit)
@@ -104,7 +112,8 @@ struct ClassPickerView: View {
 
     private func row(for schoolClass: SchoolClass) -> some View {
         Button {
-            app.selectedClassID = schoolClass.id
+            // Erneutes Antippen der aktiven Klasse hebt die Auswahl auf.
+            app.selectedClassID = app.selectedClassID == schoolClass.id ? nil : schoolClass.id
             app.isClassPickerPresented = false
         } label: {
             HStack(spacing: 12) {
