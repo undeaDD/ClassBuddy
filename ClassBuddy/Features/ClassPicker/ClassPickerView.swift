@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-/// Liste aller Klassen zum Wechseln + Neue Klasse anlegen.
+/// Liste aller Klassen: wechseln, anlegen, bearbeiten, löschen.
 struct ClassPickerView: View {
     @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
@@ -10,6 +10,8 @@ struct ClassPickerView: View {
     private var classes: [SchoolClass]
 
     @State private var isCreating = false
+    @State private var editingClass: SchoolClass?
+    @State private var classPendingDeletion: SchoolClass?
 
     var body: some View {
         NavigationStack {
@@ -28,7 +30,6 @@ struct ClassPickerView: View {
                         ForEach(classes) { schoolClass in
                             row(for: schoolClass)
                         }
-                        .onDelete(perform: delete)
                     }
                 }
             }
@@ -40,10 +41,27 @@ struct ClassPickerView: View {
                 }
             }
             .navigationDestination(isPresented: $isCreating) {
-                ClassEditorView { newClass in
+                ClassEditorView(schoolClass: nil) { newClass in
                     app.selectedClassID = newClass.id
                     app.isClassPickerPresented = false
                 }
+            }
+            .navigationDestination(item: $editingClass) { schoolClass in
+                ClassEditorView(schoolClass: schoolClass) { _ in
+                    editingClass = nil
+                }
+            }
+            .confirmationDialog(
+                "Klasse löschen?",
+                isPresented: Binding(
+                    get: { classPendingDeletion != nil },
+                    set: { if !$0 { classPendingDeletion = nil } }
+                ),
+                presenting: classPendingDeletion
+            ) { schoolClass in
+                Button("\(schoolClass.title) löschen", role: .destructive) { delete(schoolClass) }
+            } message: { _ in
+                Text("Alle Daten dieser Klasse werden entfernt. Das kann nicht rückgängig gemacht werden.")
             }
         }
         .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
@@ -71,29 +89,59 @@ struct ClassPickerView: View {
         }
         .buttonStyle(.plain)
         .hoverEffect(.highlight)
+        .swipeActions(edge: .trailing) {
+            Button("Löschen", systemImage: "trash", role: .destructive) {
+                classPendingDeletion = schoolClass
+            }
+            Button("Bearbeiten", systemImage: "pencil") {
+                editingClass = schoolClass
+            }
+            .tint(.accentColor)
+        }
+        // Lange drücken (Finger oder Apple Pencil) bzw. Rechtsklick.
+        .contextMenu {
+            Button("Bearbeiten", systemImage: "pencil") {
+                editingClass = schoolClass
+            }
+            Button("Löschen", systemImage: "trash", role: .destructive) {
+                classPendingDeletion = schoolClass
+            }
+        }
     }
 
-    private func delete(at offsets: IndexSet) {
-        for index in offsets {
-            let schoolClass = classes[index]
-            if app.selectedClassID == schoolClass.id { app.selectedClassID = nil }
-            modelContext.delete(schoolClass)
-        }
+    private func delete(_ schoolClass: SchoolClass) {
+        if app.selectedClassID == schoolClass.id { app.selectedClassID = nil }
+        modelContext.delete(schoolClass)
+        try? modelContext.save()
     }
 }
 
-/// Formular zum Anlegen einer Klasse.
+/// Formular zum Anlegen (`schoolClass == nil`) oder Bearbeiten einer Klasse.
 struct ClassEditorView: View {
     @Environment(\.modelContext) private var modelContext
 
-    /// Schließt das Popover – daher hier kein zusätzliches `dismiss()`,
-    /// sonst kollidieren beide Animationen.
-    var onCreate: (SchoolClass) -> Void
+    let schoolClass: SchoolClass?
+    /// Wird nach dem Speichern aufgerufen und übernimmt das Schließen
+    /// (Popover schließen bzw. zurück zur Liste).
+    var onSave: (SchoolClass) -> Void
 
-    @State private var shortName = ""
-    @State private var subtitle = ""
-    @State private var schoolYear = SchoolClass.currentSchoolYear
-    @State private var color: ClassColor = .blue
+    @State private var shortName: String
+    @State private var subtitle: String
+    @State private var schoolYear: String
+    @State private var color: ClassColor
+
+    init(schoolClass: SchoolClass?, onSave: @escaping (SchoolClass) -> Void) {
+        self.schoolClass = schoolClass
+        self.onSave = onSave
+        _shortName = State(initialValue: schoolClass?.shortName ?? "")
+        _subtitle = State(initialValue: schoolClass?.subtitle ?? "")
+        _schoolYear = State(initialValue: schoolClass?.schoolYear ?? SchoolClass.currentSchoolYear)
+        _color = State(initialValue: schoolClass?.color ?? .blue)
+    }
+
+    private var isValid: Bool {
+        !shortName.trimmingCharacters(in: .whitespaces).isEmpty
+    }
 
     var body: some View {
         Form {
@@ -133,24 +181,26 @@ struct ClassEditorView: View {
                 .padding(.vertical, 4)
             }
         }
-        .navigationTitle("Neue Klasse")
+        .navigationTitle(schoolClass == nil ? "Neue Klasse" : "Klasse bearbeiten")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Anlegen", action: create)
-                    .disabled(shortName.trimmingCharacters(in: .whitespaces).isEmpty)
+                Button(schoolClass == nil ? "Anlegen" : "Sichern", action: save)
+                    .disabled(!isValid)
             }
         }
     }
 
-    private func create() {
-        let newClass = SchoolClass(
-            shortName: shortName.trimmingCharacters(in: .whitespaces),
-            subtitle: subtitle.trimmingCharacters(in: .whitespaces),
-            schoolYear: schoolYear.trimmingCharacters(in: .whitespaces),
-            color: color
-        )
-        modelContext.insert(newClass)
+    private func save() {
+        let target = schoolClass ?? {
+            let newClass = SchoolClass(shortName: "")
+            modelContext.insert(newClass)
+            return newClass
+        }()
+        target.shortName = shortName.trimmingCharacters(in: .whitespaces)
+        target.subtitle = subtitle.trimmingCharacters(in: .whitespaces)
+        target.schoolYear = schoolYear.trimmingCharacters(in: .whitespaces)
+        target.color = color
         try? modelContext.save()
-        onCreate(newClass)
+        onSave(target)
     }
 }
