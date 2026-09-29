@@ -3,7 +3,7 @@ import SwiftUI
 
 extension View {
     /// Gemeinsame Toolbar für jede Tab-Root-View:
-    /// links „Klasse auswählen“, rechts Privatsphäre-Modus + Einstellungen.
+    /// links „Klasse auswählen“, rechts Privatsphäre-Modus.
     func appChrome(tab: AppTab) -> some View {
         modifier(AppChromeModifier(tab: tab))
     }
@@ -25,9 +25,8 @@ private struct AppChromeModifier: ViewModifier {
             }
             .sharedBackgroundVisibility(.hidden)
 
-            ToolbarItemGroup(placement: .topBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 PrivacyModeButton()
-                SettingsButton()
             }
         }
     }

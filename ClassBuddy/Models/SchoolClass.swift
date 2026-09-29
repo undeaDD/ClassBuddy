@@ -9,24 +9,27 @@ final class SchoolClass {
     @Attribute(.unique) var id: UUID
     /// Kurzbezeichnung im Kreis, z. B. „7b“ oder „Q1“.
     var shortName: String
-    /// Zusatzzeile, z. B. Fach oder Rolle („Mathematik“, „Klassenleitung“).
-    var subtitle: String
+    /// Fächer, die du in dieser Klasse unterrichtest (Reihenfolge = Anzeige).
+    var subjects: [String] = []
     /// Schuljahr, z. B. „2026/27“.
     var schoolYear: String
     var colorRaw: String
     var createdAt: Date
 
+    @Relationship(deleteRule: .cascade, inverse: \Student.schoolClass)
+    var students: [Student] = []
+
     init(
         id: UUID = UUID(),
         shortName: String,
-        subtitle: String = "",
+        subjects: [String] = [],
         schoolYear: String = SchoolClass.currentSchoolYear,
         color: ClassColor = .blue,
         createdAt: Date = .now
     ) {
         self.id = id
         self.shortName = shortName
-        self.subtitle = subtitle
+        self.subjects = subjects
         self.schoolYear = schoolYear
         self.colorRaw = color.rawValue
         self.createdAt = createdAt
@@ -40,7 +43,11 @@ final class SchoolClass {
     var title: String { "Klasse \(shortName)" }
 
     var detailLine: String {
-        [subtitle, schoolYear].filter { !$0.isEmpty }.joined(separator: " · ")
+        [subjects.joined(separator: ", "), schoolYear].filter { !$0.isEmpty }.joined(separator: " · ")
+    }
+
+    var sortedStudents: [Student] {
+        students.sorted(using: [KeyPathComparator(\.lastName), KeyPathComparator(\.firstName)])
     }
 
     static var currentSchoolYear: String {
@@ -51,6 +58,14 @@ final class SchoolClass {
         let start = calendar.component(.month, from: now) >= 8 ? year : year - 1
         return "\(start)/\(String(start + 1).suffix(2))"
     }
+
+    /// Vorschläge im Klassen-Editor; eigene Fächer sind jederzeit möglich.
+    static let suggestedSubjects = [
+        "Deutsch", "Mathematik", "Englisch", "Französisch", "Latein", "Spanisch",
+        "Biologie", "Chemie", "Physik", "Informatik",
+        "Geschichte", "Erdkunde", "Politik", "Wirtschaft",
+        "Religion", "Ethik", "Philosophie", "Kunst", "Musik", "Sport",
+    ]
 }
 
 enum ClassColor: String, CaseIterable, Codable, Identifiable {
@@ -81,20 +96,22 @@ extension SchoolClass {
     struct Snapshot: Codable, Hashable {
         var id: UUID
         var shortName: String
-        var subtitle: String
+        var subjects: [String]
         var schoolYear: String
         var color: String
         var createdAt: Date
+        var students: [Student.Snapshot]
     }
 
     var snapshot: Snapshot {
         Snapshot(
             id: id,
             shortName: shortName,
-            subtitle: subtitle,
+            subjects: subjects,
             schoolYear: schoolYear,
             color: colorRaw,
-            createdAt: createdAt
+            createdAt: createdAt,
+            students: sortedStudents.map(\.snapshot)
         )
     }
 }
