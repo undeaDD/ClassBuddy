@@ -3,29 +3,15 @@ import SwiftUI
 
 /// Schülerliste der ausgewählten Klasse: anlegen, bearbeiten, löschen, suchen.
 struct StudentsView: View {
-    @Environment(AppModel.self) private var app
     @Environment(\.modelContext) private var modelContext
-    @Query private var classes: [SchoolClass]
 
     @State private var searchText = ""
     @State private var editorRoute: StudentEditorRoute?
     @State private var studentPendingDeletion: Student?
 
-    private var selectedClass: SchoolClass? {
-        classes.first { $0.id == app.selectedClassID }
-    }
-
     var body: some View {
-        Group {
-            if let selectedClass {
-                content(for: selectedClass)
-            } else {
-                EmptyStateView(
-                    title: "Keine Klasse ausgewählt",
-                    message: "Wähle oben links eine Klasse aus.",
-                    symbol: AppTab.students.symbol
-                )
-            }
+        ClassScopedView { schoolClass in
+            content(for: schoolClass)
         }
         .navigationTitle(AppTab.students.title)
         .fullScreenCover(item: $editorRoute) { route in

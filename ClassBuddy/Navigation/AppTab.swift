@@ -30,6 +30,15 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         }
     }
 
+    /// Standardmäßig in der oberen Tab-Bar; alle anderen nur in der Sidebar
+    /// (lassen sich dort per Drag & Drop in die Tab-Bar ziehen).
+    var isInTabBarByDefault: Bool {
+        switch self {
+        case .dashboard, .seating: true
+        case .students, .settings: false
+        }
+    }
+
     var summary: String {
         switch self {
         case .dashboard: "Dein Tag auf einen Blick."
