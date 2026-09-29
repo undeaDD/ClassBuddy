@@ -66,7 +66,7 @@ struct ClassEditorView: View {
                             Button(subject) { subjects.append(subject) }
                         }
                     } label: {
-                        Label("Fach hinzufügen", systemImage: "plus.circle.fill")
+                        Label("Fach hinzufügen", image: .plus)
                     }
                     .disabled(remainingSuggestions.isEmpty)
 

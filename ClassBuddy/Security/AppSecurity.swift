@@ -104,6 +104,11 @@ final class AppSecurity {
         }
     }
 
+    /// Bestätigung per Face ID / Code vor unumkehrbaren Aktionen (z. B. alle Daten löschen).
+    func confirmDestructiveAction(reason: String) async -> Bool {
+        await authenticate(reason: reason)
+    }
+
     // MARK: Authentifizierung
 
     private func authenticate(reason: String) async -> Bool {

@@ -42,11 +42,8 @@ struct ClassPickerView: View {
                             }
                         }
                     }
-                    .searchable(
-                        text: $searchText,
-                        placement: .navigationBarDrawer(displayMode: .always),
-                        prompt: "Klasse oder Fach"
-                    )
+                    // Suche im Privatsphäre-Modus ausblenden (würde Namen verraten).
+                    .searchable(if: canEdit, text: $searchText, prompt: "Klasse oder Fach")
                     .overlay {
                         if sections.isEmpty {
                             ContentUnavailableView.search(text: searchText)
@@ -95,6 +92,7 @@ struct ClassPickerView: View {
         // Privatsphäre-Modus an → Editor/Dialog sofort schließen.
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
             if isOn {
+                searchText = ""
                 editorRoute = nil
                 classPendingDeletion = nil
             }
@@ -180,5 +178,16 @@ enum ClassEditorRoute: Identifiable {
 
     var schoolClass: SchoolClass? {
         if case .edit(let schoolClass) = self { schoolClass } else { nil }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func searchable(if enabled: Bool, text: Binding<String>, prompt: String) -> some View {
+        if enabled {
+            searchable(text: text, placement: .navigationBarDrawer(displayMode: .always), prompt: prompt)
+        } else {
+            self
+        }
     }
 }

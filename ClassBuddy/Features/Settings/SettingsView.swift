@@ -2,43 +2,28 @@ import SwiftUI
 import WebKit
 
 struct SettingsView: View {
-    @Environment(AppSecurity.self) private var security
-
-    private var appLockBinding: Binding<Bool> {
-        Binding(
-            get: { security.isAppLockEnabled },
-            set: { newValue in Task { await security.setAppLockEnabled(newValue) } }
-        )
-    }
-
     var body: some View {
         Form {
             Section {
                 NavigationLink {
                     TeacherProfileView()
                 } label: {
-                    Label("Mein Profil", systemImage: "person.crop.circle")
+                    Label("Mein Profil", image: .userCircle)
                 }
                 NavigationLink {
                     SchoolSettingsView()
                 } label: {
                     Label("Schuleinstellungen", image: .bank)
                 }
+                NavigationLink {
+                    AppSettingsView()
+                } label: {
+                    Label("App-Einstellungen", systemImage: "ipad")
+                }
             } header: {
                 Text("Weitere Einstellungen")
             } footer: {
-                Text("Schule, Stundenraster, Pausen, Wochenende, Ferien & Feiertage.")
-            }
-
-            Section {
-                Toggle(isOn: appLockBinding) {
-                    Label("Mit \(security.biometryName) sperren", image: .fingerprintLockCircle)
-                }
-                .disabled(security.isAuthenticating)
-            } header: {
-                Text("App-Sperre")
-            } footer: {
-                Text("Sperrt die App beim Start und beim Wechsel in den Hintergrund. Ausschalten erfordert \(security.biometryName).")
+                Text("Profil · Schule, Stundenraster, Ferien · Darstellung, App-Sperre, Daten.")
             }
 
             Section("Rechtliches") {
@@ -51,6 +36,10 @@ struct SettingsView: View {
 
             Section {
                 LabeledContent("Version", value: AppInfo.version)
+            } footer: {
+                Text("Made with ❤️ by Devsforge.de")
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 8)
             }
         }
         .navigationTitle(AppTab.settings.title)
