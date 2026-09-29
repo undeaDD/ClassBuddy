@@ -68,7 +68,6 @@
 		2C2DAF69C71A130D500C359A /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4ABB29E0AF9BA4213EA2A0 /* ConfigurationTests.swift */; };
 		9CF1C9690DB29B3A1DE00ED4 /* WeatherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B3A8C6B877F6BF42D6E223 /* WeatherTests.swift */; };
 		D54AEC746043791E0A6A6D9D /* ColorHex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897588662DA32E79AE83FDC1 /* ColorHex.swift */; };
-		33A8E56292BD55345C3F8417 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F37276D6EB87DE784E7D16C /* FeedbackView.swift */; };
 		4401BE6A2DBD523FB11F4E84 /* DashboardLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF0AA061501603293957C0A /* DashboardLogic.swift */; };
 		F6E341FA2D5880D50FACF5BC /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9320F3CFA700821455DA73B6 /* LogicTests.swift */; };
 		8AD36AD32BFB664115296C55 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = A496E9CD0C20BDF78BA147A7 /* Toast.swift */; };
@@ -159,7 +158,6 @@
 		0F4ABB29E0AF9BA4213EA2A0 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		08B3A8C6B877F6BF42D6E223 /* WeatherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherTests.swift; sourceTree = "<group>"; };
 		897588662DA32E79AE83FDC1 /* ColorHex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHex.swift; sourceTree = "<group>"; };
-		7F37276D6EB87DE784E7D16C /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		1AF0AA061501603293957C0A /* DashboardLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardLogic.swift; sourceTree = "<group>"; };
 		9320F3CFA700821455DA73B6 /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
 		A496E9CD0C20BDF78BA147A7 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -321,7 +319,6 @@
 		A1A4DAFDDF0D0B2BD02CD6E5 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				7F37276D6EB87DE784E7D16C /* FeedbackView.swift */,
 				682EF27D860985CC8FFA663A /* AppSettingsView.swift */,
 				7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */,
 				BA5B1F6CF676098DEB914826 /* SchoolSettingsView.swift */,
@@ -497,7 +494,6 @@
 				AB615A72469E1F9D6A36271B /* InstallInfo.swift in Sources */,
 				8AD36AD32BFB664115296C55 /* Toast.swift in Sources */,
 				4401BE6A2DBD523FB11F4E84 /* DashboardLogic.swift in Sources */,
-				33A8E56292BD55345C3F8417 /* FeedbackView.swift in Sources */,
 				D54AEC746043791E0A6A6D9D /* ColorHex.swift in Sources */,
 				01CE987455CBFB4360537259 /* Weather.swift in Sources */,
 				200AF034F81588E18D3F1B96 /* BackupCells.swift in Sources */,
