@@ -6,8 +6,8 @@ struct AppTabView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.openURL) private var openURL
     /// Versioniert: bei Strukturänderungen (neue Tabs, Gruppen) hochzählen,
-    /// damit alles an der Standardposition landet. v4: Gruppen nur in der Sidebar.
-    static let customizationKey = "navigation.tabCustomization.v4"
+    /// damit alles an der Standardposition landet. v5: Allgemein-Gruppe mit Übersicht/Kalender.
+    static let customizationKey = "navigation.tabCustomization.v5"
     @AppStorage(AppTabView.customizationKey) private var customization = TabViewCustomization()
 
     /// Aktions-Tabs (Feedback) lösen ihre Aktion aus, ohne die Auswahl zu ändern.
@@ -26,23 +26,18 @@ struct AppTabView: View {
 
     var body: some View {
         TabView(selection: selection) {
-            // Übersicht + Kalender: eigenständig, immer (und als einzige) in der Tab-Leiste.
-            ForEach(AppTab.topLevel) { tab in
-                tabItem(tab)
-                    .customizationBehavior(.disabled, for: .sidebar, .tabBar)
-            }
-
-            // Gruppen: nur in der Sidebar (einklappbar), nie in der Tab-Leiste.
             ForEach(AppTabSection.allCases) { section in
                 TabSection(section.title) {
                     ForEach(section.tabs) { tab in
                         tabItem(tab)
-                            .customizationBehavior(.disabled, for: .tabBar)
-                            .defaultVisibility(.hidden, for: .tabBar)
+                            // Oben nur Übersicht + Kalender; alle anderen nur in der Sidebar.
+                            .defaultVisibility(tab.isInTabBar ? .visible : .hidden, for: .tabBar)
+                            // Übersicht bleibt immer an erster Stelle.
+                            .customizationBehavior(tab == .dashboard ? .disabled : .automatic, for: .sidebar, .tabBar)
                     }
                 }
                 .customizationID(section.customizationID)
-                .customizationBehavior(.disabled, for: .tabBar)
+                // Gruppentitel nur in der Sidebar, nie als eigener Eintrag in der Tab-Leiste.
                 .defaultVisibility(.hidden, for: .tabBar)
             }
         }

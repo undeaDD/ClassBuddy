@@ -41,20 +41,17 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     /// Tabs, die nur eine Aktion auslösen und nie ausgewählt werden.
     var isAction: Bool { self == .feedback }
 
-    /// Gruppe in der Sidebar. `nil` = eigenständiger Tab, der als einziger auch in
-    /// der oberen Tab-Leiste erscheint (Übersicht, Kalender). Gruppen erscheinen dort
-    /// nie – iPadOS würde sie als einzelnen Eintrag in die Tab-Leiste setzen.
-    var section: AppTabSection? {
+    /// Gruppe in der Sidebar.
+    var section: AppTabSection {
         switch self {
-        case .dashboard, .calendar: nil
-        case .rooms: .general
+        case .dashboard, .calendar, .rooms: .general
         case .students: .schoolClass
         case .feedback, .settings: .other
         }
     }
 
-    /// Eigenständige Tabs (oben in Sidebar und Tab-Leiste).
-    static var topLevel: [AppTab] { allCases.filter { $0.section == nil } }
+    /// Nur diese Tabs erscheinen in der oberen, zentrierten Tab-Leiste.
+    var isInTabBar: Bool { self == .dashboard || self == .calendar }
 }
 
 /// Einklappbare Gruppen in der Sidebar.
