@@ -5,11 +5,11 @@ import SwiftUI
 struct SchoolSettingsView: View {
     @Environment(SchoolSettings.self) private var settings
     @Environment(\.modelContext) private var modelContext
+    @Environment(ToastCenter.self) private var toasts
     @Environment(\.openURL) private var openURL
     @Query(sort: \Holiday.startDate) private var holidays: [Holiday]
 
     @State private var isImporting = false
-    @State private var importMessage: String?
 
     var body: some View {
         @Bindable var settings = settings
@@ -133,9 +133,7 @@ struct SchoolSettingsView: View {
 
     private var importFooter: String {
         var parts = ["Quelle: OpenHolidays API (openholidaysapi.org). Es werden nur öffentliche Ferientermine abgerufen."]
-        if let message = importMessage {
-            parts.append(message)
-        } else if let date = settings.values.holidaysImportedAt {
+        if let date = settings.values.holidaysImportedAt {
             parts.append("Zuletzt importiert: \(date.formatted(date: .abbreviated, time: .shortened)).")
         }
         return parts.joined(separator: " ")
@@ -155,9 +153,9 @@ struct SchoolSettingsView: View {
         do {
             let count = try await HolidayImporter.importHolidays(for: state, into: modelContext)
             settings.values.holidaysImportedAt = .now
-            importMessage = "\(count) Einträge importiert."
+            toasts.success("\(count) Ferien und Feiertage importiert")
         } catch {
-            importMessage = error.localizedDescription
+            toasts.error(error.localizedDescription)
         }
     }
 

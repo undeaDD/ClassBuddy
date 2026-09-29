@@ -8,18 +8,20 @@ struct LockScreenView: View {
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(.regularMaterial)
+                .fill(.thinMaterial)
                 .ignoresSafeArea()
             Rectangle()
-                .fill(Color.accentColor.opacity(0.12).gradient)
+                .fill(Color.accentColor.opacity(0.08).gradient)
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
+                // Getönter Kreis statt Glas: Glas dämpft die Farbe des Symbols.
                 Image(.fingerprintLockCircle)
-                    .iconSize(88)
+                    .iconSize(120)
                     .foregroundStyle(Color.accentColor)
-                    .frame(width: 156, height: 156)
-                    .glassEffect(.regular.tint(Color.accentColor.opacity(0.18)), in: .circle)
+                    .frame(width: 200, height: 200)
+                    .background(Color.accentColor.opacity(0.14), in: .circle)
+                    .overlay(Circle().strokeBorder(Color.accentColor.opacity(0.35), lineWidth: 1.5))
 
                 VStack(spacing: 6) {
                     Text("ClassBuddy ist gesperrt")

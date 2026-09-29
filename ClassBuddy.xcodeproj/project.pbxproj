@@ -71,6 +71,9 @@
 		33A8E56292BD55345C3F8417 /* WebPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F37276D6EB87DE784E7D16C /* WebPageView.swift */; };
 		4401BE6A2DBD523FB11F4E84 /* DashboardLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AF0AA061501603293957C0A /* DashboardLogic.swift */; };
 		F6E341FA2D5880D50FACF5BC /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9320F3CFA700821455DA73B6 /* LogicTests.swift */; };
+		8AD36AD32BFB664115296C55 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = A496E9CD0C20BDF78BA147A7 /* Toast.swift */; };
+		AB615A72469E1F9D6A36271B /* InstallInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D43C96B5571D1D64D00F95F /* InstallInfo.swift */; };
+		EFCCB54B9C8E37EE67197E3B /* ClassTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA107D0C849C5337E26C6AF /* ClassTimer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -158,6 +161,9 @@
 		7F37276D6EB87DE784E7D16C /* WebPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebPageView.swift; sourceTree = "<group>"; };
 		1AF0AA061501603293957C0A /* DashboardLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardLogic.swift; sourceTree = "<group>"; };
 		9320F3CFA700821455DA73B6 /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
+		A496E9CD0C20BDF78BA147A7 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		1D43C96B5571D1D64D00F95F /* InstallInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallInfo.swift; sourceTree = "<group>"; };
+		AEA107D0C849C5337E26C6AF /* ClassTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTimer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -178,6 +184,7 @@
 		2419A13CBE279FEA89B5B93F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				1D43C96B5571D1D64D00F95F /* InstallInfo.swift */,
 				BEA3B5CD9197C415EA1E2EC1 /* AppInfo.swift */,
 				1D8B9109166A9748354DC9CF /* AppModel.swift */,
 				0A24D388FE7E9FD196AC2985 /* ClassBuddyApp.swift */,
@@ -268,6 +275,7 @@
 		E1C1ED13D20F227E3CD813C3 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				A496E9CD0C20BDF78BA147A7 /* Toast.swift */,
 				897588662DA32E79AE83FDC1 /* ColorHex.swift */,
 				A22B00150D405734C85B655E /* PersonFields.swift */,
 				D00C330E0B4BABBCFBC77103 /* AppSymbol.swift */,
@@ -296,6 +304,7 @@
 		ED866CB00345985B1E112F36 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				AEA107D0C849C5337E26C6AF /* ClassTimer.swift */,
 				1AF0AA061501603293957C0A /* DashboardLogic.swift */,
 				82B7B56D4973387936A0E06B /* Weather.swift */,
 				723E830E960FEC552AC32623 /* CardGallery.swift */,
@@ -480,6 +489,9 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				EFCCB54B9C8E37EE67197E3B /* ClassTimer.swift in Sources */,
+				AB615A72469E1F9D6A36271B /* InstallInfo.swift in Sources */,
+				8AD36AD32BFB664115296C55 /* Toast.swift in Sources */,
 				4401BE6A2DBD523FB11F4E84 /* DashboardLogic.swift in Sources */,
 				33A8E56292BD55345C3F8417 /* WebPageView.swift in Sources */,
 				D54AEC746043791E0A6A6D9D /* ColorHex.swift in Sources */,

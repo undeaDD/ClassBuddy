@@ -12,13 +12,14 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
     case currentLesson = "stat.currentLesson"
     case dateTime = "tool.dateTime"
     case weather = "tool.weather"
+    case weeklyHours = "stat.weeklyHours"
 
     var id: String { rawValue }
 
     var isHiddenByDefault: Bool {
         switch self {
         case .students, .nextLesson: false
-        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather: true
+        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours: true
         }
     }
 
@@ -32,6 +33,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .currentLesson: "Aktuelle Stunde"
         case .dateTime: "Datum & Uhrzeit"
         case .weather: "Wetter"
+        case .weeklyHours: "Wochenstunden"
         }
     }
 
@@ -41,10 +43,11 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .nextLesson: "Wann du die Klasse als Nächstes hast – öffnet den Kalender."
         case .nextBirthday: "Wer als Nächstes Geburtstag hat und wie alt er oder sie wird."
         case .randomStudent: "Antippen wählt zufällig eine Schülerin oder einen Schüler aus."
-        case .timer: "Öffnet den Timer der Uhr-App."
+        case .timer: "Countdown für Arbeitsphasen, mit Ton und Mitteilung am Ende."
         case .currentLesson: "Restzeit der laufenden Stunde in Stunden und Minuten."
         case .dateTime: "Uhrzeit, Wochentag, Datum und Kalenderwoche."
         case .weather: "Aktuelles Wetter am Schulort (Ort aus den Schuleinstellungen)."
+        case .weeklyHours: "Wie viel deines Unterrichts diese Woche schon geschafft ist."
         }
     }
 
@@ -58,6 +61,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .currentLesson: .system("hourglass")
         case .dateTime: .system("clock")
         case .weather: .system("cloud.sun")
+        case .weeklyHours: .system("chart.bar.fill")
         }
     }
 
@@ -68,10 +72,11 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .nextLesson: ("Morgen", "3. Stunde, 09:50 · Mathematik")
         case .nextBirthday: ("Emma S.", "in 5 Tagen · wird 13")
         case .randomStudent: ("Leon F.", "Antippen für neue Auswahl")
-        case .timer: ("Starten", "Öffnet die Uhr-App")
+        case .timer: ("12:34", "20 min · endet um 10:15")
         case .currentLesson: ("23 min", "3. Stunde · 7b · Mathematik")
         case .dateTime: ("08:15", "Dienstag, 29. September · KW 40")
         case .weather: ("17°", "Teilweise bewölkt · ↑ 19° ↓ 9° · Köln")
+        case .weeklyHours: ("58 %", "14 h erledigt · 24 h gesamt")
         }
     }
 }
@@ -223,6 +228,8 @@ private struct TemplatePreview: View {
 
     var body: some View {
         switch template {
+        case .builtIn(.weeklyHours):
+            WeeklyHoursCard(result: WeeklyWorkload.Result(doneMinutes: 14 * 60, totalMinutes: 24 * 60)) {}
         case .builtIn(let card):
             StatCard(title: card.title, value: card.previewValue.value, detail: card.previewValue.detail, symbol: card.symbol) {}
         case .photo, .imageFile:

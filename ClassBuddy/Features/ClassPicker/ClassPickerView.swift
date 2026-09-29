@@ -6,6 +6,7 @@ struct ClassPickerView: View {
     @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
     @Environment(\.modelContext) private var modelContext
+    @Environment(ToastCenter.self) private var toasts
     @Query(sort: [SortDescriptor(\SchoolClass.schoolYear, order: .reverse), SortDescriptor(\SchoolClass.shortName)])
     private var classes: [SchoolClass]
 
@@ -169,8 +170,14 @@ struct ClassPickerView: View {
         if app.selectedClassID == schoolClass.id { app.selectedClassID = nil }
         // Kopierte Dokumente der Übersichts-Kacheln mit entfernen.
         schoolClass.dashboardLinks.forEach(LinkFileStore.removeFile)
+        let title = schoolClass.title
         modelContext.delete(schoolClass)
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            toasts.success("\(title) gelöscht")
+        } catch {
+            toasts.error("Löschen fehlgeschlagen: \(error.localizedDescription)")
+        }
     }
 }
 

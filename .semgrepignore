@@ -1,0 +1,6 @@
+# Nicht Teil der App; Semgreps Swift-Parser versteht Makros wie #expect/#require nicht.
+ClassBuddyTests/
+# Build-Ausgaben und generierte Inhalte
+build/
+DerivedData/
+docs/
