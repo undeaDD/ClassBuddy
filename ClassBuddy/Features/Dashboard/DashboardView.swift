@@ -254,6 +254,11 @@ struct DashboardView: View {
             linkEditorRoute = .new(.website, schoolClass)
         case .shortcut:
             linkEditorRoute = .new(.shortcut, schoolClass)
+        case .request:
+            openURL(AppInfo.mailURL(
+                subject: "Kachel-Wunsch für ClassBuddy",
+                body: "Welche Kachel wünschst du dir und was soll sie zeigen?\n\n"
+            ))
         }
     }
 
@@ -388,32 +393,11 @@ extension DashboardView {
 
     /// Nächster Geburtstag in der Klasse (heute zählt mit).
     private func nextBirthdayCard(for schoolClass: SchoolClass) -> some View {
-        let calendar = Calendar.school
-        let today = calendar.startOfDay(for: .now)
-        let upcoming = schoolClass.students.compactMap { student -> (student: Student, date: Date)? in
-            guard let birthday = student.birthday else { return nil }
-            let parts = calendar.dateComponents([.month, .day], from: birthday)
-            let yesterday = calendar.date(byAdding: .day, value: -1, to: today) ?? today
-            guard let next = calendar.nextDate(after: yesterday, matching: parts, matchingPolicy: .nextTime) else { return nil }
-            return (student, next)
-        }
-        .sorted { $0.date < $1.date }
-
-        let detail: String
-        if let first = upcoming.first, let birthday = first.student.birthday {
-            let days = calendar.dateComponents([.day], from: today, to: first.date).day ?? 0
-            let age = calendar.component(.year, from: first.date) - calendar.component(.year, from: birthday)
-            let when = days == 0 ? "Heute 🎉" : days == 1 ? "Morgen" : "in \(days) Tagen"
-            let sameDay = upcoming.filter { calendar.isDate($0.date, inSameDayAs: first.date) }.count - 1
-            detail = "\(when) · wird \(age)" + (sameDay > 0 ? " · +\(sameDay)" : "")
-        } else {
-            detail = "Keine Geburtstage eingetragen"
-        }
-
+        let upcoming = Birthdays.upcoming(in: schoolClass.students)
         return StatCard(
             title: DashboardBuiltInCard.nextBirthday.title,
             value: upcoming.first.map { RandomStudentCard.shortName($0.student) } ?? "–",
-            detail: detail,
+            detail: Birthdays.detail(for: upcoming),
             symbol: DashboardBuiltInCard.nextBirthday.symbol
         ) {
             app.open(.students)

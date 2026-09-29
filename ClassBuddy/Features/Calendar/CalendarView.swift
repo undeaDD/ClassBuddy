@@ -89,7 +89,7 @@ struct CalendarView: View {
                     Label("Nur \(focusClass.title)", image: .xmark)
                         .labelStyle(.titleAndIcon)
                 }
-                .tint(focusClass.color.color)
+                .tint(focusClass.displayColor)
             }
             Button("Neuer Termin", image: .plus) { isNewEntryPresented = true }
                 .disabled(security.isPrivacyModeOn)

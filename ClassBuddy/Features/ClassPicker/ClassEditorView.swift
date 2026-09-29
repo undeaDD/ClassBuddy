@@ -13,7 +13,10 @@ struct ClassEditorView: View {
     @State private var shortName: String
     @State private var subjects: [String]
     @State private var schoolYear: String
-    @State private var color: ClassColor
+    /// Name einer `ClassColor` oder eigene Farbe als „#RRGGBB“.
+    @State private var colorRaw: String
+    /// Zuletzt gewählte eigene Farbe (letztes Farbfeld).
+    @AppStorage("classEditor.lastCustomColor") private var lastCustomColor = "#9C6830"
     @State private var customSubject = ""
 
     init(schoolClass: SchoolClass?, onSave: @escaping (SchoolClass) -> Void = { _ in }) {
@@ -22,7 +25,7 @@ struct ClassEditorView: View {
         _shortName = State(initialValue: schoolClass?.shortName ?? "")
         _subjects = State(initialValue: schoolClass?.subjects ?? [])
         _schoolYear = State(initialValue: schoolClass?.schoolYear ?? SchoolClass.currentSchoolYear)
-        _color = State(initialValue: schoolClass?.color ?? .blue)
+        _colorRaw = State(initialValue: schoolClass?.colorRaw ?? ClassColor.blue.rawValue)
     }
 
     private var isNew: Bool { schoolClass == nil }
@@ -42,7 +45,7 @@ struct ClassEditorView: View {
                 Section {
                     HStack {
                         Spacer()
-                        ClassBadge(shortName: shortName, color: color.color, size: 88)
+                        ClassBadge(shortName: shortName, color: SchoolClass.displayColor(for: colorRaw), size: 88)
                         Spacer()
                     }
                     .listRowBackground(Color.clear)
@@ -84,23 +87,20 @@ struct ClassEditorView: View {
                 }
 
                 Section("Farbe") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 10), spacing: 12) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: ClassColor.allCases.count + 1), spacing: 12) {
                         ForEach(ClassColor.allCases) { option in
                             Circle()
                                 .fill(option.color.gradient)
                                 .frame(width: 36, height: 36)
                                 .overlay {
-                                    if option == color {
-                                        Image(.check)
-                                            .iconSize(18)
-                                            .foregroundStyle(.white)
-                                    }
+                                    if option.rawValue == colorRaw { selectionCheck }
                                 }
-                                .onTapGesture { color = option }
+                                .onTapGesture { colorRaw = option.rawValue }
                                 .hoverEffect(.lift)
                                 .accessibilityLabel(option.rawValue)
-                                .accessibilityAddTraits(option == color ? .isSelected : [])
+                                .accessibilityAddTraits(option.rawValue == colorRaw ? .isSelected : [])
                         }
+                        customColorWell
                     }
                     .padding(.vertical, 4)
                 }
@@ -122,6 +122,37 @@ struct ClassEditorView: View {
         }
     }
 
+    private var selectionCheck: some View {
+        Image(.check)
+            .iconSize(18)
+            .foregroundStyle(.white)
+            .allowsHitTesting(false)
+    }
+
+    private var isCustomColor: Bool { ClassColor(rawValue: colorRaw) == nil }
+
+    /// Letztes Farbfeld: systemeigene Farbauswahl, merkt sich die zuletzt gewählte Farbe.
+    private var customColorWell: some View {
+        ColorPicker(
+            "Eigene Farbe",
+            selection: Binding(
+                get: { Color(hex: isCustomColor ? colorRaw : lastCustomColor) ?? .accentColor },
+                set: { newColor in
+                    let hex = newColor.hexString
+                    lastCustomColor = hex
+                    colorRaw = hex
+                }
+            ),
+            supportsOpacity: false
+        )
+        .labelsHidden()
+        .frame(width: 36, height: 36)
+        .overlay {
+            if isCustomColor { selectionCheck }
+        }
+        .accessibilityAddTraits(isCustomColor ? .isSelected : [])
+    }
+
     private func addCustomSubject() {
         let subject = customSubject.trimmingCharacters(in: .whitespaces)
         guard !subject.isEmpty else { return }
@@ -138,7 +169,7 @@ struct ClassEditorView: View {
         target.shortName = shortName.trimmingCharacters(in: .whitespaces)
         target.subjects = subjects
         target.schoolYear = schoolYear.trimmingCharacters(in: .whitespaces)
-        target.color = color
+        target.colorRaw = colorRaw
         try? modelContext.save()
         onSave(target)
         dismiss()

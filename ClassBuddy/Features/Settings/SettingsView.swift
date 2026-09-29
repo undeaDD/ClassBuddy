@@ -3,8 +3,6 @@ import UIKit
 import WebKit
 
 struct SettingsView: View {
-    @Environment(\.openURL) private var openURL
-
     var body: some View {
         Form {
             Section {
@@ -38,13 +36,26 @@ struct SettingsView: View {
             }
 
             Section {
-                ActionRow("Quellcode auf GitHub", symbol: .custom(.githubCircle)) { openURL(AppInfo.sourceCodeURL) }
-                ActionRow("Spenden (PayPal)", symbol: .custom(.donate)) { openURL(AppInfo.donationURL) }
-                ActionRow("Feedback senden", symbol: .custom(.sendMail)) { openURL(AppInfo.feedbackMailURL) }
+                // Echte NavigationLinks → das System zeichnet den Chevron selbst.
+                NavigationLink {
+                    WebPageView(title: "Quellcode", url: AppInfo.sourceCodeURL)
+                } label: {
+                    Label("Quellcode auf GitHub", image: .githubCircle)
+                }
+                NavigationLink {
+                    WebPageView(title: "Spenden", url: AppInfo.donationURL)
+                } label: {
+                    Label("Spenden (PayPal)", image: .donate)
+                }
+                NavigationLink {
+                    FeedbackView()
+                } label: {
+                    Label("Feedback senden", image: .sendMail)
+                }
                 LabeledContent {
                     Text(AppInfo.version)
                 } label: {
-                    Label("Version", image: .version)
+                    Label("App-Version", image: .version)
                 }
             } footer: {
                 Text("Made with ❤️ by Devsforge.de")
@@ -54,37 +65,6 @@ struct SettingsView: View {
         }
         .navigationTitle(AppTab.settings.title)
         .appChrome(tab: .settings)
-    }
-}
-
-/// Zeile, die eine Aktion auslöst (Link, Mail), optisch wie eine NavigationLink-Zeile:
-/// farbiges Icon, normale Textfarbe, Chevron rechts.
-private struct ActionRow: View {
-    let title: String
-    let symbol: AppSymbol
-    let action: () -> Void
-
-    init(_ title: String, symbol: AppSymbol, action: @escaping () -> Void) {
-        self.title = title
-        self.symbol = symbol
-        self.action = action
-    }
-
-    var body: some View {
-        Button(action: action) {
-            HStack {
-                Label {
-                    Text(title).foregroundStyle(.primary)
-                } icon: {
-                    symbol.image
-                }
-                Spacer()
-                Image(.navArrowRight)
-                    .iconSize(14)
-                    .foregroundStyle(.tertiary)
-            }
-            .contentShape(.rect)
-        }
     }
 }
 

@@ -56,7 +56,7 @@ nonisolated enum FaviconStore {
     }
 
     /// `<link rel="…icon…" href="…">` – Apple-Touch-Icons zuerst (größer, schärfer).
-    private static func iconLinks(in html: String, baseURL: URL) -> [URL] {
+    static func iconLinks(in html: String, baseURL: URL) -> [URL] {
         guard let linkRegex = try? NSRegularExpression(pattern: "<link\\b[^>]*>", options: .caseInsensitive) else { return [] }
         let range = NSRange(html.startIndex..., in: html)
         var touch: [URL] = []

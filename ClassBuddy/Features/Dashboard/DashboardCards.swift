@@ -197,6 +197,7 @@ struct ImagePlaceholderCard: View {
 
 /// Zufallsauswahl: antippen wählt eine Schülerin / einen Schüler der Klasse.
 struct RandomStudentCard: View {
+    @Environment(\.redactionReasons) private var redactionReasons
     let students: [Student]
 
     @State private var picked: Student?
@@ -215,6 +216,8 @@ struct RandomStudentCard: View {
     }
 
     private func pick() {
+        // Im Privatsphäre-Modus nicht neu auslosen (Name bleibt ohnehin verborgen).
+        guard !redactionReasons.contains(.privacy) else { return }
         // Nicht zweimal hintereinander dieselbe Person.
         let candidates = students.count > 1 ? students.filter { $0.id != picked?.id } : students
         withAnimation(.bouncy) { picked = candidates.randomElement() }
@@ -245,31 +248,7 @@ struct CurrentLessonCard: View {
     }
 
     private func currentState(at now: Date) -> (value: String, detail: String) {
-        let calendar = Calendar.school
-        let minute = calendar.component(.hour, from: now) * 60 + calendar.component(.minute, from: now)
-        let second = calendar.component(.second, from: now)
-        let isSchoolDay = visibleWeekdays.contains(calendar.mondayBasedWeekday(of: now)) && schedule.holiday(on: now) == nil
-
-        guard isSchoolDay,
-              let slot = schedule.slots.first(where: { $0.start <= minute && minute < $0.end })
-        else {
-            let next = isSchoolDay ? schedule.slots.first(where: { $0.start > minute }) : nil
-            return ("Keine aktive Stunde", next.map { "Nächste: \($0.number). Stunde um \($0.start.clockString)" } ?? "Heute kein Unterricht mehr")
-        }
-
-        // Auf volle Minuten aufrunden: 22:10 übrig → „23 min“.
-        let remainingSeconds = slot.end * 60 - (minute * 60 + second)
-        let remaining = (remainingSeconds + 59) / 60
-        let value = remaining >= 60 ? "\(remaining / 60) h \(remaining % 60) min" : "\(remaining) min"
-
-        var parts = ["\(slot.number). Stunde"]
-        if let lesson = schedule.lesson(on: now, slotIndex: slot.index), let schoolClass = lesson.schoolClass {
-            parts.append(schoolClass.shortName)
-            if !lesson.subject.isEmpty { parts.append(lesson.subject) }
-        } else {
-            parts.append("frei")
-        }
-        return (value, parts.joined(separator: " · "))
+        LessonProgress.state(schedule: schedule, visibleWeekdays: visibleWeekdays, now: now)
     }
 }
 
@@ -308,7 +287,9 @@ struct CardHeader: View {
                 Label {
                     Text(title)
                 } icon: {
+                    // Favicon verrät die Website → im Privatsphäre-Modus unscharf.
                     FaviconView(url: faviconURL, size: 24, placeholder: symbol)
+                        .sensitiveBlur(radius: 5)
                 }
                 .font(.headline)
                 .foregroundStyle(.secondary)
