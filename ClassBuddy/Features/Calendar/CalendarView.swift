@@ -83,14 +83,14 @@ struct CalendarView: View {
                 Button {
                     app.calendarFocusClassID = nil
                 } label: {
-                    Label("Nur \(focusClass.title)", systemImage: "xmark.circle.fill")
+                    Label("Nur \(focusClass.title)", image: .xmark)
                         .labelStyle(.titleAndIcon)
                 }
                 .tint(focusClass.color.color)
             }
-            Button("Vorherige Woche", systemImage: "chevron.left") { moveWeek(by: -1) }
+            Button("Vorherige Woche", image: .navArrowLeft) { moveWeek(by: -1) }
             Button("Heute") { weekStart = calendar.startOfWeek(for: .now) }
-            Button("Nächste Woche", systemImage: "chevron.right") { moveWeek(by: 1) }
+            Button("Nächste Woche", image: .navArrowRight) { moveWeek(by: 1) }
         }
         // Sprung aus der Übersicht („Nächste Stunde“) in die passende Woche.
         .onChange(of: app.calendarJumpDate, initial: true) { _, date in

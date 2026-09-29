@@ -43,6 +43,9 @@
 		D56E6F223610F9BBBCF9A4C0 /* imprint.html in Resources */ = {isa = PBXBuildFile; fileRef = 432AD3F8D6771586F8F77F14 /* imprint.html */; };
 		4C0321CDE2084BCCB193B5B0 /* privacy.html in Resources */ = {isa = PBXBuildFile; fileRef = 8750B322EDEC4B4625B5BBAB /* privacy.html */; };
 		C618365AA69460436ADDA4AE /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 08CDDAC168A4B064077741AF /* licenses.html */; };
+		FF3F410918400D40836BDE97 /* DashboardLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D4945472C726B775CA4248 /* DashboardLink.swift */; };
+		F56D5D0C83E6697E11CD3242 /* LinkEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */; };
+		4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +86,9 @@
 		432AD3F8D6771586F8F77F14 /* imprint.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = imprint.html; sourceTree = "<group>"; };
 		8750B322EDEC4B4625B5BBAB /* privacy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy.html; sourceTree = "<group>"; };
 		08CDDAC168A4B064077741AF /* licenses.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = licenses.html; sourceTree = "<group>"; };
+		C4D4945472C726B775CA4248 /* DashboardLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardLink.swift; sourceTree = "<group>"; };
+		73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkEditorView.swift; sourceTree = "<group>"; };
+		7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherProfileView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -112,6 +118,7 @@
 		3A6216EE33B9899A49B5EFD1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				C4D4945472C726B775CA4248 /* DashboardLink.swift */,
 				50C57EFAB9EB50135E311B95 /* HolidayImporter.swift */,
 				01177F72296400A8CB8AE65D /* CalendarModels.swift */,
 				597F30AE51F07D4DD0766EB0 /* SchoolSettings.swift */,
@@ -213,6 +220,7 @@
 		ED866CB00345985B1E112F36 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */,
 				A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */,
 			);
 			path = Dashboard;
@@ -221,6 +229,7 @@
 		A1A4DAFDDF0D0B2BD02CD6E5 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */,
 				BA5B1F6CF676098DEB914826 /* SchoolSettingsView.swift */,
 				EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */,
 			);
@@ -319,6 +328,9 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */,
+				F56D5D0C83E6697E11CD3242 /* LinkEditorView.swift in Sources */,
+				FF3F410918400D40836BDE97 /* DashboardLink.swift in Sources */,
 				D2EBE6B61F920589CCE59268 /* LessonSchedule.swift in Sources */,
 				7A8ABC4DE5A6D3898E546400 /* AppInfo.swift in Sources */,
 				5A35355150442C64BDE3E3BD /* SchoolSettingsView.swift in Sources */,

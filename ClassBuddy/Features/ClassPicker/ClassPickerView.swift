@@ -119,8 +119,8 @@ struct ClassPickerView: View {
                 }
                 Spacer()
                 if app.selectedClassID == schoolClass.id {
-                    Image(systemName: "checkmark")
-                        .fontWeight(.semibold)
+                    Image(.check)
+                        .iconSize(20)
                         .foregroundStyle(.tint)
                 }
             }
@@ -131,7 +131,7 @@ struct ClassPickerView: View {
         // Nach rechts wischen: bearbeiten
         .swipeActions(edge: .leading) {
             if canEdit {
-                Button("Bearbeiten", systemImage: "pencil") {
+                Button("Bearbeiten", image: .editPencil) {
                     editorRoute = .edit(schoolClass)
                 }
                 .tint(.accentColor)
@@ -140,7 +140,7 @@ struct ClassPickerView: View {
         // Nach links wischen: löschen
         .swipeActions(edge: .trailing) {
             if canEdit {
-                Button("Löschen", systemImage: "trash", role: .destructive) {
+                Button("Löschen", image: .trash, role: .destructive) {
                     classPendingDeletion = schoolClass
                 }
             }
@@ -148,10 +148,10 @@ struct ClassPickerView: View {
         // Lange drücken (Finger oder Apple Pencil) bzw. Rechtsklick.
         .contextMenu {
             if canEdit {
-                Button("Bearbeiten", systemImage: "pencil") {
+                Button("Bearbeiten", image: .editPencil) {
                     editorRoute = .edit(schoolClass)
                 }
-                Button("Löschen", systemImage: "trash", role: .destructive) {
+                Button("Löschen", image: .trash, role: .destructive) {
                     classPendingDeletion = schoolClass
                 }
             }
@@ -160,6 +160,8 @@ struct ClassPickerView: View {
 
     private func delete(_ schoolClass: SchoolClass) {
         if app.selectedClassID == schoolClass.id { app.selectedClassID = nil }
+        // Kopierte Dokumente der Übersichts-Kacheln mit entfernen.
+        schoolClass.dashboardLinks.forEach(LinkFileStore.removeFile)
         modelContext.delete(schoolClass)
         try? modelContext.save()
     }

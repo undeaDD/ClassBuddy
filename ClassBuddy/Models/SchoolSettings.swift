@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-/// Schulweite Einstellungen: Stundenraster, Pausen, Kalender-Optionen.
+/// Schulweite Einstellungen: Stundenraster, Pausen, Kalender-Optionen, Schule, Lehrkraft.
 /// Zeiten jeweils in Minuten seit Mitternacht. Persistiert als JSON in UserDefaults.
 @Observable
 final class SchoolSettings {
@@ -18,6 +18,26 @@ final class SchoolSettings {
         /// ISO-3166-2-Code des Bundeslands, z. B. „DE-NW“.
         var federalState: String?
         var holidaysImportedAt: Date?
+        var school = SchoolInfo()
+        var teacher = TeacherProfile()
+
+        init() {}
+
+        /// Fehlende Felder (ältere Versionen) fallen auf den Standardwert zurück,
+        /// damit neue Einstellungen nie die gespeicherten überschreiben.
+        init(from decoder: Decoder) throws {
+            let c = try decoder.container(keyedBy: CodingKeys.self)
+            let defaults = Values()
+            dayStart = try c.decodeIfPresent(Int.self, forKey: .dayStart) ?? defaults.dayStart
+            dayEnd = try c.decodeIfPresent(Int.self, forKey: .dayEnd) ?? defaults.dayEnd
+            lessonDuration = try c.decodeIfPresent(Int.self, forKey: .lessonDuration) ?? defaults.lessonDuration
+            breaks = try c.decodeIfPresent([BreakTime].self, forKey: .breaks) ?? defaults.breaks
+            showWeekends = try c.decodeIfPresent(Bool.self, forKey: .showWeekends) ?? defaults.showWeekends
+            federalState = try c.decodeIfPresent(String.self, forKey: .federalState)
+            holidaysImportedAt = try c.decodeIfPresent(Date.self, forKey: .holidaysImportedAt)
+            school = try c.decodeIfPresent(SchoolInfo.self, forKey: .school) ?? defaults.school
+            teacher = try c.decodeIfPresent(TeacherProfile.self, forKey: .teacher) ?? defaults.teacher
+        }
     }
 
     var values: Values {
@@ -73,6 +93,36 @@ final class SchoolSettings {
             time += length
         }
         return result
+    }
+}
+
+/// Stammdaten der Schule.
+struct SchoolInfo: Codable, Equatable {
+    var name = ""
+    var website = ""
+    var street = ""
+    var postalCode = ""
+    var city = ""
+    var phone = ""
+    var email = ""
+
+    /// Website als URL (ergänzt „https://“ bei Bedarf).
+    var websiteURL: URL? {
+        let trimmed = website.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return nil }
+        return URL(string: trimmed.contains("://") ? trimmed : "https://\(trimmed)")
+    }
+}
+
+/// Die Lehrkraft, die die App nutzt.
+struct TeacherProfile: Codable, Equatable {
+    var firstName = ""
+    var lastName = ""
+    var birthday: Date?
+    var gender: Gender?
+
+    var fullName: String {
+        [firstName, lastName].filter { !$0.isEmpty }.joined(separator: " ")
     }
 }
 

@@ -15,6 +15,6 @@ struct ClassBuddyApp: App {
                 .environment(schoolSettings)
         }
         // Rein lokale Speicherung, kein iCloud-Sync.
-        .modelContainer(for: [SchoolClass.self, Student.self, Lesson.self, CalendarEntry.self, Holiday.self])
+        .modelContainer(for: [SchoolClass.self, Student.self, Lesson.self, CalendarEntry.self, Holiday.self, DashboardLink.self])
     }
 }

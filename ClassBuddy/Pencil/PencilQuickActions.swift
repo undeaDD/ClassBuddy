@@ -111,8 +111,8 @@ struct RadialQuickMenu: View {
             GlassEffectContainer(spacing: 20) {
                 ZStack {
                     Button(action: dismiss) {
-                        Image(systemName: "xmark")
-                            .font(.title3.weight(.semibold))
+                        Image(.xmark)
+                            .iconSize(22)
                             .frame(width: 44, height: 44)
                     }
                     .buttonStyle(.plain)

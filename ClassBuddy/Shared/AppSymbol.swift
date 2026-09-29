@@ -38,6 +38,13 @@ nonisolated enum AppSymbol: Hashable, Sendable {
     }
 }
 
+extension Image {
+    /// Feste Icon-Größe – eigene SVG-Icons skalieren nicht mit `.font()`.
+    func iconSize(_ size: CGFloat) -> some View {
+        resizable().scaledToFit().frame(width: size, height: size)
+    }
+}
+
 extension Label where Title == Text, Icon == Image {
     init(_ title: LocalizedStringKey, symbol: AppSymbol) {
         self.init { Text(title) } icon: { symbol.image }
