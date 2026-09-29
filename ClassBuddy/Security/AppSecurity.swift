@@ -12,7 +12,7 @@ final class AppSecurity {
     private(set) var isPrivacyModeOn: Bool {
         didSet { UserDefaults.standard.set(isPrivacyModeOn, forKey: Keys.privacyMode) }
     }
-    var isAppLockEnabled: Bool {
+    private(set) var isAppLockEnabled: Bool {
         didSet { UserDefaults.standard.set(isAppLockEnabled, forKey: Keys.appLockEnabled) }
     }
     private(set) var isAuthenticating = false
@@ -68,6 +68,15 @@ final class AppSecurity {
         guard isAppLockEnabled else { return }
         isLocked = true
         promptOnNextActivation = true
+    }
+
+    /// Einschalten ohne Rückfrage, Ausschalten nur mit Face ID / Code.
+    func setAppLockEnabled(_ enabled: Bool) async {
+        if enabled {
+            isAppLockEnabled = true
+        } else if await authenticate(reason: "App-Sperre deaktivieren") {
+            isAppLockEnabled = false
+        }
     }
 
     func sceneDidBecomeActive() async {

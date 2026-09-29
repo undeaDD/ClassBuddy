@@ -2,12 +2,18 @@ import SwiftUI
 
 /// Oberste View: Navigation + Privatsphäre-Modus + App-Sperre + Pencil-Aktionen.
 struct RootView: View {
+    @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
+        @Bindable var app = app
         AppTabView()
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
+            // Einmal zentral statt in jeder Tab-Toolbar (vermeidet doppelte Präsentation).
+            .sheet(isPresented: $app.isSettingsPresented) {
+                SettingsView()
+            }
             .pencilQuickActions()
             .overlay {
                 if security.isLocked {

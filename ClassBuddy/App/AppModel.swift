@@ -5,7 +5,7 @@ import SwiftUI
 final class AppModel {
     var selectedTab: AppTab = .dashboard
     var isClassPickerPresented = false
-    var isNewClassSheetPresented = false
+    var isSettingsPresented = false
 
     var selectedClassID: UUID? {
         didSet { UserDefaults.standard.set(selectedClassID?.uuidString, forKey: Self.selectedClassKey) }

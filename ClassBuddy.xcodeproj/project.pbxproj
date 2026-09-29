@@ -27,6 +27,7 @@
 		F12FB0F533641B41BDBEB5EB /* AppSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00C330E0B4BABBCFBC77103 /* AppSymbol.swift */; };
 		FC3137C44371AC8BA5E47A08 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D8B9109166A9748354DC9CF /* AppModel.swift */; };
 		FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25255560972480F461747B91 /* SchoolClass.swift */; };
+		A5FD8E517C799BD4DAC748B9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		CF560C8A51BA20B8652DA054 /* ClassBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClassBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00C330E0B4BABBCFBC77103 /* AppSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSymbol.swift; sourceTree = "<group>"; };
 		D4907141D7C4A5AD78740E63 /* SeatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatingView.swift; sourceTree = "<group>"; };
+		EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -61,6 +63,7 @@
 				ED866CB00345985B1E112F36 /* Dashboard */,
 				DFC52AC249F52C349D9BECC9 /* Placeholder */,
 				B65EA5DACD9BE79FECB5B50D /* Seating */,
+				A1A4DAFDDF0D0B2BD02CD6E5 /* Settings */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -193,6 +196,14 @@
 			path = Dashboard;
 			sourceTree = "<group>";
 		};
+		A1A4DAFDDF0D0B2BD02CD6E5 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -266,6 +277,7 @@
 				7D30CD550BE8FF322743D8C7 /* LockScreenView.swift in Sources */,
 				52CA7612B1589A1A39DEF882 /* PencilQuickActions.swift in Sources */,
 				7C3F52454D9AB3B9E9BE5CAD /* PlaceholderView.swift in Sources */,
+				A5FD8E517C799BD4DAC748B9 /* SettingsView.swift in Sources */,
 				9207713D3C3A17C047A6AEFF /* RootView.swift in Sources */,
 				FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */,
 				7D161D3F8A7DAAFA1742A797 /* SeatingView.swift in Sources */,
