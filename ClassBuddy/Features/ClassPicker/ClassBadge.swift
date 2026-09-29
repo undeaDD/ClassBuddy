@@ -23,9 +23,18 @@ struct ClassBadge: View {
 struct ClassPickerButton: View {
     @Environment(AppModel.self) private var app
     let selectedClass: SchoolClass?
+    /// Tab, in dessen Toolbar dieser Button sitzt. Jeder Tab hat einen eigenen
+    /// Button – nur der im sichtbaren Tab darf das Popover zeigen.
+    let tab: AppTab
+
+    private var isPickerPresented: Binding<Bool> {
+        Binding(
+            get: { app.isClassPickerPresented && app.selectedTab == tab },
+            set: { app.isClassPickerPresented = $0 }
+        )
+    }
 
     var body: some View {
-        @Bindable var app = app
         Button {
             app.isClassPickerPresented = true
         } label: {
@@ -53,7 +62,7 @@ struct ClassPickerButton: View {
         .buttonStyle(.plain)
         .hoverEffect(.highlight)
         .accessibilityLabel(selectedClass.map { "\($0.title), Klasse wechseln" } ?? "Klasse auswählen")
-        .popover(isPresented: $app.isClassPickerPresented, arrowEdge: .top) {
+        .popover(isPresented: isPickerPresented, arrowEdge: .top) {
             ClassPickerView()
                 .frame(minWidth: 340, idealWidth: 360, minHeight: 360, idealHeight: 440)
         }

@@ -30,15 +30,4 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         case .seating: "Sitzplatzverwaltung: Sitzordnungen planen, speichern und wechseln."
         }
     }
-
-    var plannedFeatures: [String] {
-        switch self {
-        case .seating: [
-            "Raumlayout mit Tischen per Drag & Drop (auch mit dem Apple Pencil)",
-            "Mehrere Sitzordnungen pro Klasse (z. B. Klassenarbeit, Gruppenarbeit)",
-            "Zufällige / regelbasierte Verteilung",
-        ]
-        default: []
-        }
-    }
 }
