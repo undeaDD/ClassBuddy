@@ -10,8 +10,11 @@ struct EmptyStateView<Actions: View>: View {
     var body: some View {
         ContentUnavailableView {
             VStack(spacing: 12) {
+                // Feste Größe, damit SF Symbols und eigene SVG-Icons gleich groß sind.
                 symbol.image
-                    .font(.system(size: 56, weight: .regular))
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 64, height: 64)
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(.tint)
                 Text(title)

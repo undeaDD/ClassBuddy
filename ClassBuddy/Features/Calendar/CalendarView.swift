@@ -21,11 +21,13 @@ struct CalendarView: View {
         }
     }
 
+    private var weekNumber: Int {
+        calendar.component(.weekOfYear, from: weekStart)
+    }
+
     private var weekTitle: String {
-        let week = calendar.component(.weekOfYear, from: weekStart)
         let end = calendar.date(byAdding: .day, value: settings.visibleWeekdays.count - 1, to: weekStart) ?? weekStart
-        let range = "\(weekStart.formatted(.dateTime.day().month(.abbreviated))) – \(end.formatted(.dateTime.day().month(.abbreviated).year()))"
-        return "KW \(week) · \(range)"
+        return "\(weekStart.formatted(.dateTime.day().month(.abbreviated))) – \(end.formatted(.dateTime.day().month(.abbreviated).year()))"
     }
 
     var body: some View {
@@ -68,7 +70,12 @@ struct CalendarView: View {
 
     private var dayHeader: some View {
         HStack(spacing: 0) {
-            Color.clear.frame(width: Self.gutterWidth, height: 1)
+            // Kalenderwoche über der Zeitspalte
+            Text("KW \(weekNumber)")
+                .font(.caption.weight(.semibold))
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .frame(width: Self.gutterWidth)
             ForEach(days, id: \.weekday) { day in
                 let isToday = calendar.isDateInToday(day.date)
                 VStack(spacing: 2) {

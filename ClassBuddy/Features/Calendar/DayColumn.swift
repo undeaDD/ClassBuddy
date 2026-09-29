@@ -191,21 +191,28 @@ private struct SlotCell: View {
                 VStack(alignment: .leading, spacing: 1) {
                     HStack(spacing: 4) {
                         Text(schoolClass.shortName).font(.caption.weight(.bold))
+                            .sensitive()
                         if !lesson.isRecurring {
                             Image(systemName: "1.circle").font(.caption2)
                         }
                     }
                     if !lesson.subject.isEmpty {
                         Text(lesson.subject).font(.caption2)
+                            .sensitive()
                     }
                 }
                 .foregroundStyle(color)
                 .padding(6)
+                .padding(.leading, 3)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .background(color.opacity(0.18), in: shape)
-                .overlay(alignment: .leading) {
-                    Rectangle().fill(color).frame(width: 3).clipShape(shape)
+                // Fläche + Farbstreifen links gemeinsam auf die Rundung zuschneiden.
+                .background {
+                    HStack(spacing: 0) {
+                        color.frame(width: 4)
+                        color.opacity(0.18)
+                    }
                 }
+                .clipShape(shape)
             } else {
                 Text("\(slot.number).")
                     .font(.caption2.weight(.medium))
