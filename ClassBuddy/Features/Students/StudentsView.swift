@@ -114,20 +114,20 @@ struct StudentsView: View {
         // Nach rechts wischen: bearbeiten
         .swipeActions(edge: .leading) {
             if canEdit {
-                Button("Bearbeiten", systemImage: "pencil") { editorRoute = .edit(student) }
+                Button("Bearbeiten", image: .editPencil) { editorRoute = .edit(student) }
                     .tint(.accentColor)
             }
         }
         // Nach links wischen: löschen
         .swipeActions(edge: .trailing) {
             if canEdit {
-                Button("Löschen", systemImage: "trash", role: .destructive) { studentPendingDeletion = student }
+                Button("Löschen", image: .trash, role: .destructive) { studentPendingDeletion = student }
             }
         }
         .contextMenu {
             if canEdit {
-                Button("Bearbeiten", systemImage: "pencil") { editorRoute = .edit(student) }
-                Button("Löschen", systemImage: "trash", role: .destructive) { studentPendingDeletion = student }
+                Button("Bearbeiten", image: .editPencil) { editorRoute = .edit(student) }
+                Button("Löschen", image: .trash, role: .destructive) { studentPendingDeletion = student }
             }
         }
     }

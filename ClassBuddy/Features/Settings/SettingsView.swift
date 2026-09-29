@@ -15,12 +15,19 @@ struct SettingsView: View {
         Form {
             Section {
                 NavigationLink {
+                    TeacherProfileView()
+                } label: {
+                    Label("Mein Profil", systemImage: "person.crop.circle")
+                }
+                NavigationLink {
                     SchoolSettingsView()
                 } label: {
                     Label("Schuleinstellungen", image: .bank)
                 }
+            } header: {
+                Text("Weitere Einstellungen")
             } footer: {
-                Text("Stundenraster, Pausen, Wochenende, Ferien & Feiertage.")
+                Text("Schule, Stundenraster, Pausen, Wochenende, Ferien & Feiertage.")
             }
 
             Section {

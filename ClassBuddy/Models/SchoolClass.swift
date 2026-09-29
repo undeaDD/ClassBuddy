@@ -22,6 +22,12 @@ final class SchoolClass {
     @Relationship(deleteRule: .cascade, inverse: \Lesson.schoolClass)
     var lessons: [Lesson] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \DashboardLink.schoolClass)
+    var dashboardLinks: [DashboardLink] = []
+
+    /// Reihenfolge der Übersichts-Kacheln (Kachel-IDs, siehe `DashboardView`).
+    var dashboardOrder: [String] = []
+
     init(
         id: UUID = UUID(),
         shortName: String,

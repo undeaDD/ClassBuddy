@@ -91,8 +91,8 @@ struct ClassEditorView: View {
                                 .frame(width: 36, height: 36)
                                 .overlay {
                                     if option == color {
-                                        Image(systemName: "checkmark")
-                                            .font(.caption.bold())
+                                        Image(.check)
+                                            .iconSize(18)
                                             .foregroundStyle(.white)
                                     }
                                 }

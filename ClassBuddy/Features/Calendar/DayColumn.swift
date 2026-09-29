@@ -4,8 +4,10 @@ import SwiftUI
 /// Eine Tagesspalte (0–24 Uhr): Raster, Pausen, Stunden-Slots, Termine.
 /// - Tipp auf einen Slot: Klasse + Fach festlegen.
 /// - Tipp auf freie Fläche: neuer Termin (auf 15 Minuten gerundet).
+/// Im Privatsphäre-Modus nur lesend (keine Popover zum Anlegen/Bearbeiten).
 struct DayColumn: View {
     @Environment(SchoolSettings.self) private var settings
+    @Environment(AppSecurity.self) private var security
 
     let date: Date
     let weekday: Int
@@ -26,12 +28,15 @@ struct DayColumn: View {
 
     private var holiday: Holiday? { schedule.holiday(on: date) }
 
+    private var canEdit: Bool { !security.isPrivacyModeOn }
+
     var body: some View {
         ZStack(alignment: .top) {
             // Freie Fläche → neuer Termin
             Color.clear
                 .contentShape(.rect)
                 .onTapGesture { location in
+                    guard canEdit else { return }
                     let minute = Int((location.y / hourHeight * 60 / 15).rounded(.down)) * 15
                     newEntryMinute = min(max(minute, 0), 24 * 60 - 15)
                 }
@@ -54,6 +59,14 @@ struct DayColumn: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        // Privatsphäre-Modus an → offene Popover sofort schließen.
+        .onChange(of: security.isPrivacyModeOn) { _, isOn in
+            if isOn {
+                selectedSlot = nil
+                newEntryMinute = nil
+                editingEntry = nil
+            }
+        }
         .popover(
             isPresented: Binding(get: { newEntryMinute != nil }, set: { if !$0 { newEntryMinute = nil } }),
             attachmentAnchor: .point(UnitPoint(x: 0.5, y: y(newEntryMinute ?? 0) / totalHeight))
@@ -111,7 +124,7 @@ struct DayColumn: View {
         return SlotCell(slot: slot, lesson: lesson, isDimmed: isDimmed)
             .frame(height: y(slot.end - slot.start))
             .padding(.horizontal, 3)
-            .onTapGesture { selectedSlot = slot }
+            .onTapGesture { if canEdit { selectedSlot = slot } }
             .hoverEffect(.highlight)
             .popover(isPresented: Binding(
                 get: { selectedSlot == slot },
@@ -135,7 +148,7 @@ struct DayColumn: View {
             .frame(height: y(duration))
             .padding(.leading, 12)
             .padding(.trailing, 3)
-            .onTapGesture { editingEntry = entry }
+            .onTapGesture { if canEdit { editingEntry = entry } }
             .hoverEffect(.lift)
             .popover(isPresented: Binding(
                 get: { editingEntry?.id == entry.id },

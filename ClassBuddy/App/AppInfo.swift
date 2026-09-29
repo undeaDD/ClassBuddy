@@ -3,8 +3,8 @@ import UIKit
 
 /// App-Metadaten (Version, Feedback-Adresse).
 enum AppInfo {
-    /// Empfänger für „Feedback“. Leer = Mail öffnet ohne Empfänger.
-    static let feedbackEmail = ""
+    /// Empfänger für „Feedback“.
+    static let feedbackEmail = "dominic.drees@live.de"
 
     static var version: String {
         let info = Bundle.main.infoDictionary

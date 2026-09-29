@@ -1,10 +1,11 @@
 import SwiftData
 import SwiftUI
 
-/// Einstellungen → Schuleinstellungen: Stundenraster, Pausen, Kalender, Ferien.
+/// Einstellungen → Schuleinstellungen: Schule, Stundenraster, Pausen, Kalender, Ferien.
 struct SchoolSettingsView: View {
     @Environment(SchoolSettings.self) private var settings
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openURL) private var openURL
     @Query(sort: \Holiday.startDate) private var holidays: [Holiday]
 
     @State private var isImporting = false
@@ -12,7 +13,42 @@ struct SchoolSettingsView: View {
 
     var body: some View {
         @Bindable var settings = settings
+        let school = $settings.values.school
         Form {
+            Section("Schule") {
+                TextField("Name der Schule", text: school.name)
+                    .textContentType(.organizationName)
+                HStack {
+                    TextField("Website", text: school.website)
+                        .textContentType(.URL)
+                        .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    if let url = settings.values.school.websiteURL {
+                        Button("Öffnen", image: .navArrowRight) { openURL(url) }
+                            .labelStyle(.iconOnly)
+                    }
+                }
+                TextField("Straße und Hausnummer", text: school.street)
+                    .textContentType(.fullStreetAddress)
+                HStack {
+                    TextField("PLZ", text: school.postalCode)
+                        .textContentType(.postalCode)
+                        .keyboardType(.numberPad)
+                        .frame(maxWidth: 100)
+                    TextField("Ort", text: school.city)
+                        .textContentType(.addressCity)
+                }
+                TextField("Telefon (Sekretariat)", text: school.phone)
+                    .textContentType(.telephoneNumber)
+                    .keyboardType(.phonePad)
+                TextField("E-Mail (Sekretariat)", text: school.email)
+                    .textContentType(.emailAddress)
+                    .keyboardType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+            }
+
             Section {
                 DatePicker("Beginn", selection: timeBinding($settings.values.dayStart), displayedComponents: .hourAndMinute)
                 DatePicker("Ende", selection: timeBinding($settings.values.dayEnd), displayedComponents: .hourAndMinute)

@@ -40,15 +40,6 @@ final class AppSecurity {
         return context.biometryType
     }
 
-    var biometrySymbol: String {
-        switch biometryType {
-        case .faceID: "faceid"
-        case .touchID: "touchid"
-        case .opticID: "opticid"
-        default: "lock"
-        }
-    }
-
     var biometryName: String {
         switch biometryType {
         case .faceID: "Face ID"

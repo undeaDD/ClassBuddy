@@ -32,7 +32,7 @@ struct LockScreenView: View {
                 Button {
                     Task { await security.unlock() }
                 } label: {
-                    Label("Mit \(security.biometryName) entsperren", systemImage: security.biometrySymbol)
+                    Label("Mit \(security.biometryName) entsperren", image: .fingerprintLockCircle)
                         .padding(.horizontal, 8)
                 }
                 .buttonStyle(.glassProminent)
@@ -58,8 +58,8 @@ struct PrivacyCoverView: View {
             .fill(.regularMaterial)
             .ignoresSafeArea()
             .overlay {
-                Image(systemName: "lock.shield")
-                    .font(.system(size: 56))
+                Image(.lock)
+                    .iconSize(56)
                     .foregroundStyle(.secondary)
             }
     }
