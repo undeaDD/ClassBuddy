@@ -14,8 +14,6 @@ struct EmptyStateView<Actions: View>: View {
                     .font(.system(size: 56, weight: .regular))
                     .symbolRenderingMode(.hierarchical)
                     .foregroundStyle(.tint)
-                    .frame(width: 112, height: 112)
-                    .background(.tint.opacity(0.12), in: .circle)
                 Text(title)
                     .font(.title2.bold())
             }

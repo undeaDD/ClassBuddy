@@ -24,17 +24,6 @@ struct SettingsView: View {
             }
 
             Section {
-                LabeledContent {
-                    PrivacyModeButton()
-                        .labelStyle(.iconOnly)
-                } label: {
-                    Label("Privatsphäre-Modus", systemImage: "eye.slash")
-                }
-            } footer: {
-                Text("Blendet sensible Daten auf allen Seiten aus. Ausschalten erfordert \(security.biometryName).")
-            }
-
-            Section {
                 LabeledContent("Version", value: Bundle.main.versionString)
             }
         }

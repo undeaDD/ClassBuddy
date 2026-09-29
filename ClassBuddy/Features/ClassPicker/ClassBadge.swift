@@ -7,8 +7,15 @@ struct ClassBadge: View {
     var size: CGFloat = 36
 
     var body: some View {
-        Text(shortName.isEmpty ? "?" : shortName)
-            .font(.system(size: size * 0.4, weight: .bold, design: .rounded))
+        Group {
+            if shortName.isEmpty {
+                Image(systemName: "plus")
+                    .font(.system(size: size * 0.42, weight: .semibold))
+            } else {
+                Text(shortName)
+                    .font(.system(size: size * 0.4, weight: .bold, design: .rounded))
+            }
+        }
             .monospacedDigit()
             .minimumScaleFactor(0.5)
             .lineLimit(1)
@@ -41,7 +48,7 @@ struct ClassPickerButton: View {
             HStack(spacing: 10) {
                 ClassBadge(
                     shortName: selectedClass?.shortName ?? "",
-                    color: selectedClass?.color.color ?? .gray
+                    color: selectedClass?.color.color ?? .accentColor
                 )
                 VStack(alignment: .leading, spacing: 0) {
                     Text(selectedClass?.title ?? "Klasse auswählen")

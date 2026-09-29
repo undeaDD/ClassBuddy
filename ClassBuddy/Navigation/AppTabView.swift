@@ -18,6 +18,7 @@ struct AppTabView: View {
                 .customizationID(tab.customizationID)
                 // Übersicht bleibt immer an erster Stelle.
                 .customizationBehavior(tab == .dashboard ? .disabled : .automatic, for: .sidebar, .tabBar)
+                .defaultVisibility(tab.isInTabBarByDefault ? .visible : .hidden, for: .tabBar)
             }
         }
         .tabViewStyle(.sidebarAdaptable)

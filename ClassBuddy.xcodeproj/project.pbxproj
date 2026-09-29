@@ -33,6 +33,7 @@
 		4CD0721372A7BA7D43623696 /* ClassEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E35B3B7628591F7C2DCD3DD3 /* ClassEditorView.swift */; };
 		A1BB765EDBE82024A07277AE /* StudentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C838201C48843117125D1F2 /* StudentsView.swift */; };
 		9D1D961672A7E5212AF210D5 /* StudentEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB87ECDFF4B646B1CAC9D192 /* StudentEditorView.swift */; };
+		C35ECCAEC6F10CEC8F317C26 /* ClassScopedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF9124C1931B405BB777E91 /* ClassScopedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +64,7 @@
 		E35B3B7628591F7C2DCD3DD3 /* ClassEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassEditorView.swift; sourceTree = "<group>"; };
 		9C838201C48843117125D1F2 /* StudentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentsView.swift; sourceTree = "<group>"; };
 		CB87ECDFF4B646B1CAC9D192 /* StudentEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentEditorView.swift; sourceTree = "<group>"; };
+		6FF9124C1931B405BB777E91 /* ClassScopedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassScopedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -161,6 +163,7 @@
 		D318CA121CD9FB8D64C14FB9 /* ClassPicker */ = {
 			isa = PBXGroup;
 			children = (
+				6FF9124C1931B405BB777E91 /* ClassScopedView.swift */,
 				E35B3B7628591F7C2DCD3DD3 /* ClassEditorView.swift */,
 				8737C4298AA78E18F6D25A7E /* ClassBadge.swift */,
 				52FF26FC3386B96682B298C6 /* ClassPickerView.swift */,
@@ -286,6 +289,7 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				C35ECCAEC6F10CEC8F317C26 /* ClassScopedView.swift in Sources */,
 				9D1D961672A7E5212AF210D5 /* StudentEditorView.swift in Sources */,
 				A1BB765EDBE82024A07277AE /* StudentsView.swift in Sources */,
 				4CD0721372A7BA7D43623696 /* ClassEditorView.swift in Sources */,
