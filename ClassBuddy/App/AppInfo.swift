@@ -6,6 +6,12 @@ enum AppInfo {
     /// Empfänger für „Feedback“.
     static let feedbackEmail = "dominic.drees@live.de"
 
+    /// Quellcode auf GitHub. `nil` = Zeile in den Einstellungen deaktiviert („folgt“).
+    static let sourceCodeURL: URL? = nil
+
+    /// Spendenlink (PayPal). `nil` = Zeile in den Einstellungen deaktiviert („folgt“).
+    static let donationURL: URL? = nil
+
     static var version: String {
         let info = Bundle.main.infoDictionary
         let version = info?["CFBundleShortVersionString"] as? String ?? "–"

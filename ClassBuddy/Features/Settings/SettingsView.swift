@@ -28,19 +28,27 @@ struct SettingsView: View {
 
             Section("Rechtliches") {
                 ForEach(LegalDocument.allCases) { document in
-                    NavigationLink(document.title) {
+                    NavigationLink {
                         LegalDocumentView(document: document)
+                    } label: {
+                        Label(document.title, symbol: document.symbol)
                     }
                 }
             }
 
             Section {
+                linkRow("Quellcode auf GitHub", symbol: .system("chevron.left.forwardslash.chevron.right"), url: AppInfo.sourceCodeURL)
+                linkRow("Spenden (PayPal)", symbol: .custom(.coinsSwap), url: AppInfo.donationURL)
                 Button {
                     openURL(AppInfo.feedbackMailURL)
                 } label: {
                     Label("Feedback senden", image: .sendMail)
                 }
-                LabeledContent("Version", value: AppInfo.version)
+                LabeledContent {
+                    Text(AppInfo.version)
+                } label: {
+                    Label("Version", systemImage: "number")
+                }
             } footer: {
                 Text("Made with ❤️ by Devsforge.de")
                     .frame(maxWidth: .infinity)
@@ -49,6 +57,21 @@ struct SettingsView: View {
         }
         .navigationTitle(AppTab.settings.title)
         .appChrome(tab: .settings)
+    }
+
+    /// Externer Link; ohne URL deaktiviert mit Hinweis „folgt“.
+    @ViewBuilder
+    private func linkRow(_ title: String, symbol: AppSymbol, url: URL?) -> some View {
+        Button {
+            if let url { openURL(url) }
+        } label: {
+            LabeledContent {
+                if url == nil { Text("folgt") }
+            } label: {
+                Label(title, symbol: symbol)
+            }
+        }
+        .disabled(url == nil)
     }
 }
 
@@ -59,6 +82,14 @@ enum LegalDocument: String, CaseIterable, Identifiable {
     case licenses
 
     var id: String { rawValue }
+
+    var symbol: AppSymbol {
+        switch self {
+        case .imprint: .system("info.circle")
+        case .privacy: .system("hand.raised")
+        case .licenses: .system("doc.text")
+        }
+    }
 
     var title: String {
         switch self {
