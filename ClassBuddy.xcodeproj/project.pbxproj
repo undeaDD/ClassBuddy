@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 100;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		041EDD8E52FC9A70B471C5CD /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6AB5A47C4368067847CE31 /* AppTabView.swift */; };
+		12C5344E306BEED40087F828 /* ClassBuddy 2.icon in Resources */ = {isa = PBXBuildFile; fileRef = 12C5344D306BEED40087F828 /* ClassBuddy 2.icon */; };
 		19A4D9C9FE27C74F05E89685 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBBFF9F58E42D5756F90FD7 /* SettingsView.swift */; };
 		1F038FAF7CB75D5DFBAFBCE0 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3788C18526F115CA2D3BA045 /* AppTab.swift */; };
 		2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B1F9ED4838514B91933B244 /* Assets.xcassets */; };
@@ -32,6 +33,7 @@
 /* Begin PBXFileReference section */
 		09ECD50CA17F661E96A9CF54 /* AppChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppChrome.swift; sourceTree = "<group>"; };
 		0A24D388FE7E9FD196AC2985 /* ClassBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassBuddyApp.swift; sourceTree = "<group>"; };
+		12C5344D306BEED40087F828 /* ClassBuddy 2.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "ClassBuddy 2.icon"; sourceTree = "<group>"; };
 		1D8B9109166A9748354DC9CF /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		1FBBFF9F58E42D5756F90FD7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		2446899A0B153251C0E2C851 /* LockScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockScreenView.swift; sourceTree = "<group>"; };
@@ -48,7 +50,7 @@
 		AE6AB5A47C4368067847CE31 /* AppTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabView.swift; sourceTree = "<group>"; };
 		AFB1EB8B8B1D4CF49FC03C8E /* AppSecurity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSecurity.swift; sourceTree = "<group>"; };
 		C44C1138E7C38D4F949012B0 /* PencilQuickActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilQuickActions.swift; sourceTree = "<group>"; };
-		CF560C8A51BA20B8652DA054 /* ClassBuddy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ClassBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF560C8A51BA20B8652DA054 /* ClassBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClassBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00C330E0B4BABBCFBC77103 /* AppSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSymbol.swift; sourceTree = "<group>"; };
 		D4907141D7C4A5AD78740E63 /* SeatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeatingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -147,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				A962AB18934B82409DC86202 /* ClassBuddy */,
+				12C5344D306BEED40087F828 /* ClassBuddy 2.icon */,
 				E30F4A85AAFD024ABEBCCFFE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -213,11 +216,7 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = ClassBuddy;
-			packageProductDependencies = (
-			);
 			productName = ClassBuddy;
 			productReference = CF560C8A51BA20B8652DA054 /* ClassBuddy.app */;
 			productType = "com.apple.product-type.application";
@@ -229,9 +228,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-				};
+				LastUpgradeCheck = 2710;
 			};
 			buildConfigurationList = 4809B4B43BADC3AA53292CB9 /* Build configuration list for PBXProject "ClassBuddy" */;
 			developmentRegion = de;
@@ -242,7 +239,7 @@
 			);
 			mainGroup = D2D9DFBA05FA154E62236ED7;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 100;
 			productRefGroup = E30F4A85AAFD024ABEBCCFFE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -255,18 +252,16 @@
 /* Begin PBXResourcesBuildPhase section */
 		D2A15B5DE3EB4BE48211762D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
+				12C5344E306BEED40087F828 /* ClassBuddy 2.icon in Resources */,
 				2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				97291ACA1BE8C51D1F34EA18 /* AppChrome.swift in Sources */,
 				FC3137C44371AC8BA5E47A08 /* AppModel.swift in Sources */,
@@ -288,15 +283,15 @@
 				9CFB32BA7C1FF3D07DAE9AD2 /* Sensitive.swift in Sources */,
 				19A4D9C9FE27C74F05E89685 /* SettingsView.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		4E8CFAEB757EE7E0E80343BA /* Debug */ = {
+		4E8CFAEB757EE7E0E80343BA /* Debug configuration for PBXProject "ClassBuddy" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -329,8 +324,10 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = AXLC3PQNC8;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -352,6 +349,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -361,10 +359,11 @@
 			};
 			name = Debug;
 		};
-		6E0D7CD15153F5DECF2A94DD /* Release */ = {
+		6E0D7CD15153F5DECF2A94DD /* Release configuration for PBXProject "ClassBuddy" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -397,8 +396,10 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = AXLC3PQNC8;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -413,6 +414,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -422,10 +424,10 @@
 			};
 			name = Release;
 		};
-		71A69ED0CB444955D3CAED41 /* Debug */ = {
+		71A69ED0CB444955D3CAED41 /* Debug configuration for PBXNativeTarget "ClassBuddy" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				ASSETCATALOG_COMPILER_APPICON_NAME = ClassBuddy;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -439,16 +441,20 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = de.drees.ClassBuddy;
+				PRODUCT_BUNDLE_IDENTIFIER = de.devsforge.ClassBuddy;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
-		94FBFD73EB71B64867427343 /* Release */ = {
+		94FBFD73EB71B64867427343 /* Release configuration for PBXNativeTarget "ClassBuddy" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				ASSETCATALOG_COMPILER_APPICON_NAME = ClassBuddy;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
@@ -462,9 +468,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = de.drees.ClassBuddy;
+				PRODUCT_BUNDLE_IDENTIFIER = de.devsforge.ClassBuddy;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};
@@ -474,19 +484,17 @@
 		4809B4B43BADC3AA53292CB9 /* Build configuration list for PBXProject "ClassBuddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4E8CFAEB757EE7E0E80343BA /* Debug */,
-				6E0D7CD15153F5DECF2A94DD /* Release */,
+				4E8CFAEB757EE7E0E80343BA /* Debug configuration for PBXProject "ClassBuddy" */,
+				6E0D7CD15153F5DECF2A94DD /* Release configuration for PBXProject "ClassBuddy" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		CB9E3E1890B0AFCB4B871A57 /* Build configuration list for PBXNativeTarget "ClassBuddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				71A69ED0CB444955D3CAED41 /* Debug */,
-				94FBFD73EB71B64867427343 /* Release */,
+				71A69ED0CB444955D3CAED41 /* Debug configuration for PBXNativeTarget "ClassBuddy" */,
+				94FBFD73EB71B64867427343 /* Release configuration for PBXNativeTarget "ClassBuddy" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
