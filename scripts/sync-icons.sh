@@ -15,7 +15,8 @@ mkdir -p "$source_dir" "$catalog"
 touch "$source_dir/.gitkeep"
 print '{"info":{"author":"xcode","version":1}}' > "$catalog/Contents.json"
 
-for svg in "$source_dir"/*.svg(N); do
+setopt null_glob # leerer Ordner → keine Schleifendurchläufe
+for svg in "$source_dir"/*.svg; do
   name="${svg:t:r}"
   set="$catalog/$name.imageset"
   mkdir -p "$set"

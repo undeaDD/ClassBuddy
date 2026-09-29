@@ -4,6 +4,7 @@ name: Build IPA
 # Runs only on demand:
 # - "Run workflow" button (Actions tab): build + upload the .ipa as a workflow artifact
 # - release tag "v*" (e.g. v1.0.0): additionally attach the .ipa to a GitHub release
+# Actions are pinned to commit SHAs (supply-chain safety); Dependabot keeps them updated.
 
 on:
   workflow_dispatch:
@@ -21,12 +22,12 @@ jobs:
   build:
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       # Newest installed Xcode (incl. betas): the app icon is an Icon Composer file
       # from Xcode 27, older actool versions crash on it.
       - name: Select Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
         with:
           xcode-version: latest
 
@@ -57,7 +58,7 @@ jobs:
           ls -lh ClassBuddy.ipa
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: ClassBuddy-ipa
           path: ClassBuddy.ipa
@@ -65,7 +66,7 @@ jobs:
 
       - name: Attach to release
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           files: ClassBuddy.ipa
           generate_release_notes: true

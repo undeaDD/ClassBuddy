@@ -307,16 +307,25 @@ private nonisolated final class WorksheetParser: NSObject, XMLParserDelegate {
         case "v", "t":
             isCollecting = false
         case "c":
-            let value: String = switch currentType {
-            case "s": Int(buffer).flatMap { sharedStrings.indices.contains($0) ? sharedStrings[$0] : nil } ?? ""
-            case "b": buffer == "1" ? "ja" : "nein"
-            default: buffer
-            }
+            let value = cellValue()
             if !value.isEmpty, currentColumn >= 0 {
                 rows[currentRow, default: [:]][currentColumn] = value
             }
         default:
             break
+        }
+    }
+
+    /// Zellwert je Typ: Shared String, Wahrheitswert oder Rohwert (Zahl, Text).
+    private func cellValue() -> String {
+        switch currentType {
+        case "s":
+            guard let index = Int(buffer), sharedStrings.indices.contains(index) else { return "" }
+            return sharedStrings[index]
+        case "b":
+            return buffer == "1" ? "ja" : "nein"
+        default:
+            return buffer
         }
     }
 }

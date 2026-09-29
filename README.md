@@ -1,6 +1,14 @@
-# ClassBuddy
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/app-icon-dark.png">
+    <img src="docs/app-icon.png" alt="ClassBuddy app icon" width="160" height="160">
+  </picture>
+</p>
+
+<h1 align="center">ClassBuddy</h1>
 
 [![Build IPA](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml)
+[![Semgrep](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml)
 [![Latest release](https://img.shields.io/github/v/release/undeaDD/ClassBuddy?label=version&color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/undeaDD/ClassBuddy/total?color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases)
 ![iPadOS](https://img.shields.io/badge/iPadOS-26%2B-000000?logo=apple)
