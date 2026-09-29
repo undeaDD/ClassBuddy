@@ -19,6 +19,9 @@ final class SchoolClass {
     @Relationship(deleteRule: .cascade, inverse: \Student.schoolClass)
     var students: [Student] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \Lesson.schoolClass)
+    var lessons: [Lesson] = []
+
     init(
         id: UUID = UUID(),
         shortName: String,

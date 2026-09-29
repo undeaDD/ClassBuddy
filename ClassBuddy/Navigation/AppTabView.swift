@@ -39,8 +39,8 @@ struct AppTabView: View {
     private func destination(for tab: AppTab) -> some View {
         switch tab {
         case .dashboard: DashboardView()
+        case .calendar: CalendarView()
         case .students: StudentsView()
-        case .seating: SeatingView()
         case .settings: SettingsView()
         }
     }
