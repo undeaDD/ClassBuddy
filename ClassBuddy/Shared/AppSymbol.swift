@@ -7,11 +7,12 @@ import UIKit
 /// - `private`: interne SF Symbols (zu finden mit der App „PrivateSymbols“,
 ///   github.com/quentinfasquel/PrivateSymbols). Nutzt `Image(_internalSystemName:)`
 ///   – nur für private Distribution geeignet, nicht App-Store-sicher.
-/// - `custom`: als Custom Symbol ins Asset-Katalog exportierte Symbole (App-Store-sicher).
+/// - `custom`: eigene Icons aus `Assets.xcassets/Icons` (SVG, Template-Rendering,
+///   übernimmt also Tint/Vordergrundfarbe). Neue SVGs dort als Image Set ablegen.
 nonisolated enum AppSymbol: Hashable, Sendable {
     case system(String)
     case `private`(String, fallback: String)
-    case custom(String)
+    case custom(ImageResource)
 
     var image: Image {
         switch self {
@@ -23,8 +24,8 @@ nonisolated enum AppSymbol: Hashable, Sendable {
             } else {
                 Image(systemName: fallback)
             }
-        case .custom(let name):
-            Image(name)
+        case .custom(let resource):
+            Image(resource)
         }
     }
 

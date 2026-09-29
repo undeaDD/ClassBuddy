@@ -57,9 +57,8 @@ struct PrivacyModeButton: View {
         } label: {
             Label(
                 isOn ? "Privatsphäre-Modus aus" : "Privatsphäre-Modus an",
-                systemImage: isOn ? "eye.slash.fill" : "eye"
+                image: isOn ? .eyeClosed : .eye
             )
-            .contentTransition(.symbolEffect(.replace))
         }
         .tint(isOn ? .orange : nil)
         .disabled(security.isAuthenticating)
