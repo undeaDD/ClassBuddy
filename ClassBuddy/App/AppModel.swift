@@ -21,14 +21,26 @@ final class AppModel {
         selectedClassID = UserDefaults.standard.string(forKey: Self.selectedClassKey).flatMap(UUID.init)
     }
 
+    /// Tab wechseln. Ist das Klassen-Popover offen, wird es zuerst geschlossen:
+    /// Die Tab-Leiste bleibt bei offenem Popover antippbar, und Popover-Schließen
+    /// plus Tab-Wechsel im selben Moment bringt UIKit zum Absturz.
     func open(_ tab: AppTab) {
-        selectedTab = tab
+        guard tab != selectedTab else { return }
+        guard isClassPickerPresented else {
+            selectedTab = tab
+            return
+        }
+        isClassPickerPresented = false
+        Task {
+            try? await Task.sleep(for: .milliseconds(350))
+            selectedTab = tab
+        }
     }
 
     /// Kalender öffnen, gefiltert auf eine Klasse, an einem bestimmten Datum.
     func openCalendar(focusing classID: UUID?, at date: Date? = nil) {
         calendarFocusClassID = classID
         calendarJumpDate = date
-        selectedTab = .calendar
+        open(.calendar)
     }
 }

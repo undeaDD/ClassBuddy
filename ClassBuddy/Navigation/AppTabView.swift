@@ -15,7 +15,7 @@ struct AppTabView: View {
                 if tab.isAction {
                     perform(tab)
                 } else {
-                    app.selectedTab = tab
+                    app.open(tab)
                 }
             }
         )
