@@ -84,8 +84,8 @@ struct AppSettingsView: View {
             }
 
             Section {
-                Button("Exportieren (Excel)", image: .cloudDownload, action: export)
-                Button("Importieren (Excel)", systemImage: "square.and.arrow.down") {
+                Button("Exportieren (Excel)", systemImage: "square.and.arrow.up", action: export)
+                Button("Importieren (Excel)", image: .cloudDownload) {
                     isImporterPresented = true
                 }
             } header: {
