@@ -54,6 +54,17 @@ struct AppSettingsView: View {
     @State private var pendingImport: Data?
     @State private var transferMessage: String?
 
+    private static let deleteInfo = """
+        Löscht Klassen, Schüler, Stunden, Termine, Ferien, Kacheln und Dokumente sowie \
+        Profil- und Schuleinstellungen. App-Sperre und Darstellung bleiben erhalten.
+        """
+
+    private static let transferInfo = """
+        Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, \
+        Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. \
+        Ein Import ersetzt alle Daten. Dokumente (Dateien) sind nicht enthalten.
+        """
+
     private var appLockBinding: Binding<Bool> {
         Binding(
             get: { security.isAppLockEnabled },
@@ -91,7 +102,7 @@ struct AppSettingsView: View {
             } header: {
                 Text("Export & Import")
             } footer: {
-                Text(transferMessage ?? "Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. Ein Import ersetzt alle Daten. Dokumente (Dateien) sind nicht enthalten.")
+                Text(transferMessage ?? Self.transferInfo)
             }
             .disabled(security.isPrivacyModeOn)
 
@@ -110,7 +121,7 @@ struct AppSettingsView: View {
             } header: {
                 Text("Daten")
             } footer: {
-                Text(deleteMessage ?? "Löscht Klassen, Schüler, Stunden, Termine, Ferien, Kacheln und Dokumente sowie Profil- und Schuleinstellungen. App-Sperre und Darstellung bleiben erhalten.")
+                Text(deleteMessage ?? Self.deleteInfo)
             }
         }
         .navigationTitle("App-Einstellungen")

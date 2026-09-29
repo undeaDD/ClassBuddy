@@ -168,8 +168,8 @@ struct SchoolSettingsView: View {
                 Calendar.school.date(byAdding: .minute, value: minutes.wrappedValue, to: Calendar.school.startOfDay(for: .now)) ?? .now
             },
             set: { date in
-                let c = Calendar.school.dateComponents([.hour, .minute], from: date)
-                minutes.wrappedValue = (c.hour ?? 0) * 60 + (c.minute ?? 0)
+                let parts = Calendar.school.dateComponents([.hour, .minute], from: date)
+                minutes.wrappedValue = (parts.hour ?? 0) * 60 + (parts.minute ?? 0)
             }
         )
     }

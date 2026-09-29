@@ -175,8 +175,8 @@ struct DayColumn: View {
     // MARK: Hilfen
 
     private func minutes(of date: Date) -> Int {
-        let c = calendar.dateComponents([.hour, .minute], from: date)
-        return (c.hour ?? 0) * 60 + (c.minute ?? 0)
+        let parts = calendar.dateComponents([.hour, .minute], from: date)
+        return (parts.hour ?? 0) * 60 + (parts.minute ?? 0)
     }
 }
 

@@ -114,7 +114,7 @@ nonisolated enum ZipArchive {
             let commentLength = Int(bytes.le16(at: offset + 32))
             let localOffset = Int(bytes.le32(at: offset + 42))
             guard offset + 46 + nameLength <= bytes.count else { throw ZipError.corrupt }
-            let name = String(decoding: bytes[(offset + 46)..<(offset + 46 + nameLength)], as: UTF8.self)
+            let name = String(bytes: bytes[(offset + 46)..<(offset + 46 + nameLength)], encoding: .utf8) ?? ""
 
             guard localOffset + 30 <= bytes.count, bytes.le32(at: localOffset) == 0x0403_4B50 else { throw ZipError.corrupt }
             let dataStart = localOffset + 30 + Int(bytes.le16(at: localOffset + 26)) + Int(bytes.le16(at: localOffset + 28))
@@ -151,9 +151,9 @@ nonisolated enum ZipArchive {
     // MARK: CRC-32
 
     private static let crcTable: [UInt32] = (0..<256).map { value in
-        var c = UInt32(value)
-        for _ in 0..<8 { c = (c & 1) != 0 ? 0xEDB8_8320 ^ (c >> 1) : c >> 1 }
-        return c
+        var crc = UInt32(value)
+        for _ in 0..<8 { crc = (crc & 1) != 0 ? 0xEDB8_8320 ^ (crc >> 1) : crc >> 1 }
+        return crc
     }
 
     private static func crc32(_ data: Data) -> UInt32 {

@@ -1,0 +1,26 @@
+#!/bin/zsh
+# pre-commit: SwiftLint ohne Fehler + alle Tests grün.
+# Läuft nur, wenn Swift-Code oder das Xcode-Projekt geändert wurde.
+# Notfalls überspringen: git commit --no-verify
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+if ! git diff --cached --name-only --diff-filter=ACMR | grep -qE '\.(swift|pbxproj|xcscheme)$|^\.swiftlint\.yml$'; then
+  exit 0
+fi
+
+print "▸ SwiftLint …"
+if ! command -v swiftlint >/dev/null; then
+  print -u2 "✗ SwiftLint fehlt: brew install swiftlint"
+  exit 1
+fi
+lint_output="$(swiftlint lint --quiet 2>/dev/null || true)"
+errors="$(print -r -- "$lint_output" | grep -c ": error:" || true)"
+if (( errors > 0 )); then
+  print -r -- "$lint_output" | grep ": error:"
+  print -u2 "✗ SwiftLint: $errors Fehler"
+  exit 1
+fi
+print "✓ SwiftLint: 0 Fehler"
+
+scripts/test.sh

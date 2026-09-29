@@ -1,0 +1,26 @@
+#!/bin/zsh
+# commit-msg: keine Co-Autoren, keine Emojis, keine Gedankenstriche (—) in der Nachricht.
+set -euo pipefail
+
+python3 - "$1" <<'PY'
+import re, sys
+
+path = sys.argv[1]
+lines = [l for l in open(path, encoding="utf-8").read().splitlines() if not l.startswith("#")]
+message = "\n".join(lines)
+
+problems = []
+if re.search(r"(?im)^\s*co-authored-by\s*:", message):
+    problems.append("enthält eine Co-authored-by-Zeile")
+if "—" in message:
+    problems.append("enthält einen Gedankenstrich (—), bitte '-' verwenden")
+emoji = re.findall("[\U0001F000-\U0001FAFF☀-➿⬀-⯿⌀-⏿️‍]", message)
+if emoji:
+    problems.append("enthält Emojis/Symbole: " + " ".join(sorted(set(emoji))))
+
+if problems:
+    print("✗ Commit-Nachricht abgelehnt:", file=sys.stderr)
+    for problem in problems:
+        print("  - " + problem, file=sys.stderr)
+    sys.exit(1)
+PY

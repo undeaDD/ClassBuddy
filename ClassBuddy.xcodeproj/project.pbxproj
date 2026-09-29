@@ -55,7 +55,28 @@
 		1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1542A53C4CB6A27D96639 /* Backup.swift */; };
 		37B9BF52A683F670A912BACD /* DashboardCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3B54810C7667A2C9742973 /* DashboardCards.swift */; };
 		BFBB39A661B0D1D3505753CD /* CardGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723E830E960FEC552AC32623 /* CardGallery.swift */; };
+		4B080EF0A37944D6DDC9FB02 /* LessonGridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAD7BE6DF9D3E045D974BF /* LessonGridTests.swift */; };
+		DBE6E730B1F16CE349CCB6A2 /* SpreadsheetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */; };
+		610FEA7D9D7C2852CAA19D99 /* DataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95865081AE46E5F455EFB23D /* DataTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9CC271FEE61B199A3893EB68 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08BC94D8565F9F9413B7AC01 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B8BDDE98210C8FA963F36E2;
+			remoteInfo = ClassBuddy;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F8EDE3CE69E81B615A9A6F58 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXFileReference section */
 		09ECD50CA17F661E96A9CF54 /* AppChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppChrome.swift; sourceTree = "<group>"; };
@@ -107,6 +128,10 @@
 		F3D1542A53C4CB6A27D96639 /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
 		9B3B54810C7667A2C9742973 /* DashboardCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCards.swift; sourceTree = "<group>"; };
 		723E830E960FEC552AC32623 /* CardGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGallery.swift; sourceTree = "<group>"; };
+		9E18F81ED8B116BD65317A33 /* ClassBuddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClassBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0EAD7BE6DF9D3E045D974BF /* LessonGridTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonGridTests.swift; sourceTree = "<group>"; };
+		DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetTests.swift; sourceTree = "<group>"; };
+		95865081AE46E5F455EFB23D /* DataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -197,6 +222,7 @@
 			isa = PBXGroup;
 			children = (
 				A962AB18934B82409DC86202 /* ClassBuddy */,
+				E40A4E5EC8BC6218DA6E374B /* ClassBuddyTests */,
 				E30F4A85AAFD024ABEBCCFFE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -225,6 +251,7 @@
 		E30F4A85AAFD024ABEBCCFFE /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				9E18F81ED8B116BD65317A33 /* ClassBuddyTests.xctest */,
 				CF560C8A51BA20B8652DA054 /* ClassBuddy.app */,
 			);
 			name = Products;
@@ -309,6 +336,16 @@
 			path = Backup;
 			sourceTree = "<group>";
 		};
+		E40A4E5EC8BC6218DA6E374B /* ClassBuddyTests */ = {
+			isa = PBXGroup;
+			children = (
+				C0EAD7BE6DF9D3E045D974BF /* LessonGridTests.swift */,
+				DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */,
+				95865081AE46E5F455EFB23D /* DataTests.swift */,
+			);
+			path = ClassBuddyTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -325,6 +362,24 @@
 			productName = ClassBuddy;
 			productReference = CF560C8A51BA20B8652DA054 /* ClassBuddy.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C1D86BEC3CFB92BA6E44C5EC /* ClassBuddyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 12685196A63FF13A11C66A16 /* Build configuration list for PBXNativeTarget "ClassBuddyTests" */;
+			buildPhases = (
+				3B903BDFD3F696EA3281D92D /* Sources */,
+				F8EDE3CE69E81B615A9A6F58 /* Frameworks */,
+				965BE199F17AB30BA262687D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F5DBCB48B477ABA55C430DA3 /* PBXTargetDependency */,
+			);
+			name = ClassBuddyTests;
+			productName = ClassBuddyTests;
+			productReference = 9E18F81ED8B116BD65317A33 /* ClassBuddyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -350,6 +405,7 @@
 			projectRoot = "";
 			targets = (
 				8B8BDDE98210C8FA963F36E2 /* ClassBuddy */,
+				C1D86BEC3CFB92BA6E44C5EC /* ClassBuddyTests */,
 			);
 		};
 /* End PBXProject section */
@@ -363,6 +419,11 @@
 				D56E6F223610F9BBBCF9A4C0 /* imprint.html in Resources */,
 				12C5344E306BEED40087F828 /* ClassBuddy.icon in Resources */,
 				2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */,
+			);
+		};
+		965BE199F17AB30BA262687D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -416,7 +477,23 @@
 				9CFB32BA7C1FF3D07DAE9AD2 /* Sensitive.swift in Sources */,
 			);
 		};
+		3B903BDFD3F696EA3281D92D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				4B080EF0A37944D6DDC9FB02 /* LessonGridTests.swift in Sources */,
+				DBE6E730B1F16CE349CCB6A2 /* SpreadsheetTests.swift in Sources */,
+				610FEA7D9D7C2852CAA19D99 /* DataTests.swift in Sources */,
+			);
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F5DBCB48B477ABA55C430DA3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B8BDDE98210C8FA963F36E2 /* ClassBuddy */;
+			targetProxy = 9CC271FEE61B199A3893EB68 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		4E8CFAEB757EE7E0E80343BA /* Debug configuration for PBXProject "ClassBuddy" */ = {
@@ -616,6 +693,36 @@
 			};
 			name = Release;
 		};
+		18361D33BC1965BBC9A80E7F /* Debug configuration for PBXNativeTarget "ClassBuddyTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = de.devsforge.ClassBuddyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = 2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClassBuddy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClassBuddy";
+			};
+			name = Debug;
+		};
+		C631EA0183C888E3DAF9948A /* Release configuration for PBXNativeTarget "ClassBuddyTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = de.devsforge.ClassBuddyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				TARGETED_DEVICE_FAMILY = 2;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClassBuddy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClassBuddy";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -632,6 +739,14 @@
 			buildConfigurations = (
 				71A69ED0CB444955D3CAED41 /* Debug configuration for PBXNativeTarget "ClassBuddy" */,
 				94FBFD73EB71B64867427343 /* Release configuration for PBXNativeTarget "ClassBuddy" */,
+			);
+			defaultConfigurationName = Debug;
+		};
+		12685196A63FF13A11C66A16 /* Build configuration list for PBXNativeTarget "ClassBuddyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18361D33BC1965BBC9A80E7F /* Debug configuration for PBXNativeTarget "ClassBuddyTests" */,
+				C631EA0183C888E3DAF9948A /* Release configuration for PBXNativeTarget "ClassBuddyTests" */,
 			);
 			defaultConfigurationName = Debug;
 		};

@@ -88,7 +88,7 @@ struct ClassPickerView: View {
                 closePickerAfterEditor = false
                 app.isClassPickerPresented = false
             }
-        }) { route in
+        }, content: { route in
             ClassEditorView(schoolClass: route.schoolClass) { saved in
                 if route.schoolClass == nil {
                     app.selectedClassID = saved.id
@@ -96,7 +96,7 @@ struct ClassPickerView: View {
                 }
             }
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
-        }
+        })
         // Privatsphäre-Modus an → Editor/Dialog sofort schließen.
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
             if isOn {

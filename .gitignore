@@ -1,10 +1,54 @@
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Xcode: user state
 xcuserdata/
-DerivedData/
-build/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 *.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
 
-# CI
+# Xcode: build output
+build/
+DerivedData/
+*.hmap
+*.xcresult
+*.dSYM
+*.dSYM.zip
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Packages/
+Package.resolved
+
+# CI / distribution
 Payload/
 *.ipa
 build.log
+
+# Signing (never commit certificates or profiles)
+*.p12
+*.cer
+*.mobileprovision
+*.provisionprofile
+
+# Secrets / local config
+.env
+.env.*
+*.local.xcconfig
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Icon inbox: SVGs are imported into the asset catalog via scripts/sync-icons.sh
+Icons/*
+!Icons/.gitkeep

@@ -28,7 +28,8 @@ nonisolated enum XLSX {
             <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\
             <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>\
             <Default Extension="xml" ContentType="application/xml"/>\
-            <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>\
+            <Override PartName="/xl/workbook.xml" \
+            ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>\
             <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>\
             \(overrides)</Types>
             """)))
@@ -171,7 +172,13 @@ private nonisolated final class WorkbookParser: NSObject, XMLParserDelegate {
         return delegate.sheets.map { (name: $0.0, relationshipID: $0.1) }
     }
 
-    func parser(_ parser: XMLParser, didStartElement element: String, namespaceURI: String?, qualifiedName: String?, attributes: [String: String] = [:]) {
+    func parser(
+        _ parser: XMLParser,
+        didStartElement element: String,
+        namespaceURI: String?,
+        qualifiedName: String?,
+        attributes: [String: String] = [:]
+    ) {
         guard element == "sheet" || element.hasSuffix(":sheet"),
               let name = attributes["name"],
               let id = attributes.first(where: { $0.key == "r:id" || $0.key.hasSuffix(":id") })?.value
@@ -191,7 +198,13 @@ private nonisolated final class RelationshipsParser: NSObject, XMLParserDelegate
         return delegate.targets
     }
 
-    func parser(_ parser: XMLParser, didStartElement element: String, namespaceURI: String?, qualifiedName: String?, attributes: [String: String] = [:]) {
+    func parser(
+        _ parser: XMLParser,
+        didStartElement element: String,
+        namespaceURI: String?,
+        qualifiedName: String?,
+        attributes: [String: String] = [:]
+    ) {
         guard element == "Relationship", let id = attributes["Id"], let target = attributes["Target"] else { return }
         targets[id] = target
     }
@@ -211,7 +224,13 @@ private nonisolated final class SharedStringsParser: NSObject, XMLParserDelegate
         return delegate.strings
     }
 
-    func parser(_ parser: XMLParser, didStartElement element: String, namespaceURI: String?, qualifiedName: String?, attributes: [String: String] = [:]) {
+    func parser(
+        _ parser: XMLParser,
+        didStartElement element: String,
+        namespaceURI: String?,
+        qualifiedName: String?,
+        attributes: [String: String] = [:]
+    ) {
         switch element {
         case "si": isInItem = true; current = ""
         case "t": isInText = isInItem
@@ -257,10 +276,16 @@ private nonisolated final class WorksheetParser: NSObject, XMLParserDelegate {
         }
     }
 
-    func parser(_ parser: XMLParser, didStartElement element: String, namespaceURI: String?, qualifiedName: String?, attributes: [String: String] = [:]) {
+    func parser(
+        _ parser: XMLParser,
+        didStartElement element: String,
+        namespaceURI: String?,
+        qualifiedName: String?,
+        attributes: [String: String] = [:]
+    ) {
         switch element {
         case "row":
-            if let r = attributes["r"], let number = Int(r) { currentRow = number - 1 } else { currentRow += 1 }
+            if let reference = attributes["r"], let number = Int(reference) { currentRow = number - 1 } else { currentRow += 1 }
             currentColumn = -1
         case "c":
             currentColumn = attributes["r"].map(XLSX.columnIndex(fromReference:)) ?? currentColumn + 1
