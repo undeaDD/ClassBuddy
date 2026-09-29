@@ -7,6 +7,7 @@ struct SeatingView: View {
             PlaceholderView(tab: .seating)
         }
         .navigationTitle(AppTab.seating.title)
+        .appChrome(tab: .seating)
     }
 }
 

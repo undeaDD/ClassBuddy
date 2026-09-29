@@ -3,7 +3,9 @@ import SwiftUI
 
 /// Schülerliste der ausgewählten Klasse: anlegen, bearbeiten, löschen, suchen.
 struct StudentsView: View {
+    @Environment(AppModel.self) private var app
     @Environment(\.modelContext) private var modelContext
+    @Query private var classes: [SchoolClass]
 
     @State private var searchText = ""
     @State private var editorRoute: StudentEditorRoute?
@@ -14,6 +16,13 @@ struct StudentsView: View {
             content(for: schoolClass)
         }
         .navigationTitle(AppTab.students.title)
+        .appChrome(tab: .students) {
+            if let schoolClass = classes.first(where: { $0.id == app.selectedClassID }) {
+                Button("Schüler hinzufügen", systemImage: "plus") {
+                    editorRoute = .new(schoolClass)
+                }
+            }
+        }
         .fullScreenCover(item: $editorRoute) { route in
             StudentEditorView(route: route)
         }
@@ -38,14 +47,9 @@ struct StudentsView: View {
             if schoolClass.students.isEmpty {
                 EmptyStateView(
                     title: "Noch keine Schüler",
-                    message: "Füge die Schülerinnen und Schüler der \(schoolClass.title) hinzu.",
+                    message: "Füge über + oben rechts die Schülerinnen und Schüler der \(schoolClass.title) hinzu.",
                     symbol: AppTab.students.symbol
-                ) {
-                    Button("Schüler hinzufügen", systemImage: "plus") {
-                        editorRoute = .new(schoolClass)
-                    }
-                    .buttonStyle(.glassProminent)
-                }
+                )
             } else {
                 List {
                     Section {
@@ -61,13 +65,6 @@ struct StudentsView: View {
                     if students.isEmpty {
                         ContentUnavailableView.search(text: searchText)
                     }
-                }
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button("Schüler hinzufügen", systemImage: "plus") {
-                    editorRoute = .new(schoolClass)
                 }
             }
         }

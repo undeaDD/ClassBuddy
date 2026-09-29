@@ -28,6 +28,7 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(AppTab.settings.title)
+        .appChrome(tab: .settings)
     }
 }
 

@@ -27,11 +27,11 @@ struct AppTabView: View {
         .tabViewCustomization($customization)
     }
 
-    /// Jeder Tab hat seinen eigenen NavigationStack + gemeinsame Toolbar.
+    /// Jeder Tab hat seinen eigenen NavigationStack.
+    /// Die gemeinsame Toolbar setzt jede Seite selbst per `.appChrome(tab:)`.
     private func root(for tab: AppTab) -> some View {
         NavigationStack {
             destination(for: tab)
-                .appChrome(tab: tab)
         }
     }
 
