@@ -88,47 +88,61 @@ nonisolated enum ZipArchive {
     /// Alle Dateien des Archivs (Pfad → Inhalt).
     static func read(_ data: Data) throws -> [String: Data] {
         let bytes = [UInt8](data)
-        guard bytes.count >= 22 else { throw ZipError.notAZip }
-
-        // End of Central Directory von hinten suchen (max. 64 KB Kommentar).
-        var eocd = -1
-        var index = bytes.count - 22
-        let lowerBound = max(0, bytes.count - 22 - 65_535)
-        while index >= lowerBound {
-            if bytes.le32(at: index) == 0x0605_4B50 { eocd = index; break }
-            index -= 1
-        }
-        guard eocd >= 0 else { throw ZipError.notAZip }
-
+        let eocd = try endOfCentralDirectory(in: bytes)
         let count = Int(bytes.le16(at: eocd + 10))
         var offset = Int(bytes.le32(at: eocd + 16))
         var files: [String: Data] = [:]
 
         for _ in 0..<count {
-            guard offset + 46 <= bytes.count, bytes.le32(at: offset) == 0x0201_4B50 else { throw ZipError.corrupt }
-            let method = bytes.le16(at: offset + 10)
-            let compressedSize = Int(bytes.le32(at: offset + 20))
-            let size = Int(bytes.le32(at: offset + 24))
-            let nameLength = Int(bytes.le16(at: offset + 28))
-            let extraLength = Int(bytes.le16(at: offset + 30))
-            let commentLength = Int(bytes.le16(at: offset + 32))
-            let localOffset = Int(bytes.le32(at: offset + 42))
-            guard offset + 46 + nameLength <= bytes.count else { throw ZipError.corrupt }
-            let name = String(bytes: bytes[(offset + 46)..<(offset + 46 + nameLength)], encoding: .utf8) ?? ""
-
-            guard localOffset + 30 <= bytes.count, bytes.le32(at: localOffset) == 0x0403_4B50 else { throw ZipError.corrupt }
-            let dataStart = localOffset + 30 + Int(bytes.le16(at: localOffset + 26)) + Int(bytes.le16(at: localOffset + 28))
-            guard dataStart + compressedSize <= bytes.count else { throw ZipError.corrupt }
-            let payload = Array(bytes[dataStart..<(dataStart + compressedSize)])
-
-            switch method {
-            case 0: files[name] = Data(payload)
-            case 8: files[name] = try inflate(payload, size: size)
-            default: throw ZipError.unsupportedMethod(method)
-            }
-            offset += 46 + nameLength + extraLength + commentLength
+            let entry = try readEntry(in: bytes, at: offset)
+            files[entry.name] = entry.data
+            offset = entry.nextOffset
         }
         return files
+    }
+
+    /// End of Central Directory von hinten suchen (max. 64 KB Kommentar).
+    private static func endOfCentralDirectory(in bytes: [UInt8]) throws -> Int {
+        guard bytes.count >= 22 else { throw ZipError.notAZip }
+        let lowerBound = max(0, bytes.count - 22 - 65_535)
+        for index in stride(from: bytes.count - 22, through: lowerBound, by: -1) where bytes.le32(at: index) == 0x0605_4B50 {
+            return index
+        }
+        throw ZipError.notAZip
+    }
+
+    /// Einen Eintrag des Central Directory samt Dateiinhalt lesen.
+    private struct Entry {
+        let name: String
+        let data: Data
+        /// Beginn des nächsten Central-Directory-Eintrags.
+        let nextOffset: Int
+    }
+
+    private static func readEntry(in bytes: [UInt8], at offset: Int) throws -> Entry {
+        guard offset + 46 <= bytes.count, bytes.le32(at: offset) == 0x0201_4B50 else { throw ZipError.corrupt }
+        let method = bytes.le16(at: offset + 10)
+        let compressedSize = Int(bytes.le32(at: offset + 20))
+        let size = Int(bytes.le32(at: offset + 24))
+        let nameLength = Int(bytes.le16(at: offset + 28))
+        let extraLength = Int(bytes.le16(at: offset + 30))
+        let commentLength = Int(bytes.le16(at: offset + 32))
+        let localOffset = Int(bytes.le32(at: offset + 42))
+        guard offset + 46 + nameLength <= bytes.count else { throw ZipError.corrupt }
+        let name = String(bytes: bytes[(offset + 46)..<(offset + 46 + nameLength)], encoding: .utf8) ?? ""
+
+        guard localOffset + 30 <= bytes.count, bytes.le32(at: localOffset) == 0x0403_4B50 else { throw ZipError.corrupt }
+        let dataStart = localOffset + 30 + Int(bytes.le16(at: localOffset + 26)) + Int(bytes.le16(at: localOffset + 28))
+        guard dataStart + compressedSize <= bytes.count else { throw ZipError.corrupt }
+        let payload = Array(bytes[dataStart..<(dataStart + compressedSize)])
+
+        let data: Data
+        switch method {
+        case 0: data = Data(payload)
+        case 8: data = try inflate(payload, size: size)
+        default: throw ZipError.unsupportedMethod(method)
+        }
+        return Entry(name: name, data: data, nextOffset: offset + 46 + nameLength + extraLength + commentLength)
     }
 
     /// Raw DEFLATE (RFC 1951) entpacken – `COMPRESSION_ZLIB` ist genau das.

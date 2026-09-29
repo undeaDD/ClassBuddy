@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import WebKit
 
 struct SettingsView: View {
@@ -114,12 +115,35 @@ enum LegalDocument: String, CaseIterable, Identifiable {
     }
 }
 
+/// Lokale HTML-Seite; Links nach außen öffnen in Safari statt in der App.
 struct LegalDocumentView: View {
     let document: LegalDocument
 
+    @State private var page = WebPage(navigationDecider: ExternalLinksInSafari())
+
     var body: some View {
-        WebView(url: document.url)
+        WebView(page)
+            .background(Color(.systemGroupedBackground))
             .navigationTitle(document.title)
             .navigationBarTitleDisplayMode(.inline)
+            .task {
+                guard let url = document.url, let html = try? String(contentsOf: url, encoding: .utf8) else { return }
+                // Ladefehler einer lokalen Datei: Seite bleibt leer, kein weiterer Umgang nötig.
+                do {
+                    for try await _ in page.load(html: html, baseURL: url.deletingLastPathComponent()) {}
+                } catch {}
+            }
+    }
+}
+
+/// Erlaubt nur die lokale Seite; http(s)-Links gehen an Safari.
+private struct ExternalLinksInSafari: WebPage.NavigationDeciding {
+    func decidePolicy(
+        for action: WebPage.NavigationAction,
+        preferences: inout WebPage.NavigationPreferences
+    ) async -> WKNavigationActionPolicy {
+        guard let url = action.request.url, ["http", "https"].contains(url.scheme?.lowercased()) else { return .allow }
+        await UIApplication.shared.open(url)
+        return .cancel
     }
 }

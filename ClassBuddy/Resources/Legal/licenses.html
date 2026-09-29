@@ -5,13 +5,193 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lizenzen</title>
 <style>
-  :root { color-scheme: light dark; }
-  body { font: -apple-system-body; margin: 24px; max-width: 720px; line-height: 1.5; }
-  h1 { font: -apple-system-title1; font-weight: 700; }
+  :root {
+    color-scheme: light dark;
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #000000;
+    --secondary: #6d6d72;
+    --separator: rgba(60, 60, 67, 0.18);
+    --accent: #9c6830;
+    --pill: rgba(156, 104, 48, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --text: #ffffff;
+      --secondary: #98989f;
+      --separator: rgba(84, 84, 88, 0.6);
+      --accent: #cd9c5e;
+      --pill: rgba(205, 156, 94, 0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px 20px 40px;
+    background: var(--bg);
+    color: var(--text);
+    font: -apple-system-body;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  .intro { color: var(--secondary); font: -apple-system-subheadline; margin: 4px 16px 24px; line-height: 1.4; }
+  h2 {
+    font: -apple-system-footnote;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--secondary);
+    margin: 28px 16px 8px;
+    font-weight: 400;
+  }
+  .card { background: var(--card); border-radius: 12px; overflow: hidden; }
+  .row { padding: 12px 16px; position: relative; }
+  .row + .row::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0;
+    border-top: 0.5px solid var(--separator);
+  }
+  .row-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .name { font: -apple-system-headline; }
+  .pill {
+    font: -apple-system-caption1; font-weight: 600;
+    color: var(--accent); background: var(--pill);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .desc { color: var(--secondary); font: -apple-system-subheadline; margin-top: 4px; line-height: 1.4; }
+  a { color: var(--accent); text-decoration: none; }
+  details { margin-top: 8px; }
+  summary { color: var(--accent); font: -apple-system-subheadline; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: " ›"; }
+  details[open] summary::after { content: " ⌄"; }
+  pre {
+    white-space: pre-wrap; font: -apple-system-caption2; font-family: ui-monospace, Menlo, monospace;
+    color: var(--secondary); margin: 8px 0 0; line-height: 1.45;
+  }
+  .footnote { color: var(--secondary); font: -apple-system-footnote; margin: 8px 16px 0; line-height: 1.4; }
 </style>
 </head>
 <body>
-<h1>Lizenzen</h1>
-<!-- Inhalt folgt -->
+<main>
+  <p class="intro">ClassBuddy kommt ohne Fremd-Bibliotheken aus: die App nutzt ausschließlich Apple-Frameworks. Diese Seite listet alle verwendeten Inhalte und Dienste Dritter mit ihren Lizenzen.</p>
+
+  <h2>ClassBuddy</h2>
+  <div class="card">
+    <div class="row">
+      <div class="row-head"><span class="name">ClassBuddy</span><span class="pill">PolyForm Strict</span></div>
+      <div class="desc">© 2026 Dominic Drees (Devsforge.de) · <a href="https://github.com/undeaDD/ClassBuddy">Quellcode auf GitHub</a></div>
+      <details>
+        <summary>Lizenztext</summary>
+<pre>Required Notice: Copyright (c) 2026 Dominic Drees (Devsforge.de)
+
+PolyForm Strict License 1.0.0
+
+https://polyformproject.org/licenses/strict/1.0.0
+
+Acceptance
+
+In order to get any license under these terms, you must agree to them as both strict obligations and conditions to all your licenses.
+
+Copyright License
+
+The licensor grants you a copyright license for the software to do everything you might do with the software that would otherwise infringe the licensor's copyright in it for any permitted purpose, other than distributing the software or making changes or new works based on the software.
+
+Patent License
+
+The licensor grants you a patent license for the software that covers patent claims the licensor can license, or becomes able to license, that you would infringe by using the software.
+
+Noncommercial Purposes
+
+Any noncommercial purpose is a permitted purpose.
+
+Personal Uses
+
+Personal use for research, experiment, and testing for the benefit of public knowledge, personal study, private entertainment, hobby projects, amateur pursuits, or religious observance, without any anticipated commercial application, is use for a permitted purpose.
+
+Noncommercial Organizations
+
+Use by any charitable organization, educational institution, public research organization, public safety or health organization, environmental protection organization, or government institution is use for a permitted purpose regardless of the source of funding or obligations resulting from the funding.
+
+Fair Use
+
+You may have "fair use" rights for the software under the law. These terms do not limit them.
+
+No Other Rights
+
+These terms do not allow you to sublicense or transfer any of your licenses to anyone else, or prevent the licensor from granting licenses to anyone else.  These terms do not imply any other licenses.
+
+Patent Defense
+
+If you make any written claim that the software infringes or contributes to infringement of any patent, your patent license for the software granted under these terms ends immediately. If your company makes such a claim, your patent license ends immediately for work on behalf of your company.
+
+Violations
+
+The first time you are notified in writing that you have violated any of these terms, or done anything with the software not covered by your licenses, your licenses can nonetheless continue if you come into full compliance with these terms, and take practical steps to correct past violations, within 32 days of receiving notice.  Otherwise, all your licenses end immediately.
+
+No Liability
+
+As far as the law allows, the software comes as is, without any warranty or condition, and the licensor will not be liable to you for any damages arising out of these terms or the use or nature of the software, under any kind of legal claim.
+
+Definitions
+
+The licensor is the individual or entity offering these terms, and the software is the software the licensor makes available under these terms.
+
+You refers to the individual or entity agreeing to these terms.
+
+Your company is any legal entity, sole proprietorship, or other kind of organization that you work for, plus all organizations that have control over, are under the control of, or are under common control with that organization.  Control means ownership of substantially all the assets of an entity, or the power to direct its management and policies by vote, contract, or otherwise.  Control can be direct or indirect.
+
+Your licenses are all the licenses granted to you for the software under these terms.
+
+Use means anything you do with the software requiring one of your licenses.</pre>
+      </details>
+    </div>
+  </div>
+
+  <h2>In der App verwendet</h2>
+  <div class="card">
+    <div class="row">
+      <div class="row-head"><span class="name">Iconoir</span><span class="pill">MIT</span></div>
+      <div class="desc">Icons der Oberfläche · © 2021 Luca Burgio · <a href="https://iconoir.com">iconoir.com</a></div>
+      <details>
+        <summary>Lizenztext</summary>
+<pre>MIT License
+
+Copyright (c) 2021 Luca Burgio
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</pre>
+      </details>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="name">OpenHolidays API</span><span class="pill">ODbL 1.0</span></div>
+      <div class="desc">Schulferien und gesetzliche Feiertage (nur beim Import abgerufen). Enthält Informationen der OpenHolidays API, die unter der <a href="https://opendatacommons.org/licenses/odbl/1-0/">Open Database License (ODbL)</a> verfügbar gemacht werden. · <a href="https://www.openholidaysapi.org">openholidaysapi.org</a></div>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="name">SF Symbols</span><span class="pill">Apple</span></div>
+      <div class="desc">Einzelne Systemsymbole von Apple, nutzbar gemäß den Apple-Lizenzbedingungen für SF Symbols.</div>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="name">Apple-Frameworks</span><span class="pill">iPadOS</span></div>
+      <div class="desc">SwiftUI, SwiftData, WebKit, LocalAuthentication, PhotosUI, QuickLook und weitere – Bestandteil von iPadOS.</div>
+    </div>
+  </div>
+  <p class="footnote">Website-Symbole (Favicons) auf Übersichts-Kacheln gehören den jeweiligen Website-Betreibern und werden nur lokal zwischengespeichert.</p>
+
+  <h2>Entwicklungswerkzeuge (nicht Teil der App)</h2>
+  <div class="card">
+    <div class="row">
+      <div class="row-head"><span class="name">SwiftLint</span><span class="pill">MIT</span></div>
+      <div class="desc">Code-Stilprüfung · <a href="https://github.com/realm/SwiftLint">github.com/realm/SwiftLint</a></div>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="name">Semgrep</span><span class="pill">LGPL-2.1</span></div>
+      <div class="desc">Sicherheitsanalyse im Build-Prozess · <a href="https://semgrep.dev">semgrep.dev</a></div>
+    </div>
+  </div>
+</main>
 </body>
 </html>

@@ -28,7 +28,11 @@ struct DataTests {
         // Montag, 1. Stunde, wöchentlich
         context.insert(Lesson(weekday: 0, slotIndex: 0, subject: "Mathe", isRecurring: true, date: nil, schoolClass: schoolClass))
 
-        let schedule = LessonSchedule(lessons: try context.fetch(FetchDescriptor<Lesson>()), holidays: [], slots: SchoolSettings.Values().slots)
+        let schedule = LessonSchedule(
+            lessons: try context.fetch(FetchDescriptor<Lesson>()),
+            holidays: [],
+            slots: SchoolSettings.Values().slots
+        )
         // Sonntag, 27.09.2026, 12 Uhr → Montag, 28.09.2026, 08:00
         let next = try #require(schedule.nextLesson(forClass: schoolClass.id, after: Self.day(2026, 9, 27, hour: 12)))
 
@@ -43,7 +47,9 @@ struct DataTests {
         let schoolClass = SchoolClass(shortName: "7b")
         context.insert(schoolClass)
         context.insert(Lesson(weekday: 0, slotIndex: 0, subject: "", isRecurring: true, date: nil, schoolClass: schoolClass))
-        let holiday = Holiday(id: "h", name: "Test", startDate: Self.day(2026, 9, 28), endDate: Self.day(2026, 9, 28), isSchoolHoliday: true)
+        let holiday = Holiday(
+            id: "h", name: "Test", startDate: Self.day(2026, 9, 28), endDate: Self.day(2026, 9, 28), isSchoolHoliday: true
+        )
 
         let schedule = LessonSchedule(
             lessons: try context.fetch(FetchDescriptor<Lesson>()),
@@ -61,7 +67,9 @@ struct DataTests {
         let schoolClass = SchoolClass(shortName: "7b")
         context.insert(schoolClass)
         context.insert(Lesson(weekday: 0, slotIndex: 0, subject: "Mathe", isRecurring: true, date: nil, schoolClass: schoolClass))
-        context.insert(Lesson(weekday: 0, slotIndex: 0, subject: "Vertretung", isRecurring: false, date: Self.day(2026, 9, 28), schoolClass: schoolClass))
+        context.insert(Lesson(
+            weekday: 0, slotIndex: 0, subject: "Vertretung", isRecurring: false, date: Self.day(2026, 9, 28), schoolClass: schoolClass
+        ))
 
         let schedule = LessonSchedule(lessons: try context.fetch(FetchDescriptor<Lesson>()), holidays: [], slots: [])
 
@@ -76,7 +84,10 @@ struct DataTests {
         let source = try Self.makeContext()
         let schoolClass = SchoolClass(shortName: "7b", subjects: ["Mathematik", "Physik"], schoolYear: "2026/27", color: .green)
         source.insert(schoolClass)
-        source.insert(Student(firstName: "Emma", lastName: "Schneider", birthday: Self.day(2014, 3, 1), gender: .female, notes: "Notiz", schoolClass: schoolClass))
+        source.insert(Student(
+            firstName: "Emma", lastName: "Schneider", birthday: Self.day(2014, 3, 1),
+            gender: .female, notes: "Notiz", schoolClass: schoolClass
+        ))
         source.insert(Lesson(weekday: 2, slotIndex: 3, subject: "Physik", isRecurring: true, date: nil, schoolClass: schoolClass))
         source.insert(CalendarEntry(title: "Konferenz", start: Self.day(2026, 10, 1, hour: 14), end: Self.day(2026, 10, 1, hour: 16)))
         source.insert(DashboardLink(title: "Vertretungsplan", kind: .website, location: "https://example.org/plan", schoolClass: schoolClass))
