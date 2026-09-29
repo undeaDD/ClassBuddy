@@ -113,15 +113,16 @@ private struct SettingsHero: View {
     @State private var installMethod: InstallInfo.Method?
 
     var body: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 16) {
-                Image(.appIconPreview)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 76, height: 76)
-                    .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
-                    .accessibilityHidden(true)
+        HStack(alignment: .top, spacing: 16) {
+            Image(.appIconPreview)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 76, height: 76)
+                .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
+                .accessibilityHidden(true)
 
+            // Titel, Beschreibung und darunter linksbündig die Infos zur Installation.
+            VStack(alignment: .leading, spacing: 6) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("ClassBuddy")
                         .font(.title2.bold())
@@ -130,18 +131,16 @@ private struct SettingsHero: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-
-            HStack(spacing: 8) {
-                if let installDate = InstallInfo.installDate {
-                    HeroChip(text: "Installiert am \(installDate.formatted(date: .long, time: .omitted))")
-                }
-                if let installMethod {
-                    HeroChip(text: "über \(installMethod.rawValue)")
+                HStack(spacing: 8) {
+                    if let installDate = InstallInfo.installDate {
+                        HeroChip(text: "Installiert am \(installDate.formatted(date: .long, time: .omitted))")
+                    }
+                    if let installMethod {
+                        HeroChip(text: "über \(installMethod.rawValue)")
+                    }
                 }
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, 4)
         .task { installMethod = await InstallInfo.detectMethod() }
