@@ -29,7 +29,6 @@ unterrichtet werden können. Später Grundlage für die Sitzplatzverwaltung.
 - [ ] Antippen → Editor
 - [ ] Gedrückt halten → Kontextmenü: Bearbeiten, Duplizieren, Ausblenden, Entfernen (mit Bestätigung)
 - [ ] Suche (`.searchable`) über Name, Untertitel, Kategorie und Fächer
-- [ ] Filter nach Kategorie bzw. Fach (z. B. „Wo kann ich Physik unterrichten?“)
 - [ ] Anordnen-Modus (Stift/Haken in der Toolbar wie in der Übersicht): Drag & Drop, Auge zum Ausblenden, xmark zum Entfernen
 - [ ] Ausgeblendete Räume im Anordnen-Modus sichtbar (abgeschwächt), sonst nicht
 - [ ] Leerer Zustand mit „Raum hinzufügen“ und Vorlagen
@@ -50,11 +49,14 @@ unterrichtet werden können. Später Grundlage für die Sitzplatzverwaltung.
   - Hover (Pencil Pro/M-Serie) zeigt Vorschau der Einrastposition
 - [ ] Vorlagen: Reihen, U-Form, Gruppentische, Sporthalle (leer), Computerraum
 
-## Optional: KI-Unterstützung
+## Optional: KI-Unterstützung (niedrige Priorität)
 
 - [ ] Handskizze oder Foto des Raums → sauberer, minimaler Grundriss (Vorschlag, den man anpasst)
-- [ ] Nur mit ausdrücklicher Zustimmung; bevorzugt on-device (Foundation Models / Vision),
-      keine Übertragung von Fotos an Dritte ohne Hinweis (DSGVO, Datenschutzerklärung anpassen)
+- [ ] Nur Apple Intelligence lokal auf dem Gerät (Foundation Models, ggf. Vision), keine Dienste Dritter
+- [ ] Erst prüfen, ob das Modell die Aufgabe überhaupt zuverlässig lösen kann; sonst Punkt streichen
+- [ ] Verfügbarkeit prüfen (`SystemLanguageModel.default.availability`):
+      Gerät nicht unterstützt, Apple Intelligence deaktiviert, Modell noch nicht geladen
+      → Funktion ausblenden bzw. passenden Hinweis zeigen
 
 ## Privatsphäre-Modus
 
@@ -79,10 +81,14 @@ unterrichtet werden können. Später Grundlage für die Sitzplatzverwaltung.
 
 - [ ] Raumkapazität automatisch aus den Plätzen berechnen und auf der Karte zeigen
 - [ ] Ausstattung als Stichworte (Beamer, Whiteboard, Dokumentenkamera, Steckdosen, Waschbecken)
-- [ ] Barrierefreiheit: Rollstuhlplatz markieren, Fluchtweg/Notausgang
-- [ ] Grundriss als PDF/Bild exportieren oder drucken (Vertretungsmappe)
-- [ ] Mehrere Gebäude/Etagen zur Gruppierung
-- [ ] VoiceOver: Elemente mit Art, Position und Bereich beschreiben; Verschieben per Tastatur/Pfeiltasten
+- [ ] Drucken bzw. PDF über das System-Teilen-Menü: Grundriss mit Sitzplan (Schülernamen auf den Plätzen),
+      immer im hellen Erscheinungsbild, unabhängig vom Dunkelmodus
+
+## Bewusst nicht geplant
+
+- Suche/Filter nach Fach (Räume werden für die Lehrkräfte vorab geplant)
+- Gebäude und Etagen
+- Barrierefreiheit (VoiceOver, Rollstuhlplatz) und Übersetzungen (i18n) vorerst nicht
 
 ## Qualität
 
