@@ -8,6 +8,10 @@ final class DashboardLink {
     enum Kind: String, Codable {
         case file
         case website
+        case image
+
+        /// Dokument/Bild: Kopie im App-Container (`LinkFileStore`).
+        var isStoredFile: Bool { self != .website }
     }
 
     @Attribute(.unique) var id: UUID
@@ -35,7 +39,7 @@ final class DashboardLink {
     var url: URL? {
         switch kind {
         case .website: URL(string: location)
-        case .file: LinkFileStore.directory.appending(path: location)
+        case .file, .image: LinkFileStore.directory.appending(path: location)
         }
     }
 
@@ -43,7 +47,7 @@ final class DashboardLink {
     var detail: String {
         switch kind {
         case .website: url?.host() ?? location
-        case .file: (location as NSString).lastPathComponent
+        case .file, .image: (location as NSString).lastPathComponent
         }
     }
 }
@@ -68,8 +72,17 @@ nonisolated enum LinkFileStore {
         return "\(folder)/\(source.lastPathComponent)"
     }
 
+    /// Speichert Daten (z. B. ein Foto aus der Mediathek) als Datei in der App.
+    static func importData(_ data: Data, filename: String) throws -> String {
+        let folder = UUID().uuidString
+        let target = directory.appending(path: folder, directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
+        try data.write(to: target.appending(path: filename))
+        return "\(folder)/\(filename)"
+    }
+
     static func removeFile(of link: DashboardLink) {
-        guard link.kind == .file else { return }
+        guard link.kind.isStoredFile else { return }
         let folder = directory.appending(path: (link.location as NSString).deletingLastPathComponent)
         try? FileManager.default.removeItem(at: folder)
     }

@@ -34,7 +34,7 @@ enum Backup {
         var entries = 0
         var links = 0
         var holidays = 0
-        var skippedDocuments = 0
+        var skippedDocuments = 0 // Dokument- und Bild-Kacheln ohne Datei
 
         var text: String {
             var parts = [
@@ -42,7 +42,7 @@ enum Backup {
                 "\(entries) Termine", "\(links) Kacheln", "\(holidays) Ferien/Feiertage",
             ]
             if skippedDocuments > 0 {
-                parts.append("\(skippedDocuments) Dokument-Kacheln übersprungen (Datei nicht auf diesem Gerät)")
+                parts.append("\(skippedDocuments) Dokument-/Bild-Kacheln übersprungen (Datei nicht auf diesem Gerät)")
             }
             return "Importiert: " + parts.joined(separator: ", ") + "."
         }
@@ -74,10 +74,10 @@ enum Backup {
         ]))
 
         sheets.append(XLSXSheet(name: Sheet.classes, rows: [
-            ["ID", "Kürzel", "Fächer", "Schuljahr", "Farbe", "Erstellt", "Kachel-Reihenfolge"],
+            ["ID", "Kürzel", "Fächer", "Schuljahr", "Farbe", "Erstellt", "Kachel-Reihenfolge", "Ausgeblendete Kacheln"],
         ] + classes.map {
             [$0.id.uuidString, $0.shortName, Cell.list($0.subjects), $0.schoolYear, $0.colorRaw,
-             Cell.dateTime($0.createdAt), Cell.list($0.dashboardOrder)]
+             Cell.dateTime($0.createdAt), Cell.list($0.dashboardOrder), Cell.list($0.dashboardHidden)]
         }))
 
         sheets.append(XLSXSheet(name: Sheet.students, rows: [
@@ -111,8 +111,8 @@ enum Backup {
         ] + classes.flatMap { schoolClass in
             schoolClass.dashboardLinks.sorted { $0.createdAt < $1.createdAt }.map {
                 [$0.id.uuidString, schoolClass.id.uuidString, schoolClass.shortName,
-                 $0.kind == .file ? "Dokument" : "Website", $0.title,
-                 $0.kind == .file ? $0.detail : $0.location, Cell.dateTime($0.createdAt)]
+                 Cell.linkKind($0.kind), $0.title,
+                 $0.kind.isStoredFile ? $0.detail : $0.location, Cell.dateTime($0.createdAt)]
             }
         }))
 
@@ -179,7 +179,7 @@ enum Backup {
 
         // Vorhandene Dokument-Kacheln merken: ihre Dateien bleiben, wenn die ID im Import vorkommt.
         let existingFiles = try context.fetch(FetchDescriptor<DashboardLink>())
-            .filter { $0.kind == .file }
+            .filter { $0.kind.isStoredFile }
             .reduce(into: [UUID: String]()) { $0[$1.id] = $1.location }
 
         try context.delete(model: Student.self)
@@ -202,6 +202,8 @@ enum Backup {
                 createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now
             )
             schoolClass.dashboardOrder = Cell.parseList(row["Kachel-Reihenfolge"])
+            schoolClass.dashboardHidden = Cell.parseList(row["Ausgeblendete Kacheln"])
+            schoolClass.dashboardKnownCards = schoolClass.dashboardOrder + schoolClass.dashboardHidden
             context.insert(schoolClass)
             classesByID[schoolClass.id] = schoolClass
             summary.classes += 1
@@ -262,7 +264,8 @@ enum Backup {
         for row in table(Sheet.links)?.rows ?? [] {
             guard let schoolClass = UUID(uuidString: row["Klassen-ID"]).flatMap({ classesByID[$0] }) else { continue }
             let id = UUID(uuidString: row["ID"]) ?? UUID()
-            if row["Typ"].lowercased().hasPrefix("dok") {
+            let kind = Cell.parseLinkKind(row["Typ"])
+            if kind.isStoredFile {
                 guard let location = existingFiles[id],
                       FileManager.default.fileExists(atPath: LinkFileStore.directory.appending(path: location).path())
                 else {
@@ -270,7 +273,7 @@ enum Backup {
                     continue
                 }
                 keptFileLocations.insert(location)
-                context.insert(DashboardLink(id: id, title: row["Titel"], kind: .file, location: location, schoolClass: schoolClass))
+                context.insert(DashboardLink(id: id, title: row["Titel"], kind: kind, location: location, schoolClass: schoolClass))
             } else {
                 guard let url = URL.web(row["Adresse / Datei"]) else { continue }
                 context.insert(DashboardLink(id: id, title: row["Titel"], kind: .website, location: url.absoluteString, schoolClass: schoolClass))
@@ -406,6 +409,21 @@ private enum Cell {
     }
 
     static func bool(_ value: Bool) -> String { value ? "ja" : "nein" }
+
+    static func linkKind(_ kind: DashboardLink.Kind) -> String {
+        switch kind {
+        case .file: "Dokument"
+        case .image: "Bild"
+        case .website: "Website"
+        }
+    }
+
+    static func parseLinkKind(_ text: String) -> DashboardLink.Kind {
+        let lower = text.lowercased()
+        if lower.hasPrefix("dok") { return .file }
+        if lower.hasPrefix("bild") { return .image }
+        return .website
+    }
     static func list(_ values: [String]) -> String { values.joined(separator: "; ") }
     static func weekday(_ index: Int) -> String { weekdays.indices.contains(index) ? weekdays[index] : "" }
 

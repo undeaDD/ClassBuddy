@@ -27,6 +27,11 @@ final class SchoolClass {
 
     /// Reihenfolge der Übersichts-Kacheln (Kachel-IDs, siehe `DashboardView`).
     var dashboardOrder: [String] = []
+    /// Ausgeblendete Übersichts-Kacheln (nur im Anordnen-Modus sichtbar).
+    var dashboardHidden: [String] = []
+    /// Kacheln, die diese Klasse schon kennt – neue, standardmäßig ausgeblendete
+    /// Kacheln werden beim ersten Auftauchen in `dashboardHidden` eingetragen.
+    var dashboardKnownCards: [String] = []
 
     init(
         id: UUID = UUID(),
