@@ -1,6 +1,7 @@
 import SwiftData
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 /// Erscheinungsbild der App (überschreibt die Systemeinstellung).
 enum AppAppearance: String, CaseIterable, Identifiable {
@@ -47,6 +48,11 @@ struct AppSettingsView: View {
     @State private var dataSize: Int64?
     @State private var isDeleteConfirmationPresented = false
     @State private var deleteMessage: String?
+    @State private var exportFile: SpreadsheetFile?
+    @State private var isExporterPresented = false
+    @State private var isImporterPresented = false
+    @State private var pendingImport: Data?
+    @State private var transferMessage: String?
 
     private var appLockBinding: Binding<Bool> {
         Binding(
@@ -76,6 +82,18 @@ struct AppSettingsView: View {
             } footer: {
                 Text("Sperrt die App beim Start und beim Wechsel in den Hintergrund. Ausschalten erfordert \(security.biometryName).")
             }
+
+            Section {
+                Button("Exportieren (Excel)", image: .cloudDownload, action: export)
+                Button("Importieren (Excel)", systemImage: "square.and.arrow.down") {
+                    isImporterPresented = true
+                }
+            } header: {
+                Text("Export & Import")
+            } footer: {
+                Text(transferMessage ?? "Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. Ein Import ersetzt alle Daten. Dokumente (Dateien) sind nicht enthalten.")
+            }
+            .disabled(security.isPrivacyModeOn)
 
             Section {
                 LabeledContent("Belegter Speicher") {
@@ -108,6 +126,71 @@ struct AppSettingsView: View {
         } message: {
             Text("Das kann nicht rückgängig gemacht werden. Exportiere vorher, was du behalten möchtest.")
         }
+        .fileExporter(
+            isPresented: $isExporterPresented,
+            document: exportFile,
+            contentType: .xlsx,
+            defaultFilename: "ClassBuddy-Export-\(Date.now.formatted(.iso8601.year().month().day()))"
+        ) { result in
+            if case .failure(let error) = result {
+                transferMessage = "Export fehlgeschlagen: \(error.localizedDescription)"
+            } else {
+                transferMessage = "Export gespeichert."
+            }
+        }
+        .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: [.xlsx]) { result in
+            do {
+                let url = try result.get()
+                let accessing = url.startAccessingSecurityScopedResource()
+                defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+                pendingImport = try Data(contentsOf: url)
+            } catch {
+                transferMessage = "Datei konnte nicht gelesen werden: \(error.localizedDescription)"
+            }
+        }
+        .confirmationDialog(
+            "Daten importieren?",
+            isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
+            titleVisibility: .visible
+        ) {
+            Button("Importieren und ersetzen", role: .destructive) {
+                let data = pendingImport
+                Task { await importData(data) }
+            }
+        } message: {
+            Text("Alle vorhandenen Klassen, Schüler, Stunden, Termine, Kacheln und Ferien werden durch den Inhalt der Datei ersetzt.")
+        }
+    }
+
+    private func export() {
+        do {
+            let data = try Backup.export(context: modelContext, settings: settings.values, appearance: appearance)
+            exportFile = SpreadsheetFile(data: data)
+            isExporterPresented = true
+        } catch {
+            transferMessage = "Export fehlgeschlagen: \(error.localizedDescription)"
+        }
+    }
+
+    private func importData(_ data: Data?) async {
+        pendingImport = nil
+        guard let data, await security.confirmDestructiveAction(reason: "Daten importieren und ersetzen") else { return }
+        do {
+            let result = try Backup.import(data, context: modelContext, currentSettings: settings.values)
+            settings.values = result.settings.values
+            if let imported = result.settings.appearance { appearance = imported }
+            // Ausgewählte Klasse behalten, wenn es sie noch gibt.
+            let classIDs = try modelContext.fetch(FetchDescriptor<SchoolClass>()).map(\.id)
+            if let selected = app.selectedClassID, !classIDs.contains(selected) {
+                app.selectedClassID = classIDs.first
+            }
+            app.calendarFocusClassID = nil
+            transferMessage = result.summary.text
+        } catch {
+            modelContext.rollback()
+            transferMessage = "Import fehlgeschlagen: \(error.localizedDescription)"
+        }
+        await refreshDataSize()
     }
 
     private func refreshDataSize() async {
@@ -156,5 +239,27 @@ enum LocalDataStore {
         try context.save()
         try? FileManager.default.removeItem(at: LinkFileStore.directory)
         FaviconStore.removeAll()
+    }
+}
+
+nonisolated extension UTType {
+    static let xlsx = UTType("org.openxmlformats.spreadsheetml.sheet") ?? .data
+}
+
+/// .xlsx-Datei für den Export-Dialog („Sichern in Dateien“).
+nonisolated struct SpreadsheetFile: FileDocument {
+    static let readableContentTypes: [UTType] = [.xlsx]
+    var data: Data
+
+    init(data: Data) {
+        self.data = data
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        data = configuration.file.regularFileContents ?? Data()
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: data)
     }
 }
