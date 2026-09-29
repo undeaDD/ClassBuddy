@@ -12,6 +12,18 @@ struct ClassPickerView: View {
     @State private var editorRoute: ClassEditorRoute?
     @State private var closePickerAfterEditor = false
     @State private var classPendingDeletion: SchoolClass?
+    @State private var searchText = ""
+
+    /// Klassen gefiltert nach Suche, gruppiert nach Schuljahr (neuestes zuerst).
+    private var sections: [(year: String, classes: [SchoolClass])] {
+        let query = searchText.trimmingCharacters(in: .whitespaces)
+        let matches = query.isEmpty ? classes : classes.filter {
+            $0.shortName.localizedStandardContains(query)
+                || $0.subjects.contains { $0.localizedStandardContains(query) }
+        }
+        let grouped = Dictionary(grouping: matches, by: \.schoolYear)
+        return grouped.keys.sorted(by: >).map { (year: $0, classes: grouped[$0] ?? []) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -22,8 +34,22 @@ struct ClassPickerView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     List {
-                        ForEach(classes) { schoolClass in
-                            row(for: schoolClass)
+                        ForEach(sections, id: \.year) { section in
+                            Section(section.year.isEmpty ? "Ohne Schuljahr" : "Schuljahr \(section.year)") {
+                                ForEach(section.classes) { schoolClass in
+                                    row(for: schoolClass)
+                                }
+                            }
+                        }
+                    }
+                    .searchable(
+                        text: $searchText,
+                        placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: "Klasse oder Fach"
+                    )
+                    .overlay {
+                        if sections.isEmpty {
+                            ContentUnavailableView.search(text: searchText)
                         }
                     }
                 }

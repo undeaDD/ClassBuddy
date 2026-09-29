@@ -8,6 +8,8 @@ final class Student {
     var firstName: String
     var lastName: String
     var birthday: Date?
+    /// `Gender.rawValue`; `nil` = keine Angabe.
+    var genderRaw: String?
     var notes: String
     var createdAt: Date
     var schoolClass: SchoolClass?
@@ -17,6 +19,7 @@ final class Student {
         firstName: String,
         lastName: String,
         birthday: Date? = nil,
+        gender: Gender? = nil,
         notes: String = "",
         createdAt: Date = .now,
         schoolClass: SchoolClass? = nil
@@ -25,9 +28,22 @@ final class Student {
         self.firstName = firstName
         self.lastName = lastName
         self.birthday = birthday
+        self.genderRaw = gender?.rawValue
         self.notes = notes
         self.createdAt = createdAt
         self.schoolClass = schoolClass
+    }
+
+    var gender: Gender? {
+        get { genderRaw.flatMap(Gender.init(rawValue:)) }
+        set { genderRaw = newValue?.rawValue }
+    }
+
+    /// Anfangsbuchstabe des Vornamens für die alphabetischen Abschnitte.
+    var sectionLetter: String {
+        guard let first = firstName.first ?? lastName.first else { return "#" }
+        let letter = String(first).folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current).uppercased()
+        return letter.first?.isLetter == true ? letter : "#"
     }
 
     var fullName: String {
@@ -44,6 +60,29 @@ final class Student {
     }
 }
 
+enum Gender: String, CaseIterable, Codable, Identifiable {
+    case female, male, diverse
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .female: "weiblich"
+        case .male: "männlich"
+        case .diverse: "divers"
+        }
+    }
+
+    /// Kurzform für die Anzeige am Avatar.
+    var shortTitle: String {
+        switch self {
+        case .female: "w"
+        case .male: "m"
+        case .diverse: "d"
+        }
+    }
+}
+
 // MARK: - Export
 
 extension Student {
@@ -52,6 +91,7 @@ extension Student {
         var firstName: String
         var lastName: String
         var birthday: Date?
+        var gender: String?
         var notes: String
         var createdAt: Date
     }
@@ -62,6 +102,7 @@ extension Student {
             firstName: firstName,
             lastName: lastName,
             birthday: birthday,
+            gender: genderRaw,
             notes: notes,
             createdAt: createdAt
         )

@@ -1,31 +1,35 @@
 import SwiftData
 import SwiftUI
 
-// TEMPORÄR (PoC): legt einmalig Dummy-Schüler in der aktuell ausgewählten Klasse an.
-// Wird mit dem nächsten Build wieder entfernt – die angelegten Daten bleiben erhalten.
+// TEMPORÄR (PoC): ergänzt einmalig das Geschlecht bei den Dummy-Schülern und legt
+// eine Person mit „divers“ an. Wird mit dem nächsten Build wieder entfernt –
+// die Daten bleiben erhalten.
 enum DummyStudentsSeed {
-    private static let doneKey = "poc.dummyStudentsSeeded"
+    private static let doneKey = "poc.dummyStudentsGenderSeeded"
 
-    private static let names: [(String, String, Int)] = [
-        ("Emma", "Schneider", 12), ("Leon", "Fischer", 13), ("Mia", "Weber", 12),
-        ("Noah", "Meyer", 12), ("Hanna", "Wagner", 13), ("Paul", "Becker", 12),
-        ("Lina", "Hoffmann", 12), ("Elias", "Schulz", 13), ("Sophie", "Koch", 12),
-        ("Finn", "Richter", 12), ("Marie", "Klein", 13), ("Jonas", "Wolf", 12),
-    ]
+    private static let female: Set<String> = ["Emma", "Mia", "Hanna", "Lina", "Sophie", "Marie"]
+    private static let male: Set<String> = ["Leon", "Noah", "Paul", "Elias", "Finn", "Jonas"]
 
-    static func seedIfNeeded(selectedClassID: UUID?, context: ModelContext) {
-        guard !UserDefaults.standard.bool(forKey: doneKey), let selectedClassID else { return }
-        let descriptor = FetchDescriptor<SchoolClass>(predicate: #Predicate { $0.id == selectedClassID })
-        guard let schoolClass = try? context.fetch(descriptor).first else { return }
+    static func applyIfNeeded(context: ModelContext) {
+        guard !UserDefaults.standard.bool(forKey: doneKey),
+              let students = try? context.fetch(FetchDescriptor<Student>())
+        else { return }
 
-        let calendar = Calendar.current
-        for (index, (first, last, age)) in names.enumerated() {
-            let birthday = calendar.date(
-                byAdding: DateComponents(year: -age, day: -(index * 23 % 300)),
-                to: .now
-            )
-            context.insert(Student(firstName: first, lastName: last, birthday: birthday, schoolClass: schoolClass))
+        for student in students where student.gender == nil {
+            if female.contains(student.firstName) { student.gender = .female }
+            if male.contains(student.firstName) { student.gender = .male }
         }
+
+        // Eine Person „divers“ in die Klasse der Dummy-Schüler.
+        if let dummyClass = students.first(where: { $0.firstName == "Emma" && $0.lastName == "Schneider" })?.schoolClass,
+           !students.contains(where: { $0.firstName == "Alex" && $0.lastName == "Neumann" }) {
+            let birthday = Calendar.current.date(byAdding: DateComponents(year: -12, day: -140), to: .now)
+            context.insert(Student(
+                firstName: "Alex", lastName: "Neumann", birthday: birthday,
+                gender: .diverse, schoolClass: dummyClass
+            ))
+        }
+
         try? context.save()
         UserDefaults.standard.set(true, forKey: doneKey)
     }

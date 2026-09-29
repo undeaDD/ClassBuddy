@@ -24,6 +24,7 @@ struct StudentEditorView: View {
     @State private var lastName: String
     @State private var hasBirthday: Bool
     @State private var birthday: Date
+    @State private var gender: Gender?
     @State private var notes: String
 
     init(route: StudentEditorRoute) {
@@ -34,6 +35,7 @@ struct StudentEditorView: View {
         _hasBirthday = State(initialValue: student?.birthday != nil)
         _birthday = State(initialValue: student?.birthday
             ?? Calendar.current.date(byAdding: .year, value: -12, to: .now) ?? .now)
+        _gender = State(initialValue: student?.gender)
         _notes = State(initialValue: student?.notes ?? "")
     }
 
@@ -56,6 +58,16 @@ struct StudentEditorView: View {
                     TextField("Nachname", text: $lastName)
                         .textContentType(.familyName)
                         .sensitive()
+                }
+
+                Section("Geschlecht") {
+                    Picker("Geschlecht", selection: $gender) {
+                        ForEach(Gender.allCases) { option in
+                            Text(option.title).tag(Optional(option))
+                        }
+                        Text("keine Angabe").tag(Gender?.none)
+                    }
+                    .pickerStyle(.segmented)
                 }
 
                 Section {
@@ -101,6 +113,7 @@ struct StudentEditorView: View {
         student.firstName = firstName.trimmingCharacters(in: .whitespaces)
         student.lastName = lastName.trimmingCharacters(in: .whitespaces)
         student.birthday = hasBirthday ? birthday : nil
+        student.gender = gender
         student.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         try? modelContext.save()
         dismiss()
