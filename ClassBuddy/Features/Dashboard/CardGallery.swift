@@ -73,6 +73,7 @@ enum CardTemplate: Identifiable, Hashable {
     case imageFile
     case document
     case website
+    case shortcut
 
     var id: String {
         switch self {
@@ -81,6 +82,7 @@ enum CardTemplate: Identifiable, Hashable {
         case .imageFile: "imageFile"
         case .document: "document"
         case .website: "website"
+        case .shortcut: "shortcut"
         }
     }
 
@@ -96,6 +98,7 @@ enum CardTemplate: Identifiable, Hashable {
         case .imageFile: "Bild aus „Dateien“"
         case .document: "Dokument"
         case .website: "Website"
+        case .shortcut: "Kurzbefehl"
         }
     }
 
@@ -106,10 +109,11 @@ enum CardTemplate: Identifiable, Hashable {
         case .imageFile: "Ein Bild aus der Dateien-App."
         case .document: "PDF, Arbeitsblatt oder jede andere Datei – öffnet sich in der Vorschau."
         case .website: "Link mit Website-Icon, z. B. Schulwebsite oder Vertretungsplan."
+        case .shortcut: "Startet einen Kurzbefehl der Kurzbefehle-App, z. B. „Unterricht beginnt“."
         }
     }
 
-    static let reusable: [CardTemplate] = [.photo, .imageFile, .document, .website]
+    static let reusable: [CardTemplate] = [.photo, .imageFile, .document, .website, .shortcut]
 }
 
 /// Vollbild-Galerie „Kachel hinzufügen“ mit Beispielvorschauen.
@@ -215,6 +219,11 @@ private struct TemplatePreview: View {
             ContentCard(title: "Dokument", symbol: .custom(.page), heading: "Arbeitsblatt Brüche", detail: "Arbeitsblatt-Brueche.pdf")
         case .website:
             ContentCard(title: "Website", symbol: .custom(.www), heading: "Vertretungsplan", detail: "schule.de")
+        case .shortcut:
+            ContentCard(
+                title: "Kurzbefehl", symbol: LinkCard.kindSymbol(.shortcut),
+                heading: "Unterricht beginnt", detail: "Fokus an, Timer 45 min"
+            )
         }
     }
 }

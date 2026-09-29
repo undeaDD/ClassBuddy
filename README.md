@@ -41,7 +41,7 @@ protected by Face ID, with a one-tap privacy mode for when students are looking 
 
 - **Classes** – short name, school year, colour and multiple subjects per class
 - **Students** – A–Z list with search, gender, birthday and notes
-- **Dashboard per class** – card gallery with stats, next lesson, current-lesson countdown, next birthday, random student picker, timer, plus your own cards (documents, images, websites with favicon);
+- **Dashboard per class** – card gallery with stats, next lesson, current-lesson countdown, next birthday, random student picker, timer, plus your own cards (documents, images, websites with favicon, Shortcuts);
   reorder and hide cards in *Anordnen* mode
 - **Weekly calendar** – lesson grid generated from your school's timetable (start, lesson length, breaks),
   weekly or one-off lessons, appointments, class focus mode

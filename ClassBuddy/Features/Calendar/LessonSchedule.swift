@@ -25,7 +25,7 @@ struct LessonSchedule {
     }
 
     /// Nächste (noch nicht beendete) Stunde einer Klasse ab `now`, max. 8 Wochen voraus.
-    func nextLesson(forClass classID: UUID, after now: Date = .now) -> (start: Date, slot: LessonSlot, lesson: Lesson)? {
+    func nextLesson(forClass classID: UUID, after now: Date = .now) -> NextLesson? {
         let today = calendar.startOfDay(for: now)
         for offset in 0..<56 {
             guard let day = calendar.date(byAdding: .day, value: offset, to: today) else { continue }
@@ -36,9 +36,16 @@ struct LessonSchedule {
                       end > now,
                       let start = calendar.date(byAdding: .minute, value: slot.start, to: day)
                 else { continue }
-                return (start, slot, lesson)
+                return NextLesson(start: start, slot: slot, lesson: lesson)
             }
         }
         return nil
     }
+}
+
+/// Nächste Stunde einer Klasse: Beginn, Slot im Raster und die Stunde selbst.
+struct NextLesson {
+    let start: Date
+    let slot: LessonSlot
+    let lesson: Lesson
 }

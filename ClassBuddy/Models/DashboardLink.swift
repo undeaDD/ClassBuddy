@@ -9,9 +9,11 @@ final class DashboardLink {
         case file
         case website
         case image
+        /// Kurzbefehl der Kurzbefehle-App (`location` = exakter Name).
+        case shortcut
 
         /// Dokument/Bild: Kopie im App-Container (`LinkFileStore`).
-        var isStoredFile: Bool { self != .website }
+        var isStoredFile: Bool { self == .file || self == .image }
     }
 
     @Attribute(.unique) var id: UUID
@@ -40,7 +42,17 @@ final class DashboardLink {
         switch kind {
         case .website: URL(string: location)
         case .file, .image: LinkFileStore.directory.appending(path: location)
+        case .shortcut: Self.shortcutURL(named: location)
         }
+    }
+
+    /// Startet einen Kurzbefehl über die Kurzbefehle-App.
+    static func shortcutURL(named name: String) -> URL? {
+        var components = URLComponents()
+        components.scheme = "shortcuts"
+        components.host = "run-shortcut"
+        components.queryItems = [URLQueryItem(name: "name", value: name)]
+        return components.url
     }
 
     /// Zweite Zeile: Host der Website bzw. Dateiname.
@@ -48,6 +60,7 @@ final class DashboardLink {
         switch kind {
         case .website: url?.host() ?? location
         case .file, .image: (location as NSString).lastPathComponent
+        case .shortcut: location
         }
     }
 }

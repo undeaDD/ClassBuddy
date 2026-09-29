@@ -56,8 +56,8 @@ struct LinkCard: View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 12) {
                 CardHeader(
-                    title: link.kind == .website ? "Website" : "Dokument",
-                    symbol: link.kind == .website ? .custom(.www) : .custom(.page),
+                    title: Self.kindTitle(link.kind),
+                    symbol: Self.kindSymbol(link.kind),
                     showsChevron: true,
                     faviconURL: link.kind == .website ? link.url : nil
                 )
@@ -78,6 +78,24 @@ struct LinkCard: View {
         }
         .buttonStyle(.plain)
         .hoverEffect(.lift)
+    }
+}
+
+extension LinkCard {
+    static func kindTitle(_ kind: DashboardLink.Kind) -> String {
+        switch kind {
+        case .website: "Website"
+        case .shortcut: "Kurzbefehl"
+        case .file, .image: "Dokument"
+        }
+    }
+
+    static func kindSymbol(_ kind: DashboardLink.Kind) -> AppSymbol {
+        switch kind {
+        case .website: .custom(.www)
+        case .shortcut: .system("bolt.fill")
+        case .file, .image: .custom(.page)
+        }
     }
 }
 

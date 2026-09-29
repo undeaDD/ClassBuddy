@@ -59,6 +59,8 @@
 		DBE6E730B1F16CE349CCB6A2 /* SpreadsheetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */; };
 		610FEA7D9D7C2852CAA19D99 /* DataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95865081AE46E5F455EFB23D /* DataTests.swift */; };
 		405B9770BB271FE875A73717 /* KeychainGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A9ECE572B5ABDEAC810EB1 /* KeychainGate.swift */; };
+		CAC28EE70B7409F7BD7D9B12 /* BackupImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAFCF358CAD39F2E3388BA0 /* BackupImport.swift */; };
+		200AF034F81588E18D3F1B96 /* BackupCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41DC12A563B629FA7ADBEAC /* BackupCells.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -134,6 +136,8 @@
 		DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetTests.swift; sourceTree = "<group>"; };
 		95865081AE46E5F455EFB23D /* DataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
 		27A9ECE572B5ABDEAC810EB1 /* KeychainGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainGate.swift; sourceTree = "<group>"; };
+		5CAFCF358CAD39F2E3388BA0 /* BackupImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupImport.swift; sourceTree = "<group>"; };
+		D41DC12A563B629FA7ADBEAC /* BackupCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCells.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -332,6 +336,8 @@
 		2390C6D250DE2C455B3558E8 /* Backup */ = {
 			isa = PBXGroup;
 			children = (
+				D41DC12A563B629FA7ADBEAC /* BackupCells.swift */,
+				5CAFCF358CAD39F2E3388BA0 /* BackupImport.swift */,
 				F3D1542A53C4CB6A27D96639 /* Backup.swift */,
 				B520560E0BF66558DE32A34D /* XLSX.swift */,
 				5F5E83768A3055F73116717F /* ZipArchive.swift */,
@@ -435,6 +441,8 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				200AF034F81588E18D3F1B96 /* BackupCells.swift in Sources */,
+				CAC28EE70B7409F7BD7D9B12 /* BackupImport.swift in Sources */,
 				405B9770BB271FE875A73717 /* KeychainGate.swift in Sources */,
 				BFBB39A661B0D1D3505753CD /* CardGallery.swift in Sources */,
 				37B9BF52A683F670A912BACD /* DashboardCards.swift in Sources */,

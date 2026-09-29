@@ -2,53 +2,66 @@ import SwiftData
 import SwiftUI
 
 enum LinkEditorRoute: Identifiable {
-    case newWebsite(SchoolClass)
+    case new(DashboardLink.Kind, SchoolClass)
     case edit(DashboardLink)
 
     var id: String {
         switch self {
-        case .newWebsite(let schoolClass): "new-\(schoolClass.id)"
+        case .new(let kind, let schoolClass): "new-\(kind.rawValue)-\(schoolClass.id)"
         case .edit(let link): link.id.uuidString
+        }
+    }
+
+    var kind: DashboardLink.Kind {
+        switch self {
+        case .new(let kind, _): kind
+        case .edit(let link): link.kind
         }
     }
 }
 
-/// Sheet: Website-Kachel anlegen bzw. eigene Kachel bearbeiten.
-/// Bei Dokumenten ist nur der Titel änderbar.
+/// Sheet: Website- oder Kurzbefehl-Kachel anlegen bzw. eigene Kachel bearbeiten.
+/// Bei Dokumenten und Bildern ist nur der Titel änderbar.
 struct LinkEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
 
     let route: LinkEditorRoute
 
     @State private var title: String
-    @State private var address: String
+    /// Website-Adresse bzw. Name des Kurzbefehls.
+    @State private var target: String
 
     init(route: LinkEditorRoute) {
         self.route = route
         switch route {
-        case .newWebsite:
+        case .new:
             _title = State(initialValue: "")
-            _address = State(initialValue: "")
+            _target = State(initialValue: "")
         case .edit(let link):
             _title = State(initialValue: link.title)
-            _address = State(initialValue: link.kind == .website ? link.location : "")
-        }
-    }
-
-    private var isWebsite: Bool {
-        switch route {
-        case .newWebsite: true
-        case .edit(let link): link.kind == .website
+            _target = State(initialValue: link.kind.isStoredFile ? "" : link.location)
         }
     }
 
     private var isNew: Bool {
-        if case .newWebsite = route { true } else { false }
+        if case .new = route { true } else { false }
     }
 
+    private var trimmedTarget: String { target.trimmingCharacters(in: .whitespaces) }
+
     private var isValid: Bool {
-        isWebsite ? URL.web(address) != nil : !title.trimmingCharacters(in: .whitespaces).isEmpty
+        switch route.kind {
+        case .website: URL.web(target) != nil
+        case .shortcut: !trimmedTarget.isEmpty
+        case .file, .image: !title.trimmingCharacters(in: .whitespaces).isEmpty
+        }
+    }
+
+    private var navigationTitle: String {
+        guard isNew else { return "Kachel bearbeiten" }
+        return route.kind == .shortcut ? "Kurzbefehl hinzufügen" : "Website hinzufügen"
     }
 
     var body: some View {
@@ -56,20 +69,12 @@ struct LinkEditorView: View {
             Form {
                 Section {
                     TextField("Titel", text: $title)
-                    if isWebsite {
-                        TextField("Adresse (z. B. schule.de/vertretungsplan)", text: $address)
-                            .textContentType(.URL)
-                            .keyboardType(.URL)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                    }
+                    targetField
                 } footer: {
-                    if isWebsite, !address.isEmpty, URL.web(address) == nil {
-                        Text("Keine gültige Adresse.")
-                    }
+                    footer
                 }
             }
-            .navigationTitle(isNew ? "Website hinzufügen" : "Kachel bearbeiten")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -84,24 +89,63 @@ struct LinkEditorView: View {
         .presentationDetents([.medium])
     }
 
+    @ViewBuilder
+    private var targetField: some View {
+        switch route.kind {
+        case .website:
+            TextField("Adresse (z. B. schule.de/vertretungsplan)", text: $target)
+                .textContentType(.URL)
+                .keyboardType(.URL)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+        case .shortcut:
+            TextField("Name des Kurzbefehls", text: $target)
+                .autocorrectionDisabled()
+            Button("Kurzbefehle-App öffnen", image: .navArrowRight) {
+                if let url = URL(string: "shortcuts://") { openURL(url) }
+            }
+        case .file, .image:
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private var footer: some View {
+        switch route.kind {
+        case .website where !target.isEmpty && URL.web(target) == nil:
+            Text("Keine gültige Adresse.")
+        case .shortcut:
+            Text("Genau so schreiben wie in der Kurzbefehle-App. Antippen der Kachel startet den Kurzbefehl.")
+        default:
+            EmptyView()
+        }
+    }
+
     private func save() {
         let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
         switch route {
-        case .newWebsite(let schoolClass):
-            guard let url = URL.web(address) else { return }
+        case .new(let kind, let schoolClass):
+            guard let location = location(for: kind) else { return }
             modelContext.insert(DashboardLink(
-                title: trimmedTitle.isEmpty ? (url.host() ?? "") : trimmedTitle,
-                kind: .website,
-                location: url.absoluteString,
+                title: trimmedTitle.isEmpty && kind == .website ? (URL.web(target)?.host() ?? "") : trimmedTitle,
+                kind: kind,
+                location: location,
                 schoolClass: schoolClass
             ))
         case .edit(let link):
             link.title = trimmedTitle
-            if link.kind == .website, let url = URL.web(address) {
-                link.location = url.absoluteString
-            }
+            if let location = location(for: link.kind) { link.location = location }
         }
         try? modelContext.save()
         dismiss()
+    }
+
+    /// Ziel der Kachel: normalisierte URL bzw. Name des Kurzbefehls; Dateien bleiben unverändert.
+    private func location(for kind: DashboardLink.Kind) -> String? {
+        switch kind {
+        case .website: URL.web(target)?.absoluteString
+        case .shortcut: trimmedTarget.isEmpty ? nil : trimmedTarget
+        case .file, .image: nil
+        }
     }
 }
