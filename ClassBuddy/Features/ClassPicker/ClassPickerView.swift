@@ -65,6 +65,7 @@ struct ClassPickerView: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Neue Klasse", image: .plus) { editorRoute = .new }
+                        .foregroundStyle(Color.accentColor)
                         .disabled(!canEdit)
                 }
             }

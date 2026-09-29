@@ -3,6 +3,13 @@ import UIKit
 import WebKit
 
 struct SettingsView: View {
+    @Environment(\.openURL) private var openURL
+    @Environment(ToastCenter.self) private var toasts
+
+    private var versionText: String {
+        "\(AppInfo.version) · \(InstallInfo.osVersion) · \(InstallInfo.deviceModel)"
+    }
+
     var body: some View {
         Form {
             Section {
@@ -41,28 +48,27 @@ struct SettingsView: View {
             }
 
             Section {
-                // Echte NavigationLinks → das System zeichnet den Chevron selbst.
-                NavigationLink {
-                    WebPageView(title: "Quellcode", url: AppInfo.sourceCodeURL)
-                } label: {
-                    Label("Quellcode auf GitHub", image: .githubCircle)
-                }
-                NavigationLink {
-                    WebPageView(title: "Spenden", url: AppInfo.donationURL)
-                } label: {
-                    Label("Spenden (PayPal)", image: .donate)
-                }
+                ExternalLinkRow(title: "Quellcode auf GitHub", image: .githubCircle, url: AppInfo.sourceCodeURL)
+                ExternalLinkRow(title: "Einen Kaffee spendieren (PayPal)", image: .donate, url: AppInfo.donationURL)
                 NavigationLink {
                     FeedbackView()
                 } label: {
                     Label("Feedback senden", image: .sendMail)
                 }
-                LabeledContent {
-                    Text("\(AppInfo.version) · \(InstallInfo.osVersion) · \(InstallInfo.deviceModel)")
-                        .monospacedDigit()
+                // Antippen kopiert Version, iPadOS-Version und Gerät (z. B. für Fehlerberichte).
+                Button {
+                    UIPasteboard.general.string = versionText
+                    toasts.success("Version in die Zwischenablage kopiert")
                 } label: {
-                    Label("App-Version", image: .version)
+                    LabeledContent {
+                        Text(versionText)
+                            .monospacedDigit()
+                    } label: {
+                        Label("App-Version", image: .version)
+                            .foregroundStyle(.primary)
+                    }
                 }
+                .accessibilityHint("Kopiert die Versionsangaben")
             } footer: {
                 Text("Made with ❤️ by Devsforge.de")
                     .frame(maxWidth: .infinity)
@@ -71,6 +77,34 @@ struct SettingsView: View {
         }
         .navigationTitle(AppTab.settings.title)
         .appChrome(tab: .settings)
+    }
+}
+
+/// Link, der die Seite außerhalb der App öffnet (Safari); Pfeil nach rechts oben wie bei iOS üblich.
+private struct ExternalLinkRow: View {
+    @Environment(\.openURL) private var openURL
+    let title: String
+    let image: ImageResource
+    let url: URL
+
+    var body: some View {
+        Button {
+            openURL(url)
+        } label: {
+            HStack {
+                Label {
+                    Text(title).foregroundStyle(.primary)
+                } icon: {
+                    Image(image)
+                }
+                Spacer()
+                Image(systemName: "arrow.up.forward")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .contentShape(.rect)
+        }
+        .accessibilityHint("Öffnet in Safari")
     }
 }
 
@@ -132,6 +166,7 @@ nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
     case imprint
     case privacy
     case licenses
+    case collaborators
 
     var id: String { rawValue }
 
@@ -140,6 +175,7 @@ nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
         case .imprint: "Impressum"
         case .privacy: "Datenschutz"
         case .licenses: "Lizenzen"
+        case .collaborators: "Mitwirkende"
         }
     }
 
@@ -150,7 +186,7 @@ nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
 
 @MainActor
 extension LegalDocument {
-    var symbol: AppSymbol { .custom(.link) }
+    var symbol: AppSymbol { self == .collaborators ? .custom(.community) : .custom(.link) }
 }
 
 /// Lokale HTML-Seite; Links nach außen öffnen in Safari statt in der App.

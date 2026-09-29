@@ -9,8 +9,8 @@ enum AppInfo {
     /// Quellcode auf GitHub.
     static let sourceCodeURL = URL(string: "https://github.com/undeaDD/ClassBuddy")!
 
-    /// Spendenlink (vorerst die PayPal-Startseite, persönlicher Link folgt).
-    static let donationURL = URL(string: "https://www.paypal.com")!
+    /// Spendenlink (PayPal.Me).
+    static let donationURL = URL(string: "https://www.paypal.com/paypalme/undeaDD")!
 
     static var version: String {
         let info = Bundle.main.infoDictionary

@@ -164,14 +164,16 @@ struct DashboardView: View {
                 .opacity(isHidden ? 0.55 : 1)
                 .overlay(alignment: .topTrailing) {
                     HStack(spacing: 8) {
-                        Button("Entfernen", image: .xmark) {
-                            removeCard(cardID, in: schoolClass)
-                        }
                         Button(isHidden ? "Einblenden" : "Ausblenden", image: isHidden ? .eye : .eyeClosed) {
                             setHidden(!isHidden, cardID, in: schoolClass)
                         }
+                        Button("Entfernen", image: .xmark) {
+                            removeCard(cardID, in: schoolClass)
+                        }
                     }
                     .labelStyle(.iconOnly)
+                    .foregroundStyle(Color.accentColor)
+                    .tint(Color.accentColor)
                     .buttonStyle(.glass)
                     .buttonBorderShape(.circle)
                     .offset(x: 8, y: -8)

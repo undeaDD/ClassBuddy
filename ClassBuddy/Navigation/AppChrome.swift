@@ -35,7 +35,10 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
 
             if hasActions {
                 ToolbarItemGroup(placement: .topBarTrailing) {
+                    // Aktionen der Seite in der Akzentfarbe.
                     actions
+                        .foregroundStyle(Color.accentColor)
+                        .tint(Color.accentColor)
                 }
                 ToolbarSpacer(.fixed, placement: .topBarTrailing)
             }
@@ -60,7 +63,9 @@ struct PrivacyModeButton: View {
                 image: isOn ? .eyeClosed : .eye
             )
         }
-        .tint(isOn ? .orange : nil)
+        // Akzentfarbe, bei aktivem Privatsphäre-Modus orange.
+        .foregroundStyle(isOn ? Color.orange : Color.accentColor)
+        .tint(isOn ? .orange : Color.accentColor)
         .disabled(security.isAuthenticating)
         .help(isOn ? "Sensible Daten anzeigen (\(security.biometryName))" : "Sensible Daten ausblenden")
         .keyboardShortcut("p", modifiers: [.command, .shift])
