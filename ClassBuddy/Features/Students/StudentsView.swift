@@ -162,7 +162,7 @@ struct StudentsView: View {
     }
 }
 
-/// Kreis mit Initialen und kleinem Geschlechts-Indikator (w/m/d).
+/// Kreis mit Initialen und kleinem Geschlechts-Indikator.
 struct StudentAvatar: View {
     let student: Student
     var size: CGFloat = 40
@@ -187,8 +187,8 @@ struct GenderBadge: View {
     var size: CGFloat = 16
 
     var body: some View {
-        Text(gender.shortTitle)
-            .font(.system(size: size * 0.62, weight: .bold, design: .rounded))
+        Text(gender.symbol)
+            .font(.system(size: size * 0.72, weight: .bold))
             .foregroundStyle(.white)
             .frame(width: size, height: size)
             .background(gender.color, in: .circle)

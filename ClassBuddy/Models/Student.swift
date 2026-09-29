@@ -73,12 +73,13 @@ enum Gender: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    /// Kurzform für die Anzeige am Avatar.
-    var shortTitle: String {
+    /// Geschlechtssymbol für den Avatar (in SF Symbols gibt es keine).
+    /// U+FE0E erzwingt die Text- statt der Emoji-Darstellung.
+    var symbol: String {
         switch self {
-        case .female: "w"
-        case .male: "m"
-        case .diverse: "d"
+        case .female: "\u{2640}\u{FE0E}"  // ♀
+        case .male: "\u{2642}\u{FE0E}"    // ♂
+        case .diverse: "\u{26A7}\u{FE0E}" // ⚧
         }
     }
 }

@@ -59,7 +59,8 @@ struct StatCard: View {
             }
             .padding(18)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.background.secondary, in: .rect(cornerRadius: 22))
+            // Weiß (hell) bzw. Dunkelgrau (dunkel) auf dem gruppierten Hintergrund.
+            .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 22))
             .contentShape(.hoverEffect, .rect(cornerRadius: 22))
         }
         .buttonStyle(.plain)
