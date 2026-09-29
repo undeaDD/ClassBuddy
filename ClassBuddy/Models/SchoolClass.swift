@@ -32,6 +32,8 @@ final class SchoolClass {
     /// Kacheln, die diese Klasse schon kennt – neue, standardmäßig ausgeblendete
     /// Kacheln werden beim ersten Auftauchen in `dashboardHidden` eingetragen.
     var dashboardKnownCards: [String] = []
+    /// Entfernte eingebaute Kacheln (weder sichtbar noch unter „Ausgeblendet“, über die Galerie wieder hinzufügbar).
+    var dashboardRemoved: [String] = []
 
     init(
         id: UUID = UUID(),

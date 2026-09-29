@@ -8,11 +8,11 @@ final class ToastCenter {
         enum Style {
             case success, error, info
 
-            var symbol: String {
+            var icon: ImageResource {
                 switch self {
-                case .success: "checkmark.circle.fill"
-                case .error: "exclamationmark.triangle.fill"
-                case .info: "info.circle.fill"
+                case .success: .toastSuccess
+                case .error: .toastError
+                case .info: .toastWarning
                 }
             }
 
@@ -63,8 +63,8 @@ struct ToastOverlay: View {
         ZStack {
             if let toast = toasts.current {
                 HStack(spacing: 10) {
-                    Image(systemName: toast.style.symbol)
-                        .font(.title3)
+                    Image(toast.style.icon)
+                        .iconSize(22)
                         .foregroundStyle(toast.style.color)
                     Text(toast.message)
                         .font(.subheadline.weight(.medium))

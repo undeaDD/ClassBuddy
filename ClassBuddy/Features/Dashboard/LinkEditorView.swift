@@ -93,7 +93,7 @@ struct LinkEditorView: View {
     private var targetField: some View {
         switch route.kind {
         case .website:
-            TextField("Adresse (z. B. schule.de/vertretungsplan)", text: $target)
+            TextField("Adresse (z. B. schule.de/vertretungsplan)", text: $target, prompt: Text("https://… oder App-Link"))
                 .textContentType(.URL)
                 .keyboardType(.URL)
                 .textInputAutocapitalization(.never)
@@ -113,7 +113,7 @@ struct LinkEditorView: View {
     private var footer: some View {
         switch route.kind {
         case .website where !target.isEmpty && URL.web(target) == nil:
-            Text("Keine gültige Adresse.")
+            Text("Nur https:// oder App-Links (z. B. notability://) sind erlaubt, kein http, ftp oder file.")
         case .shortcut:
             Text("Genau so schreiben wie in der Kurzbefehle-App. Antippen der Kachel startet den Kurzbefehl.")
         default:

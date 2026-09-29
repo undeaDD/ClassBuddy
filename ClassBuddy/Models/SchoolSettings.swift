@@ -114,12 +114,8 @@ struct SchoolInfo: Codable, Equatable {
     var phone = ""
     var email = ""
 
-    /// Website als URL (ergänzt „https://“ bei Bedarf).
-    var websiteURL: URL? {
-        let trimmed = website.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return nil }
-        return URL(string: trimmed.contains("://") ? trimmed : "https://\(trimmed)")
-    }
+    /// Website als URL (ergänzt „https://“, lehnt http & Co. ab – siehe `URL.web`).
+    var websiteURL: URL? { URL.web(website) }
 }
 
 /// Die Lehrkraft, die die App nutzt.

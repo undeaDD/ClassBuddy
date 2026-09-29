@@ -18,34 +18,40 @@ struct StatCard: View {
     var action: (() -> Void)?
 
     var body: some View {
-        Button {
-            action?()
-        } label: {
-            VStack(alignment: .leading, spacing: 12) {
-                CardHeader(title: title, symbol: symbol, showsChevron: action != nil)
-                Spacer(minLength: 0)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(value)
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .monospacedDigit()
+        // Ohne Aktion keine Schaltfläche: nicht ausgegraut, kein Hover, kein Pfeil.
+        if let action {
+            Button(action: action) { content }
+                .buttonStyle(.plain)
+                .hoverEffect(.lift)
+        } else {
+            content
+        }
+    }
+
+    private var content: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            CardHeader(title: title, symbol: symbol, showsChevron: action != nil)
+            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(value)
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .contentTransition(.numericText())
+                    .privacySensitive(isSensitive)
+                    .leadingAligned()
+                if let detail {
+                    Text(detail)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .contentTransition(.numericText())
                         .privacySensitive(isSensitive)
-                    if let detail {
-                        Text(detail)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                            .privacySensitive(isSensitive)
-                    }
+                        .leadingAligned()
                 }
             }
-            .cardStyle()
         }
-        .buttonStyle(.plain)
-        .hoverEffect(.lift)
-        .disabled(action == nil)
+        .cardStyle()
     }
 }
 
@@ -61,7 +67,8 @@ struct LinkCard: View {
                     title: Self.kindTitle(link.kind),
                     symbol: Self.kindSymbol(link.kind),
                     showsChevron: true,
-                    faviconURL: link.kind == .website ? link.url : nil
+                    // Favicons nur über https laden (App-Links haben keins).
+                    faviconURL: link.kind == .website && link.url?.scheme == "https" ? link.url : nil
                 )
                 Spacer(minLength: 0)
                 VStack(alignment: .leading, spacing: 2) {
@@ -69,11 +76,13 @@ struct LinkCard: View {
                         .font(.title2.weight(.bold))
                         .lineLimit(2)
                         .sensitive()
+                        .leadingAligned()
                     Text(link.detail)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                         .sensitive()
+                        .leadingAligned()
                 }
             }
             .cardStyle()
@@ -95,7 +104,7 @@ extension LinkCard {
     static func kindSymbol(_ kind: DashboardLink.Kind) -> AppSymbol {
         switch kind {
         case .website: .custom(.www)
-        case .shortcut: .system("bolt.fill")
+        case .shortcut: .custom(.shortcuts)
         case .file, .image: .custom(.page)
         }
     }
@@ -179,8 +188,8 @@ struct ImagePlaceholderCard: View {
                 colors: [Color.accentColor.opacity(0.55), Color.accentColor.opacity(0.2)],
                 startPoint: .topLeading, endPoint: .bottomTrailing
             )
-            Image(systemName: "photo")
-                .font(.system(size: 44))
+            Image(.image)
+                .iconSize(48)
                 .foregroundStyle(.white.opacity(0.8))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             Text(title)
@@ -307,6 +316,7 @@ struct TimerCard: View {
 
 /// Wochenstunden: Fortschrittsbalken (Primärfarbe) mit erledigten und gesamten Stunden.
 struct WeeklyHoursCard: View {
+    @Environment(\.redactionReasons) private var redactionReasons
     let result: WeeklyWorkload.Result
     var action: (() -> Void)?
 
@@ -330,7 +340,10 @@ struct WeeklyHoursCard: View {
                         .font(.system(size: 44, weight: .bold, design: .rounded))
                         .monospacedDigit()
                         .contentTransition(.numericText())
-                    ProgressView(value: result.fraction)
+                        .sensitive()
+                        .leadingAligned()
+                    // Im Privatsphäre-Modus leerer Balken (verrät nichts über den Stundenplan).
+                    ProgressView(value: redactionReasons.contains(.privacy) ? 0 : result.fraction)
                         .tint(Color.accentColor)
                         .scaleEffect(x: 1, y: 2, anchor: .center)
                         .padding(.vertical, 4)
@@ -342,6 +355,7 @@ struct WeeklyHoursCard: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
+                    .sensitive()
                 }
             }
             .cardStyle()
@@ -409,6 +423,11 @@ struct CardHeader: View {
 }
 
 private extension View {
+    /// Volle Breite, linksbündig: auch die Platzhalter im Privatsphäre-Modus beginnen links.
+    func leadingAligned() -> some View {
+        frame(maxWidth: .infinity, alignment: .leading)
+    }
+
     func cardStyle() -> some View {
         padding(18)
             .frame(maxWidth: .infinity, minHeight: cardMinHeight, alignment: .topLeading)

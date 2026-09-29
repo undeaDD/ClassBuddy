@@ -86,10 +86,14 @@ enum Backup {
 
     private static func classesSheet(_ classes: [SchoolClass]) -> XLSXSheet {
         XLSXSheet(name: Sheet.classes, rows: [
-            ["ID", "Kürzel", "Fächer", "Schuljahr", "Farbe", "Erstellt", "Kachel-Reihenfolge", "Ausgeblendete Kacheln"],
+            [
+                "ID", "Kürzel", "Fächer", "Schuljahr", "Farbe", "Erstellt",
+                "Kachel-Reihenfolge", "Ausgeblendete Kacheln", "Entfernte Kacheln",
+            ],
         ] + classes.map {
             [$0.id.uuidString, $0.shortName, Cell.list($0.subjects), $0.schoolYear, $0.colorRaw,
-             Cell.dateTime($0.createdAt), Cell.list($0.dashboardOrder), Cell.list($0.dashboardHidden)]
+             Cell.dateTime($0.createdAt), Cell.list($0.dashboardOrder), Cell.list($0.dashboardHidden),
+             Cell.list($0.dashboardRemoved)]
         })
     }
 

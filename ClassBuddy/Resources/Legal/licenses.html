@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Lizenzen</title>
 <style>
   :root {
@@ -70,6 +70,15 @@
     color: var(--secondary); margin: 8px 0 0; line-height: 1.45;
   }
   .footnote { color: var(--secondary); font: -apple-system-footnote; margin: 8px 16px 0; line-height: 1.4; }
+  html, body { overflow-x: hidden; }
+  body { overflow-wrap: anywhere; word-break: normal; }
+  pre { max-width: 100%; overflow-x: hidden; overflow-wrap: anywhere; }
+  ul { margin: 6px 0 0; padding-left: 20px; }
+  li { margin: 4px 0; line-height: 1.4; }
+  .row p { margin: 6px 0 0; line-height: 1.45; }
+  .muted { color: var(--secondary); }
+  .ok { color: #34c759; font-weight: 600; }
+  .todo { color: #ff3b30; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -128,13 +137,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     </div>
     <div class="row">
       <div class="row-head"><span class="name">Apple-Frameworks</span><span class="pill">iPadOS</span></div>
-      <div class="desc">SwiftUI, SwiftData, WebKit, LocalAuthentication, PhotosUI, QuickLook und weitere – Bestandteil von iPadOS.</div>
+      <div class="desc">SwiftUI, SwiftData, WebKit, LocalAuthentication, PhotosUI, QuickLook und weitere, Bestandteil von iPadOS.</div>
     </div>
   </div>
   <p class="footnote">Website-Symbole (Favicons) auf Übersichts-Kacheln gehören den jeweiligen Website-Betreibern und werden nur lokal zwischengespeichert.</p>
 
   <h2>Entwicklungswerkzeuge (nicht Teil der App)</h2>
   <div class="card">
+    <div class="row">
+      <div class="row-head"><span class="name">GitHub &amp; GitHub Actions</span><span class="pill">GitHub</span></div>
+      <div class="desc">Quellcode-Verwaltung und automatische Builds (IPA, Sicherheitsprüfung) · <a href="https://github.com">github.com</a></div>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="name">Dependabot</span><span class="pill">GitHub</span></div>
+      <div class="desc">Automatische Aktualisierung der verwendeten GitHub Actions</div>
+    </div>
     <div class="row">
       <div class="row-head"><span class="name">SwiftLint</span><span class="pill">MIT</span></div>
       <div class="desc">Code-Stilprüfung · <a href="https://github.com/realm/SwiftLint">github.com/realm/SwiftLint</a></div>

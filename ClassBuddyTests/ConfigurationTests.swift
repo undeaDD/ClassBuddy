@@ -33,8 +33,8 @@ struct ConfigurationTests {
         #expect(decoded == values)
     }
 
-    @Test("Schul-Website: https wird ergänzt", arguments: [
-        ("schule.de", "https://schule.de"), ("http://schule.de", "http://schule.de"), ("", nil),
+    @Test("Schul-Website: https wird ergänzt, http abgelehnt", arguments: [
+        ("schule.de", "https://schule.de"), ("http://schule.de", nil), ("", nil),
     ])
     func schoolWebsite(input: String, expected: String?) {
         var school = SchoolInfo()
