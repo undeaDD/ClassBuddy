@@ -51,7 +51,7 @@ struct ClassPickerButton: View {
             HStack(spacing: 10) {
                 ClassBadge(
                     shortName: selectedClass?.shortName ?? "",
-                    color: selectedClass?.color.color ?? .accentColor
+                    color: selectedClass?.displayColor ?? .accentColor
                 )
                 VStack(alignment: .leading, spacing: 0) {
                     Text(selectedClass?.title ?? "Klasse auswählen")

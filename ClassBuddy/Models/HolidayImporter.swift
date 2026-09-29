@@ -93,13 +93,13 @@ enum HolidayImporter {
     }
 
     /// „2026-10-17“ → lokaler Tagesbeginn (ohne UTC-Verschiebung).
-    private static func parseDay(_ string: String) -> Date? {
+    static func parseDay(_ string: String) -> Date? {
         let parts = string.split(separator: "-").compactMap { Int($0) }
         guard parts.count == 3 else { return nil }
         return Calendar.school.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2]))
     }
 
-    private static func dayString(_ date: Date) -> String {
+    static func dayString(_ date: Date) -> String {
         let parts = Calendar.school.dateComponents([.year, .month, .day], from: date)
         return String(format: "%04d-%02d-%02d", parts.year ?? 0, parts.month ?? 0, parts.day ?? 0)
     }

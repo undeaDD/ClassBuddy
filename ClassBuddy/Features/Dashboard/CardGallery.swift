@@ -84,6 +84,8 @@ enum CardTemplate: Identifiable, Hashable {
     case document
     case website
     case shortcut
+    /// Keine Kachel: öffnet eine Mail mit einem Kachel-Wunsch.
+    case request
 
     var id: String {
         switch self {
@@ -93,12 +95,16 @@ enum CardTemplate: Identifiable, Hashable {
         case .document: "document"
         case .website: "website"
         case .shortcut: "shortcut"
+        case .request: "request"
         }
     }
 
     /// Mehrfach hinzufügbar (eigene Inhalte).
     var isReusable: Bool {
-        if case .builtIn = self { false } else { true }
+        switch self {
+        case .builtIn, .request: false
+        default: true
+        }
     }
 
     var title: String {
@@ -109,6 +115,7 @@ enum CardTemplate: Identifiable, Hashable {
         case .document: "Dokument"
         case .website: "Website"
         case .shortcut: "Kurzbefehl"
+        case .request: "Kachel wünschen"
         }
     }
 
@@ -120,6 +127,7 @@ enum CardTemplate: Identifiable, Hashable {
         case .document: "PDF, Arbeitsblatt oder jede andere Datei – öffnet sich in der Vorschau."
         case .website: "Link mit Website-Icon, z. B. Schulwebsite oder Vertretungsplan."
         case .shortcut: "Startet einen Kurzbefehl der Kurzbefehle-App, z. B. „Unterricht beginnt“."
+        case .request: "Dir fehlt eine Kachel? Schreib kurz, was sie zeigen soll."
         }
     }
 
@@ -130,26 +138,29 @@ enum CardTemplate: Identifiable, Hashable {
 struct CardGalleryView: View {
     @Environment(\.dismiss) private var dismiss
 
-    /// Bereits sichtbare eingebaute Kacheln (können nicht erneut hinzugefügt werden).
+    /// Bereits sichtbare eingebaute Kacheln – werden in der Galerie nicht angeboten.
     let visibleBuiltIns: Set<DashboardBuiltInCard>
     let onSelect: (CardTemplate) -> Void
 
     private let columns = [GridItem(.adaptive(minimum: 260, maximum: 340), spacing: 20)]
 
+    private var availableBuiltIns: [CardTemplate] {
+        DashboardBuiltInCard.allCases.filter { !visibleBuiltIns.contains($0) }.map(CardTemplate.builtIn)
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 32) {
-                    section(
-                        "Für diese Klasse",
-                        footer: "Jede dieser Kacheln gibt es einmal pro Klasse.",
-                        templates: DashboardBuiltInCard.allCases.map(CardTemplate.builtIn)
-                    )
-                    section(
-                        "Eigene Kacheln",
-                        footer: "Beliebig oft hinzufügbar.",
-                        templates: CardTemplate.reusable
-                    )
+                    if !availableBuiltIns.isEmpty {
+                        section(
+                            "Für diese Klasse",
+                            footer: "Jede dieser Kacheln gibt es einmal pro Klasse.",
+                            templates: availableBuiltIns
+                        )
+                    }
+                    section("Eigene Kacheln", footer: "Beliebig oft hinzufügbar.", templates: CardTemplate.reusable)
+                    section("Fehlt etwas?", footer: "Wünsche gehen per Mail an den Entwickler.", templates: [.request])
                 }
                 .padding(24)
             }
@@ -178,40 +189,31 @@ struct CardGalleryView: View {
         }
     }
 
+    /// Ganze Kachel antippen = hinzufügen.
     private func tile(_ template: CardTemplate) -> some View {
-        let isAlreadyVisible: Bool = if case .builtIn(let card) = template { visibleBuiltIns.contains(card) } else { false }
-        return VStack(alignment: .leading, spacing: 10) {
-            TemplatePreview(template: template)
-                .allowsHitTesting(false)
-                .accessibilityHidden(true)
+        Button {
+            onSelect(template)
+            dismiss()
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                TemplatePreview(template: template)
+                    .allowsHitTesting(false)
 
-            HStack(alignment: .firstTextBaseline) {
-                Text(template.title).font(.headline)
-                if template.isReusable {
-                    Text("Mehrfach")
-                        .font(.caption2.weight(.semibold))
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 2)
-                        .background(.tint.opacity(0.15), in: .capsule)
-                        .foregroundStyle(.tint)
-                }
-                Spacer()
+                Text(template.title)
+                    .font(.headline)
+                    .lineLimit(1)
+                // Immer zwei Zeilen, damit alle Kacheln gleich hoch sind.
+                Text(template.summary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2, reservesSpace: true)
             }
-            Text(template.summary)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Button {
-                onSelect(template)
-                dismiss()
-            } label: {
-                Label(isAlreadyVisible ? "Bereits sichtbar" : "Hinzufügen", image: isAlreadyVisible ? .check : .plus)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-            .disabled(isAlreadyVisible)
+            .contentShape(.rect)
         }
+        .buttonStyle(.plain)
+        .hoverEffect(.lift)
+        .accessibilityLabel("\(template.title) hinzufügen")
+        .accessibilityHint(template.summary)
     }
 }
 
@@ -234,6 +236,8 @@ private struct TemplatePreview: View {
                 title: "Kurzbefehl", symbol: LinkCard.kindSymbol(.shortcut),
                 heading: "Unterricht beginnt", detail: "Fokus an, Timer 45 min"
             )
+        case .request:
+            ContentCard(title: "Wunsch", symbol: .custom(.sendMail), heading: "Neue Kachel", detail: "Per Mail vorschlagen")
         }
     }
 }

@@ -49,9 +49,28 @@ final class SchoolClass {
         self.createdAt = createdAt
     }
 
+    /// Vordefinierte Farbe (bei eigener Farbe: Blau als Rückfall).
     var color: ClassColor {
         get { ClassColor(rawValue: colorRaw) ?? .blue }
         set { colorRaw = newValue.rawValue }
+    }
+
+    /// Angezeigte Farbe: vordefiniert oder eigene Farbe (`colorRaw` = „#RRGGBB“).
+    var displayColor: Color {
+        Self.displayColor(for: colorRaw)
+    }
+
+    /// `colorRaw` → Farbe (Name einer `ClassColor` oder Hex-Wert).
+    static func displayColor(for colorRaw: String) -> Color {
+        ClassColor(rawValue: colorRaw)?.color ?? Color(hex: colorRaw) ?? ClassColor.blue.color
+    }
+
+    /// Gültiger Farbwert für den Import: vordefinierter Name oder `#RRGGBB`, sonst Blau.
+    static func sanitizedColorRaw(_ text: String) -> String {
+        let trimmed = text.trimmingCharacters(in: .whitespaces)
+        if ClassColor(rawValue: trimmed) != nil { return trimmed }
+        if let custom = Color(hex: trimmed) { return custom.hexString }
+        return ClassColor.blue.rawValue
     }
 
     var title: String { "Klasse \(shortName)" }
@@ -82,7 +101,7 @@ final class SchoolClass {
     ]
 }
 
-enum ClassColor: String, CaseIterable, Codable, Identifiable {
+nonisolated enum ClassColor: String, CaseIterable, Codable, Identifiable {
     case blue, indigo, purple, pink, red, orange, yellow, green, mint, teal
 
     var id: String { rawValue }

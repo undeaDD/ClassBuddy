@@ -117,7 +117,7 @@ struct ClassPickerView: View {
             app.isClassPickerPresented = false
         } label: {
             HStack(spacing: 12) {
-                ClassBadge(shortName: schoolClass.shortName, color: schoolClass.color.color, size: 40)
+                ClassBadge(shortName: schoolClass.shortName, color: schoolClass.displayColor, size: 40)
                 VStack(alignment: .leading) {
                     Text(schoolClass.title).font(.body.weight(.medium))
                         .sensitive()

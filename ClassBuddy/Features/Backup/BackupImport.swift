@@ -68,9 +68,10 @@ extension Backup {
                     shortName: shortName,
                     subjects: Cell.parseList(row["Fächer"]),
                     schoolYear: row["Schuljahr"],
-                    color: ClassColor(rawValue: row["Farbe"]) ?? .blue,
+                    color: .blue,
                     createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now
                 )
+                schoolClass.colorRaw = SchoolClass.sanitizedColorRaw(row["Farbe"])
                 schoolClass.dashboardOrder = Cell.parseList(row["Kachel-Reihenfolge"])
                 schoolClass.dashboardHidden = Cell.parseList(row["Ausgeblendete Kacheln"])
                 schoolClass.dashboardKnownCards = schoolClass.dashboardOrder + schoolClass.dashboardHidden

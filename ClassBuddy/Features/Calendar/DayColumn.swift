@@ -212,7 +212,7 @@ private struct SlotCell: View {
     }
 
     private func filledCell(lesson: Lesson, schoolClass: SchoolClass, shape: RoundedRectangle) -> some View {
-        let color = schoolClass.color.color
+        let color = schoolClass.displayColor
         return VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 4) {
                 Text("\(slot.number).")
