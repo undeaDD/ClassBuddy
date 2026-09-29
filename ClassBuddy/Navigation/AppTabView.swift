@@ -6,8 +6,8 @@ struct AppTabView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.openURL) private var openURL
     /// Versioniert: bei Strukturänderungen (neue Tabs, Gruppen) hochzählen,
-    /// damit alles an der Standardposition landet. v3: Gruppen eingeführt.
-    static let customizationKey = "navigation.tabCustomization.v3"
+    /// damit alles an der Standardposition landet. v4: Gruppen nur in der Sidebar.
+    static let customizationKey = "navigation.tabCustomization.v4"
     @AppStorage(AppTabView.customizationKey) private var customization = TabViewCustomization()
 
     /// Aktions-Tabs (Feedback) lösen ihre Aktion aus, ohne die Auswahl zu ändern.
@@ -26,28 +26,39 @@ struct AppTabView: View {
 
     var body: some View {
         TabView(selection: selection) {
-            // Sidebar: einklappbare Gruppen; Tab-Leiste oben: nur die Standard-Tabs.
+            // Übersicht + Kalender: eigenständig, immer (und als einzige) in der Tab-Leiste.
+            ForEach(AppTab.topLevel) { tab in
+                tabItem(tab)
+                    .customizationBehavior(.disabled, for: .sidebar, .tabBar)
+            }
+
+            // Gruppen: nur in der Sidebar (einklappbar), nie in der Tab-Leiste.
             ForEach(AppTabSection.allCases) { section in
                 TabSection(section.title) {
                     ForEach(section.tabs) { tab in
-                        Tab(value: tab) {
-                            root(for: tab)
-                        } label: {
-                            Label(tab.title, symbol: tab.symbol)
-                        }
-                        .customizationID(tab.customizationID)
-                        // Übersicht bleibt immer an erster Stelle.
-                        .customizationBehavior(tab == .dashboard ? .disabled : .automatic, for: .sidebar, .tabBar)
-                        .defaultVisibility(tab.isInTabBarByDefault ? .visible : .hidden, for: .tabBar)
+                        tabItem(tab)
+                            .customizationBehavior(.disabled, for: .tabBar)
+                            .defaultVisibility(.hidden, for: .tabBar)
                     }
                 }
                 .customizationID(section.customizationID)
+                .customizationBehavior(.disabled, for: .tabBar)
+                .defaultVisibility(.hidden, for: .tabBar)
             }
         }
         .tabViewStyle(.sidebarAdaptable)
         // Standard: Tab-Bar oben; Sidebar lässt sich über den Button oben links einblenden.
         .defaultAdaptableTabBarPlacement(.tabBar)
         .tabViewCustomization($customization)
+    }
+
+    private func tabItem(_ tab: AppTab) -> some TabContent<AppTab> {
+        Tab(value: tab) {
+            root(for: tab)
+        } label: {
+            Label(tab.title, symbol: tab.symbol)
+        }
+        .customizationID(tab.customizationID)
     }
 
     /// Jeder Tab hat seinen eigenen NavigationStack.
