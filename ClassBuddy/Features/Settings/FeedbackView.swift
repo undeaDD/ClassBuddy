@@ -1,24 +1,4 @@
 import SwiftUI
-import WebKit
-
-/// Externe Seite (GitHub, PayPal …) innerhalb der Einstellungen, mit „In Safari öffnen“.
-struct WebPageView: View {
-    @Environment(\.openURL) private var openURL
-
-    let title: String
-    let url: URL
-
-    var body: some View {
-        WebView(url: url)
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button("In Safari öffnen", systemImage: "safari") { openURL(url) }
-                }
-            }
-    }
-}
 
 /// Feedback-Formular: Art + Nachricht, versendet über die Mail-App.
 struct FeedbackView: View {

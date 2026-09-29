@@ -58,10 +58,10 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .nextBirthday: .custom(.gift)
         case .randomStudent: .custom(.dice)
         case .timer: .custom(.timer)
-        case .currentLesson: .system("hourglass")
+        case .currentLesson: .custom(.time)
         case .dateTime: .custom(.time)
         case .weather: .custom(.temperature)
-        case .weeklyHours: .system("chart.bar.fill")
+        case .weeklyHours: .custom(.graphUp)
         }
     }
 
@@ -238,7 +238,7 @@ private struct TemplatePreview: View {
         case .builtIn(let card):
             StatCard(title: card.title, value: card.previewValue.value, detail: card.previewValue.detail, symbol: card.symbol) {}
         case .photo, .imageFile:
-            ImagePlaceholderCard(title: "Tafelbild Montag")
+            ImagePlaceholderCard(title: "Gruppenfoto")
         case .document:
             ContentCard(title: "Dokument", symbol: .custom(.page), heading: "Arbeitsblatt Brüche", detail: "Arbeitsblatt-Brueche.pdf")
         case .website:

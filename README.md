@@ -153,7 +153,7 @@ Security issues: please follow [SECURITY.md](SECURITY.md).
 
 ## Support
 
-If ClassBuddy saves you time, you can support development via [PayPal](https://www.paypal.com). ❤️
+If ClassBuddy saves you time, you can support development via [PayPal](https://www.paypal.com/paypalme/undeaDD). ❤️
 
 ## License
 

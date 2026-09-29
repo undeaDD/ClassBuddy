@@ -4,8 +4,8 @@ import UIKit
 
 // Kachel-Designs der Übersicht. Inhalte sind im Privatsphäre-Modus ausgeblendet.
 
-private let cardShape = RoundedRectangle(cornerRadius: 22, style: .continuous)
-private let cardMinHeight: CGFloat = 150
+let cardShape = RoundedRectangle(cornerRadius: 22, style: .continuous)
+let cardMinHeight: CGFloat = 150
 
 /// Kennzahl-Kachel; antippen öffnet die zugehörige Seite.
 struct StatCard: View {
@@ -39,14 +39,14 @@ struct StatCard: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     .contentTransition(.numericText())
-                    .privacySensitive(isSensitive)
+                    .cardPrivacy(isSensitive)
                     .leadingAligned()
                 if let detail {
                     Text(detail)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
-                        .privacySensitive(isSensitive)
+                        .cardPrivacy(isSensitive)
                         .leadingAligned()
                 }
             }
@@ -75,13 +75,13 @@ struct LinkCard: View {
                     Text(link.title.isEmpty ? link.detail : link.title)
                         .font(.title2.weight(.bold))
                         .lineLimit(2)
-                        .sensitive()
+                        .cardPrivacy()
                         .leadingAligned()
                     Text(link.detail)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
-                        .sensitive()
+                        .cardPrivacy()
                         .leadingAligned()
                 }
             }
@@ -140,7 +140,7 @@ struct ImageCard: View {
                         .padding(.vertical, 8)
                         .background(.regularMaterial, in: .capsule)
                         .padding(12)
-                        .sensitive()
+                        .cardPrivacy()
                 }
             }
             .frame(maxWidth: .infinity, minHeight: cardMinHeight)
@@ -261,59 +261,6 @@ struct CurrentLessonCard: View {
     }
 }
 
-/// Timer-Kachel: Dauer wählen, Countdown, verlängern oder stoppen (über ein Menü).
-struct TimerCard: View {
-    @Environment(ClassTimer.self) private var timer
-
-    var body: some View {
-        Menu {
-            if timer.isRunning {
-                Button("+1 Minute", image: .plus) { timer.extend(byMinutes: 1) }
-                Button("+5 Minuten", image: .plus) { timer.extend(byMinutes: 5) }
-                Button("Stoppen", image: .xmark, role: .destructive) { timer.stop() }
-            } else {
-                ForEach(ClassTimer.presets, id: \.self) { minutes in
-                    Button("\(minutes) Minuten") { timer.start(minutes: minutes) }
-                }
-            }
-        } label: {
-            TimelineView(.periodic(from: .now, by: 1)) { context in
-                content(now: context.date)
-            }
-        }
-        .menuStyle(.button)
-        .buttonStyle(.plain)
-        .hoverEffect(.lift)
-    }
-
-    private func content(now: Date) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            CardHeader(title: DashboardBuiltInCard.timer.title, symbol: DashboardBuiltInCard.timer.symbol, showsChevron: true)
-            Spacer(minLength: 0)
-            VStack(alignment: .leading, spacing: 2) {
-                if let end = timer.endDate, end > now {
-                    Text(ClassTimer.remainingText(until: end, now: now))
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .foregroundStyle(Color.accentColor)
-                        .contentTransition(.numericText(countsDown: true))
-                    Text("\(timer.durationMinutes) min · endet um \(end.formatted(date: .omitted, time: .shortened))")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("Starten")
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                    Text("Antippen, um eine Dauer zu wählen")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .lineLimit(1)
-        }
-        .cardStyle()
-    }
-}
-
 /// Wochenstunden: Fortschrittsbalken (Primärfarbe) mit erledigten und gesamten Stunden.
 struct WeeklyHoursCard: View {
     @Environment(\.redactionReasons) private var redactionReasons
@@ -340,12 +287,10 @@ struct WeeklyHoursCard: View {
                         .font(.system(size: 44, weight: .bold, design: .rounded))
                         .monospacedDigit()
                         .contentTransition(.numericText())
-                        .sensitive()
+                        .cardPrivacy()
                         .leadingAligned()
                     // Im Privatsphäre-Modus leerer Balken (verrät nichts über den Stundenplan).
-                    ProgressView(value: redactionReasons.contains(.privacy) ? 0 : result.fraction)
-                        .tint(Color.accentColor)
-                        .scaleEffect(x: 1, y: 2, anchor: .center)
+                    CapsuleProgressBar(value: redactionReasons.contains(.privacy) ? 0 : result.fraction)
                         .padding(.vertical, 4)
                     HStack {
                         Text("\(WeeklyWorkload.hours(result.doneMinutes)) erledigt")
@@ -355,7 +300,7 @@ struct WeeklyHoursCard: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .monospacedDigit()
-                    .sensitive()
+                    .cardPrivacy()
                 }
             }
             .cardStyle()
@@ -422,7 +367,61 @@ struct CardHeader: View {
     }
 }
 
-private extension View {
+/// Fortschrittsbalken: hoch, voll abgerundet, auch am Ende des aktuellen Werts.
+private struct CapsuleProgressBar: View {
+    let value: Double
+
+    var body: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                Capsule().fill(.fill.tertiary)
+                if value > 0 {
+                    Capsule()
+                        .fill(Color.accentColor.gradient)
+                        // Mindestens so breit wie hoch, damit das Ende immer rund bleibt.
+                        .frame(width: max(proxy.size.height, proxy.size.width * min(value, 1)))
+                }
+            }
+        }
+        .frame(height: 16)
+        .animation(.smooth, value: value)
+        .accessibilityElement()
+        .accessibilityLabel("Fortschritt")
+        .accessibilityValue(value.formatted(.percent.precision(.fractionLength(0))))
+    }
+}
+
+/// Eigener Platzhalter im Privatsphäre-Modus: beginnt exakt am linken Textrand (der System-
+/// Platzhalter von `privacySensitive` ist je nach Schriftgröße unterschiedlich eingerückt).
+private struct CardPrivacyPlaceholder: ViewModifier {
+    @Environment(\.redactionReasons) private var redactionReasons
+    let isSensitive: Bool
+
+    func body(content: Content) -> some View {
+        if isSensitive, redactionReasons.contains(.privacy) {
+            content
+                .unredacted()
+                .hidden()
+                .overlay(alignment: .leading) {
+                    GeometryReader { proxy in
+                        RoundedRectangle(cornerRadius: min(8, proxy.size.height / 4), style: .continuous)
+                            .fill(.fill.secondary)
+                            .frame(width: proxy.size.width, height: proxy.size.height * 0.7)
+                            .frame(maxHeight: .infinity)
+                    }
+                }
+                .accessibilityHidden(true)
+        } else {
+            content
+        }
+    }
+}
+
+extension View {
+    func cardPrivacy(_ isSensitive: Bool = true) -> some View {
+        modifier(CardPrivacyPlaceholder(isSensitive: isSensitive))
+    }
+
     /// Volle Breite, linksbündig: auch die Platzhalter im Privatsphäre-Modus beginnen links.
     func leadingAligned() -> some View {
         frame(maxWidth: .infinity, alignment: .leading)

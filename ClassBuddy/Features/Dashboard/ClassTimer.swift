@@ -99,3 +99,56 @@ final class ClassTimer {
         try? await center.add(UNNotificationRequest(identifier: Self.notificationID, content: content, trigger: trigger))
     }
 }
+
+/// Timer-Kachel: Dauer wählen, Countdown, verlängern oder stoppen (über ein Menü).
+struct TimerCard: View {
+    @Environment(ClassTimer.self) private var timer
+
+    var body: some View {
+        Menu {
+            if timer.isRunning {
+                Button("+1 Minute", image: .plus) { timer.extend(byMinutes: 1) }
+                Button("+5 Minuten", image: .plus) { timer.extend(byMinutes: 5) }
+                Button("Stoppen", image: .xmark, role: .destructive) { timer.stop() }
+            } else {
+                ForEach(ClassTimer.presets, id: \.self) { minutes in
+                    Button("\(minutes) Minuten") { timer.start(minutes: minutes) }
+                }
+            }
+        } label: {
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                content(now: context.date)
+            }
+        }
+        .menuStyle(.button)
+        .buttonStyle(.plain)
+        .hoverEffect(.lift)
+    }
+
+    private func content(now: Date) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            CardHeader(title: DashboardBuiltInCard.timer.title, symbol: DashboardBuiltInCard.timer.symbol, showsChevron: true)
+            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 2) {
+                if let end = timer.endDate, end > now {
+                    Text(ClassTimer.remainingText(until: end, now: now))
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(Color.accentColor)
+                        .contentTransition(.numericText(countsDown: true))
+                    Text("\(timer.durationMinutes) min · endet um \(end.formatted(date: .omitted, time: .shortened))")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Starten")
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                    Text("Antippen, um eine Dauer zu wählen")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .lineLimit(1)
+        }
+        .cardStyle()
+    }
+}
