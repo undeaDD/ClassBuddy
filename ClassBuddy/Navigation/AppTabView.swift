@@ -21,6 +21,8 @@ struct AppTabView: View {
             }
         }
         .tabViewStyle(.sidebarAdaptable)
+        // Standard: Tab-Bar oben; Sidebar lässt sich über den Button oben links einblenden.
+        .defaultAdaptableTabBarPlacement(.tabBar)
         .tabViewCustomization($customization)
     }
 
@@ -28,7 +30,7 @@ struct AppTabView: View {
     private func root(for tab: AppTab) -> some View {
         NavigationStack {
             destination(for: tab)
-                .appChrome()
+                .appChrome(tab: tab)
         }
     }
 

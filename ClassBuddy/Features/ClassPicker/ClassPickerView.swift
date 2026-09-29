@@ -85,8 +85,9 @@ struct ClassPickerView: View {
 /// Formular zum Anlegen einer Klasse.
 struct ClassEditorView: View {
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss
 
+    /// Schließt das Popover – daher hier kein zusätzliches `dismiss()`,
+    /// sonst kollidieren beide Animationen.
     var onCreate: (SchoolClass) -> Void
 
     @State private var shortName = ""
@@ -149,7 +150,7 @@ struct ClassEditorView: View {
             color: color
         )
         modelContext.insert(newClass)
+        try? modelContext.save()
         onCreate(newClass)
-        dismiss()
     }
 }

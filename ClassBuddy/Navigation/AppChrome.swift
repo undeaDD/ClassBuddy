@@ -4,14 +4,15 @@ import SwiftUI
 extension View {
     /// Gemeinsame Toolbar für jede Tab-Root-View:
     /// links „Klasse auswählen“, rechts Privatsphäre-Modus.
-    func appChrome() -> some View {
-        modifier(AppChromeModifier())
+    func appChrome(tab: AppTab) -> some View {
+        modifier(AppChromeModifier(tab: tab))
     }
 }
 
 private struct AppChromeModifier: ViewModifier {
     @Environment(AppModel.self) private var app
     @Query private var classes: [SchoolClass]
+    let tab: AppTab
 
     private var selectedClass: SchoolClass? {
         classes.first { $0.id == app.selectedClassID }
@@ -20,7 +21,7 @@ private struct AppChromeModifier: ViewModifier {
     func body(content: Content) -> some View {
         content.toolbar {
             ToolbarItem(placement: .topBarLeading) {
-                ClassPickerButton(selectedClass: selectedClass)
+                ClassPickerButton(selectedClass: selectedClass, tab: tab)
             }
             .sharedBackgroundVisibility(.hidden)
 
