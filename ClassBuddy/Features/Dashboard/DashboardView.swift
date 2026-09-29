@@ -7,6 +7,7 @@ struct DashboardView: View {
             PlaceholderView(tab: .dashboard)
         }
         .navigationTitle(AppTab.dashboard.title)
+        .appChrome(tab: .dashboard)
     }
 }
 
