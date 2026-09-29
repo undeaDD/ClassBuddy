@@ -52,9 +52,6 @@ struct ClassPickerButton: View {
                         .foregroundStyle(.secondary)
                 }
                 .lineLimit(1)
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.tertiary)
             }
             .padding(.trailing, 6)
             .contentShape(.rect)

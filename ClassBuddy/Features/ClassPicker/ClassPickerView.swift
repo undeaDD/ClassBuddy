@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-/// Liste aller Klassen: wechseln, anlegen, bearbeiten, löschen.
+/// Popover-Liste aller Klassen: wechseln, anlegen, bearbeiten, löschen.
 struct ClassPickerView: View {
     @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
@@ -9,22 +9,17 @@ struct ClassPickerView: View {
     @Query(sort: [SortDescriptor(\SchoolClass.schoolYear, order: .reverse), SortDescriptor(\SchoolClass.shortName)])
     private var classes: [SchoolClass]
 
-    @State private var isCreating = false
-    @State private var editingClass: SchoolClass?
+    @State private var editorRoute: ClassEditorRoute?
+    @State private var closePickerAfterEditor = false
     @State private var classPendingDeletion: SchoolClass?
 
     var body: some View {
         NavigationStack {
             Group {
                 if classes.isEmpty {
-                    EmptyStateView(
-                        title: "Noch keine Klassen",
-                        message: "Lege deine erste Klasse an.",
-                        symbol: .system("person.2.badge.plus")
-                    ) {
-                        Button("Klasse anlegen") { isCreating = true }
-                            .buttonStyle(.borderedProminent)
-                    }
+                    Text("Noch keine Klassen")
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     List {
                         ForEach(classes) { schoolClass in
@@ -37,18 +32,7 @@ struct ClassPickerView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Neue Klasse", systemImage: "plus") { isCreating = true }
-                }
-            }
-            .navigationDestination(isPresented: $isCreating) {
-                ClassEditorView(schoolClass: nil) { newClass in
-                    app.selectedClassID = newClass.id
-                    app.isClassPickerPresented = false
-                }
-            }
-            .navigationDestination(item: $editingClass) { schoolClass in
-                ClassEditorView(schoolClass: schoolClass) { _ in
-                    editingClass = nil
+                    Button("Neue Klasse", systemImage: "plus") { editorRoute = .new }
                 }
             }
             .confirmationDialog(
@@ -60,11 +44,27 @@ struct ClassPickerView: View {
                 presenting: classPendingDeletion
             ) { schoolClass in
                 Button("\(schoolClass.title) löschen", role: .destructive) { delete(schoolClass) }
-            } message: { _ in
-                Text("Alle Daten dieser Klasse werden entfernt. Das kann nicht rückgängig gemacht werden.")
+            } message: { schoolClass in
+                Text("Die Klasse und alle \(schoolClass.students.count) Schüler werden entfernt. Das kann nicht rückgängig gemacht werden.")
             }
         }
         .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
+        // Vollbild-Editor direkt aus dem Popover. Das Popover wird erst geschlossen,
+        // wenn der Editor komplett weg ist (sonst kollidieren beide Übergänge).
+        .fullScreenCover(item: $editorRoute, onDismiss: {
+            if closePickerAfterEditor {
+                closePickerAfterEditor = false
+                app.isClassPickerPresented = false
+            }
+        }) { route in
+            ClassEditorView(schoolClass: route.schoolClass) { saved in
+                if route.schoolClass == nil {
+                    app.selectedClassID = saved.id
+                    closePickerAfterEditor = true
+                }
+            }
+            .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
+        }
     }
 
     private func row(for schoolClass: SchoolClass) -> some View {
@@ -89,19 +89,23 @@ struct ClassPickerView: View {
         }
         .buttonStyle(.plain)
         .hoverEffect(.highlight)
+        // Nach rechts wischen: bearbeiten
+        .swipeActions(edge: .leading) {
+            Button("Bearbeiten", systemImage: "pencil") {
+                editorRoute = .edit(schoolClass)
+            }
+            .tint(.accentColor)
+        }
+        // Nach links wischen: löschen
         .swipeActions(edge: .trailing) {
             Button("Löschen", systemImage: "trash", role: .destructive) {
                 classPendingDeletion = schoolClass
             }
-            Button("Bearbeiten", systemImage: "pencil") {
-                editingClass = schoolClass
-            }
-            .tint(.accentColor)
         }
         // Lange drücken (Finger oder Apple Pencil) bzw. Rechtsklick.
         .contextMenu {
             Button("Bearbeiten", systemImage: "pencil") {
-                editingClass = schoolClass
+                editorRoute = .edit(schoolClass)
             }
             Button("Löschen", systemImage: "trash", role: .destructive) {
                 classPendingDeletion = schoolClass
@@ -116,91 +120,18 @@ struct ClassPickerView: View {
     }
 }
 
-/// Formular zum Anlegen (`schoolClass == nil`) oder Bearbeiten einer Klasse.
-struct ClassEditorView: View {
-    @Environment(\.modelContext) private var modelContext
+enum ClassEditorRoute: Identifiable {
+    case new
+    case edit(SchoolClass)
 
-    let schoolClass: SchoolClass?
-    /// Wird nach dem Speichern aufgerufen und übernimmt das Schließen
-    /// (Popover schließen bzw. zurück zur Liste).
-    var onSave: (SchoolClass) -> Void
-
-    @State private var shortName: String
-    @State private var subtitle: String
-    @State private var schoolYear: String
-    @State private var color: ClassColor
-
-    init(schoolClass: SchoolClass?, onSave: @escaping (SchoolClass) -> Void) {
-        self.schoolClass = schoolClass
-        self.onSave = onSave
-        _shortName = State(initialValue: schoolClass?.shortName ?? "")
-        _subtitle = State(initialValue: schoolClass?.subtitle ?? "")
-        _schoolYear = State(initialValue: schoolClass?.schoolYear ?? SchoolClass.currentSchoolYear)
-        _color = State(initialValue: schoolClass?.color ?? .blue)
-    }
-
-    private var isValid: Bool {
-        !shortName.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
-    var body: some View {
-        Form {
-            Section {
-                HStack {
-                    Spacer()
-                    ClassBadge(shortName: shortName, color: color.color, size: 72)
-                    Spacer()
-                }
-                .listRowBackground(Color.clear)
-            }
-            Section("Klasse") {
-                TextField("Kürzel (z. B. 7b)", text: $shortName)
-                    .textInputAutocapitalization(.never)
-                TextField("Fach / Rolle (z. B. Mathematik)", text: $subtitle)
-                TextField("Schuljahr", text: $schoolYear)
-            }
-            Section("Farbe") {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 5), spacing: 12) {
-                    ForEach(ClassColor.allCases) { option in
-                        Circle()
-                            .fill(option.color.gradient)
-                            .frame(width: 32, height: 32)
-                            .overlay {
-                                if option == color {
-                                    Image(systemName: "checkmark")
-                                        .font(.caption.bold())
-                                        .foregroundStyle(.white)
-                                }
-                            }
-                            .onTapGesture { color = option }
-                            .hoverEffect(.lift)
-                            .accessibilityLabel(option.rawValue)
-                            .accessibilityAddTraits(option == color ? .isSelected : [])
-                    }
-                }
-                .padding(.vertical, 4)
-            }
-        }
-        .navigationTitle(schoolClass == nil ? "Neue Klasse" : "Klasse bearbeiten")
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(schoolClass == nil ? "Anlegen" : "Sichern", action: save)
-                    .disabled(!isValid)
-            }
+    var id: String {
+        switch self {
+        case .new: "new"
+        case .edit(let schoolClass): schoolClass.id.uuidString
         }
     }
 
-    private func save() {
-        let target = schoolClass ?? {
-            let newClass = SchoolClass(shortName: "")
-            modelContext.insert(newClass)
-            return newClass
-        }()
-        target.shortName = shortName.trimmingCharacters(in: .whitespaces)
-        target.subtitle = subtitle.trimmingCharacters(in: .whitespaces)
-        target.schoolYear = schoolYear.trimmingCharacters(in: .whitespaces)
-        target.color = color
-        try? modelContext.save()
-        onSave(target)
+    var schoolClass: SchoolClass? {
+        if case .edit(let schoolClass) = self { schoolClass } else { nil }
     }
 }
