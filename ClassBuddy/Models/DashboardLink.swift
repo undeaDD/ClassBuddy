@@ -5,7 +5,7 @@ import SwiftData
 /// oder Website.
 @Model
 final class DashboardLink {
-    enum Kind: String, Codable {
+    nonisolated enum Kind: String, Codable {
         case file
         case website
         case image
@@ -51,7 +51,11 @@ final class DashboardLink {
         var components = URLComponents()
         components.scheme = "shortcuts"
         components.host = "run-shortcut"
-        components.queryItems = [URLQueryItem(name: "name", value: name)]
+        // `&`, `=` und `+` sind in Query-Werten erlaubt und würden den Namen abschneiden → selbst kodieren.
+        let allowed = CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "&=+"))
+        components.percentEncodedQueryItems = [
+            URLQueryItem(name: "name", value: name.addingPercentEncoding(withAllowedCharacters: allowed)),
+        ]
         return components.url
     }
 

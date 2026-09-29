@@ -5,13 +5,203 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Datenschutz</title>
 <style>
-  :root { color-scheme: light dark; }
-  body { font: -apple-system-body; margin: 24px; max-width: 720px; line-height: 1.5; }
-  h1 { font: -apple-system-title1; font-weight: 700; }
+  :root {
+    color-scheme: light dark;
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #000000;
+    --secondary: #6d6d72;
+    --separator: rgba(60, 60, 67, 0.18);
+    --accent: #9c6830;
+    --pill: rgba(156, 104, 48, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --text: #ffffff;
+      --secondary: #98989f;
+      --separator: rgba(84, 84, 88, 0.6);
+      --accent: #cd9c5e;
+      --pill: rgba(205, 156, 94, 0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px 20px 40px;
+    background: var(--bg);
+    color: var(--text);
+    font: -apple-system-body;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  .intro { color: var(--secondary); font: -apple-system-subheadline; margin: 4px 16px 24px; line-height: 1.4; }
+  h2 {
+    font: -apple-system-footnote;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--secondary);
+    margin: 28px 16px 8px;
+    font-weight: 400;
+  }
+  .card { background: var(--card); border-radius: 12px; overflow: hidden; }
+  .row { padding: 12px 16px; position: relative; }
+  .row + .row::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0;
+    border-top: 0.5px solid var(--separator);
+  }
+  .row-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .name { font: -apple-system-headline; }
+  .pill {
+    font: -apple-system-caption1; font-weight: 600;
+    color: var(--accent); background: var(--pill);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .desc { color: var(--secondary); font: -apple-system-subheadline; margin-top: 4px; line-height: 1.4; }
+  a { color: var(--accent); text-decoration: none; }
+  details { margin-top: 8px; }
+  summary { color: var(--accent); font: -apple-system-subheadline; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: " ›"; }
+  details[open] summary::after { content: " ⌄"; }
+  pre {
+    white-space: pre-wrap; font: -apple-system-caption2; font-family: ui-monospace, Menlo, monospace;
+    color: var(--secondary); margin: 8px 0 0; line-height: 1.45;
+  }
+  .footnote { color: var(--secondary); font: -apple-system-footnote; margin: 8px 16px 0; line-height: 1.4; }
+  ul { margin: 6px 0 0; padding-left: 20px; }
+  li { margin: 4px 0; line-height: 1.4; }
+  .row p { margin: 6px 0 0; line-height: 1.45; }
+  .muted { color: var(--secondary); }
+  .ok { color: #34c759; font-weight: 600; }
 </style>
 </head>
 <body>
-<h1>Datenschutz</h1>
-<!-- Inhalt folgt -->
+<main>
+  <p class="intro">Datenschutzerklärung für die iPad-App ClassBuddy nach der Datenschutz-Grundverordnung (DSGVO). Stand: 29. September 2026.</p>
+
+  <h2>Auf einen Blick</h2>
+  <div class="card">
+    <div class="row"><span class="ok">✓</span> Kein Konto, keine Registrierung</div>
+    <div class="row"><span class="ok">✓</span> Kein Tracking, keine Analyse, keine Werbung, keine Drittanbieter-SDKs</div>
+    <div class="row"><span class="ok">✓</span> Alle Daten bleiben lokal auf deinem iPad – es gibt keinen ClassBuddy-Server</div>
+    <div class="row"><span class="ok">✓</span> Der Entwickler erhält keine Schülerdaten</div>
+    <div class="row"><span class="ok">✓</span> Quellcode offen einsehbar: <a href="https://github.com/undeaDD/ClassBuddy">github.com/undeaDD/ClassBuddy</a></div>
+  </div>
+
+  <h2>Verantwortlichkeit</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Anbieter der App</div>
+      <p class="muted">Dominic Drees (Devsforge.de)<br>E-Mail: <a href="mailto:dominic.drees@live.de">dominic.drees@live.de</a></p>
+      <p class="muted">Der Anbieter ist Verantwortlicher im Sinne von Art. 4 Nr. 7 DSGVO nur für Daten, die er selbst erhält – also ausschließlich für Feedback-E-Mails, die du freiwillig sendest.</p>
+    </div>
+    <div class="row">
+      <div class="name">Daten, die du in der App verarbeitest</div>
+      <p class="muted">Für Schülerdaten und andere Inhalte, die du in ClassBuddy erfasst, bist du bzw. deine Schule verantwortlich. ClassBuddy ist dafür ein reines Werkzeug auf deinem Gerät; der Anbieter hat keinen Zugriff darauf und verarbeitet diese Daten nicht.</p>
+    </div>
+  </div>
+
+  <h2>Welche Daten gespeichert werden</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Lokal auf dem iPad</div>
+      <ul class="muted">
+        <li>Klassen (Kürzel, Fächer, Schuljahr, Farbe)</li>
+        <li>Schülerinnen und Schüler (Vor- und Nachname, Geschlecht, Geburtstag, Notizen)</li>
+        <li>Stundenplan, Termine, importierte Ferien und Feiertage</li>
+        <li>Übersichts-Kacheln inkl. von dir hinzugefügter Dokumente, Bilder, Website-Adressen und Kurzbefehl-Namen</li>
+        <li>Dein Profil (Name, Geschlecht, Geburtstag) und die Schuleinstellungen (u. a. Name und Adresse der Schule)</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="name">Speicherort und Schutz</div>
+      <p class="muted">Die Daten liegen im geschützten App-Container des iPads und werden von iPadOS verschlüsselt, sobald ein Gerätecode eingerichtet ist. Es gibt keine Synchronisation und keine Cloud von ClassBuddy.</p>
+      <p class="muted">Hinweis: Wenn du Geräte-Backups nutzt (iCloud-Backup oder Backup über den Mac/PC), können diese auch die Daten von ClassBuddy enthalten. Prüfe deine Backup-Einstellungen, falls deine Schule das nicht erlaubt.</p>
+    </div>
+    <div class="row">
+      <div class="name">Schutzmaßnahmen in der App</div>
+      <ul class="muted">
+        <li>App-Sperre mit Face ID bzw. Gerätecode; die Entsperrung ist an ein Schlüsselbund-Element gebunden, das nur die Secure Enclave freigibt</li>
+        <li>Privatsphäre-Modus blendet Namen, Noten und Notizen auf allen Seiten aus; Ausschalten nur mit Face ID/Code</li>
+        <li>Im App-Umschalter werden Inhalte verdeckt</li>
+        <li>Regelmäßige automatische Sicherheitsprüfung des Quellcodes (Semgrep)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Verbindungen ins Internet</h2>
+  <div class="card">
+    <div class="row">
+      <p class="muted" style="margin-top:0">ClassBuddy baut nur in den folgenden Fällen Verbindungen auf. Dabei wird technisch bedingt deine IP-Adresse an den jeweiligen Server übertragen. <strong>Schülerdaten werden nie übertragen.</strong></p>
+    </div>
+    <div class="row">
+      <div class="name">Ferien & Feiertage – openholidaysapi.org</div>
+      <p class="muted">Nur wenn du in den Schuleinstellungen auf „importieren“ tippst. Übertragen werden das gewählte Bundesland und der Zeitraum.</p>
+    </div>
+    <div class="row">
+      <div class="name">Wetter – open-meteo.com</div>
+      <p class="muted">Nur wenn die Kachel „Wetter“ auf der Übersicht sichtbar ist, höchstens alle 30 Minuten. Übertragen wird der Ort der Schule aus den Schuleinstellungen (kein Standort des Geräts).</p>
+    </div>
+    <div class="row">
+      <div class="name">Website-Kacheln</div>
+      <p class="muted">Für das Website-Symbol (Favicon) wird die hinterlegte Website direkt abgerufen; das Symbol wird lokal zwischengespeichert. Antippen öffnet die Website in Safari.</p>
+    </div>
+    <div class="row">
+      <div class="name">Feedback per E-Mail</div>
+      <p class="muted">„Feedback senden“ öffnet deine Mail-App mit einem vorbereiteten Entwurf. Nur wenn du ihn abschickst, erhält der Anbieter deine E-Mail-Adresse, deine Nachricht sowie App-Version, Gerätemodell und iPadOS-Version. Diese Daten werden ausschließlich zur Bearbeitung deines Anliegens verwendet und danach gelöscht (Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO, berechtigtes Interesse an der Beantwortung von Anfragen).</p>
+    </div>
+    <div class="row">
+      <div class="name">Externe Links</div>
+      <p class="muted">GitHub, PayPal und Links in dieser App öffnen in Safari. Dort gelten die Datenschutzbestimmungen der jeweiligen Anbieter.</p>
+    </div>
+  </div>
+
+  <h2>Zugriffsrechte</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Face ID</div>
+      <p class="muted">Die Erkennung erfolgt vollständig durch iPadOS. Biometrische Daten verlassen die Secure Enclave nicht; ClassBuddy erhält nur „erfolgreich“ oder „abgebrochen“.</p>
+    </div>
+    <div class="row">
+      <div class="name">Fotos und Dateien</div>
+      <p class="muted">Über die Bildauswahl bzw. die Dateien-App erhält ClassBuddy nur die einzelne Datei, die du auswählst – kein Zugriff auf die gesamte Mediathek. Die Datei wird lokal in die App kopiert.</p>
+    </div>
+    <div class="row">
+      <div class="name">Nicht verwendet</div>
+      <p class="muted">Standort, Kontakte, Kalender des Geräts, Kamera, Mikrofon und Bluetooth werden nicht verwendet.</p>
+    </div>
+  </div>
+
+  <h2>Deine Rechte</h2>
+  <div class="card">
+    <div class="row">
+      <p class="muted" style="margin-top:0">Für Daten, die du in der App verwaltest, kannst du die Rechte der betroffenen Personen (Art. 15–21 DSGVO) direkt in der App umsetzen:</p>
+      <ul class="muted">
+        <li><strong>Auskunft und Übertragbarkeit:</strong> Einstellungen → App-Einstellungen → Exportieren (Excel)</li>
+        <li><strong>Berichtigung:</strong> Einträge jederzeit bearbeiten</li>
+        <li><strong>Löschung:</strong> einzelne Einträge löschen, eine Klasse samt Schülern löschen, „Alle lokalen Daten löschen“ oder die App löschen</li>
+      </ul>
+      <p class="muted">Bezüglich Feedback-E-Mails hast du gegenüber dem Anbieter das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO).</p>
+    </div>
+  </div>
+
+  <h2>Hinweise für Lehrkräfte</h2>
+  <div class="card">
+    <div class="row">
+      <ul class="muted">
+        <li>Die Verarbeitung von Schülerdaten auf privaten Geräten ist je nach Bundesland und Schule genehmigungspflichtig oder an Auflagen gebunden. Kläre das vorab mit deiner Schulleitung bzw. dem oder der Datenschutzbeauftragten.</li>
+        <li>Erfasse nur, was du wirklich brauchst (Datenminimierung, Art. 5 Abs. 1 lit. c DSGVO).</li>
+        <li>Richte einen Gerätecode ein und lass die App-Sperre aktiviert.</li>
+        <li>Excel-Exporte sind nicht verschlüsselt: sicher aufbewahren, nicht per unverschlüsselter E-Mail weitergeben und nach Gebrauch löschen.</li>
+        <li>Lösche Klassen, wenn du sie nicht mehr unterrichtest (z. B. zum Schuljahresende).</li>
+      </ul>
+      <p class="muted">Diese Hinweise sind keine Rechtsberatung.</p>
+    </div>
+  </div>
+
+  <p class="footnote">Diese Datenschutzerklärung kann bei neuen Funktionen angepasst werden. Die jeweils aktuelle Fassung ist Teil der App.</p>
+</main>
 </body>
 </html>

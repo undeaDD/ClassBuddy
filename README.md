@@ -113,13 +113,38 @@ Tests and git hooks (SwiftLint, unit tests, commit message rules): see [CONTRIBU
 
 The IPA workflow runs on demand only: *Actions → Build IPA → Run workflow*, or push a release tag (`git tag v1.0.0 && git push origin v1.0.0`).
 
-## Privacy
+## Privacy & GDPR
 
-ClassBuddy has no server. All data stays in the app's local storage on your iPad.
-The only network requests are:
+ClassBuddy is built for GDPR-compliant use in German schools. The full privacy notice (German) ships with the app:
+*Einstellungen → Datenschutz* ([source](ClassBuddy/Resources/Legal/privacy.html)).
 
-- public school/public holiday dates from openholidaysapi.org (only when you tap *import*)
-- favicons of websites you add as dashboard cards (requested from that website)
+**By design**
+
+- No account, no server, no cloud sync, no analytics, no ads, no third-party SDKs
+- All data (classes, students, timetable, notes, documents) stays in the app container on the iPad,
+  encrypted by iPadOS data protection when a device passcode is set
+- The developer never receives student data; the teacher (or school) is the data controller for everything entered in the app
+- App lock via Face ID / passcode, bound to a keychain item released only by the Secure Enclave
+- Privacy mode hides names, grades and notes on every screen; content is blurred in the app switcher
+
+**Network requests** (never containing student data; the IP address is transmitted as with any request)
+
+| When | Service | Data sent |
+|---|---|---|
+| Tap *Ferien & Feiertage importieren* | [openholidaysapi.org](https://www.openholidaysapi.org) | federal state, date range |
+| Weather card is visible (max. every 30 min) | [open-meteo.com](https://open-meteo.com) | the school's town from the settings |
+| Website card is shown | the website itself | favicon request |
+| You send feedback | your mail app | only what you send (plus app/iPadOS version) |
+
+**Data subject rights, in the app**
+
+- Access & portability (Art. 15/20 GDPR): *Exportieren (Excel)*
+- Rectification: edit any entry
+- Erasure: delete entries, whole classes, *Alle lokalen Daten löschen*, or the app
+
+**For teachers:** processing student data on a private device may require approval from your school
+depending on your federal state. Collect only what you need, keep the app lock enabled, check your
+iCloud backup settings and store Excel exports securely. (Not legal advice.)
 
 ## Contributing
 

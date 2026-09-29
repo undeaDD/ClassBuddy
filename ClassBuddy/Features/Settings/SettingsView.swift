@@ -89,18 +89,12 @@ private struct ActionRow: View {
 }
 
 /// Lokale HTML-Dateien in `Resources/Legal`.
-enum LegalDocument: String, CaseIterable, Identifiable {
+nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
     case imprint
     case privacy
     case licenses
 
     var id: String { rawValue }
-
-    var symbol: AppSymbol {
-        switch self {
-        case .imprint, .privacy, .licenses: .custom(.link)
-        }
-    }
 
     var title: String {
         switch self {
@@ -113,6 +107,11 @@ enum LegalDocument: String, CaseIterable, Identifiable {
     var url: URL? {
         Bundle.main.url(forResource: rawValue, withExtension: "html")
     }
+}
+
+@MainActor
+extension LegalDocument {
+    var symbol: AppSymbol { .custom(.link) }
 }
 
 /// Lokale HTML-Seite; Links nach außen öffnen in Safari statt in der App.

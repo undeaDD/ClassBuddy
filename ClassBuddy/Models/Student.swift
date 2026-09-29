@@ -60,7 +60,7 @@ final class Student {
     }
 }
 
-enum Gender: String, CaseIterable, Codable, Identifiable {
+nonisolated enum Gender: String, CaseIterable, Codable, Identifiable {
     case female, male, diverse
 
     var id: String { rawValue }

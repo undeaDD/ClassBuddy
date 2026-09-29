@@ -340,6 +340,13 @@ extension DashboardView {
             ) {
                 app.openCalendar(focusing: nil, at: .now)
             }
+        case .dateTime:
+            DateTimeCard()
+        case .weather:
+            WeatherCard(
+                school: settings.values.school,
+                federalStateName: HolidayImporter.federalStates.first { $0.code == settings.values.federalState }?.name
+            )
         }
     }
 

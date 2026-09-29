@@ -46,6 +46,32 @@ struct SpreadsheetTests {
         #expect(book["Lücken"] == rows)
     }
 
+    @Test("XLSX wie aus Excel/Numbers: Shared Strings, Rich Text, Zellen ohne Position, absoluter Pfad")
+    func readsSharedStrings() throws {
+        let xml = { (body: String) in Data(("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + body).utf8) }
+        let archive = ZipArchive.write([
+            ("xl/workbook.xml", xml(#"""
+                <workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+                <sheets><sheet name="Klassen" sheetId="1" r:id="rId1"/></sheets></workbook>
+                """#)),
+            ("xl/_rels/workbook.xml.rels", xml(#"""
+                <Relationships><Relationship Id="rId1" Target="/xl/worksheets/sheet1.xml"/></Relationships>
+                """#)),
+            ("xl/sharedStrings.xml", xml(#"""
+                <sst><si><t>Kürzel</t></si><si><r><t>7</t></r><r><t>b</t></r></si></sst>
+                """#)),
+            ("xl/worksheets/sheet1.xml", xml(#"""
+                <worksheet><sheetData>
+                <row><c t="s"><v>0</v></c><c t="b"><v>1</v></c></row>
+                <row r="3"><c r="B3" t="s"><v>1</v></c><c r="C3"><v>42</v></c></row>
+                </sheetData></worksheet>
+                """#)),
+        ])
+
+        let book = try XLSX.read(archive)
+        #expect(book["Klassen"] == [["Kürzel", "ja", ""], ["", "", ""], ["", "7b", "42"]])
+    }
+
     @Test("Spaltennamen", arguments: [(0, "A"), (25, "Z"), (26, "AA"), (701, "ZZ"), (702, "AAA")])
     func columnNames(index: Int, expected: String) {
         #expect(XLSX.columnName(index) == expected)

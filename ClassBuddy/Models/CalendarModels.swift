@@ -82,7 +82,7 @@ final class Holiday {
     }
 }
 
-extension Calendar {
+nonisolated extension Calendar {
     /// Deutscher Kalender: Woche beginnt Montag, ISO-Kalenderwochen.
     static let school: Calendar = {
         var calendar = Calendar(identifier: .iso8601)

@@ -10,13 +10,15 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
     case randomStudent = "tool.randomStudent"
     case timer = "tool.timer"
     case currentLesson = "stat.currentLesson"
+    case dateTime = "tool.dateTime"
+    case weather = "tool.weather"
 
     var id: String { rawValue }
 
     var isHiddenByDefault: Bool {
         switch self {
         case .students, .nextLesson: false
-        case .nextBirthday, .randomStudent, .timer, .currentLesson: true
+        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather: true
         }
     }
 
@@ -28,6 +30,8 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .randomStudent: "Zufallsauswahl"
         case .timer: "Timer"
         case .currentLesson: "Aktuelle Stunde"
+        case .dateTime: "Datum & Uhrzeit"
+        case .weather: "Wetter"
         }
     }
 
@@ -39,6 +43,8 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .randomStudent: "Antippen wählt zufällig eine Schülerin oder einen Schüler aus."
         case .timer: "Öffnet den Timer der Uhr-App."
         case .currentLesson: "Restzeit der laufenden Stunde in Stunden und Minuten."
+        case .dateTime: "Uhrzeit, Wochentag, Datum und Kalenderwoche."
+        case .weather: "Aktuelles Wetter am Schulort (Ort aus den Schuleinstellungen)."
         }
     }
 
@@ -50,6 +56,8 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .randomStudent: .system("dice")
         case .timer: .system("timer")
         case .currentLesson: .system("hourglass")
+        case .dateTime: .system("clock")
+        case .weather: .system("cloud.sun")
         }
     }
 
@@ -62,6 +70,8 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .randomStudent: ("Leon F.", "Antippen für neue Auswahl")
         case .timer: ("Starten", "Öffnet die Uhr-App")
         case .currentLesson: ("23 min", "3. Stunde · 7b · Mathematik")
+        case .dateTime: ("08:15", "Dienstag, 29. September · KW 40")
+        case .weather: ("17°", "Teilweise bewölkt · ↑ 19° ↓ 9° · Köln")
         }
     }
 }

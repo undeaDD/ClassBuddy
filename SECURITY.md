@@ -24,5 +24,6 @@ Helpful details:
 In scope: bypassing the app lock (Face ID), data shown despite privacy mode, data leaving the device,
 unsafe handling of imported files (Excel import, documents, images).
 
-The app intentionally makes only these network requests: public holiday data (openholidaysapi.org, on demand)
-and website favicons for dashboard link cards. No student data is ever sent.
+The app intentionally makes only these network requests: public holiday data (openholidaysapi.org, on demand),
+weather for the school's town (open-meteo.com, only while the weather card is visible) and website favicons for
+dashboard link cards. No student data is ever sent.

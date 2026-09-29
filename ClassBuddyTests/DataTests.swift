@@ -132,6 +132,34 @@ struct DataTests {
         #expect(result.settings.appearance == .dark)
     }
 
+    @Test("In Excel bearbeitete Datei (komprimiert, Datum/Wahrheitswert als Zahl) wird importiert")
+    func importsExcelEditedFile() throws {
+        let url = try #require(Bundle(for: FixtureToken.self).url(forResource: "excel-edited", withExtension: "xlsx"))
+        let context = try Self.makeContext()
+
+        let result = try Backup.import(try Data(contentsOf: url), context: context, currentSettings: SchoolSettings.Values())
+
+        #expect(result.summary.classes == 1)
+        #expect(result.summary.students == 1)
+        #expect(result.summary.lessons == 1)
+
+        let schoolClass = try #require(try context.fetch(FetchDescriptor<SchoolClass>()).first)
+        #expect(schoolClass.shortName == "5a")
+        #expect(schoolClass.subjects == ["Deutsch", "Kunst"])
+        #expect(schoolClass.color == .teal)
+
+        let student = try #require(schoolClass.students.first)
+        #expect(student.fullName == "Jörg Müller")
+        #expect(student.gender == .male)
+        #expect(student.birthday == Self.day(2015, 5, 17))
+
+        let lesson = try #require(schoolClass.lessons.first)
+        #expect(lesson.weekday == 1)
+        #expect(lesson.slotIndex == 1)
+        #expect(lesson.isRecurring)
+        #expect(lesson.subject == "Kunst")
+    }
+
     @Test("Import lehnt fremde Dateien ab")
     func importRejectsForeignWorkbook() throws {
         let data = XLSX.write([XLSXSheet(name: "Tabelle1", rows: [["A"], ["1"]])])
@@ -157,3 +185,6 @@ struct DataTests {
         #expect(URL.web(input) == nil)
     }
 }
+
+/// Anker für das Test-Bundle (Fixtures).
+private final class FixtureToken {}
