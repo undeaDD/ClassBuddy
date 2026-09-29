@@ -50,6 +50,9 @@
 		1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682EF27D860985CC8FFA663A /* AppSettingsView.swift */; };
 		B5771ED238B14746675E9DA3 /* RoomsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FBA887DF0FD221035505E8 /* RoomsView.swift */; };
 		31629008272B53902CD89947 /* Favicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE897C819A0937DF76AF7C8 /* Favicon.swift */; };
+		81857B0F656429C9B2E5E457 /* ZipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5E83768A3055F73116717F /* ZipArchive.swift */; };
+		0016BF948735B154AC48FB94 /* XLSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520560E0BF66558DE32A34D /* XLSX.swift */; };
+		1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1542A53C4CB6A27D96639 /* Backup.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,12 +100,16 @@
 		682EF27D860985CC8FFA663A /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
 		29FBA887DF0FD221035505E8 /* RoomsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsView.swift; sourceTree = "<group>"; };
 		3DE897C819A0937DF76AF7C8 /* Favicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicon.swift; sourceTree = "<group>"; };
+		5F5E83768A3055F73116717F /* ZipArchive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipArchive.swift; sourceTree = "<group>"; };
+		B520560E0BF66558DE32A34D /* XLSX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSX.swift; sourceTree = "<group>"; };
+		F3D1542A53C4CB6A27D96639 /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		220AE937DB9F143BC25C2101 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				2390C6D250DE2C455B3558E8 /* Backup */,
 				A448871486BB258B47FBECBC /* Rooms */,
 				6276EFCCA61538A20161D1C9 /* Calendar */,
 				D4570BF9AFC7A772451C1FD8 /* Students */,
@@ -286,6 +293,16 @@
 			path = Rooms;
 			sourceTree = "<group>";
 		};
+		2390C6D250DE2C455B3558E8 /* Backup */ = {
+			isa = PBXGroup;
+			children = (
+				F3D1542A53C4CB6A27D96639 /* Backup.swift */,
+				B520560E0BF66558DE32A34D /* XLSX.swift */,
+				5F5E83768A3055F73116717F /* ZipArchive.swift */,
+			);
+			path = Backup;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -348,6 +365,9 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */,
+				0016BF948735B154AC48FB94 /* XLSX.swift in Sources */,
+				81857B0F656429C9B2E5E457 /* ZipArchive.swift in Sources */,
 				31629008272B53902CD89947 /* Favicon.swift in Sources */,
 				B5771ED238B14746675E9DA3 /* RoomsView.swift in Sources */,
 				1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */,
