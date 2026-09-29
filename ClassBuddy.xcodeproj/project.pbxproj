@@ -53,6 +53,7 @@
 		81857B0F656429C9B2E5E457 /* ZipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5E83768A3055F73116717F /* ZipArchive.swift */; };
 		0016BF948735B154AC48FB94 /* XLSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520560E0BF66558DE32A34D /* XLSX.swift */; };
 		1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1542A53C4CB6A27D96639 /* Backup.swift */; };
+		37B9BF52A683F670A912BACD /* DashboardCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3B54810C7667A2C9742973 /* DashboardCards.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -103,6 +104,7 @@
 		5F5E83768A3055F73116717F /* ZipArchive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipArchive.swift; sourceTree = "<group>"; };
 		B520560E0BF66558DE32A34D /* XLSX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSX.swift; sourceTree = "<group>"; };
 		F3D1542A53C4CB6A27D96639 /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
+		9B3B54810C7667A2C9742973 /* DashboardCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCards.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -237,6 +239,7 @@
 		ED866CB00345985B1E112F36 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				9B3B54810C7667A2C9742973 /* DashboardCards.swift */,
 				3DE897C819A0937DF76AF7C8 /* Favicon.swift */,
 				73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */,
 				A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */,
@@ -365,6 +368,7 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				37B9BF52A683F670A912BACD /* DashboardCards.swift in Sources */,
 				1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */,
 				0016BF948735B154AC48FB94 /* XLSX.swift in Sources */,
 				81857B0F656429C9B2E5E457 /* ZipArchive.swift in Sources */,
