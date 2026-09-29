@@ -37,13 +37,9 @@ struct SettingsView: View {
             }
 
             Section {
-                linkRow("Quellcode auf GitHub", symbol: .custom(.githubCircle), url: AppInfo.sourceCodeURL)
-                linkRow("Spenden (PayPal)", symbol: .custom(.donate), url: AppInfo.donationURL)
-                Button {
-                    openURL(AppInfo.feedbackMailURL)
-                } label: {
-                    Label("Feedback senden", image: .sendMail)
-                }
+                ActionRow("Quellcode auf GitHub", symbol: .custom(.githubCircle)) { openURL(AppInfo.sourceCodeURL) }
+                ActionRow("Spenden (PayPal)", symbol: .custom(.donate)) { openURL(AppInfo.donationURL) }
+                ActionRow("Feedback senden", symbol: .custom(.sendMail)) { openURL(AppInfo.feedbackMailURL) }
                 LabeledContent {
                     Text(AppInfo.version)
                 } label: {
@@ -58,20 +54,36 @@ struct SettingsView: View {
         .navigationTitle(AppTab.settings.title)
         .appChrome(tab: .settings)
     }
+}
 
-    /// Externer Link; ohne URL deaktiviert mit Hinweis „folgt“.
-    @ViewBuilder
-    private func linkRow(_ title: String, symbol: AppSymbol, url: URL?) -> some View {
-        Button {
-            if let url { openURL(url) }
-        } label: {
-            LabeledContent {
-                if url == nil { Text("folgt") }
-            } label: {
-                Label(title, symbol: symbol)
+/// Zeile, die eine Aktion auslöst (Link, Mail), optisch wie eine NavigationLink-Zeile:
+/// farbiges Icon, normale Textfarbe, Chevron rechts.
+private struct ActionRow: View {
+    let title: String
+    let symbol: AppSymbol
+    let action: () -> Void
+
+    init(_ title: String, symbol: AppSymbol, action: @escaping () -> Void) {
+        self.title = title
+        self.symbol = symbol
+        self.action = action
+    }
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Label {
+                    Text(title).foregroundStyle(.primary)
+                } icon: {
+                    symbol.image
+                }
+                Spacer()
+                Image(.navArrowRight)
+                    .iconSize(14)
+                    .foregroundStyle(.tertiary)
             }
+            .contentShape(.rect)
         }
-        .disabled(url == nil)
     }
 }
 

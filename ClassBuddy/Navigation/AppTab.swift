@@ -48,4 +48,35 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
 
     /// Tabs, die nur eine Aktion auslösen und nie ausgewählt werden.
     var isAction: Bool { self == .feedback }
+
+    var section: AppTabSection {
+        switch self {
+        case .dashboard, .calendar: .general
+        case .students, .rooms: .schoolClass
+        case .feedback, .settings: .other
+        }
+    }
+}
+
+/// Einklappbare Gruppen in der Sidebar.
+enum AppTabSection: String, CaseIterable, Identifiable {
+    case general
+    case schoolClass
+    case other
+
+    var id: String { rawValue }
+
+    /// Stabile ID für die (persistierte) Tab-Anpassung – nie ändern.
+    var customizationID: String { "section.\(rawValue)" }
+
+    var title: String {
+        switch self {
+        case .general: "Allgemein"
+        case .schoolClass: "Klasse"
+        case .other: "Sonstige"
+        }
+    }
+
+    /// Tabs der Gruppe in Standardreihenfolge (= Reihenfolge der `AppTab`-Cases).
+    var tabs: [AppTab] { AppTab.allCases.filter { $0.section == self } }
 }
