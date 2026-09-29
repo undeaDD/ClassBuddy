@@ -1,0 +1,46 @@
+name: Semgrep
+
+# Static security analysis (SAST): Swift, secrets, GitHub Actions.
+# Findings appear under Security -> Code scanning; the job fails on any finding.
+# Intentional exceptions are marked in code with "nosemgrep: <rule>" plus a justification.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC: new rules for unchanged code
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    permissions:
+      contents: read
+      security-events: write
+    container:
+      image: semgrep/semgrep:1.178.0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Scan
+        run: >
+          semgrep scan
+          --config p/default
+          --config p/swift
+          --config p/secrets
+          --config p/github-actions
+          --metrics off
+          --error
+          --sarif --output semgrep.sarif
+
+      - name: Upload results to code scanning
+        if: always()
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep

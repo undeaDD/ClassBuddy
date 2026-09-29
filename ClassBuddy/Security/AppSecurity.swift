@@ -117,11 +117,9 @@ final class AppSecurity {
         defer { isAuthenticating = false }
         lastError = nil
 
-        let context = LAContext()
-        context.localizedCancelTitle = "Abbrechen"
+        // Ohne eingerichteten Gerätecode gibt es keine sichere Entsperrung.
         var error: NSError?
-        // .deviceOwnerAuthentication = Face ID mit Fallback auf den Gerätecode.
-        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
+        guard LAContext().canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
             #if targetEnvironment(simulator)
             // Simulator ohne eingerichteten Code: nicht aussperren.
             return true
@@ -131,12 +129,15 @@ final class AppSecurity {
             #endif
         }
 
-        do {
-            return try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason)
-        } catch let error as LAError where error.code == .userCancel || error.code == .appCancel || error.code == .systemCancel {
+        // Face ID / Code über die Keychain (Secure Enclave), nicht nur als Bool.
+        let outcome = await Task.detached { KeychainGate.unlock(reason: reason) }.value
+        switch outcome {
+        case .success:
+            return true
+        case .cancelled:
             return false
-        } catch {
-            lastError = error.localizedDescription
+        case .failed(let message):
+            lastError = message
             return false
         }
     }

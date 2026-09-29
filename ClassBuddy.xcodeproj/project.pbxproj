@@ -58,6 +58,7 @@
 		4B080EF0A37944D6DDC9FB02 /* LessonGridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAD7BE6DF9D3E045D974BF /* LessonGridTests.swift */; };
 		DBE6E730B1F16CE349CCB6A2 /* SpreadsheetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */; };
 		610FEA7D9D7C2852CAA19D99 /* DataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95865081AE46E5F455EFB23D /* DataTests.swift */; };
+		405B9770BB271FE875A73717 /* KeychainGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27A9ECE572B5ABDEAC810EB1 /* KeychainGate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +133,7 @@
 		C0EAD7BE6DF9D3E045D974BF /* LessonGridTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonGridTests.swift; sourceTree = "<group>"; };
 		DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetTests.swift; sourceTree = "<group>"; };
 		95865081AE46E5F455EFB23D /* DataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
+		27A9ECE572B5ABDEAC810EB1 /* KeychainGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainGate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -186,6 +188,7 @@
 		7127E76A5BCE9F58442AC57B /* Security */ = {
 			isa = PBXGroup;
 			children = (
+				27A9ECE572B5ABDEAC810EB1 /* KeychainGate.swift */,
 				AFB1EB8B8B1D4CF49FC03C8E /* AppSecurity.swift */,
 				2446899A0B153251C0E2C851 /* LockScreenView.swift */,
 				2D081FCB1B922D54E4FB7FBE /* Sensitive.swift */,
@@ -432,6 +435,7 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				405B9770BB271FE875A73717 /* KeychainGate.swift in Sources */,
 				BFBB39A661B0D1D3505753CD /* CardGallery.swift in Sources */,
 				37B9BF52A683F670A912BACD /* DashboardCards.swift in Sources */,
 				1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */,

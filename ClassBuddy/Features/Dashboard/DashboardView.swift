@@ -283,11 +283,7 @@ struct DashboardView: View {
         if let first = upcoming.first, let birthday = first.student.birthday {
             let days = calendar.dateComponents([.day], from: today, to: first.date).day ?? 0
             let age = calendar.component(.year, from: first.date) - calendar.component(.year, from: birthday)
-            let when = switch days {
-            case 0: "Heute 🎉"
-            case 1: "Morgen"
-            default: "in \(days) Tagen"
-            }
+            let when = days == 0 ? "Heute 🎉" : days == 1 ? "Morgen" : "in \(days) Tagen"
             let sameDay = upcoming.filter { calendar.isDate($0.date, inSameDayAs: first.date) }.count - 1
             detail = "\(when) · wird \(age)" + (sameDay > 0 ? " · +\(sameDay)" : "")
         } else {
@@ -428,8 +424,4 @@ struct DashboardView: View {
         modelContext.delete(link)
         try? modelContext.save()
     }
-}
-
-#Preview {
-    NavigationStack { DashboardView() }
 }

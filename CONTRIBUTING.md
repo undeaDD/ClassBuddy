@@ -28,6 +28,8 @@ scripts/setup-hooks.sh
   (`scripts/test.sh`, runs headless on an iPad simulator). Only runs when Swift code or the project changed.
 - **commit-msg:** no `Co-authored-by` trailers, no emoji, no em dashes in commit messages.
 - Requirements: `brew install swiftlint`, an iPad simulator runtime in Xcode.
+- **Security scan:** `scripts/semgrep.sh` runs the same Semgrep rules as CI (`brew install semgrep`).
+  Intentional exceptions need a `nosemgrep: <rule>` comment with a justification.
 
 ## Pull requests
 

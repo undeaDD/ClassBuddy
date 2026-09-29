@@ -4,3 +4,6 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Brand-new releases are only proposed after 7 days (time to spot compromised releases).
+    cooldown:
+      default-days: 7
