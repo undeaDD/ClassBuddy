@@ -14,8 +14,10 @@ struct LockScreenView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 44, weight: .semibold))
+                Image(.fingerprintLockCircle)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 52, height: 52)
                     .foregroundStyle(.tint)
                     .frame(width: 96, height: 96)
                     .glassEffect(.regular, in: .circle)

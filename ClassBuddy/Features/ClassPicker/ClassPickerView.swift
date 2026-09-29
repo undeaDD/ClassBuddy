@@ -59,6 +59,7 @@ struct ClassPickerView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Neue Klasse", image: .plus) { editorRoute = .new }
+                        .disabled(!canEdit)
                 }
             }
             .confirmationDialog(
@@ -91,7 +92,17 @@ struct ClassPickerView: View {
             }
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
         }
+        // Privatsphäre-Modus an → Editor/Dialog sofort schließen.
+        .onChange(of: security.isPrivacyModeOn) { _, isOn in
+            if isOn {
+                editorRoute = nil
+                classPendingDeletion = nil
+            }
+        }
     }
+
+    /// Bearbeiten ist im Privatsphäre-Modus gesperrt.
+    private var canEdit: Bool { !security.isPrivacyModeOn }
 
     private func row(for schoolClass: SchoolClass) -> some View {
         Button {
@@ -102,7 +113,9 @@ struct ClassPickerView: View {
                 ClassBadge(shortName: schoolClass.shortName, color: schoolClass.color.color, size: 40)
                 VStack(alignment: .leading) {
                     Text(schoolClass.title).font(.body.weight(.medium))
+                        .sensitive()
                     Text(schoolClass.detailLine).font(.caption).foregroundStyle(.secondary)
+                        .sensitive()
                 }
                 Spacer()
                 if app.selectedClassID == schoolClass.id {
@@ -117,24 +130,30 @@ struct ClassPickerView: View {
         .hoverEffect(.highlight)
         // Nach rechts wischen: bearbeiten
         .swipeActions(edge: .leading) {
-            Button("Bearbeiten", systemImage: "pencil") {
-                editorRoute = .edit(schoolClass)
+            if canEdit {
+                Button("Bearbeiten", systemImage: "pencil") {
+                    editorRoute = .edit(schoolClass)
+                }
+                .tint(.accentColor)
             }
-            .tint(.accentColor)
         }
         // Nach links wischen: löschen
         .swipeActions(edge: .trailing) {
-            Button("Löschen", systemImage: "trash", role: .destructive) {
-                classPendingDeletion = schoolClass
+            if canEdit {
+                Button("Löschen", systemImage: "trash", role: .destructive) {
+                    classPendingDeletion = schoolClass
+                }
             }
         }
         // Lange drücken (Finger oder Apple Pencil) bzw. Rechtsklick.
         .contextMenu {
-            Button("Bearbeiten", systemImage: "pencil") {
-                editorRoute = .edit(schoolClass)
-            }
-            Button("Löschen", systemImage: "trash", role: .destructive) {
-                classPendingDeletion = schoolClass
+            if canEdit {
+                Button("Bearbeiten", systemImage: "pencil") {
+                    editorRoute = .edit(schoolClass)
+                }
+                Button("Löschen", systemImage: "trash", role: .destructive) {
+                    classPendingDeletion = schoolClass
+                }
             }
         }
     }

@@ -1,7 +1,9 @@
 #!/bin/zsh
-# Übernimmt alle SVGs aus Icons/ als Template-Vektorbilder (24 pt) nach
-# ClassBuddy/Resources/Assets.xcassets/Icons/<name>.imageset.
-# Icons/ bleibt die Quelle – einfach neue SVGs dort ablegen und das Skript ausführen.
+# Icons/ ist der Eingangsordner für neue SVG-Icons (Iconoir-Stil):
+# Jedes SVG wird als Template-Vektorbild (24 pt) nach
+# ClassBuddy/Resources/Assets.xcassets/Icons/<name>.imageset übernommen
+# und danach aus Icons/ entfernt. Der Ordner selbst bleibt bestehen.
+# Gleichnamige Icons im Katalog werden überschrieben.
 # Im Code: Image(.name) bzw. AppSymbol.custom(.name) (Bindestriche → camelCase).
 set -euo pipefail
 
@@ -9,7 +11,8 @@ root="${0:A:h:h}"
 source_dir="$root/Icons"
 catalog="$root/ClassBuddy/Resources/Assets.xcassets/Icons"
 
-mkdir -p "$catalog"
+mkdir -p "$source_dir" "$catalog"
+touch "$source_dir/.gitkeep"
 print '{"info":{"author":"xcode","version":1}}' > "$catalog/Contents.json"
 
 for svg in "$source_dir"/*.svg(N); do
@@ -25,5 +28,6 @@ for svg in "$source_dir"/*.svg(N); do
   "properties" : { "preserves-vector-representation" : true, "template-rendering-intent" : "template" }
 }
 EOF
+  rm "$svg"
   print "✓ $name"
 done

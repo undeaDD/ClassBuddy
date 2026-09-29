@@ -9,9 +9,10 @@ struct DayColumn: View {
 
     let date: Date
     let weekday: Int
-    let lessons: [Lesson]
+    let schedule: LessonSchedule
     let entries: [CalendarEntry]
-    let holiday: Holiday?
+    /// Nur Stunden dieser Klasse farbig; alle anderen neutral.
+    var focusClassID: UUID?
 
     @State private var selectedSlot: LessonSlot?
     @State private var newEntryMinute: Int?
@@ -22,6 +23,8 @@ struct DayColumn: View {
     private var totalHeight: CGFloat { hourHeight * 24 }
 
     private func y(_ minutes: Int) -> CGFloat { CGFloat(minutes) / 60 * hourHeight }
+
+    private var holiday: Holiday? { schedule.holiday(on: date) }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -35,8 +38,9 @@ struct DayColumn: View {
 
             backgroundLayers
 
-            if holiday == nil || !singleLessonsOnly.isEmpty {
-                ForEach(settings.slots) { slot in
+            ForEach(settings.slots) { slot in
+                // In den Ferien nur belegte (Einzel-)Stunden zeigen.
+                if holiday == nil || schedule.lesson(on: date, slotIndex: slot.index) != nil {
                     slotView(slot)
                 }
             }
@@ -101,21 +105,10 @@ struct DayColumn: View {
 
     // MARK: Stunden
 
-    private var singleLessonsOnly: [Lesson] {
-        lessons.filter { !$0.isRecurring && isSameDay($0.date) }
-    }
-
-    private func lesson(for slot: LessonSlot) -> Lesson? {
-        if let single = lessons.first(where: { !$0.isRecurring && $0.slotIndex == slot.index && isSameDay($0.date) }) {
-            return single
-        }
-        guard holiday == nil else { return nil }
-        return lessons.first { $0.isRecurring && $0.weekday == weekday && $0.slotIndex == slot.index }
-    }
-
     private func slotView(_ slot: LessonSlot) -> some View {
-        let lesson = lesson(for: slot)
-        return SlotCell(slot: slot, lesson: lesson)
+        let lesson = schedule.lesson(on: date, slotIndex: slot.index)
+        let isDimmed = focusClassID != nil && lesson != nil && lesson?.schoolClass?.id != focusClassID
+        return SlotCell(slot: slot, lesson: lesson, isDimmed: isDimmed)
             .frame(height: y(slot.end - slot.start))
             .padding(.horizontal, 3)
             .onTapGesture { selectedSlot = slot }
@@ -168,51 +161,30 @@ struct DayColumn: View {
 
     // MARK: Hilfen
 
-    private func isSameDay(_ other: Date?) -> Bool {
-        other.map { calendar.isDate($0, inSameDayAs: date) } ?? false
-    }
-
     private func minutes(of date: Date) -> Int {
         let c = calendar.dateComponents([.hour, .minute], from: date)
         return (c.hour ?? 0) * 60 + (c.minute ?? 0)
     }
 }
 
-/// Stunden-Slot: leer (gestrichelt, Stundennummer) oder belegt (Klasse + Fach).
+/// Stunden-Slot:
+/// - leer: gestrichelt mit Stundennummer
+/// - belegt: Stundennummer + Fach oben, Klasse groß unten rechts, Farbstreifen links
+/// - gedimmt (Kalender-Fokus auf andere Klasse): neutrale Fläche ohne Text
 private struct SlotCell: View {
     let slot: LessonSlot
     let lesson: Lesson?
+    var isDimmed = false
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 8, style: .continuous)
         Group {
             if let lesson, let schoolClass = lesson.schoolClass {
-                let color = schoolClass.color.color
-                VStack(alignment: .leading, spacing: 1) {
-                    HStack(spacing: 4) {
-                        Text(schoolClass.shortName).font(.caption.weight(.bold))
-                            .sensitive()
-                        if !lesson.isRecurring {
-                            Image(systemName: "1.circle").font(.caption2)
-                        }
-                    }
-                    if !lesson.subject.isEmpty {
-                        Text(lesson.subject).font(.caption2)
-                            .sensitive()
-                    }
+                if isDimmed {
+                    shape.fill(.fill.secondary)
+                } else {
+                    filledCell(lesson: lesson, schoolClass: schoolClass, shape: shape)
                 }
-                .foregroundStyle(color)
-                .padding(6)
-                .padding(.leading, 3)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                // Fläche + Farbstreifen links gemeinsam auf die Rundung zuschneiden.
-                .background {
-                    HStack(spacing: 0) {
-                        color.frame(width: 4)
-                        color.opacity(0.18)
-                    }
-                }
-                .clipShape(shape)
             } else {
                 Text("\(slot.number).")
                     .font(.caption2.weight(.medium))
@@ -224,6 +196,47 @@ private struct SlotCell: View {
         }
         .contentShape(.hoverEffect, shape)
         .contentShape(shape)
+    }
+
+    private func filledCell(lesson: Lesson, schoolClass: SchoolClass, shape: RoundedRectangle) -> some View {
+        let color = schoolClass.color.color
+        return VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: 4) {
+                Text("\(slot.number).")
+                    .font(.caption2.weight(.semibold))
+                    .opacity(0.7)
+                if !lesson.subject.isEmpty {
+                    Text(lesson.subject)
+                        .font(.caption2)
+                        .lineLimit(1)
+                        .sensitive()
+                }
+                Spacer(minLength: 0)
+                if !lesson.isRecurring {
+                    Image(systemName: "1.circle").font(.caption2)
+                }
+            }
+            Spacer(minLength: 0)
+            Text(schoolClass.shortName)
+                .font(.title3.weight(.bold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .sensitive()
+        }
+        .foregroundStyle(color)
+        .padding(.vertical, 4)
+        .padding(.leading, 9)
+        .padding(.trailing, 6)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        // Fläche + Farbstreifen links gemeinsam auf die Rundung zuschneiden.
+        .background {
+            HStack(spacing: 0) {
+                color.frame(width: 4)
+                color.opacity(0.18)
+            }
+        }
+        .clipShape(shape)
     }
 }
 
