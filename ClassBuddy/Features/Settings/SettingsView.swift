@@ -13,6 +13,16 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section {
+                NavigationLink {
+                    SchoolSettingsView()
+                } label: {
+                    Label("Schuleinstellungen", systemImage: "building.columns")
+                }
+            } footer: {
+                Text("Stundenraster, Pausen, Wochenende, Ferien & Feiertage.")
+            }
+
+            Section {
                 Toggle(isOn: appLockBinding) {
                     Label("Mit \(security.biometryName) sperren", systemImage: security.biometrySymbol)
                 }
