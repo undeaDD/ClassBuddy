@@ -44,13 +44,16 @@ struct DashboardView: View {
                             }
                     }
 
-                    if canEdit {
-                        AddCard { isAddDialogPresented = true }
-                            .confirmationDialog("Kachel hinzufügen", isPresented: $isAddDialogPresented) {
-                                Button("Dokument aus „Dateien“") { isFileImporterPresented = true }
-                                Button("Website") { linkEditorRoute = .newWebsite(schoolClass) }
-                            }
-                    }
+                    // Im Privatsphäre-Modus nur ausblenden, nicht entfernen: Verschwindet
+                    // der Anker eines offenen Dialogs, stürzt UIKit beim Schließen ab.
+                    AddCard { isAddDialogPresented = true }
+                        .confirmationDialog("Kachel hinzufügen", isPresented: $isAddDialogPresented) {
+                            Button("Dokument aus „Dateien“") { isFileImporterPresented = true }
+                            Button("Website") { linkEditorRoute = .newWebsite(schoolClass) }
+                        }
+                        .opacity(canEdit ? 1 : 0)
+                        .allowsHitTesting(canEdit)
+                        .accessibilityHidden(!canEdit)
                 }
                 .padding(24)
                 .animation(.smooth, value: schoolClass.dashboardOrder)
