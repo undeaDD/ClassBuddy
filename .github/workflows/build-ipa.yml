@@ -1,15 +1,14 @@
 name: Build IPA
 
 # Builds an unsigned .ipa for sideloading (AltStore / SideStore re-sign it on install).
-# - every push / PR: build + upload the .ipa as a workflow artifact
-# - tags "v*" (e.g. v1.0.0): additionally attach the .ipa to a GitHub release
+# Runs only on demand:
+# - "Run workflow" button (Actions tab): build + upload the .ipa as a workflow artifact
+# - release tag "v*" (e.g. v1.0.0): additionally attach the .ipa to a GitHub release
 
 on:
-  push:
-    branches: [main]
-    tags: ["v*"]
-  pull_request:
   workflow_dispatch:
+  push:
+    tags: ["v*"]
 
 permissions:
   contents: write
@@ -24,10 +23,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Newest installed Xcode (incl. betas): the app icon is an Icon Composer file
+      # from Xcode 27, older actool versions crash on it.
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: latest
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          ls -d /Applications/Xcode*.app
 
       - name: Build (unsigned)
         run: |

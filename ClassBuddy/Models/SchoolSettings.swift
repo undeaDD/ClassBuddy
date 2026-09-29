@@ -26,17 +26,17 @@ final class SchoolSettings {
         /// Fehlende Felder (ältere Versionen) fallen auf den Standardwert zurück,
         /// damit neue Einstellungen nie die gespeicherten überschreiben.
         init(from decoder: Decoder) throws {
-            let c = try decoder.container(keyedBy: CodingKeys.self)
+            let container = try decoder.container(keyedBy: CodingKeys.self)
             let defaults = Values()
-            dayStart = try c.decodeIfPresent(Int.self, forKey: .dayStart) ?? defaults.dayStart
-            dayEnd = try c.decodeIfPresent(Int.self, forKey: .dayEnd) ?? defaults.dayEnd
-            lessonDuration = try c.decodeIfPresent(Int.self, forKey: .lessonDuration) ?? defaults.lessonDuration
-            breaks = try c.decodeIfPresent([BreakTime].self, forKey: .breaks) ?? defaults.breaks
-            showWeekends = try c.decodeIfPresent(Bool.self, forKey: .showWeekends) ?? defaults.showWeekends
-            federalState = try c.decodeIfPresent(String.self, forKey: .federalState)
-            holidaysImportedAt = try c.decodeIfPresent(Date.self, forKey: .holidaysImportedAt)
-            school = try c.decodeIfPresent(SchoolInfo.self, forKey: .school) ?? defaults.school
-            teacher = try c.decodeIfPresent(TeacherProfile.self, forKey: .teacher) ?? defaults.teacher
+            dayStart = try container.decodeIfPresent(Int.self, forKey: .dayStart) ?? defaults.dayStart
+            dayEnd = try container.decodeIfPresent(Int.self, forKey: .dayEnd) ?? defaults.dayEnd
+            lessonDuration = try container.decodeIfPresent(Int.self, forKey: .lessonDuration) ?? defaults.lessonDuration
+            breaks = try container.decodeIfPresent([BreakTime].self, forKey: .breaks) ?? defaults.breaks
+            showWeekends = try container.decodeIfPresent(Bool.self, forKey: .showWeekends) ?? defaults.showWeekends
+            federalState = try container.decodeIfPresent(String.self, forKey: .federalState)
+            holidaysImportedAt = try container.decodeIfPresent(Date.self, forKey: .holidaysImportedAt)
+            school = try container.decodeIfPresent(SchoolInfo.self, forKey: .school) ?? defaults.school
+            teacher = try container.decodeIfPresent(TeacherProfile.self, forKey: .teacher) ?? defaults.teacher
         }
     }
 
@@ -66,21 +66,29 @@ final class SchoolSettings {
     }
 
     /// Pausen innerhalb des Schultags, nach Beginn sortiert.
+    var sortedBreaks: [BreakTime] { values.sortedBreaks }
+
+    /// Stundenraster (siehe `Values.slots`).
+    var slots: [LessonSlot] { values.slots }
+}
+
+extension SchoolSettings.Values {
+    /// Pausen innerhalb des Schultags, nach Beginn sortiert.
     var sortedBreaks: [BreakTime] {
-        values.breaks
-            .filter { $0.duration > 0 && $0.end > values.dayStart && $0.start < values.dayEnd }
+        breaks
+            .filter { $0.duration > 0 && $0.end > dayStart && $0.start < dayEnd }
             .sorted { $0.start < $1.start }
     }
 
     /// Stundenraster: ab Beginn im Takt der Stundenlänge, Pausen werden übersprungen.
     /// Eine Stunde, die nicht mehr vor die nächste Pause passt, beginnt nach der Pause.
     var slots: [LessonSlot] {
-        let length = max(values.lessonDuration, 5)
+        let length = max(lessonDuration, 5)
         let breaks = sortedBreaks
         var result: [LessonSlot] = []
-        var time = values.dayStart
+        var time = dayStart
 
-        while time + length <= values.dayEnd, result.count < 30 {
+        while time + length <= dayEnd, result.count < 30 {
             if let current = breaks.first(where: { $0.start <= time && time < $0.end }) {
                 time = current.end
                 continue

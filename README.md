@@ -101,6 +101,10 @@ Unsigned build like the CI:
 xcodebuild -project ClassBuddy.xcodeproj -target ClassBuddy -configuration Release -sdk iphoneos SYMROOT="$PWD/build" CODE_SIGNING_ALLOWED=NO build
 ```
 
+Tests and git hooks (SwiftLint, unit tests, commit message rules): see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+The IPA workflow runs on demand only: *Actions → Build IPA → Run workflow*, or push a release tag (`git tag v1.0.0 && git push origin v1.0.0`).
+
 ## Privacy
 
 ClassBuddy has no server. All data stays in the app's local storage on your iPad.

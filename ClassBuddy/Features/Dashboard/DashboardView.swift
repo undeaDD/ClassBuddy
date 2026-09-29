@@ -117,14 +117,14 @@ struct DashboardView: View {
                 // Im Privatsphäre-Modus nur ausblenden, nicht entfernen: Verschwindet
                 // der Anker eines offenen Dialogs, stürzt UIKit beim Schließen ab.
                 AddCard { isGalleryPresented = true }
-                    .sheet(isPresented: $isGalleryPresented, onDismiss: { performPendingTemplate(in: schoolClass) }) {
+                    .sheet(isPresented: $isGalleryPresented, onDismiss: { performPendingTemplate(in: schoolClass) }, content: {
                         CardGalleryView(
                             visibleBuiltIns: Set(visibleCardIDs(for: schoolClass).compactMap(DashboardBuiltInCard.init(rawValue:)))
                         ) { template in
                             pendingTemplate = template
                         }
                         .presentationSizing(.page)
-                    }
+                    })
                     .opacity(canEdit ? 1 : 0)
                     .allowsHitTesting(canEdit)
                     .accessibilityHidden(!canEdit)

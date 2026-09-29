@@ -50,7 +50,9 @@ nonisolated enum FaviconStore {
         var request = URLRequest(url: url, timeoutInterval: 8)
         request.setValue("text/html", forHTTPHeaderField: "Accept")
         guard let (data, _) = try? await URLSession.shared.data(for: request) else { return nil }
-        return String(decoding: data.prefix(300_000), as: UTF8.self)
+        let head = data.prefix(300_000)
+        // Manche (ältere) Schulseiten sind nicht UTF-8 kodiert.
+        return String(bytes: head, encoding: .utf8) ?? String(bytes: head, encoding: .isoLatin1)
     }
 
     /// `<link rel="…icon…" href="…">` – Apple-Touch-Icons zuerst (größer, schärfer).

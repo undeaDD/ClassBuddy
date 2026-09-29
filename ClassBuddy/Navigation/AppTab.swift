@@ -37,7 +37,6 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         }
     }
 
-
     /// Tabs, die nur eine Aktion auslösen und nie ausgewählt werden.
     var isAction: Bool { self == .feedback }
 

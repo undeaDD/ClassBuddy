@@ -174,10 +174,9 @@ enum Backup {
         let workbook = try XLSX.read(data)
         guard workbook[Sheet.info] != nil || workbook[Sheet.classes] != nil else { throw ImportError.notAClassBuddyFile }
 
-        func table(_ name: String) -> Table? { workbook[name].map(Table.init) }
-        var summary = ImportSummary()
+        func table(_ name: String) -> [Table.Row] { workbook[name].map(Table.init)?.rows ?? [] }
 
-        // Vorhandene Dokument-Kacheln merken: ihre Dateien bleiben, wenn die ID im Import vorkommt.
+        // Vorhandene Dokument-/Bild-Kacheln merken: ihre Dateien bleiben, wenn die ID im Import vorkommt.
         let existingFiles = try context.fetch(FetchDescriptor<DashboardLink>())
             .filter { $0.kind.isStoredFile }
             .reduce(into: [UUID: String]()) { $0[$1.id] = $1.location }
@@ -189,115 +188,142 @@ enum Backup {
         try context.delete(model: Holiday.self)
         try context.delete(model: SchoolClass.self)
 
-        // Klassen
-        var classesByID: [UUID: SchoolClass] = [:]
-        for row in table(Sheet.classes)?.rows ?? [] {
-            guard let shortName = row["Kürzel"].nonEmpty else { continue }
-            let schoolClass = SchoolClass(
-                id: UUID(uuidString: row["ID"]) ?? UUID(),
-                shortName: shortName,
-                subjects: Cell.parseList(row["Fächer"]),
-                schoolYear: row["Schuljahr"],
-                color: ClassColor(rawValue: row["Farbe"]) ?? .blue,
-                createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now
-            )
-            schoolClass.dashboardOrder = Cell.parseList(row["Kachel-Reihenfolge"])
-            schoolClass.dashboardHidden = Cell.parseList(row["Ausgeblendete Kacheln"])
-            schoolClass.dashboardKnownCards = schoolClass.dashboardOrder + schoolClass.dashboardHidden
-            context.insert(schoolClass)
-            classesByID[schoolClass.id] = schoolClass
-            summary.classes += 1
-        }
-
-        // Schüler
-        for row in table(Sheet.students)?.rows ?? [] {
-            guard let schoolClass = UUID(uuidString: row["Klassen-ID"]).flatMap({ classesByID[$0] }),
-                  !(row["Vorname"].isEmpty && row["Nachname"].isEmpty)
-            else { continue }
-            context.insert(Student(
-                id: UUID(uuidString: row["ID"]) ?? UUID(),
-                firstName: row["Vorname"],
-                lastName: row["Nachname"],
-                birthday: Cell.parseDate(row["Geburtstag"]),
-                gender: Cell.parseGender(row["Geschlecht"]),
-                notes: row["Notizen"],
-                createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now,
-                schoolClass: schoolClass
-            ))
-            summary.students += 1
-        }
-
-        // Stunden
-        for row in table(Sheet.lessons)?.rows ?? [] {
-            guard let schoolClass = UUID(uuidString: row["Klassen-ID"]).flatMap({ classesByID[$0] }),
-                  let weekday = Cell.parseWeekday(row["Wochentag"]),
-                  let number = Int(row["Stunde"]), number >= 1
-            else { continue }
-            let isRecurring = Cell.parseBool(row["Wöchentlich"]) ?? true
-            let date = Cell.parseDate(row["Datum"])
-            guard isRecurring || date != nil else { continue }
-            context.insert(Lesson(
-                id: UUID(uuidString: row["ID"]) ?? UUID(),
-                weekday: weekday,
-                slotIndex: number - 1,
-                subject: row["Fach"],
-                isRecurring: isRecurring,
-                date: isRecurring ? nil : date,
-                schoolClass: schoolClass
-            ))
-            summary.lessons += 1
-        }
-
-        // Termine
-        for row in table(Sheet.entries)?.rows ?? [] {
-            guard let start = Cell.parseDateTime(row["Beginn"]) else { continue }
-            let end = Cell.parseDateTime(row["Ende"]).map { max($0, start) } ?? start.addingTimeInterval(3600)
-            context.insert(CalendarEntry(
-                id: UUID(uuidString: row["ID"]) ?? UUID(),
-                title: row["Titel"], start: start, end: end, notes: row["Notizen"]
-            ))
-            summary.entries += 1
-        }
-
-        // Kacheln
-        var keptFileLocations: Set<String> = []
-        for row in table(Sheet.links)?.rows ?? [] {
-            guard let schoolClass = UUID(uuidString: row["Klassen-ID"]).flatMap({ classesByID[$0] }) else { continue }
-            let id = UUID(uuidString: row["ID"]) ?? UUID()
-            let kind = Cell.parseLinkKind(row["Typ"])
-            if kind.isStoredFile {
-                guard let location = existingFiles[id],
-                      FileManager.default.fileExists(atPath: LinkFileStore.directory.appending(path: location).path())
-                else {
-                    summary.skippedDocuments += 1
-                    continue
-                }
-                keptFileLocations.insert(location)
-                context.insert(DashboardLink(id: id, title: row["Titel"], kind: kind, location: location, schoolClass: schoolClass))
-            } else {
-                guard let url = URL.web(row["Adresse / Datei"]) else { continue }
-                context.insert(DashboardLink(id: id, title: row["Titel"], kind: .website, location: url.absoluteString, schoolClass: schoolClass))
-            }
-            summary.links += 1
-        }
-
-        // Ferien
-        for row in table(Sheet.holidays)?.rows ?? [] {
-            guard let start = Cell.parseDate(row["Beginn"]) else { continue }
-            context.insert(Holiday(
-                id: row["ID"].nonEmpty ?? UUID().uuidString,
-                name: row["Name"],
-                startDate: start,
-                endDate: Cell.parseDate(row["Ende"]) ?? start,
-                isSchoolHoliday: Cell.parseBool(row["Schulferien"]) ?? true
-            ))
-            summary.holidays += 1
-        }
+        var importer = Importer(context: context, existingFiles: existingFiles)
+        importer.importClasses(table(Sheet.classes))
+        importer.importStudents(table(Sheet.students))
+        importer.importLessons(table(Sheet.lessons))
+        importer.importEntries(table(Sheet.entries))
+        importer.importLinks(table(Sheet.links))
+        importer.importHolidays(table(Sheet.holidays))
 
         try context.save()
-        removeUnreferencedFiles(keeping: keptFileLocations)
+        removeUnreferencedFiles(keeping: importer.keptFileLocations)
 
-        return (summary, importedSettings(from: workbook, current: currentSettings))
+        return (importer.summary, importedSettings(from: workbook, current: currentSettings))
+    }
+
+    /// Legt die Datensätze eines Imports an (je Blatt eine Methode).
+    private struct Importer {
+        let context: ModelContext
+        let existingFiles: [UUID: String]
+        var summary = ImportSummary()
+        var classesByID: [UUID: SchoolClass] = [:]
+        var keptFileLocations: Set<String> = []
+
+        private func schoolClass(for row: Table.Row) -> SchoolClass? {
+            UUID(uuidString: row["Klassen-ID"]).flatMap { classesByID[$0] }
+        }
+
+        mutating func importClasses(_ rows: [Table.Row]) {
+            for row in rows {
+                guard let shortName = row["Kürzel"].nonEmpty else { continue }
+                let schoolClass = SchoolClass(
+                    id: UUID(uuidString: row["ID"]) ?? UUID(),
+                    shortName: shortName,
+                    subjects: Cell.parseList(row["Fächer"]),
+                    schoolYear: row["Schuljahr"],
+                    color: ClassColor(rawValue: row["Farbe"]) ?? .blue,
+                    createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now
+                )
+                schoolClass.dashboardOrder = Cell.parseList(row["Kachel-Reihenfolge"])
+                schoolClass.dashboardHidden = Cell.parseList(row["Ausgeblendete Kacheln"])
+                schoolClass.dashboardKnownCards = schoolClass.dashboardOrder + schoolClass.dashboardHidden
+                context.insert(schoolClass)
+                classesByID[schoolClass.id] = schoolClass
+                summary.classes += 1
+            }
+        }
+
+        mutating func importStudents(_ rows: [Table.Row]) {
+            for row in rows {
+                guard let schoolClass = schoolClass(for: row),
+                      !(row["Vorname"].isEmpty && row["Nachname"].isEmpty)
+                else { continue }
+                context.insert(Student(
+                    id: UUID(uuidString: row["ID"]) ?? UUID(),
+                    firstName: row["Vorname"],
+                    lastName: row["Nachname"],
+                    birthday: Cell.parseDate(row["Geburtstag"]),
+                    gender: Cell.parseGender(row["Geschlecht"]),
+                    notes: row["Notizen"],
+                    createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now,
+                    schoolClass: schoolClass
+                ))
+                summary.students += 1
+            }
+        }
+
+        mutating func importLessons(_ rows: [Table.Row]) {
+            for row in rows {
+                guard let schoolClass = schoolClass(for: row),
+                      let weekday = Cell.parseWeekday(row["Wochentag"]),
+                      let number = Int(row["Stunde"]), number >= 1
+                else { continue }
+                let isRecurring = Cell.parseBool(row["Wöchentlich"]) ?? true
+                let date = Cell.parseDate(row["Datum"])
+                guard isRecurring || date != nil else { continue }
+                context.insert(Lesson(
+                    id: UUID(uuidString: row["ID"]) ?? UUID(),
+                    weekday: weekday,
+                    slotIndex: number - 1,
+                    subject: row["Fach"],
+                    isRecurring: isRecurring,
+                    date: isRecurring ? nil : date,
+                    schoolClass: schoolClass
+                ))
+                summary.lessons += 1
+            }
+        }
+
+        mutating func importEntries(_ rows: [Table.Row]) {
+            for row in rows {
+                guard let start = Cell.parseDateTime(row["Beginn"]) else { continue }
+                let end = Cell.parseDateTime(row["Ende"]).map { max($0, start) } ?? start.addingTimeInterval(3600)
+                context.insert(CalendarEntry(
+                    id: UUID(uuidString: row["ID"]) ?? UUID(),
+                    title: row["Titel"], start: start, end: end, notes: row["Notizen"]
+                ))
+                summary.entries += 1
+            }
+        }
+
+        mutating func importLinks(_ rows: [Table.Row]) {
+            for row in rows {
+                guard let schoolClass = schoolClass(for: row) else { continue }
+                let id = UUID(uuidString: row["ID"]) ?? UUID()
+                let kind = Cell.parseLinkKind(row["Typ"])
+                if kind.isStoredFile {
+                    guard let location = existingFiles[id],
+                          FileManager.default.fileExists(atPath: LinkFileStore.directory.appending(path: location).path())
+                    else {
+                        summary.skippedDocuments += 1
+                        continue
+                    }
+                    keptFileLocations.insert(location)
+                    context.insert(DashboardLink(id: id, title: row["Titel"], kind: kind, location: location, schoolClass: schoolClass))
+                } else {
+                    guard let url = URL.web(row["Adresse / Datei"]) else { continue }
+                    context.insert(DashboardLink(
+                        id: id, title: row["Titel"], kind: .website, location: url.absoluteString, schoolClass: schoolClass
+                    ))
+                }
+                summary.links += 1
+            }
+        }
+
+        mutating func importHolidays(_ rows: [Table.Row]) {
+            for row in rows {
+                guard let start = Cell.parseDate(row["Beginn"]) else { continue }
+                context.insert(Holiday(
+                    id: row["ID"].nonEmpty ?? UUID().uuidString,
+                    name: row["Name"],
+                    startDate: start,
+                    endDate: Cell.parseDate(row["Ende"]) ?? start,
+                    isSchoolHoliday: Cell.parseBool(row["Schulferien"]) ?? true
+                ))
+                summary.holidays += 1
+            }
+        }
     }
 
     private static func importedSettings(from workbook: [String: [[String]]], current: SchoolSettings.Values) -> ImportedSettings {
@@ -399,13 +425,13 @@ private enum Cell {
 
     static func date(_ date: Date?) -> String {
         guard let date else { return "" }
-        let c = calendar.dateComponents([.year, .month, .day], from: date)
-        return String(format: "%04d-%02d-%02d", c.year ?? 0, c.month ?? 0, c.day ?? 0)
+        let parts = calendar.dateComponents([.year, .month, .day], from: date)
+        return String(format: "%04d-%02d-%02d", parts.year ?? 0, parts.month ?? 0, parts.day ?? 0)
     }
 
     static func dateTime(_ date: Date) -> String {
-        let c = calendar.dateComponents([.hour, .minute], from: date)
-        return "\(self.date(date)) \(String(format: "%02d:%02d", c.hour ?? 0, c.minute ?? 0))"
+        let parts = calendar.dateComponents([.hour, .minute], from: date)
+        return "\(self.date(date)) \(String(format: "%02d:%02d", parts.hour ?? 0, parts.minute ?? 0))"
     }
 
     static func bool(_ value: Bool) -> String { value ? "ja" : "nein" }
