@@ -7,6 +7,8 @@ import SwiftUI
 /// in einen zweiten Navigation-Controller (→ doppelte Navigationsleiste) und sieht veraltet aus.
 struct PhoneTabView: View {
     @Environment(AppModel.self) private var app
+    @AppStorage(AppPreference.hidesTabLabels) private var hidesTabLabels = false
+    @AppStorage(AppPreference.minimizesBarsOnScroll) private var minimizesBarsOnScroll = true
     /// „Mehr“ ist ausgewählt (Übersicht oder eine darin geöffnete Seite).
     @State private var isOnMore = false
     @State private var morePath: [AppTab] = []
@@ -45,16 +47,18 @@ struct PhoneTabView: View {
                     }
                     .id(app.stackID(for: tab))
                 } label: {
-                    Label(tab.title, symbol: tab.symbol)
+                    TabBarLabel(title: tab.title, image: tab.symbol.image, hidesTitle: hidesTabLabels)
                 }
             }
             Tab(value: Slot.more) {
                 MoreView(path: $morePath)
                     .id(moreStackID)
             } label: {
-                Label("Mehr", image: .moreHoriz)
+                TabBarLabel(title: "Mehr", image: Image(.moreHoriz), hidesTitle: hidesTabLabels)
             }
         }
+        // Beim Runterscrollen auf den aktiven Tab schrumpfen, beim Hochscrollen wieder groß.
+        .tabBarMinimizeBehavior(minimizesBarsOnScroll ? .onScrollDown : .never)
         // Seiten, die von außen geöffnet werden (z. B. Kachel auf der Übersicht),
         // aber nicht in der Tab-Leiste liegen, öffnen sich unter „Mehr“.
         .onChange(of: app.selectedTab, initial: true) { _, tab in
@@ -98,6 +102,8 @@ private struct MoreView: View {
                 }
             }
             .navigationTitle("Mehr")
+            .navigationSubtitle("Was möchtest du als Nächstes tun?")
+            .navigationBarMinimizesOnScroll()
             .navigationDestination(for: AppTab.self) { tab in
                 AppTabDestination(tab: tab)
             }
@@ -147,6 +153,21 @@ private struct MoreView: View {
             NavigationLink(value: tab) {
                 Label(tab.title, symbol: tab.symbol)
             }
+        }
+    }
+}
+
+/// Tab-Symbol mit oder ohne Beschriftung (App-Einstellung); VoiceOver liest den Titel immer.
+private struct TabBarLabel: View {
+    let title: String
+    let image: Image
+    let hidesTitle: Bool
+
+    var body: some View {
+        if hidesTitle {
+            image.accessibilityLabel(title)
+        } else {
+            Label { Text(title) } icon: { image }
         }
     }
 }

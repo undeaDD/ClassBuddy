@@ -55,7 +55,7 @@ struct LinkEditorView: View {
         switch route.kind {
         case .website: URL.web(target) != nil
         case .shortcut: !trimmedTarget.isEmpty
-        case .file, .image: !title.trimmingCharacters(in: .whitespaces).isEmpty
+        case .file, .image, .script: !title.trimmingCharacters(in: .whitespaces).isEmpty
         }
     }
 
@@ -104,7 +104,7 @@ struct LinkEditorView: View {
             Button("Kurzbefehle-App öffnen", image: .navArrowRight) {
                 if let url = URL(string: "shortcuts://") { openURL(url) }
             }
-        case .file, .image:
+        case .file, .image, .script:
             EmptyView()
         }
     }
@@ -145,7 +145,7 @@ struct LinkEditorView: View {
         switch kind {
         case .website: URL.web(target)?.absoluteString
         case .shortcut: trimmedTarget.isEmpty ? nil : trimmedTarget
-        case .file, .image: nil
+        case .file, .image, .script: nil
         }
     }
 }

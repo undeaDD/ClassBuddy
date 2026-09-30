@@ -91,29 +91,38 @@ struct StudentsView: View {
         }
     }
 
+    /// Kein Antippen zum Bearbeiten – der Tap bleibt frei für spätere Verknüpfungen (z. B. Notizen).
+    /// Bearbeiten und Löschen über Wischen oder langes Drücken.
     private func row(for student: Student) -> some View {
-        Button {
-            if canEdit { editorRoute = .edit(student) }
-        } label: {
-            HStack(spacing: 12) {
-                StudentAvatar(student: student, size: 40)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(student.fullName)
-                        .font(.body.weight(.medium))
+        HStack(spacing: 12) {
+            StudentAvatar(student: student, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(student.fullName)
+                    .font(.body.weight(.medium))
+                    .sensitive()
+                if let age = student.age {
+                    Text("\(age) Jahre")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                         .sensitive()
-                    if let age = student.age {
-                        Text("\(age) Jahre")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .sensitive()
-                    }
                 }
-                Spacer()
             }
-            .contentShape(.rect)
+            Spacer()
+            // Notizen-Hinweis (im Privatsphäre-Modus verborgen), dann Pfeil wie bei anderen Zeilen.
+            if !student.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Image(.notes)
+                    .iconSize(18)
+                    .foregroundStyle(.secondary)
+                    .padding(.trailing, 4)
+                    .sensitive()
+                    .accessibilityLabel("Hat Notizen")
+            }
+            Image(.navArrowRight)
+                .iconSize(18)
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         }
-        .buttonStyle(.plain)
-        .hoverEffect(.highlight)
+        .contentShape(.rect)
         // Nach rechts wischen: bearbeiten
         .swipeActions(edge: .leading) {
             if canEdit {

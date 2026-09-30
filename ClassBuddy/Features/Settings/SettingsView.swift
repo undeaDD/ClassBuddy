@@ -144,6 +144,7 @@ private struct SettingsHero: View {
                 .scaledToFit()
                 .frame(width: 76, height: 76)
                 .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
+                .modifier(SlowPulse())
                 .accessibilityHidden(true)
 
             // Titel, Beschreibung und darunter linksbündig die Infos zur Installation.
@@ -175,6 +176,23 @@ private struct SettingsHero: View {
         }
         if let installMethod {
             HeroChip(text: "über \(installMethod.rawValue)")
+        }
+    }
+}
+
+/// Langsames, endloses „Atmen“ des App-Icons im Hero.
+private struct SlowPulse: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        if reduceMotion {
+            content
+        } else {
+            content.phaseAnimator([false, true]) { view, isExpanded in
+                view.scaleEffect(isExpanded ? 1.04 : 1)
+            } animation: { _ in
+                .easeInOut(duration: 2.2)
+            }
         }
     }
 }

@@ -151,7 +151,10 @@ extension Backup {
                     keptFileLocations.insert(location)
                     context.insert(DashboardLink(id: id, title: row["Titel"], kind: kind, location: location, schoolClass: schoolClass))
                 } else {
-                    let location = kind == .shortcut ? row["Adresse / Datei"].nonEmpty : URL.web(row["Adresse / Datei"])?.absoluteString
+                    let location = switch kind {
+                    case .shortcut, .script: row["Adresse / Datei"].nonEmpty
+                    default: URL.web(row["Adresse / Datei"])?.absoluteString
+                    }
                     guard let location else { continue }
                     context.insert(DashboardLink(id: id, title: row["Titel"], kind: kind, location: location, schoolClass: schoolClass))
                 }
@@ -199,7 +202,8 @@ extension Backup {
         if let profile = workbook[Sheet.profile].map(KeyValues.init) {
             values.teacher = TeacherProfile(
                 firstName: profile["Vorname"], lastName: profile["Nachname"],
-                birthday: Cell.parseDate(profile["Geburtstag"]), gender: Cell.parseGender(profile["Geschlecht"])
+                birthday: Cell.parseDate(profile["Geburtstag"]), gender: Cell.parseGender(profile["Geschlecht"]),
+                subjects: Cell.parseList(profile["Hauptfächer"])
             )
         }
         let appearance = workbook[Sheet.app].map(KeyValues.init).flatMap { app in

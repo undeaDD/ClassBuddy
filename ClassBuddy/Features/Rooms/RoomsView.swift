@@ -10,6 +10,8 @@ struct RoomsView: View {
         )
         .background(Color(.systemGroupedBackground))
         .navigationTitle(AppTab.rooms.title)
+        // Später die Anzahl der Räume, wie „n Schüler“ in der Schülerliste.
+        .navigationSubtitle("Noch keine Räume")
         .appChrome(tab: .rooms)
     }
 }

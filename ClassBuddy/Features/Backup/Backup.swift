@@ -174,6 +174,7 @@ enum Backup {
                 ["Schlüssel", "Wert"],
                 ["Vorname", teacher.firstName], ["Nachname", teacher.lastName],
                 ["Geburtstag", Cell.date(teacher.birthday)], ["Geschlecht", teacher.gender?.title ?? ""],
+                ["Hauptfächer", Cell.list(teacher.subjects)],
             ]),
             XLSXSheet(name: Sheet.app, rows: [
                 ["Schlüssel", "Wert"],

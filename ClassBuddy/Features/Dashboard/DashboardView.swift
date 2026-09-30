@@ -34,6 +34,8 @@ struct DashboardView: View {
     @State private var photoSelection: PhotosPickerItem?
     @State private var linkEditorRoute: LinkEditorRoute?
     @State private var previewURL: URL?
+    /// Gemessene Kachelgrößen – die Drag-Vorschau wird sonst in Idealgröße statt Grid-Breite gerendert.
+    @State private var cardSizes: [String: CGSize] = [:]
 
     private var canEdit: Bool { !security.isPrivacyModeOn }
 
@@ -82,6 +84,7 @@ struct DashboardView: View {
             .task(id: schoolClass.id) { registerNewCards(in: schoolClass) }
         }
         .navigationTitle(AppTab.dashboard.title)
+        .navigationSubtitle(selectedClass.map { "\($0.title) · \($0.schoolYear)" } ?? "")
         .appChrome(tab: .dashboard) {
             if selectedClass != nil {
                 Button(isArranging ? "Fertig" : "Kacheln anordnen", image: isArranging ? .check : .editPencil) {
@@ -91,8 +94,13 @@ struct DashboardView: View {
             }
         }
         .sheet(item: $linkEditorRoute) { route in
-            LinkEditorView(route: route)
-                .softScrollEdges()
+            if case .edit(let link) = route, link.kind == .script {
+                ScriptEditorView(link: link)
+                    .softScrollEdges()
+            } else {
+                LinkEditorView(route: route)
+                    .softScrollEdges()
+            }
         }
         .quickLookPreview($previewURL)
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
@@ -168,6 +176,11 @@ struct DashboardView: View {
             card(cardID, in: schoolClass)
                 .allowsHitTesting(false)
                 .opacity(isHidden ? 0.55 : 1)
+                // Vor dem Overlay, damit Auge und ✕ ruhig stehen bleiben.
+                .wiggling(seed: cardID)
+                // Die Kachel selbst ist nicht antippbar – ohne eigene Form greift das Ziehen nur an den Buttons.
+                .contentShape(cardShape)
+                .onGeometryChange(for: CGSize.self, of: \.size) { cardSizes[cardID] = $0 }
                 .overlay(alignment: .topTrailing) {
                     HStack(spacing: 8) {
                         Button(isHidden ? "Einblenden" : "Ausblenden", image: isHidden ? .eye : .eyeClosed) {
@@ -184,7 +197,12 @@ struct DashboardView: View {
                     .buttonBorderShape(.circle)
                     .offset(x: 8, y: -8)
                 }
-                .draggable(cardID)
+                // Eigene Vorschau nur aus der Kachel – sonst hängen die Buttons abgeschnitten dran.
+                .draggable(cardID) {
+                    card(cardID, in: schoolClass)
+                        .frame(width: cardSizes[cardID]?.width, height: cardSizes[cardID]?.height)
+                        .contentShape(.dragPreview, cardShape)
+                }
                 .dropDestination(for: String.self) { items, _ in
                     guard let dragged = items.first else { return false }
                     drop(dragged, onto: cardID, in: schoolClass)
@@ -265,6 +283,8 @@ struct DashboardView: View {
         case .builtIn(let card):
             schoolClass.dashboardRemoved.removeAll { $0 == card.rawValue }
             setHidden(false, card.rawValue, in: schoolClass)
+        case .image:
+            break // wird in der Galerie per Menü zu .photo bzw. .imageFile
         case .photo:
             isPhotoPickerPresented = true
         case .imageFile:
@@ -275,6 +295,10 @@ struct DashboardView: View {
             linkEditorRoute = .new(.website, schoolClass)
         case .shortcut:
             linkEditorRoute = .new(.shortcut, schoolClass)
+        case .script:
+            modelContext.insert(DashboardLink.newScript(in: schoolClass))
+            try? modelContext.save()
+            toasts.success("Skript-Kachel hinzugefügt – lange drücken zum Bearbeiten")
         case .request:
             openURL(AppInfo.mailURL(
                 subject: "Kachel-Wunsch für ClassBuddy",
@@ -290,6 +314,7 @@ struct DashboardView: View {
         switch link.kind {
         case .website, .shortcut: openURL(url)
         case .file, .image: previewURL = url
+        case .script: break
         }
     }
 
@@ -394,6 +419,8 @@ extension DashboardView {
         Group {
             if link.kind == .image {
                 ImageCard(link: link) { open(link) }
+            } else if link.kind == .script {
+                ScriptCard(link: link)
             } else {
                 LinkCard(link: link) { open(link) }
             }

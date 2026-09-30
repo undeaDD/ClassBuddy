@@ -72,6 +72,7 @@ extension Backup {
             case .image: "Bild"
             case .website: "Website"
             case .shortcut: "Kurzbefehl"
+            case .script: "Skript"
             }
         }
 
@@ -80,6 +81,7 @@ extension Backup {
             if lower.hasPrefix("dok") { return .file }
             if lower.hasPrefix("bild") { return .image }
             if lower.hasPrefix("kurz") { return .shortcut }
+            if lower.hasPrefix("skript") { return .script }
             return .website
         }
         static func list(_ values: [String]) -> String { values.joined(separator: "; ") }

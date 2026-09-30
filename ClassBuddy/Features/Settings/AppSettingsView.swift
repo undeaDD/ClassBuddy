@@ -37,6 +37,18 @@ enum AppAppearance: String, CaseIterable, Identifiable {
     }
 }
 
+/// Schalter der App-Einstellungen (UserDefaults, gelten nur auf diesem Gerät).
+enum AppPreference {
+    /// iPhone-Tab-Leiste nur mit Icons.
+    static let hidesTabLabels = "app.hidesTabLabels"
+    /// Bildschirm bleibt an, solange die App im Vordergrund ist.
+    static let keepsScreenAwake = "app.keepsScreenAwake"
+    /// Tab- und Navigationsleiste beim Runterscrollen verkleinern (Standard: an).
+    static let minimizesBarsOnScroll = "app.minimizesBarsOnScroll"
+    /// Leichtes Vibrieren bei Taps, Klassenwechsel und Meldungen (Standard: aus).
+    static let hapticFeedback = "app.hapticFeedback"
+}
+
 /// Einstellungen → App-Einstellungen: Darstellung, App-Sperre, lokale Daten.
 struct AppSettingsView: View {
     @Environment(AppModel.self) private var app
@@ -46,6 +58,10 @@ struct AppSettingsView: View {
     @Environment(ToastCenter.self) private var toasts
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
     @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
+    @AppStorage(AppPreference.hidesTabLabels) private var hidesTabLabels = false
+    @AppStorage(AppPreference.keepsScreenAwake) private var keepsScreenAwake = false
+    @AppStorage(AppPreference.minimizesBarsOnScroll) private var minimizesBarsOnScroll = true
+    @AppStorage(AppPreference.hapticFeedback) private var hapticFeedback = false
 
     @State private var dataSize: Int64?
     @State private var isDeleteConfirmationPresented = false
@@ -74,13 +90,35 @@ struct AppSettingsView: View {
 
     var body: some View {
         Form {
-            Section("Darstellung") {
-                Picker("Erscheinungsbild", selection: $appearance) {
+            Section {
+                Picker(selection: $appearance) {
                     ForEach(AppAppearance.allCases) { option in
                         Text(option.title).tag(option)
                     }
+                } label: {
+                    Label("Erscheinungsbild", image: .palette)
                 }
                 .pickerStyle(.menu)
+                Toggle(isOn: $hidesTabLabels) {
+                    Label("Tab-Titel ausblenden", image: .label)
+                }
+                Toggle(isOn: $minimizesBarsOnScroll) {
+                    Label("UI Minimieren", image: .swipeLeftGesture)
+                }
+                Toggle(isOn: $hapticFeedback) {
+                    Label("Haptisches Feedback", image: .sineWave)
+                }
+                Toggle(isOn: $keepsScreenAwake) {
+                    Label("Bildschirm wach halten", image: .lockSlash)
+                }
+            } header: {
+                Text("Darstellung")
+            } footer: {
+                Text(
+                    "Tab-Titel betreffen die untere Tab-Leiste (iPhone). UI Minimieren verkleinert Tab- und Navigationsleiste "
+                        + "beim Runterscrollen. Haptisches Feedback vibriert leicht bei Kacheln, Klassenwechsel und Meldungen. "
+                        + "Wach halten gilt, solange die App geöffnet ist."
+                )
             }
 
             Section("Hilfe") {
@@ -104,12 +142,12 @@ struct AppSettingsView: View {
 
             Section {
                 Button(action: export) {
-                    SettingsActionLabel(title: "Exportieren (Excel)", image: .shareIos)
+                    SettingsActionLabel(title: "Exportieren", image: .shareIos)
                 }
                 Button {
                     isImporterPresented = true
                 } label: {
-                    SettingsActionLabel(title: "Importieren (Excel)", image: .cloudDownload)
+                    SettingsActionLabel(title: "Importieren", image: .import)
                 }
             } header: {
                 Text("Export & Import")
@@ -119,12 +157,14 @@ struct AppSettingsView: View {
             .disabled(security.isPrivacyModeOn)
 
             Section {
-                LabeledContent("Belegter Speicher") {
+                LabeledContent {
                     if let dataSize {
                         Text(dataSize.formatted(.byteCount(style: .file)))
                     } else {
                         ProgressView()
                     }
+                } label: {
+                    Label("Belegter Speicher", image: .data)
                 }
                 Button(role: .destructive) {
                     isDeleteConfirmationPresented = true

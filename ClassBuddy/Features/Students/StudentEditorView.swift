@@ -49,19 +49,11 @@ struct StudentEditorView: View {
         NavigationStack {
             Form {
                 Section("Name") {
-                    TextField("Vorname", text: $firstName)
-                        .textContentType(.givenName)
-                        .sensitive()
-                    TextField("Nachname", text: $lastName)
-                        .textContentType(.familyName)
-                        .sensitive()
+                    NameFields(firstName: $firstName, lastName: $lastName)
                 }
 
-                Section("Geschlecht") {
+                Section("Optional") {
                     GenderPicker(selection: $gender)
-                }
-
-                Section {
                     BirthdayField(birthday: $birthday, suggestedAge: 12)
                 }
 

@@ -1,8 +1,8 @@
 import Foundation
 import SwiftData
 
-/// Eigene Kachel auf der Übersicht einer Klasse: Dokument (Kopie im App-Container)
-/// oder Website.
+/// Eigene Kachel auf der Übersicht einer Klasse: Dokument (Kopie im App-Container),
+/// Website, Kurzbefehl oder Skript.
 @Model
 final class DashboardLink {
     nonisolated enum Kind: String, Codable {
@@ -11,6 +11,8 @@ final class DashboardLink {
         case image
         /// Kurzbefehl der Kurzbefehle-App (`location` = exakter Name).
         case shortcut
+        /// Programmierbare Kachel (`location` = JavaScript-Quelltext, siehe `CardScript`).
+        case script
 
         /// Dokument/Bild: Kopie im App-Container (`LinkFileStore`).
         var isStoredFile: Bool { self == .file || self == .image }
@@ -21,6 +23,8 @@ final class DashboardLink {
     var kindRaw: String
     /// Website: absolute URL. Dokument: Pfad relativ zu `LinkFileStore.directory`.
     var location: String
+    /// Skript-Kachel: gespeichertes `ctx.state` als JSON.
+    var scriptState: String = "{}"
     var createdAt: Date
     var schoolClass: SchoolClass?
 
@@ -43,6 +47,7 @@ final class DashboardLink {
         case .website: URL(string: location)
         case .file, .image: LinkFileStore.directory.appending(path: location)
         case .shortcut: Self.shortcutURL(named: location)
+        case .script: nil
         }
     }
 
@@ -65,6 +70,7 @@ final class DashboardLink {
         case .website: url?.host() ?? location
         case .file, .image: (location as NSString).lastPathComponent
         case .shortcut: location
+        case .script: "JavaScript"
         }
     }
 }
