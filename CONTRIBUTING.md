@@ -11,8 +11,8 @@ Thanks for your interest in ClassBuddy! Issues and pull requests are welcome.
 
 ## Development
 
-- Xcode 26 or newer, iPadOS 26 deployment target
-- Open `ClassBuddy.xcodeproj`, select your team under *Signing & Capabilities*, run on an iPad
+- Xcode 26 or newer, iOS/iPadOS 26 deployment target
+- Open `ClassBuddy.xcodeproj`, select your team under *Signing & Capabilities*, run on an iPad or iPhone
 - Icons: drop Iconoir-style SVGs into `Icons/` and run `scripts/sync-icons.sh`
   (imports them into the asset catalog as template images, use them via `Image(.name)`)
 
@@ -25,9 +25,9 @@ scripts/setup-hooks.sh
 ```
 
 - **pre-commit:** SwiftLint must report 0 errors (`.swiftlint.yml`) and all unit tests must pass
-  (`scripts/test.sh`, runs headless on an iPad simulator). Only runs when Swift code or the project changed.
+  (`scripts/test.sh`, runs headless on an iPad simulator; `SIMULATOR_UDID=<udid>` picks another one, e.g. an iPhone). Only runs when Swift code or the project changed.
 - **commit-msg:** no `Co-authored-by` trailers, no emoji, no em dashes in commit messages.
-- Requirements: `brew install swiftlint`, an iPad simulator runtime in Xcode.
+- Requirements: `brew install swiftlint`, an iOS simulator runtime in Xcode.
 - **Security scan:** `scripts/semgrep.sh` runs the same Semgrep rules as CI (`brew install semgrep`).
   Intentional exceptions need a `nosemgrep: <rule>` comment with a justification.
 

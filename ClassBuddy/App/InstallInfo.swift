@@ -62,7 +62,7 @@ enum InstallInfo {
         return identifier
     }
 
-    /// z. B. „iPadOS 26.1“
+    /// z. B. „iPadOS 26.1“ / „iOS 26.1“
     static var osVersion: String {
         "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion)"
     }
@@ -75,7 +75,7 @@ enum InstallInfo {
         var system = utsname()
         uname(&system)
         return withUnsafeBytes(of: &system.machine) { buffer in
-            String(bytes: buffer.prefix { $0 != 0 }, encoding: .utf8) ?? "iPad"
+            String(bytes: buffer.prefix { $0 != 0 }, encoding: .utf8) ?? UIDevice.current.model
         }
     }
 }

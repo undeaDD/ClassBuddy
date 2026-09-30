@@ -64,8 +64,11 @@ nonisolated enum XLSX {
             <fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills>\
             <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>\
             <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>\
-            <cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>\
-            <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs>\
+            <cellXfs count="2">\
+            <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0" applyAlignment="1">\
+            <alignment vertical="top" wrapText="1"/></xf>\
+            <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1">\
+            <alignment vertical="top" wrapText="1"/></xf></cellXfs>\
             <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>\
             </styleSheet>
             """)))
@@ -81,8 +84,10 @@ nonisolated enum XLSX {
         let cols = columnCount > 0 ? "<cols><col min=\"1\" max=\"\(columnCount)\" width=\"22\" customWidth=\"1\"/></cols>" : ""
         var body = ""
         for (rowIndex, row) in sheet.rows.enumerated() {
-            let style = rowIndex == 0 ? " s=\"1\"" : ""
-            body += "<row r=\"\(rowIndex + 1)\">"
+            let style = rowIndex == 0 ? " s=\"1\"" : " s=\"0\""
+            // Umbruch + feste Zeilenhöhe: lange Texte bleiben in ihrer Zelle (abgeschnitten)
+            // statt in die rechte Nachbarzelle zu laufen.
+            body += "<row r=\"\(rowIndex + 1)\" ht=\"\(rowHeight)\" customHeight=\"1\">"
             for (columnIndex, value) in row.enumerated() where !value.isEmpty {
                 let ref = columnName(columnIndex) + String(rowIndex + 1)
                 body += "<c r=\"\(ref)\" t=\"inlineStr\"\(style)><is><t xml:space=\"preserve\">\(escape(value))</t></is></c>"
@@ -96,9 +101,12 @@ nonisolated enum XLSX {
             """
         return xml("""
             <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">\
-            \(frozenHeader)\(cols)<sheetData>\(body)</sheetData></worksheet>
+            \(frozenHeader)<sheetFormatPr defaultRowHeight="\(rowHeight)" customHeight="1"/>\(cols)<sheetData>\(body)</sheetData></worksheet>
             """)
     }
+
+    /// Feste Zeilenhöhe (Punkte) für eine Textzeile in Calibri 12.
+    private static let rowHeight = 17
 
     private static func xml(_ content: String) -> Data {
         Data(("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" + content).utf8)

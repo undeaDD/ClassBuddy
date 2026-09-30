@@ -9,7 +9,7 @@
 ## Checklist
 
 - [ ] Builds without warnings (`xcodebuild … build`)
-- [ ] Tested on an iPad (or simulator) in light and dark mode
+- [ ] Tested on iPad and iPhone (or simulators) in light and dark mode
 - [ ] Sensitive data is hidden in privacy mode (`.sensitive()` / `.sensitiveBlur()`)
 - [ ] No data leaves the device (no new network calls with user data)
 - [ ] Excel export/import updated if the data model changed

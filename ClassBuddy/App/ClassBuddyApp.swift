@@ -3,6 +3,7 @@ import SwiftUI
 
 @main
 struct ClassBuddyApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var app = AppModel()
     @State private var security = AppSecurity()
     @State private var schoolSettings = SchoolSettings()
@@ -19,6 +20,7 @@ struct ClassBuddyApp: App {
                 .environment(timer)
                 .onAppear {
                     timer.onFinish = { [toasts] in toasts.success("Timer abgelaufen") }
+                    HomeScreenAction.register()
                 }
         }
         // Rein lokale Speicherung, kein iCloud-Sync.
