@@ -2,6 +2,9 @@ import SwiftUI
 
 /// Einführung beim ersten Start: drei Seiten, wischen oder über den Button weiter; xmark schließt.
 /// iPhone: Vollbild; iPad: Form-Sheet. Einmalig (`storageKey`); in den App-Einstellungen erneut aufrufbar.
+///
+/// Aufbau je Seite: Illustration mittig im oberen Bereich, Titel und Text unten linksbündig mit
+/// fester Zeilenzahl – so steht der Button auf jeder Seite an derselben Stelle.
 struct OnboardingView: View {
     static let storageKey = "onboarding.completed"
 
@@ -18,24 +21,29 @@ struct OnboardingView: View {
 
     private let pages = [
         Page(
-            image: .appIconPreview,
+            image: .book,
             title: "Willkommen bei ClassBuddy",
-            text: "Klassen, Schüler, Stundenplan und Termine an einem Ort – gemacht für den Schulalltag."
+            text: "Verwalte Klassen mit Fächern und Farben, pflege deine Schülerliste und behalte Stundenplan und Termine im Blick."
         ),
         Page(
-            image: .fingerprintLockCircle,
-            title: "Deine Daten bleiben bei dir",
-            text: "Kein Konto, keine Cloud: Alles wird nur auf diesem Gerät gespeichert und mit Face ID geschützt. "
-                + "Das Auge oben rechts blendet Namen und Notizen aus, wenn jemand mitschaut."
+            image: .shield,
+            title: "Sicher, offline, DSGVO-konform",
+            text: "Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, geschützt mit Face ID. "
+                + "Per Excel-Export sicherst du deine Daten und importierst sie jederzeit wieder."
         ),
         Page(
-            image: .community,
-            title: "Los geht’s",
-            text: "Lege oben links deine erste Klasse an und trage in den Schuleinstellungen deinen Stundenplan ein."
+            image: .heart,
+            title: "Hilf mit, ClassBuddy besser zu machen",
+            text: "Fehlt dir etwas? Schreib mir über „Feedback senden“ in den Einstellungen. "
+                + "Gefällt dir die App, freue ich mich über eine Empfehlung oder einen Kaffee."
         ),
     ]
 
     private var isLastPage: Bool { page == pages.count - 1 }
+
+    /// Feste Zeilenzahl, damit Titel/Text/Button auf allen Seiten gleich stehen.
+    private static let titleLines = 2
+    private static let textLines = 4
 
     var body: some View {
         NavigationStack {
@@ -52,30 +60,37 @@ struct OnboardingView: View {
         VStack(spacing: 0) {
             TabView(selection: $page) {
                 ForEach(pages.indices, id: \.self) { index in
-                    pageView(pages[index], isAppIcon: index == 0)
+                    pageView(pages[index])
                         .tag(index)
                 }
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
+            .tabViewStyle(.page(indexDisplayMode: .never))
 
-            Button {
-                if isLastPage {
-                    onFinish()
-                } else {
-                    withAnimation { page += 1 }
+            HStack {
+                Button {
+                    if isLastPage {
+                        onFinish()
+                    } else {
+                        withAnimation { page += 1 }
+                    }
+                } label: {
+                    Text(isLastPage ? "Los geht’s" : "Weiter")
+                        .font(.headline)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
                 }
-            } label: {
-                Text(isLastPage ? "Los geht’s" : "Weiter")
-                    .font(.headline)
-                    .frame(maxWidth: 420)
-                    .padding(.vertical, 6)
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+
+                Spacer()
+                pageDots
             }
-            .buttonStyle(.glassProminent)
-            .controlSize(.large)
-            .padding(.horizontal, 24)
+            .padding(.top, 24)
             .padding(.bottom, 24)
+            .padding(.horizontal, 28)
+            .frame(maxWidth: 600)
         }
+        .frame(maxWidth: .infinity)
         .background {
             Rectangle()
                 .fill(Color.accentColor.opacity(0.08).gradient)
@@ -84,38 +99,47 @@ struct OnboardingView: View {
         .background(Color(.systemBackground))
     }
 
-    private func pageView(_ page: Page, isAppIcon: Bool) -> some View {
-        VStack(spacing: 24) {
-            Spacer()
-            Group {
-                if isAppIcon {
-                    // App-Icon in Originalfarben.
-                    Image(page.image)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 120, height: 120)
-                        .shadow(color: .black.opacity(0.12), radius: 10, y: 4)
-                } else {
-                    Image(page.image)
-                        .iconSize(device.isPhone ? 96 : 120)
-                        .foregroundStyle(Color.accentColor)
-                }
-            }
-            .accessibilityHidden(true)
+    private func pageView(_ page: Page) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Illustration mittig im oberen Bereich.
+            Image(page.image)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: device.isPhone ? 240 : 300)
+                .clipShape(.rect(cornerRadius: device.isPhone ? 44 : 56, style: .continuous))
+                .shadow(color: .black.opacity(0.18), radius: 16, y: 8)
+                .padding(.vertical, 24)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .accessibilityHidden(true)
 
-            VStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text(page.title)
                     .font(device.isPhone ? .title.bold() : .largeTitle.bold())
+                    .lineLimit(Self.titleLines, reservesSpace: true)
+                    .minimumScaleFactor(0.8)
                 Text(page.text)
                     .font(device.isPhone ? .body : .title3)
                     .foregroundStyle(.secondary)
+                    .lineLimit(Self.textLines, reservesSpace: true)
+                    .minimumScaleFactor(0.85)
             }
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: 520)
-            Spacer()
-            Spacer()
+            .multilineTextAlignment(.leading)
         }
-        .padding(.horizontal, 32)
+        .padding(.horizontal, 28)
+        .frame(maxWidth: 600)
+    }
+
+    private var pageDots: some View {
+        HStack(spacing: 8) {
+            ForEach(pages.indices, id: \.self) { index in
+                Capsule()
+                    .fill(index == page ? Color.accentColor : Color.secondary.opacity(0.3))
+                    .frame(width: index == page ? 20 : 8, height: 8)
+            }
+        }
+        .animation(.smooth, value: page)
+        .accessibilityElement()
+        .accessibilityLabel("Seite \(page + 1) von \(pages.count)")
     }
 }
 
