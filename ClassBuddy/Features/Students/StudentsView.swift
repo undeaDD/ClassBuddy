@@ -37,6 +37,7 @@ struct StudentsView: View {
         }
         .fullScreenCover(item: $editorRoute) { route in
             StudentEditorView(route: route)
+                .softScrollEdges()
         }
         .confirmationDialog(
             "Schüler löschen?",
@@ -67,6 +68,7 @@ struct StudentsView: View {
                 message: "Füge über + oben rechts die Schülerinnen und Schüler der \(schoolClass.title) hinzu.",
                 symbol: AppTab.students.symbol
             )
+            .background(Color(.systemGroupedBackground))
         } else {
             let sections = sections(for: filtered(schoolClass.students))
             List {
@@ -83,7 +85,7 @@ struct StudentsView: View {
             .searchable(text: $searchText, prompt: "Schüler suchen")
             .overlay {
                 if sections.isEmpty {
-                    ContentUnavailableView.search(text: searchText)
+                    SearchEmptyStateView(text: searchText)
                 }
             }
         }

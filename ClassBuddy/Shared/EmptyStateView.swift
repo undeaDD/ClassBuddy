@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Gemeinsamer Leerzustand für alle Seiten (keine Daten, keine Klasse, WIP …).
 struct EmptyStateView<Actions: View>: View {
+    @Environment(\.device) private var device
     let title: String
     let message: String
     let symbol: AppSymbol
@@ -10,18 +11,16 @@ struct EmptyStateView<Actions: View>: View {
     var body: some View {
         ContentUnavailableView {
             VStack(spacing: 12) {
-                // Feste Größe, damit SF Symbols und eigene SVG-Icons gleich groß sind.
+                // iPhone: kleiner, damit Titel und Text nicht den halben Bildschirm füllen.
                 symbol.image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 64, height: 64)
-                    .symbolRenderingMode(.hierarchical)
+                    .iconSize(device.isPhone ? 48 : 64)
                     .foregroundStyle(.tint)
                 Text(title)
-                    .font(.title2.bold())
+                    .font(device.isPhone ? .title3.bold() : .title2.bold())
             }
         } description: {
             Text(message)
+                .font(device.isPhone ? .subheadline : .body)
                 .frame(maxWidth: 420)
         } actions: {
             actions
@@ -35,11 +34,24 @@ extension EmptyStateView where Actions == EmptyView {
     }
 }
 
+/// Leerzustand für eine Suche ohne Treffer (eigenes Icon statt `ContentUnavailableView.search`).
+struct SearchEmptyStateView: View {
+    let text: String
+
+    var body: some View {
+        EmptyStateView(
+            title: "Keine Ergebnisse",
+            message: text.isEmpty ? "Keine Treffer." : "Keine Treffer für „\(text)“.",
+            symbol: .custom(.search)
+        )
+    }
+}
+
 #Preview("Leerzustand") {
     EmptyStateView(
         title: "Keine Schüler",
         message: "Füge Schülerinnen und Schüler hinzu, um loszulegen.",
-        symbol: .system("person.3")
+        symbol: .custom(.community)
     ) {
         Button("Schüler hinzufügen") {}
             .buttonStyle(.borderedProminent)

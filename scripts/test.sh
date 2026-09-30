@@ -12,6 +12,8 @@ if [[ -z "$udid" ]]; then
   exit 1
 fi
 
+# Name zur tatsächlich verwendeten UDID (auch bei SIMULATOR_UDID).
+line="$(xcrun simctl list devices available | grep -m1 -F "$udid" || true)"
 name="$(print -r -- "$line" | sed -E 's/^[[:space:]]+//; s/ \([0-9A-F-]{36}\).*//')"
 print "▸ Tests auf $name …"
 log="$(mktemp -t classbuddy-tests)"

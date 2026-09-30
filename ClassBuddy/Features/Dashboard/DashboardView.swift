@@ -18,6 +18,7 @@ struct DashboardView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
     @Environment(ToastCenter.self) private var toasts
+    @Environment(\.device) private var device
     @Query private var lessons: [Lesson]
     @Query private var holidays: [Holiday]
     @Query private var classes: [SchoolClass]
@@ -71,6 +72,7 @@ struct DashboardView: View {
                     pendingTemplate = template
                 }
                 .presentationSizing(.page)
+                .softScrollEdges()
             })
             .onChange(of: photoSelection) { _, item in
                 guard let item else { return }
@@ -90,6 +92,7 @@ struct DashboardView: View {
         }
         .sheet(item: $linkEditorRoute) { route in
             LinkEditorView(route: route)
+                .softScrollEdges()
         }
         .quickLookPreview($previewURL)
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
@@ -107,7 +110,10 @@ struct DashboardView: View {
 
     private func cardGrid(_ cardIDs: [String], in schoolClass: SchoolClass, showsAddCard: Bool) -> some View {
         LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: 240, maximum: 320), spacing: 16)],
+            // iPhone: eine Spalte über die volle Breite; iPad: so viele 240–320 pt breite Spalten wie passen.
+            columns: device.isPhone
+                ? [GridItem(.flexible(), spacing: 16)]
+                : [GridItem(.adaptive(minimum: 240, maximum: 320), spacing: 16)],
             alignment: .leading,
             spacing: 16
         ) {

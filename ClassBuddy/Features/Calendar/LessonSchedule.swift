@@ -49,3 +49,35 @@ struct NextLesson {
     let slot: LessonSlot
     let lesson: Lesson
 }
+
+/// Gleitendes Tagesfenster für schmale Ansichten (iPhone): nur angezeigte Wochentage
+/// (ohne Wochenende, wenn es in den Schuleinstellungen ausgeblendet ist).
+nonisolated extension Calendar {
+    /// Erster angezeigter Tag ab `date` (inklusive) in Richtung `direction` (+1 / -1).
+    func visibleDay(from date: Date, direction: Int, weekdays: [Int]) -> Date {
+        var day = startOfDay(for: date)
+        guard !weekdays.isEmpty else { return day }
+        while !weekdays.contains(mondayBasedWeekday(of: day)) {
+            day = self.date(byAdding: .day, value: direction, to: day) ?? day
+        }
+        return day
+    }
+
+    /// Um `steps` angezeigte Tage verschieben.
+    func addingVisibleDays(_ steps: Int, to date: Date, weekdays: [Int]) -> Date {
+        let direction = steps < 0 ? -1 : 1
+        var day = visibleDay(from: date, direction: direction, weekdays: weekdays)
+        for _ in 0..<abs(steps) {
+            let next = self.date(byAdding: .day, value: direction, to: day) ?? day
+            day = visibleDay(from: next, direction: direction, weekdays: weekdays)
+        }
+        return day
+    }
+
+    /// `count` angezeigte Tage mit `anchor` in der Mitte (bei 3: gestern, heute, morgen).
+    func visibleDays(around anchor: Date, count: Int, weekdays: [Int]) -> [Date] {
+        let center = visibleDay(from: anchor, direction: 1, weekdays: weekdays)
+        let first = addingVisibleDays(-(count / 2), to: center, weekdays: weekdays)
+        return (0..<count).map { addingVisibleDays($0, to: first, weekdays: weekdays) }
+    }
+}

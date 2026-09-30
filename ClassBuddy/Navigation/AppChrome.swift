@@ -3,7 +3,8 @@ import SwiftUI
 
 extension View {
     /// Gemeinsame Toolbar für jede Tab-Root-View:
-    /// links „Klasse auswählen“, rechts ganz außen immer der Privatsphäre-Modus.
+    /// links „Klasse auswählen“ (nur bei `AppTab.usesClassSelection`), rechts ganz außen
+    /// immer der Privatsphäre-Modus. Unterseiten (Push) zeigen die Toolbar der Wurzel nicht.
     /// Seitenspezifische Buttons (`actions`) stehen links davon, optisch getrennt.
     /// Alles in einem Toolbar-Block, damit die Reihenfolge fest ist.
     func appChrome<Actions: View>(tab: AppTab, @ViewBuilder actions: () -> Actions) -> some View {
@@ -28,10 +29,12 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content.toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                ClassPickerButton(selectedClass: selectedClass, tab: tab)
+            if tab.usesClassSelection {
+                ToolbarItem(placement: .topBarLeading) {
+                    ClassPickerButton(selectedClass: selectedClass, tab: tab)
+                }
+                .sharedBackgroundVisibility(.hidden)
             }
-            .sharedBackgroundVisibility(.hidden)
 
             if hasActions {
                 ToolbarItemGroup(placement: .topBarTrailing) {

@@ -79,7 +79,7 @@ struct AppSettingsView: View {
                         Text(option.title).tag(option)
                     }
                 }
-                .pickerStyle(.segmented)
+                .pickerStyle(.menu)
             }
 
             Section {
@@ -94,9 +94,13 @@ struct AppSettingsView: View {
             }
 
             Section {
-                Button("Exportieren (Excel)", image: .shareIos, action: export)
-                Button("Importieren (Excel)", image: .cloudDownload) {
+                Button(action: export) {
+                    SettingsActionLabel(title: "Exportieren (Excel)", image: .shareIos)
+                }
+                Button {
                     isImporterPresented = true
+                } label: {
+                    SettingsActionLabel(title: "Importieren (Excel)", image: .cloudDownload)
                 }
             } header: {
                 Text("Export & Import")
@@ -113,8 +117,10 @@ struct AppSettingsView: View {
                         ProgressView()
                     }
                 }
-                Button("Alle lokalen Daten löschen", image: .trash, role: .destructive) {
+                Button(role: .destructive) {
                     isDeleteConfirmationPresented = true
+                } label: {
+                    SettingsActionLabel(title: "Alle lokalen Daten löschen", image: .trash, isDestructive: true)
                 }
                 .disabled(security.isPrivacyModeOn)
             } header: {

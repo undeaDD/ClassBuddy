@@ -71,17 +71,15 @@ struct StudentEditorView: View {
                         .sensitive()
                 }
             }
-            .frame(maxWidth: 720)
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemGroupedBackground))
+            .readableFormWidth()
             .navigationTitle(isNew ? "Neuer Schüler" : "Schüler bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    CancelButton()
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(isNew ? "Anlegen" : "Sichern", action: save)
+                    ConfirmButton(title: isNew ? "Anlegen" : "Sichern", action: save)
                         .disabled(!isValid)
                 }
             }

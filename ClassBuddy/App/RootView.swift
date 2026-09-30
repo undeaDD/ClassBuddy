@@ -4,14 +4,19 @@ import SwiftUI
 struct RootView: View {
     @Environment(AppSecurity.self) private var security
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
 
     var body: some View {
         AppTabView()
+            // Weiche Kanten für alle Scroll-Container (ScrollView, List, Form …).
+            // Sheets, Popover und Vollbild-Cover erben das nicht → dort jeweils `.softScrollEdges()`.
+            .softScrollEdges()
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
             // Gesperrt / im Hintergrund: Inhalt stark unscharf, darüber Milchglas.
             .blur(radius: security.isLocked || scenePhase != .active ? 12 : 0)
             .pencilQuickActions()
+            .environment(\.device, Device(horizontalSizeClass: horizontalSizeClass))
             .overlay {
                 if security.isLocked {
                     LockScreenView()
@@ -33,5 +38,13 @@ struct RootView: View {
                 default: break
                 }
             }
+    }
+}
+
+extension View {
+    /// Weiche Scroll-Kanten für alle Scroll-Container darunter. Einmal in `RootView` und
+    /// zusätzlich in jedem Sheet/Popover/Vollbild-Cover (die erben es nicht).
+    func softScrollEdges() -> some View {
+        scrollEdgeEffectStyle(.soft, for: .all)
     }
 }

@@ -129,7 +129,8 @@ extension Backup {
                 let end = Cell.parseDateTime(row["Ende"]).map { max($0, start) } ?? start.addingTimeInterval(3600)
                 context.insert(CalendarEntry(
                     id: UUID(uuidString: row["ID"]) ?? UUID(),
-                    title: row["Titel"], start: start, end: end, notes: row["Notizen"]
+                    title: row["Titel"], start: start, end: end, notes: row["Notizen"],
+                    schoolClass: schoolClass(for: row)
                 ))
                 summary.entries += 1
             }

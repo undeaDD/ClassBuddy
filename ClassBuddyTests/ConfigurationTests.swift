@@ -50,17 +50,14 @@ struct ConfigurationTests {
 
     // MARK: Navigation
 
-    @Test("Tab-Leiste zeigt nur Übersicht und Kalender")
+    @Test("Tab-Leiste zeigt Übersicht, Kalender und Schüler")
     func tabBar() {
-        #expect(AppTab.allCases.filter(\.isInTabBar) == [.dashboard, .calendar])
+        #expect(AppTab.allCases.filter(\.isInTabBar) == [.dashboard, .calendar, .students])
     }
 
-    @Test("Jeder Tab gehört zu genau einer Sidebar-Gruppe")
-    func sections() {
-        let grouped = AppTabSection.allCases.flatMap(\.tabs)
-        #expect(Set(grouped) == Set(AppTab.allCases))
-        #expect(grouped.count == AppTab.allCases.count)
-        #expect(AppTab.rooms.section == .general)
+    @Test("iPad: oben fest nur Übersicht und Kalender")
+    func padTabBar() {
+        #expect(AppTab.allCases.filter(\.isInPadTabBar) == [.dashboard, .calendar])
     }
 
     @Test("Tab- und Gruppen-IDs sind eindeutig und stabil")
@@ -68,6 +65,21 @@ struct ConfigurationTests {
         let ids = AppTab.allCases.map(\.customizationID) + AppTabSection.allCases.map(\.customizationID)
         #expect(Set(ids).count == ids.count)
         #expect(AppTab.dashboard.customizationID == "tab.dashboard")
+    }
+
+    @Test("Jeder Tab gehört zu genau einer Gruppe")
+    func sections() {
+        let grouped = AppTabSection.allCases.flatMap(\.tabs)
+        #expect(Set(grouped) == Set(AppTab.allCases))
+        #expect(grouped.count == AppTab.allCases.count)
+        #expect(AppTabSection.schoolClass.tabs == [.rooms])
+        #expect(AppTabSection.other.tabs == [.feedback, .settings])
+        #expect(AppTabSection.titled == [.schoolClass, .other])
+    }
+
+    @Test("Klassen-Button nur auf Seiten mit Klassenbezug")
+    func classSelection() {
+        #expect(AppTab.allCases.filter { !$0.usesClassSelection } == [.feedback, .settings])
     }
 
     @Test("Nur Feedback ist ein Aktions-Tab")

@@ -8,6 +8,7 @@ struct RoomsView: View {
             message: "Hier verwaltest du bald deine Räume und ihre Sitzordnungen.",
             symbol: AppTab.rooms.symbol
         )
+        .background(Color(.systemGroupedBackground))
         .navigationTitle(AppTab.rooms.title)
         .appChrome(tab: .rooms)
     }

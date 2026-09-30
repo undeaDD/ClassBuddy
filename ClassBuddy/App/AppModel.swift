@@ -3,13 +3,28 @@ import SwiftUI
 /// App-weiter UI-Zustand (Navigation, ausgewählte Klasse, Sheets).
 @Observable
 final class AppModel {
-    var selectedTab: AppTab = .dashboard
+    var selectedTab: AppTab = .dashboard {
+        didSet {
+            if oldValue != selectedTab { resetStack(of: oldValue) }
+        }
+    }
+
+    /// Zähler je Tab, dient als `.id` seines NavigationStacks: Wer einen Tab verlässt,
+    /// findet ihn beim Zurückkehren wieder an der Wurzel (statt tief in einer Unterseite).
+    private(set) var stackGenerations: [AppTab: Int] = [:]
+
+    func stackID(for tab: AppTab) -> Int { stackGenerations[tab, default: 0] }
+
+    func resetStack(of tab: AppTab) {
+        stackGenerations[tab, default: 0] += 1
+    }
     var isClassPickerPresented = false
 
     /// Optionaler Kalender-Fokus: nur Stunden dieser Klasse farbig, alle anderen neutral.
     var calendarFocusClassID: UUID?
-    /// Woche, die der Kalender beim nächsten Anzeigen zeigen soll.
-    var calendarJumpDate: Date?
+    /// Angezeigter Tag im Kalender (iPad: dessen Woche, schmal: Mitte des 3-Tage-Fensters).
+    /// Hier statt in `CalendarView`, damit auch das Blättern in der Tab-Leiste (iPhone) darauf zugreift.
+    var calendarDate = Calendar.school.startOfDay(for: .now)
 
     var selectedClassID: UUID? {
         didSet { UserDefaults.standard.set(selectedClassID?.uuidString, forKey: Self.selectedClassKey) }
@@ -40,7 +55,7 @@ final class AppModel {
     /// Kalender öffnen, gefiltert auf eine Klasse, an einem bestimmten Datum.
     func openCalendar(focusing classID: UUID?, at date: Date? = nil) {
         calendarFocusClassID = classID
-        calendarJumpDate = date
+        if let date { calendarDate = Calendar.school.startOfDay(for: date) }
         open(.calendar)
     }
 }

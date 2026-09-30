@@ -1,17 +1,26 @@
 import SwiftUI
 
-/// Geschlecht als Segmented Control mit Symbol (♀ ♂ ⚧) und „keine Angabe“.
+/// Geschlecht mit Symbol (♀ ♂ ⚧) und „keine Angabe“.
+/// iPad: Segmented Control; iPhone: Pop-up-Menü (vier Segmente passen nicht in die Breite).
 struct GenderPicker: View {
+    @Environment(\.device) private var device
     @Binding var selection: Gender?
 
     var body: some View {
+        if device.isPhone {
+            picker.pickerStyle(.menu)
+        } else {
+            picker.pickerStyle(.segmented)
+        }
+    }
+
+    private var picker: some View {
         Picker("Geschlecht", selection: $selection) {
             ForEach(Gender.allCases) { option in
                 Text("\(option.symbol) \(option.title)").tag(Optional(option))
             }
             Text("keine Angabe").tag(Gender?.none)
         }
-        .pickerStyle(.segmented)
     }
 }
 
@@ -40,9 +49,33 @@ struct BirthdayField: View {
             if birthday != nil {
                 Button("Geburtstag entfernen", image: .xmark) { birthday = nil }
                     .labelStyle(.iconOnly)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.accentColor)
                     .buttonStyle(.borderless)
+                    .padding(.leading, 6)
             }
+        }
+    }
+}
+
+extension View {
+    /// Vollbild-Formulare: auf dem iPad mittig mit begrenzter Breite (eigener Hintergrund
+    /// für die Ränder); auf dem iPhone unverändert mit dem Standard-Hintergrund des Formulars.
+    func readableFormWidth() -> some View {
+        modifier(ReadableFormWidth())
+    }
+}
+
+private struct ReadableFormWidth: ViewModifier {
+    @Environment(\.device) private var device
+
+    func body(content: Content) -> some View {
+        if device.isPad {
+            content
+                .frame(maxWidth: 720)
+                .frame(maxWidth: .infinity)
+                .background(Color(.systemGroupedBackground))
+        } else {
+            content
         }
     }
 }

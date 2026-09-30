@@ -38,7 +38,8 @@ final class Lesson {
     }
 }
 
-/// Freier Termin (Konferenz, Elterngespräch …).
+/// Freier Termin (Konferenz, Elterngespräch, Ausflug …), optional einer Klasse zugeordnet
+/// (dann in deren Farbe wie eine Unterrichtsstunde).
 @Model
 final class CalendarEntry {
     @Attribute(.unique) var id: UUID
@@ -46,13 +47,15 @@ final class CalendarEntry {
     var start: Date
     var end: Date
     var notes: String
+    var schoolClass: SchoolClass?
 
-    init(id: UUID = UUID(), title: String, start: Date, end: Date, notes: String = "") {
+    init(id: UUID = UUID(), title: String, start: Date, end: Date, notes: String = "", schoolClass: SchoolClass? = nil) {
         self.id = id
         self.title = title
         self.start = start
         self.end = end
         self.notes = notes
+        self.schoolClass = schoolClass
     }
 }
 

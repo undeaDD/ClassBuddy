@@ -37,25 +37,38 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         }
     }
 
+    /// Seite hängt von der ausgewählten Klasse ab → Klassen-Button oben links in der Toolbar.
+    /// Neue Seiten ohne Klassenbezug (Einstellungen, Hilfe …) hier ausnehmen.
+    var usesClassSelection: Bool {
+        switch self {
+        case .dashboard, .calendar, .students, .rooms: true
+        case .settings, .feedback: false
+        }
+    }
+
     /// Tabs, die nur eine Aktion auslösen und nie ausgewählt werden.
     var isAction: Bool { self == .feedback }
 
-    /// Gruppe in der Sidebar.
+    /// Gruppe in Sidebar (iPad) bzw. „Mehr“-Seite (iPhone).
     var section: AppTabSection {
         switch self {
-        case .dashboard, .calendar, .rooms: .general
-        case .students: .schoolClass
+        case .dashboard, .calendar, .students: .main
+        case .rooms: .schoolClass
         case .feedback, .settings: .other
         }
     }
 
-    /// Nur diese Tabs erscheinen in der oberen, zentrierten Tab-Leiste.
-    var isInTabBar: Bool { self == .dashboard || self == .calendar }
+    /// Hauptseiten: immer in der unteren Tab-Leiste (iPhone / schmales Fenster).
+    var isInTabBar: Bool { section == .main }
+
+    /// Fest in der oberen, zentrierten Tab-Leiste (iPad); dazu kommt dort nur der gerade aktive Tab.
+    var isInPadTabBar: Bool { self == .dashboard || self == .calendar }
 }
 
-/// Einklappbare Gruppen in der Sidebar.
+/// Gruppen in Sidebar (iPad) und auf der „Mehr“-Seite (iPhone). Feste Reihenfolge, nicht anpassbar.
 enum AppTabSection: String, CaseIterable, Identifiable {
-    case general
+    /// Hauptseiten ohne Gruppentitel, zusätzlich in der Tab-Leiste.
+    case main
     case schoolClass
     case other
 
@@ -66,7 +79,7 @@ enum AppTabSection: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .general: "Allgemein"
+        case .main: ""
         case .schoolClass: "Klasse"
         case .other: "Sonstige"
         }
@@ -74,4 +87,7 @@ enum AppTabSection: String, CaseIterable, Identifiable {
 
     /// Tabs der Gruppe in Standardreihenfolge (= Reihenfolge der `AppTab`-Cases).
     var tabs: [AppTab] { AppTab.allCases.filter { $0.section == self } }
+
+    /// Gruppen mit Titel (alles außer den Hauptseiten).
+    static let titled: [AppTabSection] = [.schoolClass, .other]
 }

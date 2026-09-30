@@ -123,9 +123,10 @@ enum Backup {
 
     private static func entriesSheet(_ entries: [CalendarEntry]) -> XLSXSheet {
         XLSXSheet(name: Sheet.entries, rows: [
-            ["ID", "Titel", "Beginn", "Ende", "Notizen"],
+            ["ID", "Klassen-ID", "Klasse", "Titel", "Beginn", "Ende", "Notizen"],
         ] + entries.map {
-            [$0.id.uuidString, $0.title, Cell.dateTime($0.start), Cell.dateTime($0.end), $0.notes]
+            [$0.id.uuidString, $0.schoolClass?.id.uuidString ?? "", $0.schoolClass?.shortName ?? "",
+             $0.title, Cell.dateTime($0.start), Cell.dateTime($0.end), $0.notes]
         })
     }
 

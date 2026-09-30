@@ -5,6 +5,7 @@ import SwiftUI
 /// Unterrichtsstunden (Klasse + Fach), freie Termine, Ferien/Feiertage.
 /// Optional auf eine Klasse fokussiert (`AppModel.calendarFocusClassID`):
 /// dann sind nur deren Stunden farbig, alle anderen neutral.
+/// Schmale Ansicht (iPhone): gleitendes 3-Tage-Fenster. Blättern immer unten als schwebende Glas-Leiste.
 struct CalendarView: View {
     @Environment(AppModel.self) private var app
     @Environment(SchoolSettings.self) private var settings
@@ -14,13 +15,17 @@ struct CalendarView: View {
     @Query private var classes: [SchoolClass]
 
     @Environment(AppSecurity.self) private var security
+    @Environment(\.device) private var device
 
-    @State private var weekStart = Calendar.school.startOfWeek(for: .now)
     @State private var isNewEntryPresented = false
 
     static let hourHeight: CGFloat = 64
     private static let gutterWidth: CGFloat = 56
     private let calendar = Calendar.school
+
+    private var weekStart: Date { calendar.startOfWeek(for: app.calendarDate) }
+    /// Mitte des 3-Tage-Fensters (iPhone).
+    private var dayAnchor: Date { app.calendarDate }
 
     private var schedule: LessonSchedule {
         LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots)
@@ -30,25 +35,37 @@ struct CalendarView: View {
         classes.first { $0.id == app.calendarFocusClassID }
     }
 
+    static let phoneDayCount = 3
+
     private var days: [(weekday: Int, date: Date)] {
-        settings.visibleWeekdays.compactMap { weekday in
+        if device.isPhone {
+            return calendar.visibleDays(around: dayAnchor, count: Self.phoneDayCount, weekdays: settings.visibleWeekdays)
+                .map { (calendar.mondayBasedWeekday(of: $0), $0) }
+        }
+        return settings.visibleWeekdays.compactMap { weekday in
             calendar.date(byAdding: .day, value: weekday, to: weekStart).map { (weekday, $0) }
         }
     }
 
-    private var weekNumber: Int {
-        calendar.component(.weekOfYear, from: weekStart)
+    /// Bezugstag für KW und Monat: iPad der Donnerstag (ISO), iPhone die Mitte des Fensters.
+    private var referenceDay: Date {
+        if device.isPhone {
+            return calendar.visibleDay(from: dayAnchor, direction: 1, weekdays: settings.visibleWeekdays)
+        }
+        return calendar.date(byAdding: .day, value: 3, to: weekStart) ?? weekStart
     }
 
-    /// Monat der Woche (nach ISO: Monat des Donnerstags).
+    private var weekNumber: Int {
+        calendar.component(.weekOfYear, from: referenceDay)
+    }
+
     private var monthTitle: String {
-        let thursday = calendar.date(byAdding: .day, value: 3, to: weekStart) ?? weekStart
-        return thursday.formatted(.dateTime.month(.abbreviated))
+        referenceDay.formatted(.dateTime.month(.abbreviated))
     }
 
     private var weekTitle: String {
-        let end = calendar.date(byAdding: .day, value: settings.visibleWeekdays.count - 1, to: weekStart) ?? weekStart
-        return "\(weekStart.formatted(.dateTime.day().month(.abbreviated))) – \(end.formatted(.dateTime.day().month(.abbreviated).year()))"
+        guard let first = days.first?.date, let last = days.last?.date else { return "" }
+        return "\(first.formatted(.dateTime.day().month(.abbreviated))) – \(last.formatted(.dateTime.day().month(.abbreviated).year()))"
     }
 
     var body: some View {
@@ -59,7 +76,7 @@ struct CalendarView: View {
                 ScrollView {
                     HStack(alignment: .top, spacing: 0) {
                         timeGutter
-                        ForEach(days, id: \.weekday) { day in
+                        ForEach(days, id: \.date) { day in
                             DayColumn(
                                 date: day.date,
                                 weekday: day.weekday,
@@ -72,6 +89,8 @@ struct CalendarView: View {
                     }
                     .frame(height: Self.hourHeight * 24)
                 }
+                // Platz unter dem letzten Eintrag, damit die Blättern-Leiste nichts dauerhaft verdeckt.
+                .contentMargins(.bottom, 72, for: .scrollContent)
                 .onAppear {
                     proxy.scrollTo(max(settings.values.dayStart / 60 - 1, 0), anchor: .top)
                 }
@@ -93,26 +112,24 @@ struct CalendarView: View {
             }
             Button("Neuer Termin", image: .plus) { isNewEntryPresented = true }
                 .disabled(security.isPrivacyModeOn)
-            Button("Vorherige Woche", image: .navArrowLeft) { moveWeek(by: -1) }
-            Button("Heute") { weekStart = calendar.startOfWeek(for: .now) }
-            Button("Nächste Woche", image: .navArrowRight) { moveWeek(by: 1) }
+        }
+        // ← Heute → schwebt unten über dem Inhalt (oberhalb einer evtl. vorhandenen Tab-Leiste).
+        .overlay(alignment: .bottom) {
+            CalendarPager()
+                .padding(.bottom, 10)
         }
         // Sheet statt Toolbar-Popover: blockiert die Tab-Leiste während der Eingabe.
         .sheet(isPresented: $isNewEntryPresented) {
             let suggestion = suggestedNewEntryStart
-            EntryEditorView(entry: nil, day: suggestion.day, startMinute: suggestion.minute) { start in
-                weekStart = calendar.startOfWeek(for: start)
+            EntryEditorView(entry: nil, day: suggestion.day, startMinute: suggestion.minute, isSheet: true) { start in
+                app.calendarDate = calendar.startOfDay(for: start)
             }
-            .presentationSizing(.fitted)
+            // iPad: kompaktes Sheet in Inhaltsgröße; iPhone: normales Sheet.
+            .fittedSheetOnPad(device)
+            .softScrollEdges()
         }
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
             if isOn { isNewEntryPresented = false }
-        }
-        // Sprung aus der Übersicht („Nächste Stunde“) in die passende Woche.
-        .onChange(of: app.calendarJumpDate, initial: true) { _, date in
-            guard let date else { return }
-            weekStart = calendar.startOfWeek(for: date)
-            app.calendarJumpDate = nil
         }
     }
 
@@ -131,7 +148,7 @@ struct CalendarView: View {
             .foregroundStyle(.primary)
             .frame(width: Self.gutterWidth)
 
-            ForEach(days, id: \.weekday) { day in
+            ForEach(days, id: \.date) { day in
                 let isToday = calendar.isDateInToday(day.date)
                 VStack(spacing: 2) {
                     Text(day.date.formatted(.dateTime.weekday(.abbreviated)))
@@ -171,18 +188,56 @@ struct CalendarView: View {
         .frame(width: Self.gutterWidth, alignment: .leading)
     }
 
-    /// Vorschlag für „+“: in der aktuellen Woche heute zur nächsten vollen Stunde,
-    /// sonst Wochenbeginn zum Schulbeginn.
+    /// Vorschlag für „+“: wenn heute sichtbar ist, heute zur nächsten vollen Stunde,
+    /// sonst erster sichtbarer Tag zum Schulbeginn.
     private var suggestedNewEntryStart: (day: Date, minute: Int) {
         let now = Date.now
-        if calendar.isDate(now, equalTo: weekStart, toGranularity: .weekOfYear) {
+        if days.contains(where: { calendar.isDate($0.date, inSameDayAs: now) }) {
             let hour = calendar.component(.hour, from: now)
             return (now, min(hour + 1, 23) * 60)
         }
-        return (weekStart, settings.values.dayStart)
+        return (days.first?.date ?? weekStart, settings.values.dayStart)
+    }
+}
+
+/// ← Heute →: iPad eine Woche weiter, schmale Ansicht ein ganzes 3-Tage-Fenster. Glas-Kapsel.
+struct CalendarPager: View {
+    @Environment(AppModel.self) private var app
+    @Environment(SchoolSettings.self) private var settings
+    @Environment(\.device) private var device
+
+    private let calendar = Calendar.school
+
+    var body: some View {
+        HStack(spacing: 24) {
+            Button(device.isPhone ? "Vorherige Tage" : "Vorherige Woche", image: .navArrowLeft) { move(by: -1) }
+            Button("Heute") { app.calendarDate = calendar.startOfDay(for: .now) }
+                .fontWeight(.semibold)
+            Button(device.isPhone ? "Nächste Tage" : "Nächste Woche", image: .navArrowRight) { move(by: 1) }
+        }
+        .labelStyle(.iconOnly)
+        .buttonStyle(.plain)
+        .foregroundStyle(Color.accentColor)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+        .glassEffect(.regular.interactive(), in: .capsule)
     }
 
-    private func moveWeek(by weeks: Int) {
-        weekStart = calendar.date(byAdding: .weekOfYear, value: weeks, to: weekStart) ?? weekStart
+    private func move(by pages: Int) {
+        app.calendarDate = device.isPhone
+            ? calendar.addingVisibleDays(pages * CalendarView.phoneDayCount, to: app.calendarDate, weekdays: settings.visibleWeekdays)
+            : calendar.date(byAdding: .weekOfYear, value: pages, to: app.calendarDate) ?? app.calendarDate
+    }
+}
+
+private extension View {
+    /// iPad: Sheet in Inhaltsgröße (`.fitted`); iPhone: normales Sheet, Inhalt oben.
+    @ViewBuilder
+    func fittedSheetOnPad(_ device: Device) -> some View {
+        if device.isPad {
+            presentationSizing(.fitted)
+        } else {
+            self
+        }
     }
 }
