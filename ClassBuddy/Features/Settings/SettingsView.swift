@@ -38,11 +38,14 @@ struct SettingsView: View {
             }
 
             #if DEBUG
-            Section("Entwicklung") {
-                NavigationLink {
-                    DebugMenuView()
-                } label: {
-                    Label("Debug-Menü", image: .bug)
+            // Nicht auf den README-Screenshots (`scripts/screenshots.sh`).
+            if !ScreenshotMode.isActive {
+                Section("Entwicklung") {
+                    NavigationLink {
+                        DebugMenuView()
+                    } label: {
+                        Label("Debug-Menü", image: .bug)
+                    }
                 }
             }
             #endif

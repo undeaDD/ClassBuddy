@@ -23,11 +23,13 @@ protected by Face ID, with a one-tap privacy mode for when students are looking 
 
 | Übersicht | Kalender |
 |---|---|
-| ![Dashboard](docs/screenshots/dashboard.svg) | ![Calendar](docs/screenshots/calendar.svg) |
+| ![Dashboard](docs/screenshots/ipad/dashboard.png) | ![Calendar](docs/screenshots/ipad/calendar.png) |
 
 | Schüler | Einstellungen |
 |---|---|
-| ![Students](docs/screenshots/students.svg) | ![Settings](docs/screenshots/settings.svg) |
+| ![Students](docs/screenshots/ipad/students.png) | ![Settings](docs/screenshots/ipad/settings.png) |
+
+Screenshots with dummy data: `scripts/screenshots.sh` (see the script for devices and dark mode).
 
 ## Features
 

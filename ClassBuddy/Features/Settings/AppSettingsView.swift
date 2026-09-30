@@ -87,7 +87,7 @@ struct AppSettingsView: View {
                 Button {
                     hasCompletedOnboarding = false
                 } label: {
-                    SettingsActionLabel(title: "Einführung erneut anzeigen", image: .page)
+                    SettingsActionLabel(title: "Einführung erneut anzeigen", image: .helpCircle)
                 }
             }
 
