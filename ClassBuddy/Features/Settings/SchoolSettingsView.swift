@@ -59,10 +59,14 @@ struct SchoolSettingsView: View {
 
             Section {
                 ForEach($settings.values.breaks) { $pause in
-                    HStack {
+                    // Etwas mehr Abstand vor der Dauer, damit er dem Abstand Dauer ↔ Stepper entspricht.
+                    HStack(spacing: 16) {
                         DatePicker("Pause", selection: timeBinding($pause.start), displayedComponents: .hourAndMinute)
-                        Stepper("\(pause.duration) min", value: $pause.duration, in: 5...120, step: 5)
-                            .fixedSize()
+                        Stepper(value: $pause.duration, in: 5...120, step: 5) {
+                            Text("\(pause.duration) min")
+                                .monospacedDigit()
+                        }
+                        .fixedSize()
                     }
                 }
                 .onDelete { settings.values.breaks.remove(atOffsets: $0) }
@@ -93,22 +97,18 @@ struct SchoolSettingsView: View {
             }
 
             Section {
+                // 16 Länder: eigene Unterseite statt Menü.
                 Picker("Bundesland", selection: $settings.values.federalState) {
                     Text("Keins").tag(String?.none)
                     ForEach(HolidayImporter.federalStates, id: \.code) { state in
                         Text(state.name).tag(Optional(state.code))
                     }
                 }
+                .pickerStyle(.navigationLink)
                 Button {
                     Task { await importHolidays() }
                 } label: {
-                    HStack {
-                        Label("Ferien & Feiertage importieren", image: .cloudDownload)
-                        if isImporting {
-                            Spacer()
-                            ProgressView()
-                        }
-                    }
+                    SettingsActionLabel(title: "Ferien & Feiertage importieren", image: .cloudDownload, isLoading: isImporting)
                 }
                 .disabled(settings.values.federalState == nil || isImporting)
 

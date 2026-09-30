@@ -4,6 +4,8 @@ import SwiftUI
 /// sichtbaren Bildschirm (der zusätzlich in `RootView` unscharf gezeichnet wird).
 struct LockScreenView: View {
     @Environment(AppSecurity.self) private var security
+    /// Nur für das Debug-Menü: Fehlermeldung ohne echten Fehlversuch anzeigen.
+    var previewError: String?
 
     var body: some View {
         ZStack {
@@ -15,13 +17,9 @@ struct LockScreenView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
-                // Getönter Kreis statt Glas: Glas dämpft die Farbe des Symbols.
                 Image(.fingerprintLockCircle)
                     .iconSize(120)
                     .foregroundStyle(Color.accentColor)
-                    .frame(width: 200, height: 200)
-                    .background(Color.accentColor.opacity(0.14), in: .circle)
-                    .overlay(Circle().strokeBorder(Color.accentColor.opacity(0.35), lineWidth: 1.5))
 
                 VStack(spacing: 6) {
                     Text("ClassBuddy ist gesperrt")
@@ -33,7 +31,7 @@ struct LockScreenView: View {
                 Button {
                     Task { await security.unlock() }
                 } label: {
-                    Label("Mit \(security.biometryName) entsperren", image: .fingerprintLockCircle)
+                    Text("Mit \(security.biometryName) entsperren")
                         .padding(.horizontal, 8)
                 }
                 .buttonStyle(.glassProminent)
@@ -41,7 +39,7 @@ struct LockScreenView: View {
                 .disabled(security.isAuthenticating)
                 .hoverEffect(.lift)
 
-                if let error = security.lastError {
+                if let error = previewError ?? security.lastError {
                     Text(error)
                         .font(.footnote)
                         .foregroundStyle(.red)

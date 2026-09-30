@@ -22,6 +22,10 @@ final class SchoolClass {
     @Relationship(deleteRule: .cascade, inverse: \Lesson.schoolClass)
     var lessons: [Lesson] = []
 
+    /// Termine der Klasse; beim Löschen der Klasse bleiben sie ohne Klasse erhalten.
+    @Relationship(deleteRule: .nullify, inverse: \CalendarEntry.schoolClass)
+    var calendarEntries: [CalendarEntry] = []
+
     @Relationship(deleteRule: .cascade, inverse: \DashboardLink.schoolClass)
     var dashboardLinks: [DashboardLink] = []
 
@@ -76,6 +80,9 @@ final class SchoolClass {
     }
 
     var title: String { "Klasse \(shortName)" }
+
+    /// Kürzel für den runden Klassen-Button in der Toolbar: höchstens 3 Zeichen.
+    var buttonName: String { String(shortName.prefix(3)) }
 
     var detailLine: String {
         [subjects.joined(separator: ", "), schoolYear].filter { !$0.isEmpty }.joined(separator: " · ")

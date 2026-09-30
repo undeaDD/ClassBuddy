@@ -78,10 +78,10 @@ struct LinkEditorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    CancelButton()
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(isNew ? "Hinzufügen" : "Sichern", action: save)
+                    ConfirmButton(title: isNew ? "Hinzufügen" : "Sichern", action: save)
                         .disabled(!isValid)
                 }
             }

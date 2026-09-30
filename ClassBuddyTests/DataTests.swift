@@ -89,7 +89,9 @@ struct DataTests {
             gender: .female, notes: "Notiz", schoolClass: schoolClass
         ))
         source.insert(Lesson(weekday: 2, slotIndex: 3, subject: "Physik", isRecurring: true, date: nil, schoolClass: schoolClass))
-        source.insert(CalendarEntry(title: "Konferenz", start: Self.day(2026, 10, 1, hour: 14), end: Self.day(2026, 10, 1, hour: 16)))
+        source.insert(CalendarEntry(
+            title: "Konferenz", start: Self.day(2026, 10, 1, hour: 14), end: Self.day(2026, 10, 1, hour: 16), schoolClass: schoolClass
+        ))
         source.insert(DashboardLink(title: "Vertretungsplan", kind: .website, location: "https://example.org/plan", schoolClass: schoolClass))
         try source.save()
 
@@ -124,6 +126,7 @@ struct DataTests {
 
         let entry = try #require(try target.fetch(FetchDescriptor<CalendarEntry>()).first)
         #expect(entry.start == Self.day(2026, 10, 1, hour: 14))
+        #expect(entry.schoolClass?.id == schoolClass.id)
 
         #expect(importedClass.dashboardLinks.first?.location == "https://example.org/plan")
         #expect(result.settings.values.school.name == "Testschule")

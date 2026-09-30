@@ -51,3 +51,45 @@ struct LessonGridTests {
         #expect(minutes.clockString == expected)
     }
 }
+
+@Suite("Tagesfenster (iPhone)")
+struct VisibleDaysTests {
+    private let calendar = Calendar.school
+    private let schoolDays = Array(0..<5)
+
+    private func day(_ text: String) -> Date {
+        let parts = text.split(separator: "-").compactMap { Int($0) }
+        return calendar.date(from: DateComponents(year: parts[0], month: parts[1], day: parts[2])) ?? .now
+    }
+
+    @Test("Mitte der Woche: gestern, heute, morgen")
+    func midWeek() {
+        // Mi, 30.09.2026
+        #expect(calendar.visibleDays(around: day("2026-09-30"), count: 3, weekdays: schoolDays)
+            == [day("2026-09-29"), day("2026-09-30"), day("2026-10-01")])
+    }
+
+    @Test("Montag: Freitag davor statt Sonntag")
+    func mondaySkipsWeekend() {
+        #expect(calendar.visibleDays(around: day("2026-10-05"), count: 3, weekdays: schoolDays)
+            == [day("2026-10-02"), day("2026-10-05"), day("2026-10-06")])
+    }
+
+    @Test("Samstag ohne Wochenende: rückt auf Montag")
+    func weekendAnchor() {
+        #expect(calendar.visibleDays(around: day("2026-10-03"), count: 3, weekdays: schoolDays)
+            == [day("2026-10-02"), day("2026-10-05"), day("2026-10-06")])
+    }
+
+    @Test("Mit Wochenende: jeder Tag zählt")
+    func withWeekends() {
+        #expect(calendar.visibleDays(around: day("2026-10-05"), count: 3, weekdays: Array(0..<7))
+            == [day("2026-10-04"), day("2026-10-05"), day("2026-10-06")])
+    }
+
+    @Test("Blättern um 3 angezeigte Tage")
+    func paging() {
+        #expect(calendar.addingVisibleDays(3, to: day("2026-10-01"), weekdays: schoolDays) == day("2026-10-06"))
+        #expect(calendar.addingVisibleDays(-3, to: day("2026-10-06"), weekdays: schoolDays) == day("2026-10-01"))
+    }
+}

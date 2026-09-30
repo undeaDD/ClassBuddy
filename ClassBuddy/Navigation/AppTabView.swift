@@ -1,13 +1,16 @@
 import SwiftUI
 
-/// Hauptnavigation: oben Tab-Bar, links einklappbare Sidebar.
-/// Neue Seiten: Case in `AppTab` ergänzen und hier in `destination(for:)` zuordnen.
+/// Hauptnavigation: oben Tab-Bar, links einklappbare Sidebar (iPad).
+/// Schmale Fenster (iPhone, kleines iPad-Fenster): `PhoneTabView` mit eigenem „Mehr“-Tab.
+/// Aufbau fest (nicht anpassbar): Hauptseiten ohne Titel, dann „Klasse“ und „Sonstige“.
+/// Neue Seiten: Case in `AppTab` ergänzen und in `AppTabDestination` zuordnen.
 struct AppTabView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.openURL) private var openURL
-    /// Versioniert: bei Strukturänderungen (neue Tabs, Gruppen) hochzählen,
-    /// damit alles an der Standardposition landet. v5: Allgemein-Gruppe mit Übersicht/Kalender.
-    static let customizationKey = "navigation.tabCustomization.v5"
+    @Environment(\.device) private var device
+    /// Nur nötig, damit `defaultVisibility` greift; Anpassen selbst ist überall gesperrt.
+    /// Versioniert: bei Strukturänderungen hochzählen. v6: feste Gruppen, kein Anordnen.
+    static let customizationKey = "navigation.tabCustomization.v6"
     @AppStorage(AppTabView.customizationKey) private var customization = TabViewCustomization()
 
     /// Aktions-Tabs (Feedback) lösen ihre Aktion aus, ohne die Auswahl zu ändern.
@@ -25,26 +28,42 @@ struct AppTabView: View {
     }
 
     var body: some View {
+        if device.isPhone {
+            PhoneTabView()
+        } else {
+            padTabView
+        }
+    }
+
+    private var padTabView: some View {
         TabView(selection: selection) {
-            ForEach(AppTabSection.allCases) { section in
+            // Hauptseiten ohne Gruppentitel, auch oben in der Tab-Leiste.
+            ForEach(AppTabSection.main.tabs) { tab in
+                padTabItem(tab)
+            }
+            ForEach(AppTabSection.titled) { section in
                 TabSection(section.title) {
                     ForEach(section.tabs) { tab in
-                        tabItem(tab)
-                            // Oben nur Übersicht + Kalender; alle anderen nur in der Sidebar.
-                            .defaultVisibility(tab.isInTabBar ? .visible : .hidden, for: .tabBar)
-                            // Übersicht bleibt immer an erster Stelle.
-                            .customizationBehavior(tab == .dashboard ? .disabled : .automatic, for: .sidebar, .tabBar)
+                        padTabItem(tab)
                     }
                 }
                 .customizationID(section.customizationID)
                 // Gruppentitel nur in der Sidebar, nie als eigener Eintrag in der Tab-Leiste.
                 .defaultVisibility(.hidden, for: .tabBar)
+                .customizationBehavior(.disabled, for: .sidebar, .tabBar)
             }
         }
         .tabViewStyle(.sidebarAdaptable)
         // Standard: Tab-Bar oben; Sidebar lässt sich über den Button oben links einblenden.
         .defaultAdaptableTabBarPlacement(.tabBar)
         .tabViewCustomization($customization)
+    }
+
+    /// Oben nur Übersicht + Kalender (plus der aktive Tab); nichts ist verschieb- oder ausblendbar.
+    private func padTabItem(_ tab: AppTab) -> some TabContent<AppTab> {
+        tabItem(tab)
+            .defaultVisibility(tab.isInPadTabBar ? .visible : .hidden, for: .tabBar)
+            .customizationBehavior(.disabled, for: .sidebar, .tabBar)
     }
 
     private func tabItem(_ tab: AppTab) -> some TabContent<AppTab> {
@@ -67,12 +86,22 @@ struct AppTabView: View {
     /// Die gemeinsame Toolbar setzt jede Seite selbst per `.appChrome(tab:)`.
     private func root(for tab: AppTab) -> some View {
         NavigationStack {
-            destination(for: tab)
+            AppTabDestination(tab: tab)
         }
+        // Neu aufbauen, nachdem der Tab verlassen wurde → wieder an der Wurzel.
+        .id(app.stackID(for: tab))
     }
 
-    @ViewBuilder
-    private func destination(for tab: AppTab) -> some View {
+    private func perform(_ tab: AppTab) {
+        tab.performAction(openURL)
+    }
+}
+
+/// Inhalt eines Tabs (ohne eigenen NavigationStack).
+struct AppTabDestination: View {
+    let tab: AppTab
+
+    var body: some View {
         switch tab {
         case .dashboard: DashboardView()
         case .calendar: CalendarView()
@@ -82,9 +111,12 @@ struct AppTabView: View {
         case .feedback: EmptyView()
         }
     }
+}
 
-    private func perform(_ tab: AppTab) {
-        switch tab {
+extension AppTab {
+    /// Aktion eines Aktions-Tabs (`isAction`) auslösen.
+    func performAction(_ openURL: OpenURLAction) {
+        switch self {
         case .feedback: openURL(AppInfo.feedbackMailURL)
         default: break
         }

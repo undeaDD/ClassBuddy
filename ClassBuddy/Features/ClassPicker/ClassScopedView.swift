@@ -19,6 +19,7 @@ struct ClassScopedView<Content: View>: View {
                     : "Wähle oben links eine Klasse aus.",
                 symbol: .custom(.userXmark)
             )
+            .background(Color(.systemGroupedBackground))
         }
     }
 }

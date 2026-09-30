@@ -2,10 +2,14 @@ import SwiftData
 import SwiftUI
 
 /// Eine Tagesspalte (0–24 Uhr): Raster, Pausen, Stunden-Slots, Termine.
-/// - Tipp auf einen Slot: Klasse + Fach festlegen.
+/// - Tipp auf einen leeren Slot: Klasse + Fach festlegen.
+/// - Tipp auf eine Stunde: Räume-Tab (später: Raum mit Sitzplan der Klasse).
+/// - Langes Drücken auf Stunde/Termin: Menü mit Bearbeiten und Entfernen.
 /// - Tipp auf freie Fläche: neuer Termin (auf 15 Minuten gerundet).
 /// Im Privatsphäre-Modus nur lesend (keine Popover zum Anlegen/Bearbeiten).
 struct DayColumn: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(AppModel.self) private var app
     @Environment(SchoolSettings.self) private var settings
     @Environment(AppSecurity.self) private var security
 
@@ -72,6 +76,7 @@ struct DayColumn: View {
             attachmentAnchor: .point(UnitPoint(x: 0.5, y: y(newEntryMinute ?? 0) / totalHeight))
         ) {
             EntryEditorView(entry: nil, day: date, startMinute: newEntryMinute ?? settings.values.dayStart)
+                .softScrollEdges()
         }
     }
 
@@ -124,13 +129,25 @@ struct DayColumn: View {
         return SlotCell(slot: slot, lesson: lesson, isDimmed: isDimmed)
             .frame(height: y(slot.end - slot.start))
             .padding(.horizontal, 3)
-            .onTapGesture { if canEdit { selectedSlot = slot } }
+            .onTapGesture {
+                if lesson != nil {
+                    app.open(.rooms)
+                } else if canEdit {
+                    selectedSlot = slot
+                }
+            }
             .hoverEffect(.highlight)
+            .contextMenu {
+                if canEdit, let lesson {
+                    editMenu(edit: { selectedSlot = slot }, remove: { delete(lesson) })
+                }
+            }
             .popover(isPresented: Binding(
                 get: { selectedSlot == slot },
                 set: { if !$0 { selectedSlot = nil } }
             )) {
                 LessonEditorView(date: date, weekday: weekday, slot: slot, lesson: lesson)
+                    .softScrollEdges()
             }
             .offset(y: y(slot.start))
     }
@@ -144,17 +161,24 @@ struct DayColumn: View {
     private func entryView(_ entry: CalendarEntry) -> some View {
         let start = minutes(of: entry.start)
         let duration = max(Int(entry.end.timeIntervalSince(entry.start) / 60), 20)
-        return EntryCard(entry: entry)
+        let isDimmed = focusClassID != nil && entry.schoolClass != nil && entry.schoolClass?.id != focusClassID
+        return EntryCard(entry: entry, isDimmed: isDimmed)
             .frame(height: y(duration))
             .padding(.leading, 12)
             .padding(.trailing, 3)
-            .onTapGesture { if canEdit { editingEntry = entry } }
+            // Antippen bewusst ohne Aktion (später eigene Ansicht); Bearbeiten per langem Drücken.
             .hoverEffect(.lift)
+            .contextMenu {
+                if canEdit {
+                    editMenu(edit: { editingEntry = entry }, remove: { delete(entry) })
+                }
+            }
             .popover(isPresented: Binding(
                 get: { editingEntry?.id == entry.id },
                 set: { if !$0 { editingEntry = nil } }
             )) {
                 EntryEditorView(entry: entry, day: date, startMinute: start)
+                    .softScrollEdges()
             }
             .offset(y: y(start))
     }
@@ -170,6 +194,19 @@ struct DayColumn: View {
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .allowsHitTesting(false)
+    }
+
+    // MARK: Menü
+
+    @ViewBuilder
+    private func editMenu(edit: @escaping () -> Void, remove: @escaping () -> Void) -> some View {
+        Button("Bearbeiten", image: .editPencil, action: edit)
+        Button("Entfernen", image: .trash, role: .destructive, action: remove)
+    }
+
+    private func delete(_ model: some PersistentModel) {
+        modelContext.delete(model)
+        try? modelContext.save()
     }
 
     // MARK: Hilfen
@@ -213,29 +250,45 @@ private struct SlotCell: View {
 
     private func filledCell(lesson: Lesson, schoolClass: SchoolClass, shape: RoundedRectangle) -> some View {
         let color = schoolClass.displayColor
-        return VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 4) {
-                Text("\(slot.number).")
-                    .font(.caption2.weight(.semibold))
-                    .opacity(0.7)
-                if !lesson.subject.isEmpty {
-                    Text(lesson.subject)
-                        .font(.caption2)
-                        .lineLimit(1)
-                        .sensitive()
-                }
-                Spacer(minLength: 0)
-                if !lesson.isRecurring {
-                    Image(systemName: "1.circle").font(.caption2)
-                }
+        let number = Text("\(slot.number).")
+            .font(.caption2.weight(.semibold))
+            .opacity(0.7)
+        let subject = Text(lesson.subject)
+            .font(.caption2)
+            .lineLimit(1)
+            .sensitive()
+        // Einmalig-Symbol vor dem Kürzel (unten), damit oben Platz für das Fach bleibt.
+        let className = HStack(alignment: .lastTextBaseline, spacing: 3) {
+            if !lesson.isRecurring {
+                Image(.number1Circle).iconSize(12)
             }
-            Spacer(minLength: 0)
             Text(schoolClass.shortName)
                 .font(.title3.weight(.bold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
-                .frame(maxWidth: .infinity, alignment: .trailing)
                 .sensitive()
+        }
+        // Zeigt so viel, wie in die Zelle passt (kurze Stunden: alles in einer Zeile).
+        return ViewThatFits(in: .vertical) {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 4) {
+                    number
+                    if !lesson.subject.isEmpty { subject }
+                    Spacer(minLength: 0)
+                }
+                Spacer(minLength: 0)
+                HStack {
+                    Spacer(minLength: 0)
+                    className
+                }
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                number
+                if !lesson.subject.isEmpty { subject }
+                Spacer(minLength: 0)
+                className
+            }
+            className
         }
         .foregroundStyle(color)
         .padding(.vertical, 4)
@@ -253,23 +306,93 @@ private struct SlotCell: View {
     }
 }
 
+/// Termin: ohne Klasse in der Akzentfarbe, mit Klasse wie eine Stunde in der Klassenfarbe
+/// (Farbstreifen links, Kürzel unten rechts). Gedimmt wie Stunden beim Kalender-Fokus.
+/// Zeigt so viel, wie in die Karte passt (kurze Termine: nur Titel bzw. Titel + Kürzel).
 private struct EntryCard: View {
     let entry: CalendarEntry
+    var isDimmed = false
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 8, style: .continuous)
-        VStack(alignment: .leading, spacing: 1) {
-            Text(entry.title.isEmpty ? "Termin" : entry.title)
-                .font(.caption.weight(.semibold))
-                .sensitive()
-            Text(entry.start.formatted(date: .omitted, time: .shortened))
-                .font(.caption2)
+        Group {
+            if let schoolClass = entry.schoolClass {
+                if isDimmed {
+                    shape.fill(.fill.secondary)
+                        .background(Color(.systemBackground), in: shape)
+                } else {
+                    classCard(schoolClass, shape: shape)
+                }
+            } else {
+                ViewThatFits(in: .vertical) {
+                    VStack(alignment: .leading, spacing: 1) {
+                        title
+                        time
+                    }
+                    title
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 4)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .background(Color.accentColor.gradient, in: shape)
+            }
         }
-        .foregroundStyle(.white)
-        .padding(6)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color.accentColor.gradient, in: shape)
         .contentShape(.hoverEffect, shape)
         .contentShape(shape)
+    }
+
+    private var title: some View {
+        Text(entry.title.isEmpty ? "Termin" : entry.title)
+            .font(.caption.weight(.semibold))
+            .lineLimit(1)
+            .sensitive()
+    }
+
+    private var time: some View {
+        Text(entry.start.formatted(date: .omitted, time: .shortened))
+            .font(.caption2)
+    }
+
+    private func classCard(_ schoolClass: SchoolClass, shape: RoundedRectangle) -> some View {
+        let color = schoolClass.displayColor
+        let className = Text(schoolClass.shortName)
+            .font(.title3.weight(.bold))
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+            .sensitive()
+        return ViewThatFits(in: .vertical) {
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 1) {
+                    title
+                    time
+                }
+                Spacer(minLength: 0)
+                HStack {
+                    Spacer(minLength: 0)
+                    className
+                }
+            }
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                title
+                Spacer(minLength: 0)
+                className
+            }
+            title
+        }
+        .foregroundStyle(color)
+        .padding(.vertical, 4)
+        .padding(.leading, 9)
+        .padding(.trailing, 6)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        // Deckender Grund, damit darunterliegende Stunden-Slots nicht durchscheinen.
+        .background {
+            HStack(spacing: 0) {
+                color.frame(width: 4)
+                color.opacity(0.18)
+            }
+            .background(Color(.systemBackground))
+        }
+        .clipShape(shape)
     }
 }

@@ -7,7 +7,7 @@ struct SettingsView: View {
     @Environment(ToastCenter.self) private var toasts
 
     private var versionText: String {
-        "\(AppInfo.version) · \(InstallInfo.osVersion) · \(InstallInfo.deviceModel)"
+        "\(AppInfo.version) · \(UIDevice.current.systemVersion) · \(InstallInfo.shortDeviceModel)"
     }
 
     var body: some View {
@@ -37,6 +37,16 @@ struct SettingsView: View {
                 Text("Kategorien")
             }
 
+            #if DEBUG
+            Section("Entwicklung") {
+                NavigationLink {
+                    DebugMenuView()
+                } label: {
+                    Label("Debug-Menü", image: .bug)
+                }
+            }
+            #endif
+
             Section("Rechtliches") {
                 ForEach(LegalDocument.allCases) { document in
                     NavigationLink {
@@ -50,15 +60,14 @@ struct SettingsView: View {
             Section {
                 ExternalLinkRow(title: "Quellcode auf GitHub", image: .githubCircle, url: AppInfo.sourceCodeURL)
                 ExternalLinkRow(title: "Einen Kaffee spendieren (PayPal)", image: .donate, url: AppInfo.donationURL)
-                // Einfacher mailto-Link; Titel und Icon in der Akzentfarbe.
+                // Einfacher mailto-Link.
                 ExternalLinkRow(
                     title: "Feedback senden",
                     image: .sendMail,
                     url: AppInfo.feedbackMailURL,
-                    titleStyle: Color.accentColor,
                     hint: "Öffnet die Mail-App"
                 )
-                // Antippen kopiert Version, iPadOS-Version und Gerät (z. B. für Fehlerberichte).
+                // Antippen kopiert Version, OS-Version und Gerät (z. B. für Fehlerberichte).
                 Button {
                     UIPasteboard.general.string = versionText
                     toasts.success("Version in die Zwischenablage kopiert")
@@ -67,8 +76,11 @@ struct SettingsView: View {
                         Text(versionText)
                             .monospacedDigit()
                     } label: {
-                        Label("App-Version", image: .version)
-                            .foregroundStyle(.primary)
+                        Label {
+                            Text("App-Version").foregroundStyle(Color.primary)
+                        } icon: {
+                            Image(.version)
+                        }
                     }
                 }
                 .accessibilityHint("Kopiert die Versionsangaben")
@@ -91,7 +103,6 @@ private struct ExternalLinkRow: View {
     let title: String
     let image: ImageResource
     let url: URL
-    var titleStyle: Color = .primary
     var hint = "Öffnet in Safari"
 
     var body: some View {
@@ -100,7 +111,7 @@ private struct ExternalLinkRow: View {
         } label: {
             HStack {
                 Label {
-                    Text(title).foregroundStyle(titleStyle)
+                    Text(title).foregroundStyle(Color.primary)
                 } icon: {
                     Image(image)
                 }
@@ -133,24 +144,31 @@ private struct SettingsHero: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("ClassBuddy")
                         .font(.title2.bold())
-                    Text("Klassen, Schüler und Stundenplan im Blick – lokal auf deinem iPad, mit Face ID geschützt.")
+                    Text("Klassen, Schüler und Stundenplan – lokal und mit Face ID geschützt.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                HStack(spacing: 8) {
-                    if let installDate = InstallInfo.installDate {
-                        HeroChip(text: "Installiert am \(installDate.formatted(date: .long, time: .omitted))")
-                    }
-                    if let installMethod {
-                        HeroChip(text: "über \(installMethod.rawValue)")
-                    }
+                // Chips nie umbrechen: nebeneinander, wenn es passt, sonst untereinander.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) { chips }
+                    VStack(alignment: .leading, spacing: 6) { chips }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, 4)
         .task { installMethod = await InstallInfo.detectMethod() }
+    }
+
+    @ViewBuilder
+    private var chips: some View {
+        if let installDate = InstallInfo.installDate {
+            HeroChip(text: "Installiert am \(installDate.formatted(date: .abbreviated, time: .omitted))")
+        }
+        if let installMethod {
+            HeroChip(text: "über \(installMethod.rawValue)")
+        }
     }
 }
 
@@ -164,6 +182,39 @@ private struct HeroChip: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 5)
             .background(.fill.tertiary, in: .capsule)
+            .lineLimit(1)
+            .fixedSize()
+    }
+}
+
+/// Aktionszeile in Formularen: Text in Textfarbe (rot, wenn destruktiv), Icon in der Akzentfarbe
+/// (bzw. rot) und rechts ein Pfeil, wenn die Aktion einen Dialog oder eine Unterseite öffnet.
+struct SettingsActionLabel: View {
+    @Environment(\.isEnabled) private var isEnabled
+    let title: String
+    let image: ImageResource
+    var isDestructive = false
+    var showsChevron = true
+    /// Statt des Pfeils ein Ladeindikator.
+    var isLoading = false
+
+    var body: some View {
+        HStack {
+            Label {
+                Text(title).foregroundStyle(isEnabled ? (isDestructive ? Color.red : Color.primary) : Color.secondary)
+            } icon: {
+                Image(image).foregroundStyle(isEnabled ? (isDestructive ? Color.red : Color.accentColor) : Color.secondary)
+            }
+            Spacer()
+            if isLoading {
+                ProgressView()
+            } else if showsChevron {
+                Image(.navArrowRight)
+                    .iconSize(16)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .contentShape(.rect)
     }
 }
 

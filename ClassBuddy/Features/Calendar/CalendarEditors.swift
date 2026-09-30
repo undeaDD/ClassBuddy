@@ -1,10 +1,12 @@
 import SwiftData
 import SwiftUI
 
-/// Popover: Klasse + Fach für einen Stunden-Slot, wöchentlich oder einmalig.
+/// Klasse + Fach für einen Stunden-Slot, wöchentlich oder einmalig.
+/// iPad: Popover am Slot; iPhone: Sheet.
 struct LessonEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.device) private var device
     @Query(sort: [SortDescriptor(\SchoolClass.schoolYear, order: .reverse), SortDescriptor(\SchoolClass.shortName)])
     private var classes: [SchoolClass]
 
@@ -73,8 +75,13 @@ struct LessonEditorView: View {
             .navigationTitle("\(slot.number). Stunde")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                if device.isPhone {
+                    ToolbarItem(placement: .cancellationAction) {
+                        CancelButton()
+                    }
+                }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Sichern", action: save)
+                    ConfirmButton(title: "Sichern", action: save)
                         .disabled(selectedClass == nil)
                 }
             }
@@ -85,8 +92,7 @@ struct LessonEditorView: View {
                 }
             }
         }
-        .frame(width: 380, height: lesson == nil ? 330 : 400)
-        .presentationCompactAdaptation(.popover)
+        .editorPresentation(device, width: 380, height: lesson == nil ? 330 : 400)
     }
 
     private func save() {
@@ -113,12 +119,17 @@ struct LessonEditorView: View {
     }
 }
 
-/// Popover: freier Termin anlegen / bearbeiten.
+/// Freier Termin anlegen / bearbeiten. iPad: Popover (bzw. Sheet über „+“); iPhone: Sheet.
 struct EntryEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.device) private var device
+    @Query(sort: [SortDescriptor(\SchoolClass.schoolYear, order: .reverse), SortDescriptor(\SchoolClass.shortName)])
+    private var classes: [SchoolClass]
 
     let entry: CalendarEntry?
+    /// Als Sheet gezeigt (nicht als Popover) → Abbrechen-Button nötig.
+    var isSheet = false
     /// Nach dem Sichern mit dem Beginn aufgerufen (z. B. um zur Woche zu springen).
     var onSave: (Date) -> Void = { _ in }
 
@@ -126,15 +137,18 @@ struct EntryEditorView: View {
     @State private var start: Date
     @State private var duration: Int
     @State private var notes: String
+    @State private var classID: UUID?
 
-    init(entry: CalendarEntry?, day: Date, startMinute: Int, onSave: @escaping (Date) -> Void = { _ in }) {
+    init(entry: CalendarEntry?, day: Date, startMinute: Int, isSheet: Bool = false, onSave: @escaping (Date) -> Void = { _ in }) {
         self.entry = entry
+        self.isSheet = isSheet
         self.onSave = onSave
         let defaultStart = Calendar.school.date(byAdding: .minute, value: startMinute, to: Calendar.school.startOfDay(for: day)) ?? day
         _title = State(initialValue: entry?.title ?? "")
         _start = State(initialValue: entry?.start ?? defaultStart)
         _duration = State(initialValue: entry.map { max(Int($0.end.timeIntervalSince($0.start) / 60), 15) } ?? 60)
         _notes = State(initialValue: entry?.notes ?? "")
+        _classID = State(initialValue: entry?.schoolClass?.id)
     }
 
     var body: some View {
@@ -145,6 +159,13 @@ struct EntryEditorView: View {
                         .sensitive()
                     DatePicker("Beginn", selection: $start)
                     Stepper("Dauer: \(durationText)", value: $duration, in: 15...(12 * 60), step: 15)
+                    // Optional: Termin einer Klasse zuordnen → in deren Farbe (z. B. Ausflug, Elternabend).
+                    Picker("Klasse", selection: $classID) {
+                        Text("Keine").tag(UUID?.none)
+                        ForEach(classes) { schoolClass in
+                            Text(schoolClass.title).tag(Optional(schoolClass.id))
+                        }
+                    }
                 }
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
@@ -160,13 +181,17 @@ struct EntryEditorView: View {
             .navigationTitle(entry == nil ? "Neuer Termin" : "Termin")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                if isSheet || device.isPhone {
+                    ToolbarItem(placement: .cancellationAction) {
+                        CancelButton()
+                    }
+                }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(entry == nil ? "Anlegen" : "Sichern", action: save)
+                    ConfirmButton(title: entry == nil ? "Anlegen" : "Sichern", action: save)
                 }
             }
         }
-        .frame(width: 380, height: entry == nil ? 380 : 450)
-        .presentationCompactAdaptation(.popover)
+        .editorPresentation(device, width: 380, height: entry == nil ? 424 : 494)
     }
 
     private var durationText: String {
@@ -185,6 +210,7 @@ struct EntryEditorView: View {
         target.start = start
         target.end = start.addingTimeInterval(TimeInterval(duration * 60))
         target.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+        target.schoolClass = classes.first { $0.id == classID }
         try? modelContext.save()
         onSave(start)
         dismiss()
@@ -194,5 +220,66 @@ struct EntryEditorView: View {
         if let entry { modelContext.delete(entry) }
         try? modelContext.save()
         dismiss()
+    }
+}
+
+/// Abbrechen als Icon-Button (xmark) in Editor-Toolbars.
+struct CancelButton: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        Button("Abbrechen", image: .xmark, role: .cancel) { dismiss() }
+    }
+}
+
+/// Bestätigen als Icon-Button (Haken); `title` ist das Accessibility-Label.
+struct ConfirmButton: View {
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(title, image: .check, role: .confirm, action: action)
+    }
+}
+
+extension View {
+    /// Runde Glas-Blase für Icon-Buttons in Toolbars, in denen das System keine zeichnet
+    /// (Inhalte, die aus dem Klassen-Popover heraus präsentiert werden).
+    /// `prominent`: in der Akzentfarbe getöntes Glas mit weißem Icon (statt `.glassProminent`).
+    @ViewBuilder
+    func glassToolbarButton(prominent: Bool = false) -> some View {
+        if prominent {
+            modifier(ProminentGlassButton())
+        } else {
+            labelStyle(.iconOnly).buttonStyle(.glass).buttonBorderShape(.circle)
+        }
+    }
+}
+
+private struct ProminentGlassButton: ViewModifier {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func body(content: Content) -> some View {
+        content
+            .labelStyle(.iconOnly)
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
+            .padding(8)
+            .glassEffect(.regular.tint(.accentColor).interactive(), in: .circle)
+            .opacity(isEnabled ? 1 : 0.4)
+    }
+}
+
+private extension View {
+    /// iPad: feste Popover-Größe, auch in kompakter Umgebung als Popover.
+    /// iPhone: normales Sheet ohne feste Größe (Inhalt beginnt oben).
+    @ViewBuilder
+    func editorPresentation(_ device: Device, width: CGFloat, height: CGFloat) -> some View {
+        if device.isPad {
+            frame(width: width, height: height)
+                .presentationCompactAdaptation(.popover)
+        } else {
+            presentationCompactAdaptation(.sheet)
+        }
     }
 }

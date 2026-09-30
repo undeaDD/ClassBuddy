@@ -53,6 +53,15 @@ enum InstallInfo {
         return attributes?[.creationDate] as? Date
     }
 
+    /// Kurzform für die Versionszeile: „p“ für iPhone, „t“ für Tablet (iPad), z. B. „p15,2“ / „t13,4“.
+    static var shortDeviceModel: String { shortModel(deviceModel) }
+
+    nonisolated static func shortModel(_ identifier: String) -> String {
+        if identifier.hasPrefix("iPhone") { return "p" + identifier.dropFirst("iPhone".count) }
+        if identifier.hasPrefix("iPad") { return "t" + identifier.dropFirst("iPad".count) }
+        return identifier
+    }
+
     /// z. B. „iPadOS 26.1“
     static var osVersion: String {
         "\(UIDevice.current.systemName) \(UIDevice.current.systemVersion)"

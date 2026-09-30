@@ -1,9 +1,11 @@
 import SwiftData
 import SwiftUI
 
-/// Popover-Liste aller Klassen: wechseln, anlegen, bearbeiten, löschen.
+/// Liste aller Klassen: wechseln, anlegen, bearbeiten, löschen.
+/// iPad: Popover; iPhone: Sheet. Abwählen durch erneutes Antippen der aktiven Klasse.
 struct ClassPickerView: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.device) private var device
     @Environment(AppSecurity.self) private var security
     @Environment(\.modelContext) private var modelContext
     @Environment(ToastCenter.self) private var toasts
@@ -30,9 +32,22 @@ struct ClassPickerView: View {
         NavigationStack {
             Group {
                 if classes.isEmpty {
-                    Text("Noch keine Klassen")
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    if device.isPhone {
+                        // Sheet über den ganzen Bildschirm: vollwertiger Leerzustand.
+                        EmptyStateView(
+                            title: "Noch keine Klassen",
+                            message: "Lege deine erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen.",
+                            symbol: .custom(.userXmark)
+                        ) {
+                            Button("Klasse anlegen") { editorRoute = .new }
+                                .buttonStyle(.glassProminent)
+                                .disabled(!canEdit)
+                        }
+                    } else {
+                        Text("Noch keine Klassen")
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
                 } else {
                     List {
                         ForEach(sections, id: \.year) { section in
@@ -47,7 +62,7 @@ struct ClassPickerView: View {
                     .searchable(if: canEdit, text: $searchText, prompt: "Klasse oder Fach")
                     .overlay {
                         if sections.isEmpty {
-                            ContentUnavailableView.search(text: searchText)
+                            SearchEmptyStateView(text: searchText)
                         }
                     }
                 }
@@ -55,17 +70,15 @@ struct ClassPickerView: View {
             .navigationTitle("Klassen")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                // Keine Klasse ausgewählt → Leerzustände der Seiten.
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abwählen") {
-                        app.selectedClassID = nil
-                        app.isClassPickerPresented = false
+                if device.isPhone {
+                    ToolbarItem(placement: .cancellationAction) {
+                        CancelButton()
+                            .glassToolbarButton()
                     }
-                    .disabled(app.selectedClassID == nil)
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Neue Klasse", image: .plus) { editorRoute = .new }
-                        .foregroundStyle(Color.accentColor)
+                        .glassToolbarButton(prominent: true)
                         .disabled(!canEdit)
                 }
             }
@@ -98,6 +111,7 @@ struct ClassPickerView: View {
                 }
             }
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
+            .softScrollEdges()
         })
         // Privatsphäre-Modus an → Editor/Dialog sofort schließen.
         .onChange(of: security.isPrivacyModeOn) { _, isOn in

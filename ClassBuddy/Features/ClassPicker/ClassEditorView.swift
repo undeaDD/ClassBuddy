@@ -34,11 +34,6 @@ struct ClassEditorView: View {
         !shortName.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
-    /// Vorschläge, die noch nicht ausgewählt sind.
-    private var remainingSuggestions: [String] {
-        SchoolClass.suggestedSubjects.filter { !subjects.contains($0) }
-    }
-
     var body: some View {
         NavigationStack {
             Form {
@@ -64,14 +59,11 @@ struct ClassEditorView: View {
                     .onDelete { subjects.remove(atOffsets: $0) }
                     .onMove { subjects.move(fromOffsets: $0, toOffset: $1) }
 
-                    Menu {
-                        ForEach(remainingSuggestions, id: \.self) { subject in
-                            Button(subject) { subjects.append(subject) }
-                        }
+                    NavigationLink {
+                        SubjectPickerView(subjects: $subjects)
                     } label: {
                         Label("Fach hinzufügen", image: .plus)
                     }
-                    .disabled(remainingSuggestions.isEmpty)
 
                     HStack {
                         TextField("Eigenes Fach", text: $customSubject)
@@ -87,7 +79,8 @@ struct ClassEditorView: View {
                 }
 
                 Section("Farbe") {
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: ClassColor.allCases.count + 1), spacing: 12) {
+                    // Bricht auf schmalen Bildschirmen in mehrere Zeilen um.
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 44), spacing: 12)], spacing: 12) {
                         ForEach(ClassColor.allCases) { option in
                             Circle()
                                 .fill(option.color.gradient)
@@ -105,17 +98,17 @@ struct ClassEditorView: View {
                     .padding(.vertical, 4)
                 }
             }
-            .frame(maxWidth: 720)
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemGroupedBackground))
+            .readableFormWidth()
             .navigationTitle(isNew ? "Neue Klasse" : "Klasse bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen", role: .cancel) { dismiss() }
+                    CancelButton()
+                        .glassToolbarButton()
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(isNew ? "Anlegen" : "Sichern", action: save)
+                    ConfirmButton(title: isNew ? "Anlegen" : "Sichern", action: save)
+                        .glassToolbarButton(prominent: true)
                         .disabled(!isValid)
                 }
             }
@@ -173,5 +166,38 @@ struct ClassEditorView: View {
         try? modelContext.save()
         onSave(target)
         dismiss()
+    }
+}
+
+/// Unterseite „Fach hinzufügen“: Vorschläge an- und abhaken (Reihenfolge = Reihenfolge des Antippens).
+private struct SubjectPickerView: View {
+    @Binding var subjects: [String]
+
+    var body: some View {
+        List(SchoolClass.suggestedSubjects, id: \.self) { subject in
+            let isSelected = subjects.contains(subject)
+            Button {
+                if isSelected {
+                    subjects.removeAll { $0 == subject }
+                } else {
+                    subjects.append(subject)
+                }
+            } label: {
+                HStack {
+                    Text(subject)
+                        .foregroundStyle(Color.primary)
+                    Spacer()
+                    if isSelected {
+                        Image(.check)
+                            .iconSize(20)
+                            .foregroundStyle(.tint)
+                    }
+                }
+                .contentShape(.rect)
+            }
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
+        }
+        .navigationTitle("Fächer")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
