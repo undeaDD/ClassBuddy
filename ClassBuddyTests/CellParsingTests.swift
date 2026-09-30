@@ -68,7 +68,7 @@ struct CellParsingTests {
     }
 
     @Test("Kachel-Typ übersteht Schreiben und Lesen", arguments: [
-        DashboardLink.Kind.file, .image, .website, .shortcut,
+        DashboardLink.Kind.file, .image, .website, .shortcut, .script,
     ])
     func linkKindRoundTrip(kind: DashboardLink.Kind) {
         #expect(Cell.parseLinkKind(Cell.linkKind(kind)) == kind)

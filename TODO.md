@@ -207,3 +207,56 @@ Umfassende Optimierung für das iPhone, Behebung von Layout- und Navigationsfehl
 - [x] Keine Regressionen auf dem iPad (Layouts, Popover und Navigation prüfen)
 - [x] SwiftLint 0/0, Semgrep 0, Unit-Tests grün
 - [x] Getestet auf iPhone (kleines & großes Display) sowie iPad
+
+---
+
+# TODO: Kalender-Blättern folgt der minimierten Tab-Leiste
+
+Das Blättern (‹ Heute ›) rutscht beim Minimieren der Tab-Leiste in deren Zeile
+(`TabBarMinimizationReader` in `CalendarView.swift`). Auf dem iPhone hochkant getestet und ok.
+
+- [ ] **iPhone quer: Minimieren wird nicht erkannt**
+  - Vermutung: Erkennung sucht die Tab-Kapsel als Subview der `UITabBar`, die breiter als die halbe Leiste ist.
+    Quer ist die Leiste viel breiter, die Kapsel vermutlich schmaler als die Hälfte → nie „minimiert“.
+  - Mit Probe (Subviews + Frames der `UITabBar` quer loggen) prüfen; ggf. breiteste Subview statt „> halbe Breite“.
+  - Versatz (31 pt = 7 pt Abstand + 48 pt / 2) quer prüfen – Geometrie der minimierten Leiste kann abweichen.
+- [ ] **iPad testen**: schmales Fenster (untere Tab-Leiste, `Device.isPhone`) und großes Fenster (Sidebar, Blättern bleibt fest)
+- [ ] Verhalten mit ausgeschaltetem „Leisten beim Scrollen minimieren“ prüfen (Blättern bleibt unten stehen)
+
+---
+
+# TODO: Sprache (Englisch)
+
+- [ ] **Lokalisierung Englisch** (String Catalog `Localizable.xcstrings`, Deutsch bleibt Ausgangssprache)
+  - Alle UI-Texte, Toasts, Kachel-Galerie, Einführung, Datums-/Zahlenformate prüfen
+  - Beispiel-Skript der Skript-Kachel und Fehlermeldungen von `CardScript` mit übersetzen
+- [ ] **Sprachauswahl in den App-Einstellungen** (System / Deutsch / Englisch), wirkt ohne Neustart soweit möglich
+- [ ] Im Excel-Export/-Import mitnehmen (Blatt „App“, wie Erscheinungsbild)
+
+---
+
+# TODO: Akzentfarbe
+
+- [ ] **Akzentfarbe wählbar in den App-Einstellungen** (Vorgaben + eigene Farbe, Standard = heutiges Blau)
+  - Überall statt `Color.accentColor` bzw. per `.tint` an der Wurzel; Toolbar, Toggles, Kacheln, Icons prüfen
+- [ ] Im Excel-Export/-Import mitnehmen (Blatt „App“)
+
+---
+
+# TODO: Alternative Icons (sehr optional)
+
+- [ ] **Icon-Themes**: andere Icon-Sätze statt der eingebauten Iconoir-SVGs
+  - Idee: Theme per URL laden (SVG-Paket) oder als Icon-Font; lokal cachen, Fallback auf eingebaute Icons
+  - `AppSymbol` ist die zentrale Stelle – dort das Theme auflösen
+  - Offen: Format, Sicherheit (nur https, Größe begrenzen), Umgang mit fehlenden Icons
+- [ ] Optional: alternatives App-Icon (`UIApplication.setAlternateIconName`)
+
+---
+
+# TODO: App Intents (Apple Intelligence)
+
+- [ ] **App Intents** für Siri, Kurzbefehle und Apple Intelligence
+  - Z. B. Klasse wählen, Übersicht/Kalender/Schüler öffnen, nächste Stunde abfragen, Zufallsauswahl, Timer starten
+  - `AppEntity` für Klassen (und ggf. Schüler – Privatsphäre beachten: App-Sperre / Privatsphäre-Modus respektieren)
+  - `AppShortcutsProvider` mit deutschen Phrasen
+

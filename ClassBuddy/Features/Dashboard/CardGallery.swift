@@ -84,22 +84,27 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
 /// Eintrag der Kachel-Galerie.
 enum CardTemplate: Identifiable, Hashable {
     case builtIn(DashboardBuiltInCard)
+    /// Galerie-Eintrag „Bild“: fragt per Menü nach der Quelle → `.photo` oder `.imageFile`.
+    case image
     case photo
     case imageFile
     case document
     case website
     case shortcut
+    case script
     /// Keine Kachel: öffnet eine Mail mit einem Kachel-Wunsch.
     case request
 
     var id: String {
         switch self {
         case .builtIn(let card): card.rawValue
+        case .image: "image"
         case .photo: "photo"
         case .imageFile: "imageFile"
         case .document: "document"
         case .website: "website"
         case .shortcut: "shortcut"
+        case .script: "script"
         case .request: "request"
         }
     }
@@ -115,11 +120,13 @@ enum CardTemplate: Identifiable, Hashable {
     var title: String {
         switch self {
         case .builtIn(let card): card.title
+        case .image: "Bild"
         case .photo: "Bild aus „Fotos“"
         case .imageFile: "Bild aus „Dateien“"
         case .document: "Dokument"
         case .website: "Website"
         case .shortcut: "Kurzbefehl"
+        case .script: "Programmierbar"
         case .request: "Kachel wünschen"
         }
     }
@@ -127,16 +134,18 @@ enum CardTemplate: Identifiable, Hashable {
     var summary: String {
         switch self {
         case .builtIn(let card): card.summary
+        case .image: "Ein Foto aus deiner Mediathek oder ein Bild aus der Dateien-App, z. B. ein Tafelbild."
         case .photo: "Ein Foto aus deiner Mediathek, z. B. ein Tafelbild."
         case .imageFile: "Ein Bild aus der Dateien-App."
         case .document: "PDF, Arbeitsblatt oder jede andere Datei – öffnet sich in der Vorschau."
         case .website: "Link mit Website-Icon, z. B. Schulwebsite oder Vertretungsplan."
         case .shortcut: "Startet einen Kurzbefehl der Kurzbefehle-App, z. B. „Unterricht beginnt“."
+        case .script: "Titel, Wert und Antippen selbst in JavaScript schreiben – startet als Zähler."
         case .request: "Dir fehlt eine Kachel? Schreib kurz, was sie zeigen soll."
         }
     }
 
-    static let reusable: [CardTemplate] = [.photo, .imageFile, .document, .website, .shortcut]
+    static let reusable: [CardTemplate] = [.image, .document, .website, .shortcut, .script]
 }
 
 /// Vollbild-Galerie „Kachel hinzufügen“ mit Beispielvorschauen.
@@ -196,34 +205,57 @@ struct CardGalleryView: View {
         }
     }
 
-    /// Ganze Kachel antippen = hinzufügen.
+    /// Ganze Kachel antippen = hinzufügen; „Bild“ fragt vorher per Menü nach der Quelle.
+    @ViewBuilder
     private func tile(_ template: CardTemplate) -> some View {
-        Button {
-            onSelect(template)
-            dismiss()
-        } label: {
+        if template == .image {
+            Menu {
+                Button("Aus „Fotos“", image: .image) { select(.photo) }
+                Button("Aus „Dateien“", image: .page) { select(.imageFile) }
+            } label: {
+                tileLabel(template)
+            }
+            .menuStyle(.button)
+            .buttonStyle(.plain)
+            .hoverEffect(.lift)
+            .accessibilityLabel("\(template.title) hinzufügen")
+            .accessibilityHint(template.summary)
+        } else {
+            Button {
+                select(template)
+            } label: {
+                tileLabel(template)
+            }
+            .buttonStyle(.plain)
+            .hoverEffect(.lift)
+            .accessibilityLabel("\(template.title) hinzufügen")
+            .accessibilityHint(template.summary)
+        }
+    }
+
+    private func select(_ template: CardTemplate) {
+        onSelect(template)
+        dismiss()
+    }
+
+    private func tileLabel(_ template: CardTemplate) -> some View {
             VStack(alignment: .leading, spacing: 10) {
                 TemplatePreview(template: template)
                     .allowsHitTesting(false)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(template.title)
-                        .font(.headline)
+                        .font(.footnote.weight(.semibold))
                         .lineLimit(1)
                     // Immer zwei Zeilen, damit alle Kacheln gleich hoch sind.
                     Text(template.summary)
-                        .font(.subheadline)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(2, reservesSpace: true)
                 }
                 .padding(.horizontal, 10)
             }
             .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .hoverEffect(.lift)
-        .accessibilityLabel("\(template.title) hinzufügen")
-        .accessibilityHint(template.summary)
     }
 }
 
@@ -237,7 +269,7 @@ private struct TemplatePreview: View {
             WeeklyHoursCard(result: WeeklyWorkload.Result(doneMinutes: 14 * 60, totalMinutes: 24 * 60)) {}
         case .builtIn(let card):
             StatCard(title: card.title, value: card.previewValue.value, detail: card.previewValue.detail, symbol: card.symbol) {}
-        case .photo, .imageFile:
+        case .image, .photo, .imageFile:
             ImagePlaceholderCard(title: "Gruppenfoto")
         case .document:
             ContentCard(title: "Dokument", symbol: .custom(.page), heading: "Arbeitsblatt Brüche", detail: "Arbeitsblatt-Brueche.pdf")
@@ -248,6 +280,8 @@ private struct TemplatePreview: View {
                 title: "Kurzbefehl", symbol: LinkCard.kindSymbol(.shortcut),
                 heading: "Unterricht beginnt", detail: "Fokus an, Timer 45 min"
             )
+        case .script:
+            StatCard(title: "Zähler", value: "7", detail: "Klasse 7b · Antippen zählt hoch", symbol: .custom(.code)) {}
         case .request:
             ContentCard(title: "Wunsch", symbol: .custom(.sendMail), heading: "Neue Kachel", detail: "Per Mail vorschlagen")
         }

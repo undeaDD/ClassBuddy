@@ -4,7 +4,8 @@ import SwiftUI
 extension View {
     /// Gemeinsame Toolbar für jede Tab-Root-View:
     /// links „Klasse auswählen“ (nur bei `AppTab.usesClassSelection`), rechts ganz außen
-    /// immer der Privatsphäre-Modus. Unterseiten (Push) zeigen die Toolbar der Wurzel nicht.
+    /// der Privatsphäre-Modus (nur bei `AppTab.showsPrivacyMode`).
+    /// Unterseiten (Push) zeigen die Toolbar der Wurzel nicht.
     /// Seitenspezifische Buttons (`actions`) stehen links davon, optisch getrennt.
     /// Alles in einem Toolbar-Block, damit die Reihenfolge fest ist.
     func appChrome<Actions: View>(tab: AppTab, @ViewBuilder actions: () -> Actions) -> some View {
@@ -13,6 +14,12 @@ extension View {
 
     func appChrome(tab: AppTab) -> some View {
         modifier(AppChromeModifier(tab: tab, hasActions: false, actions: EmptyView()))
+    }
+
+    /// Navigationsleiste beim Runterscrollen verkleinern, beim Hochscrollen wieder zeigen (ab iOS 27).
+    /// Abschaltbar in den App-Einstellungen („Leisten beim Scrollen minimieren“).
+    func navigationBarMinimizesOnScroll() -> some View {
+        modifier(NavigationBarMinimization())
     }
 }
 
@@ -43,12 +50,29 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
                         .foregroundStyle(Color.accentColor)
                         .tint(Color.accentColor)
                 }
-                ToolbarSpacer(.fixed, placement: .topBarTrailing)
             }
 
-            ToolbarItem(placement: .topBarTrailing) {
-                PrivacyModeButton()
+            if tab.showsPrivacyMode {
+                if hasActions {
+                    ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    PrivacyModeButton()
+                }
             }
+        }
+        .navigationBarMinimizesOnScroll()
+    }
+}
+
+private struct NavigationBarMinimization: ViewModifier {
+    @AppStorage(AppPreference.minimizesBarsOnScroll) private var isEnabled = true
+
+    func body(content: Content) -> some View {
+        if #available(iOS 27, *) {
+            content.toolbarMinimizationBehavior(isEnabled ? .onScrollDown : .never, for: .navigationBar)
+        } else {
+            content
         }
     }
 }
@@ -59,6 +83,7 @@ struct PrivacyModeButton: View {
     var body: some View {
         let isOn = security.isPrivacyModeOn
         Button {
+            Haptics.tap()
             Task { await security.togglePrivacyMode() }
         } label: {
             Label(

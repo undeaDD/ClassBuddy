@@ -46,6 +46,9 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         }
     }
 
+    /// Privatsphäre-Modus-Button oben rechts – nur auf Seiten mit Klassen- bzw. Schülerdaten.
+    var showsPrivacyMode: Bool { usesClassSelection }
+
     /// Tabs, die nur eine Aktion auslösen und nie ausgewählt werden.
     var isAction: Bool { self == .feedback }
 

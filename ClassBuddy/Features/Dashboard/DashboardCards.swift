@@ -21,7 +21,7 @@ struct StatCard: View {
     var body: some View {
         // Ohne Aktion keine Schaltfläche: nicht ausgegraut, kein Hover, kein Pfeil.
         if let action {
-            Button(action: action) { content }
+            Button(action: Haptics.tapping(action)) { content }
                 .buttonStyle(.plain)
                 .hoverEffect(.lift)
         } else {
@@ -62,7 +62,7 @@ struct LinkCard: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button(action: Haptics.tapping(action)) {
             VStack(alignment: .leading, spacing: 12) {
                 CardHeader(
                     title: Self.kindTitle(link.kind),
@@ -98,6 +98,7 @@ extension LinkCard {
         switch kind {
         case .website: "Website"
         case .shortcut: "Kurzbefehl"
+        case .script: "Skript"
         case .file, .image: "Dokument"
         }
     }
@@ -106,6 +107,7 @@ extension LinkCard {
         switch kind {
         case .website: .custom(.www)
         case .shortcut: .custom(.shortcuts)
+        case .script: .custom(.code)
         case .file, .image: .custom(.page)
         }
     }
@@ -119,7 +121,7 @@ struct ImageCard: View {
     @State private var thumbnail: UIImage?
 
     var body: some View {
-        Button(action: action) {
+        Button(action: Haptics.tapping(action)) {
             // Feste Kartengröße; das Bild liegt als Overlay darüber (füllt, zentriert, beschnitten)
             // und beeinflusst die Höhe der Kachel damit nicht.
             Color(.secondarySystemGroupedBackground)
@@ -276,9 +278,7 @@ struct WeeklyHoursCard: View {
     var action: (() -> Void)?
 
     var body: some View {
-        Button {
-            action?()
-        } label: {
+        Button(action: Haptics.tapping { action?() }) {
             VStack(alignment: .leading, spacing: 10) {
                 CardHeader(
                     title: DashboardBuiltInCard.weeklyHours.title,
@@ -323,7 +323,7 @@ struct AddCard: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button(action: Haptics.tapping(action)) {
             VStack(spacing: 8) {
                 Image(.plus).iconSize(36)
                 Text("Kachel hinzufügen")
@@ -457,5 +457,42 @@ nonisolated enum Thumbnail {
         ]
         guard let image = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
         return UIImage(cgImage: image)
+    }
+}
+
+// MARK: - Wackeln im Anordnen-Modus
+
+extension View {
+    /// Leichtes Wackeln wie auf dem Home-Bildschirm. Bewusst winzig, weil die Kacheln groß sind.
+    /// `seed` verteilt Richtung und Tempo, damit nicht alle Kacheln im Gleichtakt wackeln.
+    func wiggling(seed: String) -> some View {
+        modifier(WiggleModifier(seed: seed))
+    }
+}
+
+private struct WiggleModifier: ViewModifier {
+    let seed: String
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Maximaler Ausschlag in Grad – bei ~320 pt Breite knapp 1 pt am Rand.
+    private let amplitude = 0.35
+
+    func body(content: Content) -> some View {
+        if reduceMotion {
+            content
+        } else {
+            // Stabiler (nicht per Start zufälliger) Wert aus der Kachel-ID.
+            let value = seed.unicodeScalars.reduce(0) { $0 &+ Int($1.value) }
+            let direction: Double = value.isMultiple(of: 2) ? 1 : -1
+            let quarter = 0.065 + Double(value % 5) * 0.004
+
+            content.keyframeAnimator(initialValue: 0.0, repeating: true) { view, angle in
+                view.rotationEffect(.degrees(angle * direction))
+            } keyframes: { _ in
+                CubicKeyframe(amplitude, duration: quarter)
+                CubicKeyframe(-amplitude, duration: quarter * 2)
+                CubicKeyframe(0, duration: quarter)
+            }
+        }
     }
 }

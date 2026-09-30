@@ -93,16 +93,20 @@ struct SchoolSettingsView: View {
             }
 
             Section("Kalender") {
-                Toggle("Wochenende anzeigen", isOn: $settings.values.showWeekends)
+                Toggle(isOn: $settings.values.showWeekends) {
+                    Label("Wochenende anzeigen", image: .calendar)
+                }
             }
 
             Section {
                 // 16 Länder: eigene Unterseite statt Menü.
-                Picker("Bundesland", selection: $settings.values.federalState) {
+                Picker(selection: $settings.values.federalState) {
                     Text("Keins").tag(String?.none)
                     ForEach(HolidayImporter.federalStates, id: \.code) { state in
                         Text(state.name).tag(Optional(state.code))
                     }
+                } label: {
+                    Label("Bundesland", image: .globe)
                 }
                 .pickerStyle(.navigationLink)
                 Button {

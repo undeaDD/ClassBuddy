@@ -1,7 +1,30 @@
 import SwiftUI
 
+/// Vor- und Nachname, je mit Namens-Icon vorne.
+struct NameFields: View {
+    @Binding var firstName: String
+    @Binding var lastName: String
+
+    var body: some View {
+        Label {
+            TextField("Vorname", text: $firstName)
+                .textContentType(.givenName)
+                .sensitive()
+        } icon: {
+            Image(.label)
+        }
+        Label {
+            TextField("Nachname", text: $lastName)
+                .textContentType(.familyName)
+                .sensitive()
+        } icon: {
+            Image(.label)
+        }
+    }
+}
+
 /// Geschlecht mit Symbol (♀ ♂ ⚧) und „keine Angabe“.
-/// iPad: Segmented Control; iPhone: Pop-up-Menü (vier Segmente passen nicht in die Breite).
+/// iPad: Segmented Control neben der Beschriftung; iPhone: Pop-up-Menü (vier Segmente passen nicht in die Breite).
 struct GenderPicker: View {
     @Environment(\.device) private var device
     @Binding var selection: Gender?
@@ -10,16 +33,27 @@ struct GenderPicker: View {
         if device.isPhone {
             picker.pickerStyle(.menu)
         } else {
-            picker.pickerStyle(.segmented)
+            LabeledContent {
+                picker.pickerStyle(.segmented).fixedSize()
+            } label: {
+                label
+            }
         }
     }
 
+    private var label: some View {
+        Label("Geschlecht", image: .genderUnknown)
+    }
+
     private var picker: some View {
-        Picker("Geschlecht", selection: $selection) {
+        Picker(selection: $selection) {
             ForEach(Gender.allCases) { option in
-                Text("\(option.symbol) \(option.title)").tag(Optional(option))
+                // Im Menü großgeschrieben („♀ Weiblich“); `title` bleibt klein für Fließtext und Export.
+                Text("\(option.symbol) \(option.title.localizedCapitalized)").tag(Optional(option))
             }
-            Text("keine Angabe").tag(Gender?.none)
+            Text("Keine Angabe").tag(Gender?.none)
+        } label: {
+            label
         }
     }
 }
@@ -38,11 +72,12 @@ struct BirthdayField: View {
     var body: some View {
         HStack {
             DatePicker(
-                "Geburtstag",
                 selection: Binding(get: { birthday ?? suggestion }, set: { birthday = $0 }),
                 in: ...Date.now,
                 displayedComponents: .date
-            )
+            ) {
+                Label("Geburtstag", image: .birthday)
+            }
             .opacity(birthday == nil ? 0.45 : 1)
             .sensitive()
 

@@ -8,6 +8,7 @@ struct RootView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
     @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
+    @AppStorage(AppPreference.keepsScreenAwake) private var keepsScreenAwake = false
     @Environment(\.openURL) private var openURL
     private let homeScreenActions = HomeScreenActionCenter.shared
     @Environment(AppModel.self) private var app
@@ -25,6 +26,10 @@ struct RootView: View {
             // Gesperrt / im Hintergrund: Inhalt stark unscharf, darüber Milchglas.
             .blur(radius: security.isLocked || scenePhase != .active ? 12 : 0)
             .pencilQuickActions()
+            // Gilt nur im Vordergrund – iOS setzt es im Hintergrund ohnehin außer Kraft.
+            .onChange(of: keepsScreenAwake, initial: true) { _, isOn in
+                UIApplication.shared.isIdleTimerDisabled = isOn
+            }
             .environment(\.device, Device(horizontalSizeClass: horizontalSizeClass))
             // Einführung einmalig nach dem Entsperren (iPhone: Vollbild, iPad: Form-Sheet). Wird die App
             // dabei gesperrt, verschwindet sie und erscheint danach wieder – erledigt über „Los geht’s“ oder xmark.

@@ -35,6 +35,11 @@ final class ToastCenter {
 
     func show(_ message: String, style: Toast.Style = .info) {
         let toast = Toast(message: message, style: style)
+        switch style {
+        case .success: Haptics.notify(.success)
+        case .error: Haptics.notify(.error)
+        case .info: Haptics.tap()
+        }
         withAnimation(.bouncy(duration: 0.35)) { current = toast }
         dismissTask?.cancel()
         dismissTask = Task {

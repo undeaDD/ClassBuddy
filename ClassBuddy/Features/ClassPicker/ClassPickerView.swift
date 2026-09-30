@@ -131,6 +131,7 @@ struct ClassPickerView: View {
             // Erneutes Antippen der aktiven Klasse hebt die Auswahl auf.
             app.selectedClassID = app.selectedClassID == schoolClass.id ? nil : schoolClass.id
             app.isClassPickerPresented = false
+            Haptics.selection()
         } label: {
             HStack(spacing: 12) {
                 ClassBadge(shortName: schoolClass.shortName, color: schoolClass.displayColor, size: 40)

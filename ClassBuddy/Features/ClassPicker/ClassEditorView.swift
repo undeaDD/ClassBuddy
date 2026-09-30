@@ -6,6 +6,7 @@ import SwiftUI
 struct ClassEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(SchoolSettings.self) private var settings
 
     let schoolClass: SchoolClass?
     var onSave: (SchoolClass) -> Void = { _ in }
@@ -17,7 +18,6 @@ struct ClassEditorView: View {
     @State private var colorRaw: String
     /// Zuletzt gewählte eigene Farbe (letztes Farbfeld).
     @AppStorage("classEditor.lastCustomColor") private var lastCustomColor = "#9C6830"
-    @State private var customSubject = ""
 
     init(schoolClass: SchoolClass?, onSave: @escaping (SchoolClass) -> Void = { _ in }) {
         self.schoolClass = schoolClass
@@ -47,9 +47,17 @@ struct ClassEditorView: View {
                 }
 
                 Section("Klasse") {
-                    TextField("Kürzel (z. B. 7b)", text: $shortName)
-                        .textInputAutocapitalization(.never)
-                    TextField("Schuljahr", text: $schoolYear)
+                    Label {
+                        TextField("Kürzel (z. B. 7b)", text: $shortName)
+                            .textInputAutocapitalization(.never)
+                    } icon: {
+                        Image(.label)
+                    }
+                    Label {
+                        TextField("Schuljahr", text: $schoolYear)
+                    } icon: {
+                        Image(.calendar)
+                    }
                 }
 
                 Section {
@@ -60,17 +68,9 @@ struct ClassEditorView: View {
                     .onMove { subjects.move(fromOffsets: $0, toOffset: $1) }
 
                     NavigationLink {
-                        SubjectPickerView(subjects: $subjects)
+                        SubjectPickerView(subjects: $subjects, preferred: settings.values.teacher.subjects)
                     } label: {
-                        Label("Fach hinzufügen", image: .plus)
-                    }
-
-                    HStack {
-                        TextField("Eigenes Fach", text: $customSubject)
-                            .onSubmit(addCustomSubject)
-                        Button("Hinzufügen", image: .check, action: addCustomSubject)
-                            .labelStyle(.iconOnly)
-                            .disabled(customSubject.trimmingCharacters(in: .whitespaces).isEmpty)
+                        Label("Fach hinzufügen", image: .graduationCap)
                     }
                 } header: {
                     Text("Fächer")
@@ -146,13 +146,6 @@ struct ClassEditorView: View {
         .accessibilityAddTraits(isCustomColor ? .isSelected : [])
     }
 
-    private func addCustomSubject() {
-        let subject = customSubject.trimmingCharacters(in: .whitespaces)
-        guard !subject.isEmpty else { return }
-        if !subjects.contains(subject) { subjects.append(subject) }
-        customSubject = ""
-    }
-
     private func save() {
         let target = schoolClass ?? {
             let newClass = SchoolClass(shortName: "")
@@ -170,34 +163,79 @@ struct ClassEditorView: View {
 }
 
 /// Unterseite „Fach hinzufügen“: Vorschläge an- und abhaken (Reihenfolge = Reihenfolge des Antippens).
-private struct SubjectPickerView: View {
+/// `preferred` (Hauptfächer aus dem Profil) steht in einem eigenen Abschnitt oben.
+struct SubjectPickerView: View {
     @Binding var subjects: [String]
+    var preferred: [String] = []
+    var title = "Fächer"
+
+    @State private var customSubject = ""
+
+    private var others: [String] {
+        SchoolClass.suggestedSubjects.filter { !preferred.contains($0) }
+    }
+
+    /// Gewählte Fächer, die weder vorgeschlagen noch Hauptfach sind (selbst eingegeben).
+    private var customSubjects: [String] {
+        subjects.filter { !SchoolClass.suggestedSubjects.contains($0) && !preferred.contains($0) }
+    }
 
     var body: some View {
-        List(SchoolClass.suggestedSubjects, id: \.self) { subject in
-            let isSelected = subjects.contains(subject)
-            Button {
-                if isSelected {
-                    subjects.removeAll { $0 == subject }
-                } else {
-                    subjects.append(subject)
+        List {
+            if preferred.isEmpty {
+                ForEach(SchoolClass.suggestedSubjects, id: \.self, content: row)
+            } else {
+                Section("Deine Hauptfächer") {
+                    ForEach(preferred, id: \.self, content: row)
                 }
-            } label: {
-                HStack {
-                    Text(subject)
-                        .foregroundStyle(Color.primary)
-                    Spacer()
-                    if isSelected {
-                        Image(.check)
-                            .iconSize(20)
-                            .foregroundStyle(.tint)
-                    }
+                Section("Weitere Fächer") {
+                    ForEach(others, id: \.self, content: row)
                 }
-                .contentShape(.rect)
             }
-            .accessibilityAddTraits(isSelected ? .isSelected : [])
+
+            Section("Eigene Fächer") {
+                ForEach(customSubjects, id: \.self, content: row)
+                HStack {
+                    TextField("Eigenes Fach", text: $customSubject)
+                        .onSubmit(addCustomSubject)
+                    Button("Hinzufügen", image: .check, action: addCustomSubject)
+                        .labelStyle(.iconOnly)
+                        .disabled(customSubject.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
         }
-        .navigationTitle("Fächer")
+        .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func addCustomSubject() {
+        let subject = customSubject.trimmingCharacters(in: .whitespaces)
+        guard !subject.isEmpty else { return }
+        if !subjects.contains(subject) { subjects.append(subject) }
+        customSubject = ""
+    }
+
+    private func row(_ subject: String) -> some View {
+        let isSelected = subjects.contains(subject)
+        return Button {
+            if isSelected {
+                subjects.removeAll { $0 == subject }
+            } else {
+                subjects.append(subject)
+            }
+        } label: {
+            HStack {
+                Text(subject)
+                    .foregroundStyle(Color.primary)
+                Spacer()
+                if isSelected {
+                    Image(.check)
+                        .iconSize(20)
+                        .foregroundStyle(.tint)
+                }
+            }
+            .contentShape(.rect)
+        }
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }

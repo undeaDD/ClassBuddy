@@ -37,17 +37,21 @@ struct LessonEditorView: View {
         NavigationStack {
             Form {
                 Section {
-                    Picker("Klasse", selection: $classID) {
+                    Picker(selection: $classID) {
                         Text("Keine").tag(UUID?.none)
                         ForEach(classes) { schoolClass in
                             Text(schoolClass.title).tag(Optional(schoolClass.id))
                         }
+                    } label: {
+                        Label("Klasse", image: .community)
                     }
-                    Picker("Fach", selection: $subject) {
+                    Picker(selection: $subject) {
                         Text("Kein Fach").tag("")
                         ForEach(selectedClass?.subjects ?? [], id: \.self) { subject in
                             Text(subject).tag(subject)
                         }
+                    } label: {
+                        Label("Fach", image: .graduationCap)
                     }
                     .disabled(selectedClass?.subjects.isEmpty ?? true)
                 } footer: {
@@ -59,7 +63,9 @@ struct LessonEditorView: View {
                 }
 
                 Section {
-                    Toggle("Jede Woche", isOn: $isRecurring)
+                    Toggle(isOn: $isRecurring) {
+                        Label("Jede Woche", image: .number1Circle)
+                    }
                 } footer: {
                     Text(isRecurring
                         ? "Jeden \(date.formatted(.dateTime.weekday(.wide))), \(slot.number). Stunde (\(slot.timeRange))"
@@ -155,16 +161,26 @@ struct EntryEditorView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Titel", text: $title)
-                        .sensitive()
-                    DatePicker("Beginn", selection: $start)
-                    Stepper("Dauer: \(durationText)", value: $duration, in: 15...(12 * 60), step: 15)
+                    Label {
+                        TextField("Titel", text: $title)
+                            .sensitive()
+                    } icon: {
+                        Image(.label)
+                    }
+                    DatePicker(selection: $start) {
+                        Label("Beginn", image: .calendar)
+                    }
+                    Stepper(value: $duration, in: 15...(12 * 60), step: 15) {
+                        Label("Dauer: \(durationText)", image: .timer)
+                    }
                     // Optional: Termin einer Klasse zuordnen → in deren Farbe (z. B. Ausflug, Elternabend).
-                    Picker("Klasse", selection: $classID) {
+                    Picker(selection: $classID) {
                         Text("Keine").tag(UUID?.none)
                         ForEach(classes) { schoolClass in
                             Text(schoolClass.title).tag(Optional(schoolClass.id))
                         }
+                    } label: {
+                        Label("Klasse", image: .community)
                     }
                 }
                 Section("Notizen") {

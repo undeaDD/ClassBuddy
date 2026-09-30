@@ -124,9 +124,24 @@ struct TeacherProfile: Codable, Equatable {
     var lastName = ""
     var birthday: Date?
     var gender: Gender?
+    /// Hauptfächer – stehen im Fächer-Picker der Klassen oben.
+    var subjects: [String] = []
 
     var fullName: String {
         [firstName, lastName].filter { !$0.isEmpty }.joined(separator: " ")
+    }
+}
+
+extension TeacherProfile {
+    /// Fehlende Felder (ältere Versionen) fallen auf den Standardwert zurück.
+    /// In einer Extension, damit der Memberwise-Initializer erhalten bleibt.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        firstName = try container.decodeIfPresent(String.self, forKey: .firstName) ?? ""
+        lastName = try container.decodeIfPresent(String.self, forKey: .lastName) ?? ""
+        birthday = try container.decodeIfPresent(Date.self, forKey: .birthday)
+        gender = try container.decodeIfPresent(Gender.self, forKey: .gender)
+        subjects = try container.decodeIfPresent([String].self, forKey: .subjects) ?? []
     }
 }
 

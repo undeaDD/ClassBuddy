@@ -40,6 +40,7 @@
 		809A52BDD963A4E617ECEC4A /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFF2B434D6D5F8A4CE0512 /* EmptyStateView.swift */; };
 		81857B0F656429C9B2E5E457 /* ZipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5E83768A3055F73116717F /* ZipArchive.swift */; };
 		8AD36AD32BFB664115296C55 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = A496E9CD0C20BDF78BA147A7 /* Toast.swift */; };
+		A4124B7999D6A6AF4765999E /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF8047550DFEAE0A19A1E2B /* Haptics.swift */; };
 		8B2E5F754335372E147F8AB4 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4DE83A517F7497568C04F6 /* CalendarView.swift */; };
 		9207713D3C3A17C047A6AEFF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BD5DCFEB72AE4722C536B /* RootView.swift */; };
 		7D025A24A23F4D2CBB5CF926 /* HomeScreenActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9979637F19208E99A2D87326 /* HomeScreenActions.swift */; };
@@ -75,6 +76,8 @@
 		F9535DF3B6C24CB427B592D2 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B372F8814CE72C779B26265 /* Device.swift */; };
 		F38598CCD1F03D704FFF50E1 /* CalendarEditors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CFB5C195EE915026F120651 /* CalendarEditors.swift */; };
 		F56D5D0C83E6697E11CD3242 /* LinkEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */; };
+		095105AB524AA19F029B3D69 /* ScriptCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */; };
+		D6BF5854A98453F1D23B796D /* CardScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC4CFBA75EED9BB490A0C24 /* CardScript.swift */; };
 		F6E341FA2D5880D50FACF5BC /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9320F3CFA700821455DA73B6 /* LogicTests.swift */; };
 		FC3137C44371AC8BA5E47A08 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D8B9109166A9748354DC9CF /* AppModel.swift */; };
 		FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25255560972480F461747B91 /* SchoolClass.swift */; };
@@ -131,6 +134,8 @@
 		6FF9124C1931B405BB777E91 /* ClassScopedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassScopedView.swift; sourceTree = "<group>"; };
 		723E830E960FEC552AC32623 /* CardGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGallery.swift; sourceTree = "<group>"; };
 		73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkEditorView.swift; sourceTree = "<group>"; };
+		DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptCard.swift; sourceTree = "<group>"; };
+		FEC4CFBA75EED9BB490A0C24 /* CardScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScript.swift; sourceTree = "<group>"; };
 		7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherProfileView.swift; sourceTree = "<group>"; };
 		82B7B56D4973387936A0E06B /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		8737C4298AA78E18F6D25A7E /* ClassBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassBadge.swift; sourceTree = "<group>"; };
@@ -148,6 +153,7 @@
 		9E18F81ED8B116BD65317A33 /* ClassBuddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClassBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A22B00150D405734C85B655E /* PersonFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonFields.swift; sourceTree = "<group>"; };
 		A496E9CD0C20BDF78BA147A7 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		1FF8047550DFEAE0A19A1E2B /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		AE6AB5A47C4368067847CE31 /* AppTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTabView.swift; sourceTree = "<group>"; };
 		AEA107D0C849C5337E26C6AF /* ClassTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTimer.swift; sourceTree = "<group>"; };
@@ -362,6 +368,7 @@
 		E1C1ED13D20F227E3CD813C3 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				1FF8047550DFEAE0A19A1E2B /* Haptics.swift */,
 				A496E9CD0C20BDF78BA147A7 /* Toast.swift */,
 				897588662DA32E79AE83FDC1 /* ColorHex.swift */,
 				A22B00150D405734C85B655E /* PersonFields.swift */,
@@ -415,6 +422,8 @@
 				9B3B54810C7667A2C9742973 /* DashboardCards.swift */,
 				3DE897C819A0937DF76AF7C8 /* Favicon.swift */,
 				73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */,
+				DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */,
+				FEC4CFBA75EED9BB490A0C24 /* CardScript.swift */,
 				A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */,
 			);
 			path = Dashboard;
@@ -512,6 +521,7 @@
 				EFCCB54B9C8E37EE67197E3B /* ClassTimer.swift in Sources */,
 				AB615A72469E1F9D6A36271B /* InstallInfo.swift in Sources */,
 				8AD36AD32BFB664115296C55 /* Toast.swift in Sources */,
+				A4124B7999D6A6AF4765999E /* Haptics.swift in Sources */,
 				4401BE6A2DBD523FB11F4E84 /* DashboardLogic.swift in Sources */,
 				D54AEC746043791E0A6A6D9D /* ColorHex.swift in Sources */,
 				01CE987455CBFB4360537259 /* Weather.swift in Sources */,
@@ -530,6 +540,8 @@
 				C90AE7627654FA715A2928C0 /* PersonFields.swift in Sources */,
 				4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */,
 				F56D5D0C83E6697E11CD3242 /* LinkEditorView.swift in Sources */,
+				095105AB524AA19F029B3D69 /* ScriptCard.swift in Sources */,
+				D6BF5854A98453F1D23B796D /* CardScript.swift in Sources */,
 				FF3F410918400D40836BDE97 /* DashboardLink.swift in Sources */,
 				D2EBE6B61F920589CCE59268 /* LessonSchedule.swift in Sources */,
 				7A8ABC4DE5A6D3898E546400 /* AppInfo.swift in Sources */,

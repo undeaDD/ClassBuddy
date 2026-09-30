@@ -280,4 +280,63 @@ struct LogicTests {
         #expect(!CardTemplate.request.isReusable)
         #expect(!CardTemplate.reusable.contains(.request))
     }
+
+    // MARK: Skript-Kachel
+
+    private static let scriptClass = CardScript.ClassInfo(name: "7b", schoolYear: "2026/27", studentCount: 24)
+
+    @Test("Skript-Kachel: Beispiel zeichnet, zählt beim Antippen und merkt sich den Zustand")
+    func scriptExample() {
+        let first = CardScript.evaluate(CardScript.example, mode: .render, state: "{}", schoolClass: Self.scriptClass)
+        #expect(first.error == nil)
+        #expect(first.title == "Zähler")
+        #expect(first.value == "0")
+        #expect(first.subtitle == "Klasse 7b · Antippen zählt hoch")
+
+        var state = "{}"
+        var output = first
+        for _ in 0..<10 {
+            output = CardScript.evaluate(CardScript.example, mode: .tap, state: state, schoolClass: Self.scriptClass)
+            state = output.state
+        }
+        #expect(output.value == "10")
+        #expect(output.toasts == ["Schon 10-mal getippt!"])
+    }
+
+    private static func evaluate(_ source: String, mode: CardScript.Mode) -> CardScript.Output {
+        CardScript.evaluate(source, mode: mode, state: "{}", schoolClass: scriptClass)
+    }
+
+    @Test("Skript-Kachel: Fehler landen in der Kachel, Links nur https/App-Links")
+    func scriptErrorsAndLinks() {
+        let broken = Self.evaluate("function render() { return missing.value }", mode: .render)
+        #expect(broken.error != nil)
+        #expect(broken.state == "{}")
+
+        let https = Self.evaluate("function tap() { open('https://schule.de') }", mode: .tap)
+        #expect(https.urlToOpen?.absoluteString == "https://schule.de")
+        let script = Self.evaluate("function tap() { open('javascript:alert(1)') }", mode: .tap)
+        #expect(script.urlToOpen == nil)
+    }
+
+    @Test("Skript-Kachel: render synchron, fetch nur in tap und nur über https")
+    func scriptFetchRules() {
+        let asyncRender = Self.evaluate("async function render() { return { value: 1 } }", mode: .render)
+        #expect(asyncRender.error?.contains("synchron") == true)
+        let fetchInRender = Self.evaluate("function render() { fetch('https://schule.de'); return {} }", mode: .render)
+        #expect(fetchInRender.error?.contains("tap") == true)
+        let http = Self.evaluate("async function tap() { await fetch('http://schule.de') }", mode: .tap)
+        #expect(http.error?.contains("https") == true)
+        let asyncTap = Self.evaluate(
+            "async function tap(ctx) { ctx.state.n = await Promise.resolve(42) }\nfunction render(ctx) { return { value: ctx.state.n } }",
+            mode: .tap
+        )
+        #expect(asyncTap.value == "42")
+    }
+
+    @Test("Skript-Kachel: Endlosschleife endet mit Zeitüberschreitung")
+    func scriptTimeout() async {
+        let output = await CardScript.run("while (true) {}", mode: .render, state: "{}", schoolClass: Self.scriptClass)
+        #expect(output.error != nil)
+    }
 }
