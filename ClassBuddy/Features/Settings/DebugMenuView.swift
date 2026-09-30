@@ -165,6 +165,25 @@ private struct DebugActionRow: View {
     }
 }
 
+/// Automatische README-Screenshots (`scripts/screenshots.sh`): Start mit `-screenshots`
+/// fügt die Testdaten ein, wählt die erste Testklasse und öffnet den Tab aus `-tab <name>`.
+/// (Das Erscheinungsbild setzt das Skript direkt per `-app.appearance light|dark`.)
+enum ScreenshotMode {
+    static var isActive: Bool { ProcessInfo.processInfo.arguments.contains("-screenshots") }
+
+    static func prepare(app: AppModel, context: ModelContext, settings: SchoolSettings) {
+        guard isActive else { return }
+        let classes = (try? context.fetch(FetchDescriptor<SchoolClass>())) ?? []
+        let firstClass = classes.first { $0.id == DummyData.classIDs.first }
+            ?? DummyData.insert(into: context, slotCount: settings.slots.count)
+        try? context.save()
+        app.selectedClassID = firstClass.id
+        if let name = UserDefaults.standard.string(forKey: "tab"), let tab = AppTab(rawValue: name) {
+            app.selectedTab = tab
+        }
+    }
+}
+
 /// Testdaten mit festen IDs: So lässt sich erkennen, ob sie schon eingefügt wurden,
 /// und sie lassen sich gezielt wieder entfernen (Schüler und Stunden hängen per Cascade an der Klasse).
 enum DummyData {

@@ -10,18 +10,10 @@
 [![Build IPA](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml)
 [![Semgrep](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml)
 [![Latest release](https://img.shields.io/github/v/release/undeaDD/ClassBuddy?label=version&color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/undeaDD/ClassBuddy/total?color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases)
-![iPadOS](https://img.shields.io/badge/iPadOS-26%2B-000000?logo=apple)
-![Device](https://img.shields.io/badge/device-iPad-lightgrey?logo=ipad)
-![Swift](https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white)
-![SwiftUI](https://img.shields.io/badge/UI-SwiftUI-0A84FF)
-![Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
-![Price](https://img.shields.io/badge/price-free-brightgreen)
-![Privacy](https://img.shields.io/badge/data-local%20only-brightgreen)
-![Language](https://img.shields.io/badge/app%20language-German-blue)
+![Platform](https://img.shields.io/badge/iOS%20%7C%20iPadOS-26%2B-000000?logo=apple)
 [![License: PolyForm Strict](https://img.shields.io/badge/license-PolyForm%20Strict-blue)](LICENSE)
 
-**ClassBuddy** is a privacy-first classroom companion for teachers on the iPad.
+**ClassBuddy** is a privacy-first classroom companion for teachers on iPad and iPhone.
 It keeps your classes, students and timetable in one place — **stored only on your device**,
 protected by Face ID, with a one-tap privacy mode for when students are looking over your shoulder.
 
@@ -44,7 +36,7 @@ protected by Face ID, with a one-tap privacy mode for when students are looking 
 - **Dashboard per class** – card gallery with stats, next lesson, current-lesson countdown, next birthday, random student picker, timer, plus your own cards (documents, images, websites with favicon, Shortcuts);
   reorder and hide cards in *Anordnen* mode
 - **Weekly calendar** – lesson grid generated from your school's timetable (start, lesson length, breaks),
-  weekly or one-off lessons, appointments, class focus mode
+  weekly or one-off lessons, appointments (optionally per class), class focus mode; 3-day view on iPhone
 - **School holidays & public holidays** – imported per German state (via [OpenHolidays API](https://www.openholidaysapi.org))
 - **Privacy**
   - Face ID / passcode lock on launch and when returning to the app
@@ -52,12 +44,12 @@ protected by Face ID, with a one-tap privacy mode for when students are looking 
   - Everything is stored locally with SwiftData — no account, no cloud, no tracking
 - **Excel export / import** – one sheet per area (classes, students, lessons, appointments, settings, …),
   editable in Excel or Numbers
-- **Apple Pencil** – squeeze for a radial quick menu at the pencil's position, double-tap toggles privacy mode
-- Light & dark mode, native SwiftUI, no third-party dependencies
+- **Apple Pencil** (iPad) – squeeze for a radial quick menu at the pencil's position, double-tap toggles privacy mode
+- iPad and iPhone, light & dark mode, native SwiftUI, no third-party dependencies
 
 ## Requirements
 
-- iPad with **iPadOS 26** or later
+- iPad with **iPadOS 26** or later, or iPhone with **iOS 26** or later
 
 ## Installation (sideloading with AltStore)
 
@@ -69,17 +61,17 @@ install with [AltStore](https://altstore.io) using your own (free) Apple ID.
 1. Download **AltServer** from [altstore.io](https://altstore.io) for macOS or Windows and start it.
 2. **Windows only:** install iTunes and iCloud from Apple's website (not the Microsoft Store versions).
 
-### 2. Install AltStore on your iPad
+### 2. Install AltStore on your iPad or iPhone
 
-1. Connect your iPad via USB (or the same Wi-Fi with Wi-Fi sync enabled) and trust the computer.
-2. Click the AltServer icon in the menu bar / system tray → **Install AltStore** → select your iPad.
+1. Connect your iPad or iPhone via USB (or the same Wi-Fi with Wi-Fi sync enabled) and trust the computer.
+2. Click the AltServer icon in the menu bar / system tray → **Install AltStore** → select your device.
 3. Sign in with your Apple ID (it's only sent to Apple).
-4. On the iPad: **Settings → General → VPN & Device Management** → trust your Apple ID.
+4. On the device: **Settings → General → VPN & Device Management** → trust your Apple ID.
 5. Enable **Developer Mode**: **Settings → Privacy & Security → Developer Mode**, then restart.
 
 ### 3. Install ClassBuddy
 
-1. On the iPad, open the [latest release](https://github.com/undeaDD/ClassBuddy/releases/latest) in Safari
+1. On the iPad or iPhone, open the [latest release](https://github.com/undeaDD/ClassBuddy/releases/latest) in Safari
    and download **`ClassBuddy.ipa`**.
 2. Open **AltStore → My Apps → `+`** and pick `ClassBuddy.ipa` from *Downloads*.
 3. Wait until the installation finishes — ClassBuddy appears on your home screen.
@@ -101,7 +93,7 @@ Alternatively, [SideStore](https://sidestore.io) works the same way without a co
 1. Xcode 26 or newer
 2. `git clone https://github.com/undeaDD/ClassBuddy.git`
 3. Open `ClassBuddy.xcodeproj`, choose your team under *Signing & Capabilities*
-4. Run on your iPad
+4. Run on your iPad or iPhone
 
 Unsigned build like the CI:
 
@@ -121,8 +113,8 @@ ClassBuddy is built for GDPR-compliant use in German schools. The full privacy n
 **By design**
 
 - No account, no server, no cloud sync, no analytics, no ads, no third-party SDKs
-- All data (classes, students, timetable, notes, documents) stays in the app container on the iPad,
-  encrypted by iPadOS data protection when a device passcode is set
+- All data (classes, students, timetable, notes, documents) stays in the app container on the device,
+  encrypted by iOS/iPadOS data protection when a device passcode is set
 - The developer never receives student data; the teacher (or school) is the data controller for everything entered in the app
 - App lock via Face ID / passcode, bound to a keychain item released only by the Secure Enclave
 - Privacy mode hides names, grades and notes on every screen; content is blurred in the app switcher
@@ -134,7 +126,7 @@ ClassBuddy is built for GDPR-compliant use in German schools. The full privacy n
 | Tap *Ferien & Feiertage importieren* | [openholidaysapi.org](https://www.openholidaysapi.org) | federal state, date range |
 | Weather card is visible (max. every 30 min) | [open-meteo.com](https://open-meteo.com) | the school's town from the settings |
 | Website card is shown | the website itself | favicon request |
-| You send feedback | your mail app | only what you send (plus app/iPadOS version) |
+| You send feedback | your mail app | only what you send (plus app and iOS/iPadOS version) |
 
 **Data subject rights, in the app**
 

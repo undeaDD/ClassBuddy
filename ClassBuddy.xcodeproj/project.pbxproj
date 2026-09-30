@@ -28,6 +28,7 @@
 		4B080EF0A37944D6DDC9FB02 /* LessonGridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EAD7BE6DF9D3E045D974BF /* LessonGridTests.swift */; };
 		4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */; };
 		4C0321CDE2084BCCB193B5B0 /* privacy.html in Resources */ = {isa = PBXBuildFile; fileRef = 8750B322EDEC4B4625B5BBAB /* privacy.html */; };
+		F5339FA022624D2B38258A34 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 07C05AB7B27E1663EC562840 /* PrivacyInfo.xcprivacy */; };
 		4CD0721372A7BA7D43623696 /* ClassEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E35B3B7628591F7C2DCD3DD3 /* ClassEditorView.swift */; };
 		4DEF6B342C08DCA12F64B905 /* AppSecurity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB1EB8B8B1D4CF49FC03C8E /* AppSecurity.swift */; };
 		52CA7612B1589A1A39DEF882 /* PencilQuickActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C44C1138E7C38D4F949012B0 /* PencilQuickActions.swift */; };
@@ -41,6 +42,8 @@
 		8AD36AD32BFB664115296C55 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = A496E9CD0C20BDF78BA147A7 /* Toast.swift */; };
 		8B2E5F754335372E147F8AB4 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4DE83A517F7497568C04F6 /* CalendarView.swift */; };
 		9207713D3C3A17C047A6AEFF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964BD5DCFEB72AE4722C536B /* RootView.swift */; };
+		7D025A24A23F4D2CBB5CF926 /* HomeScreenActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9979637F19208E99A2D87326 /* HomeScreenActions.swift */; };
+		21BE51325B78F5751A74C0E0 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369460E9297D0350E5B4332F /* OnboardingView.swift */; };
 		9627AD55B7D8C28DC6F8E569 /* SchoolSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597F30AE51F07D4DD0766EB0 /* SchoolSettings.swift */; };
 		9723E68D949103A132720147 /* DayColumn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247057995367A1D7299A230E /* DayColumn.swift */; };
 		97291ACA1BE8C51D1F34EA18 /* AppChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09ECD50CA17F661E96A9CF54 /* AppChrome.swift */; };
@@ -132,11 +135,14 @@
 		82B7B56D4973387936A0E06B /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		8737C4298AA78E18F6D25A7E /* ClassBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassBadge.swift; sourceTree = "<group>"; };
 		8750B322EDEC4B4625B5BBAB /* privacy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy.html; sourceTree = "<group>"; };
+		07C05AB7B27E1663EC562840 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		897588662DA32E79AE83FDC1 /* ColorHex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorHex.swift; sourceTree = "<group>"; };
 		8FFEB8A542E1E556994F653A /* collaborators.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = collaborators.html; sourceTree = "<group>"; };
 		9320F3CFA700821455DA73B6 /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
 		95865081AE46E5F455EFB23D /* DataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
 		964BD5DCFEB72AE4722C536B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		9979637F19208E99A2D87326 /* HomeScreenActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenActions.swift; sourceTree = "<group>"; };
+		369460E9297D0350E5B4332F /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		9B3B54810C7667A2C9742973 /* DashboardCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCards.swift; sourceTree = "<group>"; };
 		9C838201C48843117125D1F2 /* StudentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentsView.swift; sourceTree = "<group>"; };
 		9E18F81ED8B116BD65317A33 /* ClassBuddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClassBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -218,6 +224,8 @@
 				1D8B9109166A9748354DC9CF /* AppModel.swift */,
 				0A24D388FE7E9FD196AC2985 /* ClassBuddyApp.swift */,
 				964BD5DCFEB72AE4722C536B /* RootView.swift */,
+				9979637F19208E99A2D87326 /* HomeScreenActions.swift */,
+				369460E9297D0350E5B4332F /* OnboardingView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -271,6 +279,7 @@
 		9291F7C35DAD29DF708FABF6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				07C05AB7B27E1663EC562840 /* PrivacyInfo.xcprivacy */,
 				099A865195586613AAD8EE54 /* Legal */,
 				2B1F9ED4838514B91933B244 /* Assets.xcassets */,
 				12C5344D306BEED40087F828 /* ClassBuddy.icon */,
@@ -488,6 +497,7 @@
 				BA4A668A8072B3A5A6DE9FA3 /* collaborators.html in Resources */,
 				C618365AA69460436ADDA4AE /* licenses.html in Resources */,
 				4C0321CDE2084BCCB193B5B0 /* privacy.html in Resources */,
+				F5339FA022624D2B38258A34 /* PrivacyInfo.xcprivacy in Resources */,
 				D56E6F223610F9BBBCF9A4C0 /* imprint.html in Resources */,
 				12C5344E306BEED40087F828 /* ClassBuddy.icon in Resources */,
 				2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */,
@@ -552,6 +562,8 @@
 				52CA7612B1589A1A39DEF882 /* PencilQuickActions.swift in Sources */,
 				A5FD8E517C799BD4DAC748B9 /* SettingsView.swift in Sources */,
 				9207713D3C3A17C047A6AEFF /* RootView.swift in Sources */,
+				7D025A24A23F4D2CBB5CF926 /* HomeScreenActions.swift in Sources */,
+				21BE51325B78F5751A74C0E0 /* OnboardingView.swift in Sources */,
 				FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */,
 				9CFB32BA7C1FF3D07DAE9AD2 /* Sensitive.swift in Sources */,
 			);
@@ -590,7 +602,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClassBuddy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClassBuddy";
 			};
 			name = Debug;
@@ -663,7 +675,7 @@
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -710,6 +722,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -727,8 +740,9 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -745,7 +759,7 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Face ID schützt die Schülerdaten und blendet sensible Informationen wieder ein.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -775,7 +789,7 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Face ID schützt die Schülerdaten und blendet sensible Informationen wieder ein.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -802,7 +816,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClassBuddy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClassBuddy";
 			};
 			name = Release;

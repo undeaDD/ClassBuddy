@@ -45,6 +45,7 @@ struct AppSettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ToastCenter.self) private var toasts
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
+    @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
 
     @State private var dataSize: Int64?
     @State private var isDeleteConfirmationPresented = false
@@ -80,6 +81,14 @@ struct AppSettingsView: View {
                     }
                 }
                 .pickerStyle(.menu)
+            }
+
+            Section("Hilfe") {
+                Button {
+                    hasCompletedOnboarding = false
+                } label: {
+                    SettingsActionLabel(title: "Einführung erneut anzeigen", image: .page)
+                }
             }
 
             Section {

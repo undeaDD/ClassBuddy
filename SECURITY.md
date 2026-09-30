@@ -15,7 +15,7 @@ You'll get a response as soon as possible; please allow time for a fix before an
 
 Helpful details:
 
-- affected version and iPadOS version
+- affected version, device (iPad or iPhone) and iOS/iPadOS version
 - steps to reproduce / proof of concept
 - impact (e.g. data visible despite app lock or privacy mode)
 

@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 /// Oberste View: Navigation + Privatsphäre-Modus + App-Sperre + Pencil-Aktionen.
@@ -6,6 +7,14 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
+    @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
+    @Environment(\.openURL) private var openURL
+    private let homeScreenActions = HomeScreenActionCenter.shared
+    @Environment(AppModel.self) private var app
+    #if DEBUG
+    @Environment(SchoolSettings.self) private var settings
+    @Environment(\.modelContext) private var modelContext
+    #endif
 
     var body: some View {
         AppTabView()
@@ -17,6 +26,17 @@ struct RootView: View {
             .blur(radius: security.isLocked || scenePhase != .active ? 12 : 0)
             .pencilQuickActions()
             .environment(\.device, Device(horizontalSizeClass: horizontalSizeClass))
+            // Einführung einmalig nach dem Entsperren (iPhone: Vollbild, iPad: Form-Sheet). Wird die App
+            // dabei gesperrt, verschwindet sie und erscheint danach wieder – erledigt über „Los geht’s“ oder xmark.
+            // Zwei getrennte Präsentationen statt if/else, damit die App beim Größenwechsel nicht neu aufgebaut wird.
+            .fullScreenCover(isPresented: onboardingBinding(isPhone: true)) {
+                OnboardingView { hasCompletedOnboarding = true }
+            }
+            .sheet(isPresented: onboardingBinding(isPhone: false)) {
+                OnboardingView { hasCompletedOnboarding = true }
+                    .presentationSizing(.form)
+                    .interactiveDismissDisabled()
+            }
             .overlay {
                 if security.isLocked {
                     LockScreenView()
@@ -28,6 +48,15 @@ struct RootView: View {
             .animation(.smooth(duration: 0.25), value: security.isLocked)
             // Toasts über allem, auch über der Sperre (z. B. Fehlermeldungen beim Entsperren).
             .overlay(alignment: .top) { ToastOverlay() }
+            #if DEBUG
+            .task { ScreenshotMode.prepare(app: app, context: modelContext, settings: settings) }
+            #endif
+            // Schnellaktion vom App-Icon: erst nach dem Entsperren ausführen.
+            .onChange(of: homeScreenActions.pending == nil || security.isLocked, initial: true) { _, isWaiting in
+                guard !isWaiting, let action = homeScreenActions.pending else { return }
+                homeScreenActions.pending = nil
+                perform(action)
+            }
             .onChange(of: appearance, initial: true) { _, appearance in
                 appearance.apply()
             }
@@ -38,6 +67,25 @@ struct RootView: View {
                 default: break
                 }
             }
+    }
+}
+
+extension RootView {
+    private func perform(_ action: HomeScreenAction) {
+        switch action {
+        case .calendar: app.open(.calendar)
+        case .feedback: openURL(AppInfo.feedbackMailURL)
+        }
+    }
+
+    private func onboardingBinding(isPhone: Bool) -> Binding<Bool> {
+        Binding(
+            get: {
+                !hasCompletedOnboarding && !security.isLocked
+                    && Device(horizontalSizeClass: horizontalSizeClass).isPhone == isPhone
+            },
+            set: { _ in }
+        )
     }
 }
 

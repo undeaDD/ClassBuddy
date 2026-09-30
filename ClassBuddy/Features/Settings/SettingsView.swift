@@ -58,8 +58,8 @@ struct SettingsView: View {
             }
 
             Section {
-                ExternalLinkRow(title: "Quellcode auf GitHub", image: .githubCircle, url: AppInfo.sourceCodeURL)
-                ExternalLinkRow(title: "Einen Kaffee spendieren (PayPal)", image: .donate, url: AppInfo.donationURL)
+                ExternalLinkRow(title: "GitHub", image: .githubCircle, url: AppInfo.sourceCodeURL)
+                ExternalLinkRow(title: "Kaffee spendieren", image: .donate, url: AppInfo.donationURL)
                 // Einfacher mailto-Link.
                 ExternalLinkRow(
                     title: "Feedback senden",
@@ -77,7 +77,7 @@ struct SettingsView: View {
                             .monospacedDigit()
                     } label: {
                         Label {
-                            Text("App-Version").foregroundStyle(Color.primary)
+                            Text("Info").foregroundStyle(Color.primary)
                         } icon: {
                             Image(.version)
                         }
@@ -93,7 +93,11 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(AppTab.settings.title)
-        .appChrome(tab: .settings)
+        .appChrome(tab: .settings) {
+            ShareLink(item: AppInfo.shareURL, subject: Text("ClassBuddy"), message: Text(AppInfo.shareMessage)) {
+                Label("App teilen", image: .shareIos)
+            }
+        }
     }
 }
 

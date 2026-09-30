@@ -184,7 +184,7 @@ struct LogicTests {
 
     @Test("Gerätemodell und OS-Version sind gesetzt")
     func deviceInfo() {
-        #expect(InstallInfo.deviceModel.hasPrefix("iPad"))
+        #expect(InstallInfo.deviceModel.hasPrefix("iPad") || InstallInfo.deviceModel.hasPrefix("iPhone"))
         #expect(InstallInfo.shortModel("iPhone15,2") == "p15,2")
         #expect(InstallInfo.shortModel("iPad13,4") == "t13,4")
         #expect(InstallInfo.shortModel("arm64") == "arm64")
