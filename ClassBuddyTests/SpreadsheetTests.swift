@@ -4,6 +4,11 @@ import Testing
 
 @Suite("ZIP & XLSX")
 struct SpreadsheetTests {
+    /// Erwartete Texte sind deutsch – unabhängig von der Sprache des Simulators.
+    init() {
+        AppLanguage.current = .german
+    }
+
     @Test("ZIP: geschriebene Einträge lassen sich wieder lesen")
     func zipRoundTrip() throws {
         let entries: [(path: String, data: Data)] = [

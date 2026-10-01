@@ -79,13 +79,13 @@ final class SchoolClass {
         return ClassColor.blue.rawValue
     }
 
-    var title: String { "Klasse \(shortName)" }
+    var title: String { loc("Klasse \(shortName)") }
 
     /// Kürzel für den runden Klassen-Button in der Toolbar: höchstens 3 Zeichen.
     var buttonName: String { String(shortName.prefix(3)) }
 
     var detailLine: String {
-        [subjects.joined(separator: ", "), schoolYear].filter { !$0.isEmpty }.joined(separator: " · ")
+        [subjects.map(Self.displayName(ofSubject:)).joined(separator: ", "), schoolYear].filter { !$0.isEmpty }.joined(separator: " · ")
     }
 
     var sortedStudents: [Student] {
@@ -107,6 +107,35 @@ final class SchoolClass {
         "Biologie", "Chemie", "Physik", "Informatik",
         "Geschichte", "Erdkunde", "Politik", "Wirtschaft",
         "Religion", "Ethik", "Philosophie", "Kunst", "Musik", "Sport",
+    ]
+
+    /// Fächer werden auf Deutsch gespeichert; vorgeschlagene Fächer erscheinen in der App-Sprache,
+    /// eigene Fächer so, wie sie eingegeben wurden.
+    static func displayName(ofSubject subject: String) -> String {
+        subjectNames[subject].map(loc) ?? subject
+    }
+
+    private static let subjectNames: [String: LocalizedStringResource] = [
+        "Deutsch": "Deutsch",
+        "Mathematik": "Mathematik",
+        "Englisch": "Englisch",
+        "Französisch": "Französisch",
+        "Latein": "Latein",
+        "Spanisch": "Spanisch",
+        "Biologie": "Biologie",
+        "Chemie": "Chemie",
+        "Physik": "Physik",
+        "Informatik": "Informatik",
+        "Geschichte": "Geschichte",
+        "Erdkunde": "Erdkunde",
+        "Politik": "Politik",
+        "Wirtschaft": "Wirtschaft",
+        "Religion": "Religion",
+        "Ethik": "Ethik",
+        "Philosophie": "Philosophie",
+        "Kunst": "Kunst",
+        "Musik": "Musik",
+        "Sport": "Sport",
     ]
 }
 

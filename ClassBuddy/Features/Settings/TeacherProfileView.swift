@@ -16,10 +16,12 @@ struct TeacherProfileView: View {
 
             Section {
                 NavigationLink {
-                    SubjectPickerView(subjects: teacher.subjects, title: "Hauptfächer")
+                    SubjectPickerView(subjects: teacher.subjects, title: loc("Hauptfächer"))
                 } label: {
                     LabeledContent {
-                        Text(settings.values.teacher.subjects.isEmpty ? "Keine" : settings.values.teacher.subjects.joined(separator: ", "))
+                        Text(settings.values.teacher.subjects.isEmpty
+                            ? loc("Keine")
+                            : settings.values.teacher.subjects.map(SchoolClass.displayName(ofSubject:)).joined(separator: ", "))
                             .lineLimit(1)
                     } label: {
                         Label("Hauptfächer", image: .graduationCap)

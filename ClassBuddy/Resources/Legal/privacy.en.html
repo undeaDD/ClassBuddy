@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Privacy</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #000000;
+    --secondary: #6d6d72;
+    --separator: rgba(60, 60, 67, 0.18);
+    --accent: #9c6830;
+    --pill: rgba(156, 104, 48, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --text: #ffffff;
+      --secondary: #98989f;
+      --separator: rgba(84, 84, 88, 0.6);
+      --accent: #cd9c5e;
+      --pill: rgba(205, 156, 94, 0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px 20px 40px;
+    background: var(--bg);
+    color: var(--text);
+    font: -apple-system-body;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  .intro { color: var(--secondary); font: -apple-system-subheadline; margin: 4px 16px 24px; line-height: 1.4; }
+  h2 {
+    font: -apple-system-footnote;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--secondary);
+    margin: 28px 16px 8px;
+    font-weight: 400;
+  }
+  .card { background: var(--card); border-radius: 12px; overflow: hidden; }
+  .row { padding: 12px 16px; position: relative; }
+  .row + .row::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0;
+    border-top: 0.5px solid var(--separator);
+  }
+  .row-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .name { font: -apple-system-headline; }
+  .pill {
+    font: -apple-system-caption1; font-weight: 600;
+    color: var(--accent); background: var(--pill);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .desc { color: var(--secondary); font: -apple-system-subheadline; margin-top: 4px; line-height: 1.4; }
+  a { color: var(--accent); text-decoration: none; }
+  details { margin-top: 8px; }
+  summary { color: var(--accent); font: -apple-system-subheadline; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: " ›"; }
+  details[open] summary::after { content: " ⌄"; }
+  pre {
+    white-space: pre-wrap; font: -apple-system-caption2; font-family: ui-monospace, Menlo, monospace;
+    color: var(--secondary); margin: 8px 0 0; line-height: 1.45;
+  }
+  .footnote { color: var(--secondary); font: -apple-system-footnote; margin: 8px 16px 0; line-height: 1.4; }
+  html, body { overflow-x: hidden; }
+  body { overflow-wrap: anywhere; word-break: normal; }
+  pre { max-width: 100%; overflow-x: hidden; overflow-wrap: anywhere; }
+  ul { margin: 6px 0 0; padding-left: 20px; }
+  li { margin: 4px 0; line-height: 1.4; }
+  .row p { margin: 6px 0 0; line-height: 1.45; }
+  .muted { color: var(--secondary); }
+  .ok { color: #34c759; font-weight: 600; }
+  .todo { color: #ff3b30; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <p class="intro">Privacy policy for the ClassBuddy app (iPad and iPhone) under the General Data Protection Regulation (GDPR). As of September 30, 2026.</p>
+
+  <h2>At a glance</h2>
+  <div class="card">
+    <div class="row"><span class="ok">✓</span> No account, no registration</div>
+    <div class="row"><span class="ok">✓</span> No tracking, no analytics, no ads, no third-party SDKs</div>
+    <div class="row"><span class="ok">✓</span> All data stays local on your device. There is no ClassBuddy server.</div>
+    <div class="row"><span class="ok">✓</span> The provider receives no student data.</div>
+    <div class="row"><span class="ok">✓</span> The source code is publicly available.</div>
+  </div>
+
+  <h2>Responsibility</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Provider of the app</div>
+      <p class="muted">Dominic Drees (Devsforge.de), further details in the imprint<br>Email: <a href="mailto:dominic.drees@live.de">dominic.drees@live.de</a></p>
+      <p class="muted">The provider is the controller within the meaning of Art. 4(7) GDPR only for data it receives itself, i.e. exclusively for feedback emails that you send voluntarily.</p>
+    </div>
+    <div class="row">
+      <div class="name">Data you process in the app</div>
+      <p class="muted">You or your school are responsible for student data and other content you enter in ClassBuddy. For this, ClassBuddy is purely a tool on your device. The provider has no access to this data and does not process it.</p>
+    </div>
+  </div>
+
+  <h2>What data is stored</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Locally on the device</div>
+      <ul class="muted">
+        <li>Classes (short name, subjects, school year, color)</li>
+        <li>Students (first and last name, gender, birthday, notes)</li>
+        <li>Timetable, appointments, imported school and public holidays</li>
+        <li>Dashboard cards including the documents, images, website addresses, shortcut names and scripts you add</li>
+        <li>Your profile (name, gender, birthday, main subjects) and the school settings (including the name and address of the school)</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="name">Storage location and protection</div>
+      <p class="muted">The data is stored in the protected app container of the device and is encrypted by iOS or iPadOS as soon as a device passcode is set. There is no synchronization and no ClassBuddy cloud.</p>
+      <p class="muted">Note: If you use device backups (iCloud Backup or a backup via Mac or PC), these may also contain ClassBuddy data. Please check your backup settings if your school does not permit this.</p>
+    </div>
+    <div class="row">
+      <div class="name">Protective measures in the app</div>
+      <ul class="muted">
+        <li>App lock with Face ID or the device passcode; unlocking is bound to a keychain item that only the Secure Enclave releases</li>
+        <li>Privacy mode hides names, grades and notes on all pages; turning it off requires Face ID or the device passcode</li>
+        <li>Content is hidden in the app switcher</li>
+        <li>Regular automated security scans of the source code (Semgrep)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Internet connections</h2>
+  <div class="card">
+    <div class="row">
+      <p class="muted" style="margin-top:0">ClassBuddy only connects to the internet in the following cases. For technical reasons, your IP address is transmitted to the respective server. <strong>Student data is never transmitted.</strong></p>
+    </div>
+    <div class="row">
+      <div class="name">School and public holidays: openholidaysapi.org</div>
+      <p class="muted">Only when you tap “import” in the school settings. The selected federal state and the time period are transmitted.</p>
+    </div>
+    <div class="row">
+      <div class="name">Weather: open-meteo.com</div>
+      <p class="muted">Only when the “Weather” card is visible on the dashboard, at most every 30 minutes. The location of the school from the school settings is transmitted (not the location of the device).</p>
+    </div>
+    <div class="row">
+      <div class="name">Website cards</div>
+      <p class="muted">For the website icon (favicon), the stored website is fetched directly; the icon is cached locally. Tapping opens the website in Safari.</p>
+    </div>
+    <div class="row">
+      <div class="name">Script cards</div>
+      <p class="muted">Only when a script that you write yourself in a programmable card fetches an https address via <code>fetch</code> when tapped (at most one request per tap, without cookies). Only what the script itself sends is transmitted; student data is not available to scripts.</p>
+    </div>
+    <div class="row">
+      <div class="name">Feedback by email</div>
+      <p class="muted">“Send feedback” opens your mail app with a prepared draft. Only if you send it does the provider receive your email address, your message, and the app version, device model and system version. This data is used exclusively to handle your request and is deleted afterwards (legal basis: Art. 6(1)(f) GDPR, legitimate interest in answering inquiries).</p>
+    </div>
+    <div class="row">
+      <div class="name">External pages</div>
+      <p class="muted">The source code, the donation page and links on cards open pages of external providers. The privacy policies of the respective providers apply there.</p>
+    </div>
+  </div>
+
+  <h2>Permissions</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Face ID</div>
+      <p class="muted">Recognition is handled entirely by iOS or iPadOS. Biometric data never leaves the Secure Enclave; ClassBuddy only receives “successful” or “cancelled”.</p>
+    </div>
+    <div class="row">
+      <div class="name">Photos and files</div>
+      <p class="muted">Through the photo picker or the Files app, ClassBuddy only receives the single file you select and has no access to your entire library. The file is copied into the app locally.</p>
+    </div>
+    <div class="row">
+      <div class="name">Notifications</div>
+      <p class="muted">Only for the timer card: the first time you start a timer, the app asks whether it may notify you when it ends. The notification is scheduled locally on the device; nothing is transmitted.</p>
+    </div>
+    <div class="row">
+      <div class="name">Not used</div>
+      <p class="muted">Location, contacts, the device calendar, camera, microphone and Bluetooth are not used.</p>
+    </div>
+  </div>
+
+  <h2>Your rights</h2>
+  <div class="card">
+    <div class="row">
+      <p class="muted" style="margin-top:0">For data you manage in the app, you can exercise the rights of data subjects (Art. 15 to 21 GDPR) directly in the app:</p>
+      <ul class="muted">
+        <li><strong>Access and portability:</strong> Settings › App Settings › Export</li>
+        <li><strong>Rectification:</strong> edit entries at any time</li>
+        <li><strong>Erasure:</strong> delete individual entries, delete a class including its students, use “Delete all local data” or delete the app</li>
+      </ul>
+      <p class="muted">With regard to feedback emails, you have the right of access, rectification, erasure, restriction of processing, data portability and objection vis-à-vis the provider, as well as the right to lodge a complaint with a data protection supervisory authority (Art. 77 GDPR).</p>
+    </div>
+  </div>
+
+  <h2>Notes for teachers</h2>
+  <div class="card">
+    <div class="row">
+      <ul class="muted">
+        <li>Depending on the federal state and school, processing student data on private devices may require approval or be subject to conditions. Please clarify this in advance with your school management or the data protection officer.</li>
+        <li>Only record what you actually need (data minimization, Art. 5(1)(c) GDPR).</li>
+        <li>Set a device passcode and keep the app lock turned on.</li>
+        <li>Excel exports are not encrypted: store them securely, do not send them by unencrypted email and delete them after use.</li>
+        <li>Delete classes you no longer teach (e.g. at the end of the school year).</li>
+      </ul>
+      <p class="muted">These notes do not constitute legal advice.</p>
+    </div>
+  </div>
+
+  <p class="footnote">This privacy policy may be updated when new features are added. The current version is always part of the app.</p>
+</main>
+</body>
+</html>

@@ -244,7 +244,7 @@ struct DashboardView: View {
         schoolClass.dashboardHidden.removeAll { $0 == cardID }
         if !schoolClass.dashboardRemoved.contains(cardID) { schoolClass.dashboardRemoved.append(cardID) }
         try? modelContext.save()
-        toasts.success("Kachel entfernt")
+        toasts.success(loc("Kachel entfernt"))
     }
 
     /// Neue Kacheln einmalig registrieren; standardmäßig ausgeblendete landen in „Ausgeblendet“.
@@ -298,11 +298,11 @@ struct DashboardView: View {
         case .script:
             modelContext.insert(DashboardLink.newScript(in: schoolClass))
             try? modelContext.save()
-            toasts.success("Skript-Kachel hinzugefügt – lange drücken zum Bearbeiten")
+            toasts.success(loc("Skript-Kachel hinzugefügt – lange drücken zum Bearbeiten"))
         case .request:
             openURL(AppInfo.mailURL(
-                subject: "Kachel-Wunsch für ClassBuddy",
-                body: "Welche Kachel wünschst du dir und was soll sie zeigen?\n\n"
+                subject: loc("Kachel-Wunsch für ClassBuddy"),
+                body: loc("Welche Kachel wünschen Sie sich und was soll sie zeigen?\n\n")
             ))
         }
     }
@@ -325,9 +325,9 @@ struct DashboardView: View {
             let title = source.deletingPathExtension().lastPathComponent
             modelContext.insert(DashboardLink(title: title, kind: kind, location: path, schoolClass: schoolClass))
             try modelContext.save()
-            toasts.success(kind == .image ? "Bild hinzugefügt" : "Dokument hinzugefügt")
+            toasts.success(kind == .image ? loc("Bild hinzugefügt") : loc("Dokument hinzugefügt"))
         } catch {
-            toasts.error("Import fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Import fehlgeschlagen: \(error.localizedDescription)"))
         }
     }
 
@@ -338,9 +338,9 @@ struct DashboardView: View {
             let path = try LinkFileStore.importData(data, filename: "Foto.\(fileExtension)")
             modelContext.insert(DashboardLink(title: "", kind: .image, location: path, schoolClass: schoolClass))
             try modelContext.save()
-            toasts.success("Foto hinzugefügt")
+            toasts.success(loc("Foto hinzugefügt"))
         } catch {
-            toasts.error("Foto konnte nicht übernommen werden: \(error.localizedDescription)")
+            toasts.error(loc("Foto konnte nicht übernommen werden: \(error.localizedDescription)"))
         }
     }
 
@@ -349,9 +349,9 @@ struct DashboardView: View {
         modelContext.delete(link)
         do {
             try modelContext.save()
-            toasts.success("Kachel entfernt")
+            toasts.success(loc("Kachel entfernt"))
         } catch {
-            toasts.error("Entfernen fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Entfernen fehlgeschlagen: \(error.localizedDescription)"))
         }
     }
 }
@@ -439,13 +439,13 @@ extension DashboardView {
         let schedule = LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots)
         let next = schedule.nextLesson(forClass: schoolClass.id)
         return StatCard(
-            title: "Nächste Stunde",
+            title: loc("Nächste Stunde"),
             value: next.map { relativeDay($0.start) } ?? "–",
             detail: next.map { next in
-                ["\(next.slot.number). Stunde, \(next.slot.start.clockString)", next.lesson.subject]
+                [loc("\(next.slot.number). Stunde, \(next.slot.start.clockString)"), SchoolClass.displayName(ofSubject: next.lesson.subject)]
                     .filter { !$0.isEmpty }
                     .joined(separator: " · ")
-            } ?? "Noch keine Stunde im Kalender",
+            } ?? loc("Noch keine Stunde im Kalender"),
             symbol: AppTab.calendar.symbol
         ) {
             app.openCalendar(focusing: schoolClass.id, at: next?.start)
@@ -467,12 +467,12 @@ extension DashboardView {
 
     /// „♀ 46 % · ♂ 46 % · ⚧ 8 %“ (Anteile gerundet; ohne Angabe als „?“).
     private func genderBreakdown(_ students: [Student]) -> String {
-        guard !students.isEmpty else { return "Noch keine Schüler" }
+        guard !students.isEmpty else { return loc("Noch keine Schüler") }
         let total = Double(students.count)
         var parts: [String] = Gender.allCases.compactMap { gender in
             let count = students.filter { $0.gender == gender }.count
             guard count > 0 else { return nil }
-            return "\(gender.symbol) \(Int((Double(count) / total * 100).rounded())) %"
+            return loc("\(gender.symbol) \(Int((Double(count) / total * 100).rounded())) %")
         }
         let unknown = students.filter { $0.gender == nil }.count
         if unknown > 0 { parts.append("? \(Int((Double(unknown) / total * 100).rounded())) %") }
@@ -482,7 +482,7 @@ extension DashboardView {
     private func relativeDay(_ date: Date) -> String {
         let calendar = Calendar.school
         if calendar.isDateInToday(date) { return "Heute" }
-        if calendar.isDateInTomorrow(date) { return "Morgen" }
-        return date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated))
+        if calendar.isDateInTomorrow(date) { return loc("Morgen") }
+        return date.appFormatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated))
     }
 }

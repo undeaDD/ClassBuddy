@@ -4,6 +4,11 @@ import Testing
 
 @Suite("Einstellungen, Navigation & Katalog")
 struct ConfigurationTests {
+    /// Erwartete Texte sind deutsch – unabhängig von der Sprache des Simulators.
+    init() {
+        AppLanguage.current = .german
+    }
+
     // MARK: Einstellungen
 
     @Test("Gespeicherte Einstellungen älterer Versionen: fehlende Felder bekommen Standardwerte")

@@ -62,18 +62,18 @@ struct SettingsView: View {
 
             Section {
                 ExternalLinkRow(title: "GitHub", image: .githubCircle, url: AppInfo.sourceCodeURL)
-                ExternalLinkRow(title: "Kaffee spendieren", image: .donate, url: AppInfo.donationURL)
+                ExternalLinkRow(title: loc("Kaffee spendieren"), image: .donate, url: AppInfo.donationURL)
                 // Einfacher mailto-Link.
                 ExternalLinkRow(
-                    title: "Feedback senden",
+                    title: loc("Feedback senden"),
                     image: .sendMail,
                     url: AppInfo.feedbackMailURL,
-                    hint: "Öffnet die Mail-App"
+                    hint: loc("Öffnet die Mail-App")
                 )
                 // Antippen kopiert Version, OS-Version und Gerät (z. B. für Fehlerberichte).
                 Button {
                     UIPasteboard.general.string = versionText
-                    toasts.success("Version in die Zwischenablage kopiert")
+                    toasts.success(loc("Version in die Zwischenablage kopiert"))
                 } label: {
                     LabeledContent {
                         Text(versionText)
@@ -110,7 +110,7 @@ private struct ExternalLinkRow: View {
     let title: String
     let image: ImageResource
     let url: URL
-    var hint = "Öffnet in Safari"
+    var hint = loc("Öffnet in Safari")
 
     var body: some View {
         Button {
@@ -172,10 +172,10 @@ private struct SettingsHero: View {
     @ViewBuilder
     private var chips: some View {
         if let installDate = InstallInfo.installDate {
-            HeroChip(text: "Installiert am \(installDate.formatted(date: .abbreviated, time: .omitted))")
+            HeroChip(text: loc("Installiert am \(installDate.appFormatted(date: .abbreviated, time: .omitted))"))
         }
         if let installMethod {
-            HeroChip(text: "über \(installMethod.rawValue)")
+            HeroChip(text: loc("über \(installMethod.displayName)"))
         }
     }
 }
@@ -254,15 +254,20 @@ nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .imprint: "Impressum"
-        case .privacy: "Datenschutz"
-        case .licenses: "Lizenzen"
-        case .collaborators: "Mitwirkende"
+        case .imprint: loc("Impressum")
+        case .privacy: loc("Datenschutz")
+        case .licenses: loc("Lizenzen")
+        case .collaborators: loc("Mitwirkende")
         }
     }
 
+    /// Englisch: `<name>.en.html`, sonst die deutsche Fassung.
     var url: URL? {
-        Bundle.main.url(forResource: rawValue, withExtension: "html")
+        if AppLanguage.current.resolved == .english,
+           let english = Bundle.main.url(forResource: "\(rawValue).en", withExtension: "html") {
+            return english
+        }
+        return Bundle.main.url(forResource: rawValue, withExtension: "html")
     }
 }
 

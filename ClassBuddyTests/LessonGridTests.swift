@@ -4,6 +4,11 @@ import Testing
 
 @Suite("Stundenraster")
 struct LessonGridTests {
+    /// Erwartete Texte sind deutsch – unabhängig von der Sprache des Simulators.
+    init() {
+        AppLanguage.current = .german
+    }
+
     @Test("Standard-Raster: 8 Stunden, Pausen werden übersprungen")
     func defaultGrid() {
         let slots = SchoolSettings.Values().slots

@@ -12,7 +12,9 @@ enum AppInfo {
     /// „App teilen“ in den Einstellungen – vorerst die GitHub-Seite (Installation + Releases),
     /// später der App-Store-Link.
     static let shareURL = sourceCodeURL
-    static let shareMessage = "ClassBuddy – Klassen, Schüler und Stundenplan, lokal und mit Face ID geschützt."
+    static var shareMessage: String {
+        loc("ClassBuddy – Klassen, Schüler und Stundenplan, lokal und mit Face ID geschützt.")
+    }
 
     /// Spendenlink (PayPal.Me).
     static let donationURL = URL(string: "https://www.paypal.com/paypalme/undeaDD")!

@@ -48,8 +48,7 @@ struct GenderPicker: View {
     private var picker: some View {
         Picker(selection: $selection) {
             ForEach(Gender.allCases) { option in
-                // Im Menü großgeschrieben („♀ Weiblich“); `title` bleibt klein für Fließtext und Export.
-                Text("\(option.symbol) \(option.title.localizedCapitalized)").tag(Optional(option))
+                Text(verbatim: "\(option.symbol) \(option.displayTitle)").tag(Optional(option))
             }
             Text("Keine Angabe").tag(Gender?.none)
         } label: {

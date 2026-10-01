@@ -1,6 +1,5 @@
 import SwiftData
 import SwiftUI
-import UIKit
 
 /// Globaler Wochenkalender: Stundenraster aus den Schuleinstellungen,
 /// Unterrichtsstunden (Klasse + Fach), freie Termine, Ferien/Feiertage.
@@ -19,9 +18,6 @@ struct CalendarView: View {
     @Environment(\.device) private var device
 
     @State private var isNewEntryPresented = false
-    /// Tab-Leiste minimiert (`.tabBarMinimizeBehavior(.onScrollDown)`), gelesen per `TabBarMinimizationReader`.
-    @State private var isTabBarMinimized = false
-    @State private var pagerHeight: CGFloat = 0
 
     static let hourHeight: CGFloat = 64
     /// Höhe der Verlängerung unter dem Raster – mehr, als je sichtbar wird.
@@ -66,13 +62,13 @@ struct CalendarView: View {
     }
 
     private var monthTitle: String {
-        referenceDay.formatted(.dateTime.month(.abbreviated))
+        referenceDay.appFormatted(.dateTime.month(.abbreviated))
     }
 
     private var weekTitle: String {
         guard let first = days.first?.date, let last = days.last?.date else { return "" }
         let day = Date.FormatStyle.dateTime.day(.twoDigits).month(.twoDigits)
-        return "\(first.formatted(day)) – \(last.formatted(day.year(.twoDigits)))"
+        return "\(first.appFormatted(day)) – \(last.appFormatted(day.year(.twoDigits)))"
     }
 
     var body: some View {
@@ -130,21 +126,8 @@ struct CalendarView: View {
             Button("Neuer Termin", image: .plus) { isNewEntryPresented = true }
                 .disabled(security.isPrivacyModeOn)
         }
-        // ← Heute → schwebt unten über dem Inhalt (oberhalb einer evtl. vorhandenen Tab-Leiste).
-        .overlay(alignment: .bottom) {
-            CalendarPager()
-                .onGeometryChange(for: CGFloat.self, of: \.size.height) { pagerHeight = $0 }
-                .padding(.bottom, 10)
-                .offset(y: isTabBarMinimized && device.isPhone ? Self.minimizedPagerOffset(pagerHeight: pagerHeight) : 0)
-                .animation(.smooth, value: isTabBarMinimized)
-        }
-        // Nur im iPhone-Layout (auch schmales iPad-Fenster) – nur dort gibt es die untere Tab-Leiste.
-        .background {
-            if device.isPhone {
-                TabBarMinimizationReader { isTabBarMinimized = $0 }
-            }
-        }
-        .onChange(of: device) { isTabBarMinimized = false }
+        // ← Heute → schwebt unten über dem Inhalt und rutscht in die minimierte Tab-Leiste.
+        .floatingBottomBar { CalendarPager() }
         // Sheet statt Toolbar-Popover: blockiert die Tab-Leiste während der Eingabe.
         .sheet(isPresented: $isNewEntryPresented) {
             let suggestion = suggestedNewEntryStart
@@ -158,15 +141,6 @@ struct CalendarView: View {
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
             if isOn { isNewEntryPresented = false }
         }
-    }
-
-    // MARK: Tab-Leiste minimiert
-
-    /// Minimiert rutscht das Blättern in die Zeile der Tab-Leiste, neben ihren kleinen Knopf:
-    /// dessen Mitte liegt 31 pt unter der Oberkante der Tab-Leiste (7 pt Abstand + 48 pt / 2),
-    /// die Unterkante des Blätterns sonst 10 pt darüber.
-    private static func minimizedPagerOffset(pagerHeight: CGFloat) -> CGFloat {
-        10 + 31 + pagerHeight / 2
     }
 
     // MARK: Kopfzeile
@@ -187,10 +161,10 @@ struct CalendarView: View {
             ForEach(days, id: \.date) { day in
                 let isToday = calendar.isDateInToday(day.date)
                 VStack(spacing: 2) {
-                    Text(day.date.formatted(.dateTime.weekday(.abbreviated)))
+                    Text(day.date.appFormatted(.dateTime.weekday(.abbreviated)))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(isToday ? Color.accentColor : .secondary)
-                    Text(day.date.formatted(.dateTime.day()))
+                    Text(day.date.appFormatted(.dateTime.day()))
                         .font(.title3.weight(isToday ? .bold : .regular))
                         .monospacedDigit()
                         .foregroundStyle(isToday ? .white : .primary)
@@ -274,52 +248,6 @@ private extension View {
             presentationSizing(.fitted)
         } else {
             self
-        }
-    }
-}
-
-/// Liest, ob die Tab-Leiste gerade minimiert ist – SwiftUI und UIKit melden das nicht.
-/// Die `UITabBar` enthält eine breite Kapsel mit allen Tabs, die beim Minimieren ausgeblendet wird
-/// (übrig bleibt der kleine runde Knopf). Erkannt an der Breite, nicht an privaten Klassennamen.
-/// Geprüft pro Frame, solange die Seite sichtbar ist; ohne passende Kapsel gilt „nicht minimiert“.
-private struct TabBarMinimizationReader: UIViewControllerRepresentable {
-    let onChange: (Bool) -> Void
-
-    func makeUIViewController(context: Context) -> ReaderController { ReaderController() }
-
-    func updateUIViewController(_ controller: ReaderController, context: Context) {
-        controller.onChange = onChange
-    }
-
-    final class ReaderController: UIViewController {
-        var onChange: (Bool) -> Void = { _ in }
-        private var displayLink: CADisplayLink?
-        /// `nil` bis zur ersten Prüfung – dann wird der Zustand in jedem Fall gemeldet.
-        private var isMinimized: Bool?
-
-        override func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            isMinimized = nil
-            displayLink?.invalidate()
-            let link = CADisplayLink(target: self, selector: #selector(check))
-            link.preferredFrameRateRange = CAFrameRateRange(minimum: 15, maximum: 30)
-            link.add(to: .main, forMode: .common)
-            displayLink = link
-        }
-
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            displayLink?.invalidate()
-            displayLink = nil
-        }
-
-        @objc private func check() {
-            guard let tabBar = tabBarController?.tabBar else { return }
-            let tabsCapsule = tabBar.subviews.first { $0.bounds.width > tabBar.bounds.width / 2 }
-            let minimized = tabsCapsule?.isHidden ?? false
-            guard minimized != isMinimized else { return }
-            isMinimized = minimized
-            onChange(minimized)
         }
     }
 }

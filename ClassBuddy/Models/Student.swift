@@ -65,11 +65,21 @@ nonisolated enum Gender: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
+    /// Wert im Excel-Backup und Erkennung beim Import (immer Deutsch).
     var title: String {
         switch self {
         case .female: "weiblich"
         case .male: "männlich"
         case .diverse: "divers"
+        }
+    }
+
+    /// Anzeige in der App-Sprache (großgeschrieben, z. B. im Picker „♀ Weiblich“).
+    var displayTitle: String {
+        switch self {
+        case .female: loc("Weiblich")
+        case .male: loc("Männlich")
+        case .diverse: loc("Divers")
         }
     }
 

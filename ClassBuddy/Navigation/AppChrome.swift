@@ -95,7 +95,7 @@ struct PrivacyModeButton: View {
         .foregroundStyle(isOn ? Color.orange : Color.accentColor)
         .tint(isOn ? .orange : Color.accentColor)
         .disabled(security.isAuthenticating)
-        .help(isOn ? "Sensible Daten anzeigen (\(security.biometryName))" : "Sensible Daten ausblenden")
+        .help(isOn ? loc("Sensible Daten anzeigen (\(security.biometryName))") : "Sensible Daten ausblenden")
         .keyboardShortcut("p", modifiers: [.command, .shift])
     }
 }

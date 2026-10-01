@@ -13,10 +13,10 @@ struct ClassScopedView<Content: View>: View {
             content(schoolClass)
         } else {
             EmptyStateView(
-                title: "Keine Klasse ausgewählt",
+                title: loc("Keine Klasse ausgewählt"),
                 message: classes.isEmpty
-                    ? "Lege oben links deine erste Klasse an."
-                    : "Wähle oben links eine Klasse aus.",
+                    ? loc("Legen Sie oben links Ihre erste Klasse an.")
+                    : loc("Wählen Sie oben links eine Klasse aus."),
                 symbol: .custom(.userXmark)
             )
             .background(Color(.systemGroupedBackground))

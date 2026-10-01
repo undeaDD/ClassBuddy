@@ -91,8 +91,8 @@ final class ClassTimer {
         guard granted else { return }
 
         let content = UNMutableNotificationContent()
-        content.title = "Timer abgelaufen"
-        content.body = "\(durationMinutes) Minuten sind um."
+        content.title = loc("Timer abgelaufen")
+        content.body = loc("\(durationMinutes) Minuten sind um.")
         content.sound = .default
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endDate.timeIntervalSinceNow, 1), repeats: false)
         center.removePendingNotificationRequests(withIdentifiers: [Self.notificationID])
@@ -136,7 +136,7 @@ struct TimerCard: View {
                         .monospacedDigit()
                         .foregroundStyle(Color.accentColor)
                         .contentTransition(.numericText(countsDown: true))
-                    Text("\(timer.durationMinutes) min · endet um \(end.formatted(date: .omitted, time: .shortened))")
+                    Text("\(timer.durationMinutes) min · endet um \(end.appFormatted(date: .omitted, time: .shortened))")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {

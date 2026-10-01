@@ -22,20 +22,27 @@ struct OnboardingView: View {
     private let pages = [
         Page(
             image: .book,
-            title: "Willkommen bei ClassBuddy",
-            text: "Verwalte Klassen mit Fächern und Farben, pflege deine Schülerliste und behalte Stundenplan und Termine im Blick."
+            title: loc("Willkommen bei ClassBuddy"),
+            text: loc("""
+                Verwalten Sie Klassen mit Fächern und Farben, pflegen Sie Ihre Schülerliste \
+                und behalten Sie Stundenplan und Termine im Blick.
+                """)
         ),
         Page(
             image: .shield,
-            title: "Sicher, offline, DSGVO-konform",
-            text: "Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, geschützt mit Face ID. "
-                + "Per Excel-Export sicherst du deine Daten und importierst sie jederzeit wieder."
+            title: loc("Sicher, offline, DSGVO-konform"),
+            text: loc("""
+                Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, geschützt mit Face ID. \
+                Per Excel-Export sichern Sie Ihre Daten und importieren sie jederzeit wieder.
+                """)
         ),
         Page(
             image: .heart,
-            title: "Hilf mit, ClassBuddy besser zu machen",
-            text: "Fehlt dir etwas? Schreib mir über „Feedback senden“ in den Einstellungen. "
-                + "Gefällt dir die App, freue ich mich über eine Empfehlung oder einen Kaffee."
+            title: loc("Helfen Sie mit, ClassBuddy besser zu machen"),
+            text: loc("""
+                Fehlt Ihnen etwas? Schreiben Sie mir über „Feedback senden“ in den Einstellungen. \
+                Gefällt Ihnen die App, freue ich mich über eine Empfehlung oder einen Kaffee.
+                """)
         ),
     ]
 

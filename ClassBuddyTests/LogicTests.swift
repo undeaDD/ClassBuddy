@@ -7,6 +7,11 @@ import UIKit
 
 @Suite("Übersicht-Logik & Hilfen")
 struct LogicTests {
+    /// Erwartete Texte sind deutsch – unabhängig von der Sprache des Simulators.
+    init() {
+        AppLanguage.current = .german
+    }
+
     private static func date(_ year: Int, _ month: Int, _ day: Int, _ hour: Int = 0, _ minute: Int = 0, _ second: Int = 0) -> Date {
         Calendar.school.date(from: DateComponents(year: year, month: month, day: day, hour: hour, minute: minute, second: second))!
     }

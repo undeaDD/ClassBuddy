@@ -10,6 +10,11 @@ enum InstallInfo {
         case developer = "Entwickler-Signatur"
         case testFlight = "TestFlight"
         case appStore = "App Store"
+
+        /// Anzeige in der App-Sprache (Produktnamen bleiben).
+        var displayName: String {
+            self == .developer ? loc("Entwickler-Signatur") : rawValue
+        }
     }
 
     /// Wie die App installiert wurde (best effort). Fragt bei Store-Builds StoreKit.

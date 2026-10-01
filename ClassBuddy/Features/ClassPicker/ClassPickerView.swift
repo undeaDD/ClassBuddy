@@ -36,7 +36,7 @@ struct ClassPickerView: View {
                         // Sheet über den ganzen Bildschirm: vollwertiger Leerzustand.
                         EmptyStateView(
                             title: "Noch keine Klassen",
-                            message: "Lege deine erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen.",
+                            message: loc("Legen Sie Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen."),
                             symbol: .custom(.userXmark)
                         ) {
                             Button("Klasse anlegen") { editorRoute = .new }
@@ -51,7 +51,7 @@ struct ClassPickerView: View {
                 } else {
                     List {
                         ForEach(sections, id: \.year) { section in
-                            Section(section.year.isEmpty ? "Ohne Schuljahr" : "Schuljahr \(section.year)") {
+                            Section(section.year.isEmpty ? "Ohne Schuljahr" : loc("Schuljahr \(section.year)")) {
                                 ForEach(section.classes) { schoolClass in
                                     row(for: schoolClass)
                                 }
@@ -59,7 +59,7 @@ struct ClassPickerView: View {
                         }
                     }
                     // Suche im Privatsphäre-Modus ausblenden (würde Namen verraten).
-                    .searchable(if: canEdit, text: $searchText, prompt: "Klasse oder Fach")
+                    .searchable(if: canEdit, text: $searchText, prompt: loc("Klasse oder Fach"))
                     .overlay {
                         if sections.isEmpty {
                             SearchEmptyStateView(text: searchText)
@@ -190,9 +190,9 @@ struct ClassPickerView: View {
         modelContext.delete(schoolClass)
         do {
             try modelContext.save()
-            toasts.success("\(title) gelöscht")
+            toasts.success(loc("\(title) gelöscht"))
         } catch {
-            toasts.error("Löschen fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Löschen fehlgeschlagen: \(error.localizedDescription)"))
         }
     }
 }

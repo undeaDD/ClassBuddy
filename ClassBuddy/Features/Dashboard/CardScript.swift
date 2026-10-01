@@ -14,8 +14,12 @@ import Network
 /// `await fetch(url, { method, headers, body })` lädt Text – nur in `tap`, nur https, ohne Cookies,
 /// eine Anfrage pro Antippen. Keine Dateien, kein Zugriff auf die App-Daten.
 nonisolated enum CardScript {
-    /// Beispiel, mit dem jede neue Skript-Kachel startet.
-    static let example = """
+    /// Beispiel, mit dem jede neue Skript-Kachel startet – in der App-Sprache.
+    static var example: String {
+        AppLanguage.current.resolved == .english ? englishExample : germanExample
+    }
+
+    private static let germanExample = """
         // Programmierbare Kachel (JavaScript)
         //
         // render(ctx) bestimmt, was die Kachel zeigt:
@@ -50,6 +54,45 @@ nonisolated enum CardScript {
           ctx.state.count = (ctx.state.count ?? 0) + 1;
           if (ctx.state.count % 10 === 0) {
             toast(`Schon ${ctx.state.count}-mal getippt!`);
+          }
+        }
+        """
+
+    private static let englishExample = """
+        // Programmable card (JavaScript)
+        //
+        // render(ctx) decides what the card shows:
+        //   { title, value, subtitle }
+        // tap(ctx) runs when the card is tapped, then the card is redrawn.
+        //
+        // ctx.state        is saved (e.g. a counter)
+        // ctx.schoolClass  { name, schoolYear, studentCount }
+        // ctx.network      { online, type }  type: wifi, cellular, wired, other, none
+        // ctx.now          current date
+        //
+        // open("https://…")  opens a link or an app
+        // toast("Text")      shows a short message
+        //
+        // Internet only in tap – one request per tap, at most 5 s, text only:
+        //   async function tap(ctx) {
+        //     const res = await fetch("https://…");  // throws an error when offline
+        //     ctx.state.data = await res.json();      // or res.text(), res.ok, res.status
+        //   }
+        // render stays synchronous and shows what is in ctx.state.
+
+        function render(ctx) {
+          const count = ctx.state.count ?? 0;
+          return {
+            title: "Counter",
+            value: String(count),
+            subtitle: `Class ${ctx.schoolClass.name} · Tap to count up`,
+          };
+        }
+
+        function tap(ctx) {
+          ctx.state.count = (ctx.state.count ?? 0) + 1;
+          if (ctx.state.count % 10 === 0) {
+            toast(`Tapped ${ctx.state.count} times already!`);
           }
         }
         """
@@ -94,14 +137,14 @@ nonisolated enum CardScript {
             }
             Task {
                 try? await Task.sleep(for: timeLimit)
-                once.resume(Output(state: state, error: "Zeitüberschreitung – läuft das Skript endlos?"))
+                once.resume(Output(state: state, error: loc("Zeitüberschreitung – läuft das Skript endlos?")))
             }
         }
     }
 
     /// Synchroner Lauf in einer frischen JavaScript-Umgebung.
     static func evaluate(_ source: String, mode: Mode, state: String, schoolClass: ClassInfo) -> Output {
-        guard let context = JSContext() else { return Output(state: state, error: "JavaScript nicht verfügbar") }
+        guard let context = JSContext() else { return Output(state: state, error: loc("JavaScript nicht verfügbar")) }
         var exception: String?
         context.exceptionHandler = { _, value in
             if exception == nil { exception = value?.toString() }
@@ -126,11 +169,11 @@ nonisolated enum CardScript {
             return Output(state: state, error: error.toString())
         }
         guard let result = context.objectForKeyedSubscript("__result"), result.isString else {
-            return Output(state: state, error: "tap wird nie fertig")
+            return Output(state: state, error: loc("tap wird nie fertig"))
         }
         guard let data = result.toString().data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
-        else { return Output(state: state, error: "Unerwartetes Ergebnis") }
+        else { return Output(state: state, error: loc("Unerwartetes Ergebnis")) }
 
         let rendered = json["render"] as? [String: Any] ?? [:]
         let effects = json["effects"] as? [[String: String]] ?? []
@@ -154,10 +197,10 @@ nonisolated enum CardScript {
                 current?.exception = JSValue(newErrorFromMessage: message, in: current)
                 return nil
             }
-            guard remaining > 0 else { return fail("Nur eine Anfrage pro Antippen") }
+            guard remaining > 0 else { return fail(loc("Nur eine Anfrage pro Antippen")) }
             remaining -= 1
             guard let url = URL(string: urlString), url.scheme?.lowercased() == "https", url.host() != nil else {
-                return fail("fetch erlaubt nur https-Adressen")
+                return fail(loc("fetch erlaubt nur https-Adressen"))
             }
 
             var request = URLRequest(url: url, timeoutInterval: requestTimeout)
@@ -180,11 +223,11 @@ nonisolated enum CardScript {
             done.wait()
 
             let result = box.get()
-            if let error = result.error { return fail("fetch fehlgeschlagen: \(error.localizedDescription)") }
-            guard let response = result.response else { return fail("fetch: keine Antwort") }
+            if let error = result.error { return fail(loc("fetch fehlgeschlagen: \(error.localizedDescription)")) }
+            guard let response = result.response else { return fail(loc("fetch: keine Antwort")) }
             let data = result.data ?? Data()
-            guard data.count <= maxResponseBytes else { return fail("fetch: Antwort größer als 1 MB") }
-            guard let body = String(bytes: data, encoding: .utf8) else { return fail("fetch: Antwort ist kein Text") }
+            guard data.count <= maxResponseBytes else { return fail(loc("fetch: Antwort größer als 1 MB")) }
+            guard let body = String(bytes: data, encoding: .utf8) else { return fail(loc("fetch: Antwort ist kein Text")) }
             return [
                 "ok": (200..<300).contains(response.statusCode),
                 "status": response.statusCode,
@@ -203,14 +246,23 @@ nonisolated enum CardScript {
         }
     }
 
+    /// Text als JavaScript-String-Literal (für übersetzte Fehlermeldungen im Prelude).
+    private static func jsString(_ text: String) -> String {
+        guard let data = try? JSONSerialization.data(withJSONObject: [text]),
+              let array = String(bytes: data, encoding: .utf8)
+        else { return "\"\"" }
+        return String(array.dropFirst().dropLast())
+    }
+
     /// Helfer und Ablauf; Ergebnis als JSON, damit nur einfache Werte die Umgebung verlassen.
-    private static let prelude = """
+    /// Bei jedem Lauf neu gebaut, damit Fehlermeldungen in der aktuellen App-Sprache sind.
+    private static var prelude: String { """
         const __effects = [];
         function open(url) { __effects.push({ type: "open", value: String(url) }); }
         function toast(text) { __effects.push({ type: "toast", value: String(text) }); }
         var __canFetch = false;
         function fetch(url, options) {
-          if (!__canFetch) throw new Error("fetch nur in tap(ctx) – render ist synchron");
+          if (!__canFetch) throw new Error(\(jsString(loc("fetch nur in tap(ctx) – render ist synchron"))));
           const res = __fetch(String(url), options ?? {});
           return Promise.resolve({
             ok: res.ok, status: res.status,
@@ -219,7 +271,7 @@ nonisolated enum CardScript {
         }
         function __render(ctx) {
           const rendered = typeof render === "function" ? render(ctx) : {};
-          if (rendered instanceof Promise) throw new Error("render muss synchron sein – fetch nur in tap(ctx)");
+          if (rendered instanceof Promise) throw new Error(\(jsString(loc("render muss synchron sein – fetch nur in tap(ctx)"))));
           return rendered ?? {};
         }
         var __result, __error;
@@ -238,6 +290,7 @@ nonisolated enum CardScript {
           })().catch(e => { __error = String(e); });
         }
         """
+    }
 }
 
 extension CardScript.Output {

@@ -60,8 +60,8 @@ struct LinkEditorView: View {
     }
 
     private var navigationTitle: String {
-        guard isNew else { return "Kachel bearbeiten" }
-        return route.kind == .shortcut ? "Kurzbefehl hinzufügen" : "Website hinzufügen"
+        guard isNew else { return loc("Kachel bearbeiten") }
+        return route.kind == .shortcut ? loc("Kurzbefehl hinzufügen") : loc("Website hinzufügen")
     }
 
     var body: some View {
@@ -81,7 +81,7 @@ struct LinkEditorView: View {
                     CancelButton()
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    ConfirmButton(title: isNew ? "Hinzufügen" : "Sichern", action: save)
+                    ConfirmButton(title: isNew ? "Hinzufügen" : loc("Sichern"), action: save)
                         .disabled(!isValid)
                 }
             }

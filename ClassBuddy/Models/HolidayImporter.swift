@@ -14,6 +14,30 @@ enum HolidayImporter {
         ("DE-TH", "Thüringen"),
     ]
 
+    /// Name des Bundeslands in der App-Sprache (`federalStates` bleibt Deutsch, z. B. für die Wetter-Ortssuche).
+    static func displayName(ofState code: String) -> String {
+        stateNames[code].map(loc) ?? federalStates.first { $0.code == code }?.name ?? code
+    }
+
+    private static let stateNames: [String: LocalizedStringResource] = [
+        "DE-BW": "Baden-Württemberg",
+        "DE-BY": "Bayern",
+        "DE-BE": "Berlin",
+        "DE-BB": "Brandenburg",
+        "DE-HB": "Bremen",
+        "DE-HH": "Hamburg",
+        "DE-HE": "Hessen",
+        "DE-MV": "Mecklenburg-Vorpommern",
+        "DE-NI": "Niedersachsen",
+        "DE-NW": "Nordrhein-Westfalen",
+        "DE-RP": "Rheinland-Pfalz",
+        "DE-SL": "Saarland",
+        "DE-SN": "Sachsen",
+        "DE-ST": "Sachsen-Anhalt",
+        "DE-SH": "Schleswig-Holstein",
+        "DE-TH": "Thüringen",
+    ]
+
     private struct APIHoliday: Decodable {
         struct LocalizedText: Decodable {
             let language: String

@@ -62,7 +62,7 @@ struct ClassEditorView: View {
 
                 Section {
                     ForEach(subjects, id: \.self) { subject in
-                        Text(subject)
+                        Text(SchoolClass.displayName(ofSubject: subject))
                     }
                     .onDelete { subjects.remove(atOffsets: $0) }
                     .onMove { subjects.move(fromOffsets: $0, toOffset: $1) }
@@ -107,7 +107,7 @@ struct ClassEditorView: View {
                         .glassToolbarButton()
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    ConfirmButton(title: isNew ? "Anlegen" : "Sichern", action: save)
+                    ConfirmButton(title: isNew ? loc("Anlegen") : loc("Sichern"), action: save)
                         .glassToolbarButton(prominent: true)
                         .disabled(!isValid)
                 }
@@ -167,7 +167,7 @@ struct ClassEditorView: View {
 struct SubjectPickerView: View {
     @Binding var subjects: [String]
     var preferred: [String] = []
-    var title = "Fächer"
+    var title = loc("Fächer")
 
     @State private var customSubject = ""
 
@@ -185,7 +185,7 @@ struct SubjectPickerView: View {
             if preferred.isEmpty {
                 ForEach(SchoolClass.suggestedSubjects, id: \.self, content: row)
             } else {
-                Section("Deine Hauptfächer") {
+                Section("Ihre Hauptfächer") {
                     ForEach(preferred, id: \.self, content: row)
                 }
                 Section("Weitere Fächer") {
@@ -225,7 +225,7 @@ struct SubjectPickerView: View {
             }
         } label: {
             HStack {
-                Text(subject)
+                Text(SchoolClass.displayName(ofSubject: subject))
                     .foregroundStyle(Color.primary)
                 Spacer()
                 if isSelected {

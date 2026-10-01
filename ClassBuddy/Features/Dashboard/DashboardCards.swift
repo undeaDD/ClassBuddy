@@ -97,9 +97,9 @@ extension LinkCard {
     static func kindTitle(_ kind: DashboardLink.Kind) -> String {
         switch kind {
         case .website: "Website"
-        case .shortcut: "Kurzbefehl"
-        case .script: "Skript"
-        case .file, .image: "Dokument"
+        case .shortcut: loc("Kurzbefehl")
+        case .script: loc("Skript")
+        case .file, .image: loc("Dokument")
         }
     }
 
@@ -225,7 +225,9 @@ struct RandomStudentCard: View {
         StatCard(
             title: DashboardBuiltInCard.randomStudent.title,
             value: picked.map(Self.shortName) ?? "?",
-            detail: students.isEmpty ? "Noch keine Schüler" : (picked == nil ? "Antippen zum Auswählen" : "Antippen für neue Auswahl"),
+            detail: students.isEmpty
+                ? loc("Noch keine Schüler")
+                : (picked == nil ? loc("Antippen zum Auswählen") : loc("Antippen für neue Auswahl")),
             symbol: DashboardBuiltInCard.randomStudent.symbol
         ) {
             pick()

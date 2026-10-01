@@ -10,11 +10,21 @@ enum AppAppearance: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     static let storageKey = "app.appearance"
 
+    /// Wert im Excel-Backup (immer Deutsch, unabhängig von der App-Sprache).
     var title: String {
         switch self {
         case .system: "System"
         case .light: "Hell"
         case .dark: "Dunkel"
+        }
+    }
+
+    /// Anzeige in der App-Sprache.
+    var displayTitle: String {
+        switch self {
+        case .system: loc("System")
+        case .light: loc("Hell")
+        case .dark: loc("Dunkel")
         }
     }
 
@@ -62,6 +72,22 @@ struct AppSettingsView: View {
     @AppStorage(AppPreference.keepsScreenAwake) private var keepsScreenAwake = false
     @AppStorage(AppPreference.minimizesBarsOnScroll) private var minimizesBarsOnScroll = true
     @AppStorage(AppPreference.hapticFeedback) private var hapticFeedback = false
+    @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
+
+    /// Erst `loc` umstellen, dann – nach dem Schließen des Menüs – speichern: Das baut die ganze
+    /// Oberfläche neu auf (`.id` an der Wurzel), was bei noch offenem Menü hängen kann.
+    private var languageBinding: Binding<AppLanguage> {
+        Binding(
+            get: { language },
+            set: { newValue in
+                AppLanguage.current = newValue
+                Task {
+                    try? await Task.sleep(for: .milliseconds(350))
+                    language = newValue
+                }
+            }
+        )
+    }
 
     @State private var dataSize: Int64?
     @State private var isDeleteConfirmationPresented = false
@@ -70,16 +96,20 @@ struct AppSettingsView: View {
     @State private var isImporterPresented = false
     @State private var pendingImport: Data?
 
-    private static let deleteInfo = """
-        Löscht Klassen, Schüler, Stunden, Termine, Ferien, Kacheln und Dokumente sowie \
-        Profil- und Schuleinstellungen. App-Sperre und Darstellung bleiben erhalten.
-        """
+    private static var deleteInfo: String {
+        loc("""
+            Löscht Klassen, Schüler, Stunden, Termine, Ferien, Kacheln und Dokumente sowie \
+            Profil- und Schuleinstellungen. App-Sperre und Darstellung bleiben erhalten.
+            """)
+    }
 
-    private static let transferInfo = """
-        Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, \
-        Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. \
-        Ein Import ersetzt alle Daten. Dokumente (Dateien) sind nicht enthalten.
-        """
+    private static var transferInfo: String {
+        loc("""
+            Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, \
+            Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. \
+            Ein Import ersetzt alle Daten. Dokumente (Dateien) sind nicht enthalten.
+            """)
+    }
 
     private var appLockBinding: Binding<Bool> {
         Binding(
@@ -91,9 +121,17 @@ struct AppSettingsView: View {
     var body: some View {
         Form {
             Section {
+                Picker(selection: languageBinding) {
+                    ForEach(AppLanguage.allCases) { option in
+                        Text(verbatim: option.title).tag(option)
+                    }
+                } label: {
+                    Label("Sprache", image: .translate)
+                }
+                .pickerStyle(.menu)
                 Picker(selection: $appearance) {
                     ForEach(AppAppearance.allCases) { option in
-                        Text(option.title).tag(option)
+                        Text(option.displayTitle).tag(option)
                     }
                 } label: {
                     Label("Erscheinungsbild", image: .palette)
@@ -114,18 +152,18 @@ struct AppSettingsView: View {
             } header: {
                 Text("Darstellung")
             } footer: {
-                Text(
-                    "Tab-Titel betreffen die untere Tab-Leiste (iPhone). UI Minimieren verkleinert Tab- und Navigationsleiste "
-                        + "beim Runterscrollen. Haptisches Feedback vibriert leicht bei Kacheln, Klassenwechsel und Meldungen. "
-                        + "Wach halten gilt, solange die App geöffnet ist."
-                )
+                Text("""
+                    Tab-Titel betreffen die untere Tab-Leiste (iPhone). UI Minimieren verkleinert Tab- und Navigationsleiste \
+                    beim Runterscrollen. Haptisches Feedback vibriert leicht bei Kacheln, Klassenwechsel und Meldungen. \
+                    Wach halten gilt, solange die App geöffnet ist.
+                    """)
             }
 
             Section("Hilfe") {
                 Button {
                     hasCompletedOnboarding = false
                 } label: {
-                    SettingsActionLabel(title: "Einführung erneut anzeigen", image: .helpCircle)
+                    SettingsActionLabel(title: loc("Einführung erneut anzeigen"), image: .helpCircle)
                 }
             }
 
@@ -142,12 +180,12 @@ struct AppSettingsView: View {
 
             Section {
                 Button(action: export) {
-                    SettingsActionLabel(title: "Exportieren", image: .shareIos)
+                    SettingsActionLabel(title: loc("Exportieren"), image: .shareIos)
                 }
                 Button {
                     isImporterPresented = true
                 } label: {
-                    SettingsActionLabel(title: "Importieren", image: .import)
+                    SettingsActionLabel(title: loc("Importieren"), image: .import)
                 }
             } header: {
                 Text("Export & Import")
@@ -169,7 +207,7 @@ struct AppSettingsView: View {
                 Button(role: .destructive) {
                     isDeleteConfirmationPresented = true
                 } label: {
-                    SettingsActionLabel(title: "Alle lokalen Daten löschen", image: .trash, isDestructive: true)
+                    SettingsActionLabel(title: loc("Alle lokalen Daten löschen"), image: .trash, isDestructive: true)
                 }
                 .disabled(security.isPrivacyModeOn)
             } header: {
@@ -189,7 +227,7 @@ struct AppSettingsView: View {
                 Task { await deleteAllData() }
             }
         } message: {
-            Text("Das kann nicht rückgängig gemacht werden. Exportiere vorher, was du behalten möchtest.")
+            Text("Das kann nicht rückgängig gemacht werden. Exportieren Sie vorher, was Sie behalten möchten.")
         }
         .fileExporter(
             isPresented: $isExporterPresented,
@@ -198,9 +236,9 @@ struct AppSettingsView: View {
             defaultFilename: "ClassBuddy-Export-\(Date.now.formatted(.iso8601.year().month().day()))"
         ) { result in
             if case .failure(let error) = result {
-                toasts.error("Export fehlgeschlagen: \(error.localizedDescription)")
+                toasts.error(loc("Export fehlgeschlagen: \(error.localizedDescription)"))
             } else {
-                toasts.success("Export gespeichert")
+                toasts.success(loc("Export gespeichert"))
             }
         }
         .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: [.xlsx]) { result in
@@ -210,7 +248,7 @@ struct AppSettingsView: View {
                 defer { if accessing { url.stopAccessingSecurityScopedResource() } }
                 pendingImport = try Data(contentsOf: url)
             } catch {
-                toasts.error("Datei konnte nicht gelesen werden: \(error.localizedDescription)")
+                toasts.error(loc("Datei konnte nicht gelesen werden: \(error.localizedDescription)"))
             }
         }
         .confirmationDialog(
@@ -233,17 +271,21 @@ struct AppSettingsView: View {
             exportFile = SpreadsheetFile(data: data)
             isExporterPresented = true
         } catch {
-            toasts.error("Export fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Export fehlgeschlagen: \(error.localizedDescription)"))
         }
     }
 
     private func importData(_ data: Data?) async {
         pendingImport = nil
-        guard let data, await security.confirmDestructiveAction(reason: "Daten importieren und ersetzen") else { return }
+        guard let data, await security.confirmDestructiveAction(reason: loc("Daten importieren und ersetzen")) else { return }
         do {
             let result = try Backup.import(data, context: modelContext, currentSettings: settings.values)
             settings.values = result.settings.values
             if let imported = result.settings.appearance { appearance = imported }
+            if let imported = result.settings.language, imported != language {
+                AppLanguage.current = imported
+                language = imported
+            }
             // Ausgewählte Klasse behalten, wenn es sie noch gibt.
             let classIDs = try modelContext.fetch(FetchDescriptor<SchoolClass>()).map(\.id)
             if let selected = app.selectedClassID, !classIDs.contains(selected) {
@@ -253,7 +295,7 @@ struct AppSettingsView: View {
             toasts.success(result.summary.text)
         } catch {
             modelContext.rollback()
-            toasts.error("Import fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Import fehlgeschlagen: \(error.localizedDescription)"))
         }
         await refreshDataSize()
     }
@@ -263,16 +305,16 @@ struct AppSettingsView: View {
     }
 
     private func deleteAllData() async {
-        guard await security.confirmDestructiveAction(reason: "Alle lokalen Daten löschen") else { return }
+        guard await security.confirmDestructiveAction(reason: loc("Alle lokalen Daten löschen")) else { return }
         do {
             try LocalDataStore.deleteAll(in: modelContext)
             settings.values = SchoolSettings.Values()
             app.selectedClassID = nil
             app.calendarFocusClassID = nil
             UserDefaults.standard.removeObject(forKey: AppTabView.customizationKey)
-            toasts.success("Alle lokalen Daten wurden gelöscht")
+            toasts.success(loc("Alle lokalen Daten wurden gelöscht"))
         } catch {
-            toasts.error("Löschen fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Löschen fehlgeschlagen: \(error.localizedDescription)"))
         }
         await refreshDataSize()
     }

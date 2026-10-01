@@ -22,9 +22,9 @@ nonisolated enum WeatherService {
 
         var errorDescription: String? {
             switch self {
-            case .noLocation: "Ort der Schule in den Schuleinstellungen eintragen"
-            case .placeNotFound: "Schulort nicht gefunden"
-            case .badResponse: "Wetter nicht verfügbar"
+            case .noLocation: loc("Ort der Schule in den Schuleinstellungen eintragen")
+            case .placeNotFound: loc("Schulort nicht gefunden")
+            case .badResponse: loc("Wetter nicht verfügbar")
             }
         }
     }
@@ -153,24 +153,24 @@ nonisolated struct WeatherCondition: Equatable, Sendable {
     let title: String
 
     init(code: Int) {
-        title = Self.titles.first { $0.codes.contains(code) }?.title ?? "Unbekannt"
+        title = Self.titles.first { $0.codes.contains(code) }?.title ?? loc("Unbekannt")
     }
 
     private static let titles: [(codes: Set<Int>, title: String)] = [
-        ([0], "Klar"),
-        ([1], "Überwiegend klar"),
-        ([2], "Teilweise bewölkt"),
-        ([3], "Bedeckt"),
-        ([45, 48], "Nebel"),
-        ([51, 53, 55], "Nieselregen"),
-        ([56, 57, 66, 67], "Gefrierender Regen"),
-        ([61, 63], "Regen"),
-        ([65], "Starker Regen"),
-        ([71, 73, 75, 77], "Schnee"),
-        ([80, 81, 82], "Regenschauer"),
-        ([85, 86], "Schneeschauer"),
-        ([95], "Gewitter"),
-        ([96, 99], "Gewitter mit Hagel"),
+        ([0], loc("Klar")),
+        ([1], loc("Überwiegend klar")),
+        ([2], loc("Teilweise bewölkt")),
+        ([3], loc("Bedeckt")),
+        ([45, 48], loc("Nebel")),
+        ([51, 53, 55], loc("Nieselregen")),
+        ([56, 57, 66, 67], loc("Gefrierender Regen")),
+        ([61, 63], loc("Regen")),
+        ([65], loc("Starker Regen")),
+        ([71, 73, 75, 77], loc("Schnee")),
+        ([80, 81, 82], loc("Regenschauer")),
+        ([85, 86], loc("Schneeschauer")),
+        ([95], loc("Gewitter")),
+        ([96, 99], loc("Gewitter mit Hagel")),
     ]
 }
 
@@ -204,7 +204,7 @@ struct WeatherCard: View {
             let range = "↑ \(Int(snapshot.high.rounded()))° ↓ \(Int(snapshot.low.rounded()))°"
             return "\(snapshot.condition.title) · \(range)"
         }
-        return errorText ?? "Wird geladen …"
+        return errorText ?? loc("Wird geladen …")
     }
 
     private func load() async {
@@ -226,8 +226,8 @@ struct DateTimeCard: View {
             let week = Calendar.school.component(.weekOfYear, from: date)
             StatCard(
                 title: DashboardBuiltInCard.dateTime.title,
-                value: date.formatted(date: .omitted, time: .shortened),
-                detail: "\(date.formatted(.dateTime.weekday(.wide).day().month(.wide))) · KW \(week)",
+                value: date.appFormatted(date: .omitted, time: .shortened),
+                detail: loc("\(date.appFormatted(.dateTime.weekday(.wide).day().month(.wide))) · KW \(week)"),
                 symbol: DashboardBuiltInCard.dateTime.symbol,
                 isSensitive: false
             )

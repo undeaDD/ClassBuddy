@@ -48,7 +48,7 @@ struct LessonEditorView: View {
                     Picker(selection: $subject) {
                         Text("Kein Fach").tag("")
                         ForEach(selectedClass?.subjects ?? [], id: \.self) { subject in
-                            Text(subject).tag(subject)
+                            Text(SchoolClass.displayName(ofSubject: subject)).tag(subject)
                         }
                     } label: {
                         Label("Fach", image: .graduationCap)
@@ -56,7 +56,7 @@ struct LessonEditorView: View {
                     .disabled(selectedClass?.subjects.isEmpty ?? true)
                 } footer: {
                     if classes.isEmpty {
-                        Text("Lege zuerst oben links eine Klasse an.")
+                        Text("Legen Sie zuerst oben links eine Klasse an.")
                     } else if selectedClass?.subjects.isEmpty == true {
                         Text("Für diese Klasse sind noch keine Fächer hinterlegt.")
                     }
@@ -68,8 +68,8 @@ struct LessonEditorView: View {
                     }
                 } footer: {
                     Text(isRecurring
-                        ? "Jeden \(date.formatted(.dateTime.weekday(.wide))), \(slot.number). Stunde (\(slot.timeRange))"
-                        : "Nur am \(date.formatted(.dateTime.weekday(.wide).day().month(.wide))), \(slot.number). Stunde")
+                        ? loc("Jeden \(date.appFormatted(.dateTime.weekday(.wide))), \(slot.number). Stunde (\(slot.timeRange))")
+                        : loc("Nur am \(date.appFormatted(.dateTime.weekday(.wide).day().month(.wide))), \(slot.number). Stunde"))
                 }
 
                 if lesson != nil {
@@ -87,7 +87,7 @@ struct LessonEditorView: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    ConfirmButton(title: "Sichern", action: save)
+                    ConfirmButton(title: loc("Sichern"), action: save)
                         .disabled(selectedClass == nil)
                 }
             }
@@ -203,7 +203,7 @@ struct EntryEditorView: View {
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    ConfirmButton(title: entry == nil ? "Anlegen" : "Sichern", action: save)
+                    ConfirmButton(title: entry == nil ? loc("Anlegen") : loc("Sichern"), action: save)
                 }
             }
         }

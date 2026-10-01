@@ -14,14 +14,14 @@ enum HomeScreenAction: String {
             UIApplicationShortcutItem(
                 type: rawValue,
                 localizedTitle: "Kalender",
-                localizedSubtitle: "Stundenplan dieser Woche",
+                localizedSubtitle: loc("Stundenplan dieser Woche"),
                 icon: UIApplicationShortcutIcon(templateImageName: "calendar")
             )
         case .feedback:
             UIApplicationShortcutItem(
                 type: rawValue,
-                localizedTitle: "Bitte nicht löschen",
-                localizedSubtitle: "Sag mir lieber, was fehlt",
+                localizedTitle: loc("Bitte nicht löschen"),
+                localizedSubtitle: loc("Sag mir lieber, was fehlt"),
                 icon: UIApplicationShortcutIcon(templateImageName: "send-mail")
             )
         }

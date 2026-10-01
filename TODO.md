@@ -210,21 +210,6 @@ Umfassende Optimierung für das iPhone, Behebung von Layout- und Navigationsfehl
 
 ---
 
-# TODO: Kalender-Blättern folgt der minimierten Tab-Leiste
-
-Das Blättern (‹ Heute ›) rutscht beim Minimieren der Tab-Leiste in deren Zeile
-(`TabBarMinimizationReader` in `CalendarView.swift`). Auf dem iPhone hochkant getestet und ok.
-
-- [ ] **iPhone quer: Minimieren wird nicht erkannt**
-  - Vermutung: Erkennung sucht die Tab-Kapsel als Subview der `UITabBar`, die breiter als die halbe Leiste ist.
-    Quer ist die Leiste viel breiter, die Kapsel vermutlich schmaler als die Hälfte → nie „minimiert“.
-  - Mit Probe (Subviews + Frames der `UITabBar` quer loggen) prüfen; ggf. breiteste Subview statt „> halbe Breite“.
-  - Versatz (31 pt = 7 pt Abstand + 48 pt / 2) quer prüfen – Geometrie der minimierten Leiste kann abweichen.
-- [ ] **iPad testen**: schmales Fenster (untere Tab-Leiste, `Device.isPhone`) und großes Fenster (Sidebar, Blättern bleibt fest)
-- [ ] Verhalten mit ausgeschaltetem „Leisten beim Scrollen minimieren“ prüfen (Blättern bleibt unten stehen)
-
----
-
 # TODO: Sprache (Englisch)
 
 - [ ] **Lokalisierung Englisch** (String Catalog `Localizable.xcstrings`, Deutsch bleibt Ausgangssprache)
@@ -243,7 +228,7 @@ Das Blättern (‹ Heute ›) rutscht beim Minimieren der Tab-Leiste in deren Ze
 
 ---
 
-# TODO: Alternative Icons (sehr optional)
+# TODO: Alternative Icons
 
 - [ ] **Icon-Themes**: andere Icon-Sätze statt der eingebauten Iconoir-SVGs
   - Idee: Theme per URL laden (SVG-Paket) oder als Icon-Font; lokal cachen, Fallback auf eingebaute Icons
@@ -253,7 +238,7 @@ Das Blättern (‹ Heute ›) rutscht beim Minimieren der Tab-Leiste in deren Ze
 
 ---
 
-# TODO: App Intents (Apple Intelligence)
+# TODO: App Intents (Apple Intelligence, sehr optional)
 
 - [ ] **App Intents** für Siri, Kurzbefehle und Apple Intelligence
   - Z. B. Klasse wählen, Übersicht/Kalender/Schüler öffnen, nächste Stunde abfragen, Zufallsauswahl, Timer starten
