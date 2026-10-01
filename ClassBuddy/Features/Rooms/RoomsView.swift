@@ -5,7 +5,7 @@ struct RoomsView: View {
     var body: some View {
         EmptyStateView(
             title: AppTab.rooms.title,
-            message: "Hier verwaltest du bald deine Räume und ihre Sitzordnungen.",
+            message: loc("Hier verwalten Sie bald Ihre Räume und deren Sitzordnungen."),
             symbol: AppTab.rooms.symbol
         )
         .background(Color(.systemGroupedBackground))

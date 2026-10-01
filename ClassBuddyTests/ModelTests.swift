@@ -4,6 +4,11 @@ import Testing
 
 @Suite("Modelle")
 struct ModelTests {
+    /// Erwartete Texte sind deutsch – unabhängig von der Sprache des Simulators.
+    init() {
+        AppLanguage.current = .german
+    }
+
     // MARK: Schüler
 
     @Test("Initialen und voller Name")

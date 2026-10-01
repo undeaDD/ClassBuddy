@@ -5,7 +5,7 @@ import UIKit
 extension DashboardLink {
     /// Neue Skript-Kachel, vorbelegt mit dem Beispiel (Zähler).
     static func newScript(in schoolClass: SchoolClass) -> DashboardLink {
-        DashboardLink(title: "Zähler", kind: .script, location: CardScript.example, schoolClass: schoolClass)
+        DashboardLink(title: loc("Zähler"), kind: .script, location: CardScript.example, schoolClass: schoolClass)
     }
 
     /// Was das Skript über die Klasse erfährt.
@@ -102,7 +102,7 @@ struct ScriptCardContent: View {
                 )
             }
         } else if let error = output?.error {
-            StatCard(title: fallbackTitle, value: "Fehler", detail: error, symbol: .custom(.code), action: action)
+            StatCard(title: fallbackTitle, value: loc("Fehler"), detail: error, symbol: .custom(.code), action: action)
         } else {
             StatCard(
                 title: output?.title ?? fallbackTitle,
@@ -171,10 +171,10 @@ struct ScriptEditorView: View {
                     }
                     .disabled(state == "{}")
                 } footer: {
-                    Text(
-                        "Internet nur per fetch in tap(ctx): eine https-Anfrage, höchstens 5 s, nur Text. "
-                            + "Keine Dateien, kein Zugriff auf Schülerdaten."
-                    )
+                    Text("""
+                        Internet nur per fetch in tap(ctx): eine https-Anfrage, höchstens 5 s, nur Text. \
+                        Keine Dateien, kein Zugriff auf Schülerdaten.
+                        """)
                 }
             }
             .navigationTitle("Skript bearbeiten")
@@ -184,7 +184,7 @@ struct ScriptEditorView: View {
                     CancelButton()
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    ConfirmButton(title: "Sichern", action: save)
+                    ConfirmButton(title: loc("Sichern"), action: save)
                 }
             }
             // Vorschau kurz nach dem Tippen neu berechnen.
@@ -209,7 +209,7 @@ struct ScriptEditorView: View {
         guard result.error == nil else { return }
         state = result.state
         result.toasts.forEach { toasts.info($0) }
-        if let url = result.urlToOpen { toasts.info("Würde öffnen: \(url.absoluteString)") }
+        if let url = result.urlToOpen { toasts.info(loc("Würde öffnen: \(url.absoluteString)")) }
     }
 
     private func save() {

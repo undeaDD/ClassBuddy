@@ -26,7 +26,7 @@ struct StudentsView: View {
             content(for: schoolClass)
         }
         .navigationTitle(AppTab.students.title)
-        .navigationSubtitle(selectedClass.map { "\($0.students.count) Schüler" } ?? "")
+        .navigationSubtitle(selectedClass.map { loc("\($0.students.count) Schüler") } ?? "")
         .appChrome(tab: .students) {
             if let selectedClass {
                 Button("Schüler hinzufügen", image: .plus) {
@@ -64,8 +64,8 @@ struct StudentsView: View {
     private func content(for schoolClass: SchoolClass) -> some View {
         if schoolClass.students.isEmpty {
             EmptyStateView(
-                title: "Noch keine Schüler",
-                message: "Füge über + oben rechts die Schülerinnen und Schüler der \(schoolClass.title) hinzu.",
+                title: loc("Noch keine Schüler"),
+                message: loc("Fügen Sie über + oben rechts die Schülerinnen und Schüler der \(schoolClass.title) hinzu."),
                 symbol: AppTab.students.symbol
             )
             .background(Color(.systemGroupedBackground))
@@ -172,9 +172,9 @@ struct StudentsView: View {
         modelContext.delete(student)
         do {
             try modelContext.save()
-            toasts.success("Schüler gelöscht")
+            toasts.success(loc("Schüler gelöscht"))
         } catch {
-            toasts.error("Löschen fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Löschen fehlgeschlagen: \(error.localizedDescription)"))
         }
     }
 }
@@ -210,7 +210,7 @@ struct GenderBadge: View {
             .frame(width: size, height: size)
             .background(gender.color, in: .circle)
             .overlay(Circle().stroke(Color(.systemBackground), lineWidth: 1.5))
-            .accessibilityLabel(gender.title)
+            .accessibilityLabel(gender.displayTitle)
     }
 }
 

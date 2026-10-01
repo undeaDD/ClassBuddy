@@ -22,35 +22,35 @@ struct DebugMenuView: View {
     var body: some View {
         Form {
             Section {
-                DebugActionRow(title: "Testdaten einfügen", image: .plus) {
+                DebugActionRow(title: loc("Testdaten einfügen"), image: .plus) {
                     insertDummyData()
                 }
                 .disabled(hasDummyData)
-                DebugActionRow(title: "Testdaten entfernen", image: .trash) {
+                DebugActionRow(title: loc("Testdaten entfernen"), image: .trash) {
                     removeDummyData()
                 }
                 .disabled(!hasDummyData)
             } header: {
                 Text("Testdaten")
             } footer: {
-                Text(
-                    "4 Klassen mit Schülern, ein Stundenplan (wöchentlich und einmalig) und Termine in der aktuellen Woche. "
-                        + "Nur einmal einfügbar – erst nach dem Entfernen (oder „Alle lokalen Daten löschen“) wieder."
-                )
+                Text("""
+                    4 Klassen mit Schülern, ein Stundenplan (wöchentlich und einmalig) und Termine in der aktuellen Woche. \
+                    Nur einmal einfügbar – erst nach dem Entfernen (oder „Alle lokalen Daten löschen“) wieder.
+                    """)
             }
 
             Section("Sperre & Privatsphäre") {
-                DebugActionRow(title: "App jetzt sperren", image: .lock) {
+                DebugActionRow(title: loc("App jetzt sperren"), image: .lock) {
                     guard security.isAppLockEnabled else {
-                        toasts.error("App-Sperre ist in den App-Einstellungen ausgeschaltet.")
+                        toasts.error(loc("App-Sperre ist in den App-Einstellungen ausgeschaltet."))
                         return
                     }
                     security.lock()
                 }
-                DebugActionRow(title: "Sperrbildschirm mit Fehlermeldung", image: .fingerprintLockCircle) {
+                DebugActionRow(title: loc("Sperrbildschirm mit Fehlermeldung"), image: .fingerprintLockCircle) {
                     isLockPreviewPresented = true
                 }
-                DebugActionRow(title: "Privatsphäre-Abdeckung", image: .eyeClosed) {
+                DebugActionRow(title: loc("Privatsphäre-Abdeckung"), image: .eyeClosed) {
                     isPrivacyCoverPresented = true
                 }
             }
@@ -58,8 +58,8 @@ struct DebugMenuView: View {
             Section("Leerzustände") {
                 NavigationLink {
                     EmptyStateView(
-                        title: "Keine Klasse ausgewählt",
-                        message: "Lege oben links deine erste Klasse an.",
+                        title: loc("Keine Klasse ausgewählt"),
+                        message: loc("Legen Sie oben links Ihre erste Klasse an."),
                         symbol: .custom(.userXmark)
                     )
                 } label: {
@@ -67,8 +67,8 @@ struct DebugMenuView: View {
                 }
                 NavigationLink {
                     EmptyStateView(
-                        title: "Noch keine Schüler",
-                        message: "Füge über + oben rechts die Schülerinnen und Schüler der Klasse 7b hinzu.",
+                        title: loc("Noch keine Schüler"),
+                        message: loc("Fügen Sie über + oben rechts die Schülerinnen und Schüler der Klasse 7b hinzu."),
                         symbol: AppTab.students.symbol
                     )
                 } label: {
@@ -77,7 +77,7 @@ struct DebugMenuView: View {
                 NavigationLink {
                     EmptyStateView(
                         title: AppTab.rooms.title,
-                        message: "Hier verwaltest du bald deine Räume und ihre Sitzordnungen.",
+                        message: loc("Hier verwalten Sie bald Ihre Räume und deren Sitzordnungen."),
                         symbol: AppTab.rooms.symbol
                     )
                 } label: {
@@ -91,14 +91,14 @@ struct DebugMenuView: View {
             }
 
             Section("Toasts") {
-                DebugActionRow(title: "Erfolg", image: .toastSuccess) { toasts.success("Export gespeichert") }
-                DebugActionRow(title: "Hinweis", image: .toastWarning) { toasts.info("Keine Änderungen gefunden") }
-                DebugActionRow(title: "Fehler", image: .toastError) { toasts.error("Import fehlgeschlagen: Datei beschädigt") }
+                DebugActionRow(title: loc("Erfolg"), image: .toastSuccess) { toasts.success(loc("Export gespeichert")) }
+                DebugActionRow(title: loc("Hinweis"), image: .toastWarning) { toasts.info(loc("Keine Änderungen gefunden")) }
+                DebugActionRow(title: loc("Fehler"), image: .toastError) { toasts.error(loc("Import fehlgeschlagen: Datei beschädigt")) }
             }
         }
         .navigationTitle("Debug-Menü")
         .fullScreenCover(isPresented: $isLockPreviewPresented) {
-            LockScreenView(previewError: "Authentifizierung fehlgeschlagen.")
+            LockScreenView(previewError: loc("Authentifizierung fehlgeschlagen."))
                 .overlay(alignment: .topTrailing) {
                     closeButton { isLockPreviewPresented = false }
                 }
@@ -127,9 +127,9 @@ struct DebugMenuView: View {
         do {
             try modelContext.save()
             app.selectedClassID = firstClass.id
-            toasts.success("Testdaten eingefügt")
+            toasts.success(loc("Testdaten eingefügt"))
         } catch {
-            toasts.error("Testdaten fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Testdaten fehlgeschlagen: \(error.localizedDescription)"))
         }
     }
 
@@ -140,9 +140,9 @@ struct DebugMenuView: View {
             if let selected = app.selectedClassID, DummyData.classIDs.contains(selected) {
                 app.selectedClassID = nil
             }
-            toasts.success("Testdaten entfernt")
+            toasts.success(loc("Testdaten entfernt"))
         } catch {
-            toasts.error("Entfernen fehlgeschlagen: \(error.localizedDescription)")
+            toasts.error(loc("Entfernen fehlgeschlagen: \(error.localizedDescription)"))
         }
     }
 }
@@ -318,7 +318,8 @@ enum DummyData {
             EntrySpec(title: "Fachkonferenz Mathematik", weekday: 0, hour: 15, minute: 0, minutes: 90, notes: "Raum 204"),
             EntrySpec(title: "Lehrerkonferenz", weekday: 2, hour: 14, minute: 30, minutes: 90, notes: ""),
             EntrySpec(
-                title: "Elterngespräch Fam. Müller", weekday: 3, hour: 13, minute: 15, minutes: 30, notes: "Leistungsstand", classIndex: 1
+                title: "Elterngespräch Fam. Müller", weekday: 3, hour: 13, minute: 15, minutes: 30,
+                notes: "Leistungsstand", classIndex: 1
             ),
             // Mit Klasse außerhalb der Schulzeit bzw. mitten im Schultag.
             EntrySpec(title: "Elternabend", weekday: 1, hour: 18, minute: 0, minutes: 90, notes: "Aula", classIndex: 0),

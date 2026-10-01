@@ -9,17 +9,21 @@ struct ClassBuddyApp: App {
     @State private var schoolSettings = SchoolSettings()
     @State private var toasts = ToastCenter()
     @State private var timer = ClassTimer()
+    @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
 
     var body: some Scene {
         WindowGroup {
             RootView()
+                // Sprachwechsel: Oberfläche neu aufbauen, damit auch Texte aus Code (`loc`) neu berechnet werden.
+                .id(language)
+                .environment(\.locale, language.locale)
                 .environment(app)
                 .environment(security)
                 .environment(schoolSettings)
                 .environment(toasts)
                 .environment(timer)
                 .onAppear {
-                    timer.onFinish = { [toasts] in toasts.success("Timer abgelaufen") }
+                    timer.onFinish = { [toasts] in toasts.success(loc("Timer abgelaufen")) }
                     HomeScreenAction.register()
                 }
         }

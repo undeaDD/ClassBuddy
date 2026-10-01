@@ -40,17 +40,17 @@ struct SearchEmptyStateView: View {
 
     var body: some View {
         EmptyStateView(
-            title: "Keine Ergebnisse",
-            message: text.isEmpty ? "Keine Treffer." : "Keine Treffer für „\(text)“.",
+            title: loc("Keine Ergebnisse"),
+            message: text.isEmpty ? loc("Keine Treffer.") : loc("Keine Treffer für „\(text)“."),
             symbol: .custom(.search)
         )
     }
 }
 
-#Preview("Leerzustand") {
+#Preview(loc("Leerzustand")) {
     EmptyStateView(
-        title: "Keine Schüler",
-        message: "Füge Schülerinnen und Schüler hinzu, um loszulegen.",
+        title: loc("Keine Schüler"),
+        message: loc("Fügen Sie Schülerinnen und Schüler hinzu, um loszulegen."),
         symbol: .custom(.community)
     ) {
         Button("Schüler hinzufügen") {}

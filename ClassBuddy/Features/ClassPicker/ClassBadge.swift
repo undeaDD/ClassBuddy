@@ -53,7 +53,7 @@ struct ClassPickerButton: View {
         }
         .buttonStyle(.plain)
         .glassEffect(.regular.tint(selectedClass?.displayColor).interactive(), in: .circle)
-        .accessibilityLabel(selectedClass.map { "\($0.title), Klasse wechseln" } ?? "Klasse auswählen")
+        .accessibilityLabel(selectedClass.map { loc("\($0.title), Klasse wechseln") } ?? "Klasse auswählen")
         .popover(isPresented: isPickerPresented, arrowEdge: .top) {
             ClassPickerView()
                 .softScrollEdges()

@@ -253,7 +253,7 @@ private struct SlotCell: View {
         let number = Text("\(slot.number).")
             .font(.caption2.weight(.semibold))
             .opacity(0.7)
-        let subject = Text(lesson.subject)
+        let subject = Text(SchoolClass.displayName(ofSubject: lesson.subject))
             .font(.caption2)
             .lineLimit(1)
             .sensitive()
@@ -350,7 +350,7 @@ private struct EntryCard: View {
     }
 
     private var time: some View {
-        Text(entry.start.formatted(date: .omitted, time: .shortened))
+        Text(entry.start.appFormatted(date: .omitted, time: .shortened))
             .font(.caption2)
     }
 

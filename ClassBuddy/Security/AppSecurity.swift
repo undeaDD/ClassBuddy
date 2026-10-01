@@ -45,7 +45,7 @@ final class AppSecurity {
         case .faceID: "Face ID"
         case .touchID: "Touch ID"
         case .opticID: "Optic ID"
-        default: "Code"
+        default: loc("Code")
         }
     }
 
@@ -65,7 +65,7 @@ final class AppSecurity {
     func setAppLockEnabled(_ enabled: Bool) async {
         if enabled {
             isAppLockEnabled = true
-        } else if await authenticate(reason: "App-Sperre deaktivieren") {
+        } else if await authenticate(reason: loc("App-Sperre deaktivieren")) {
             isAppLockEnabled = false
         }
     }
@@ -78,7 +78,7 @@ final class AppSecurity {
 
     func unlock() async {
         guard isLocked else { return }
-        if await authenticate(reason: "ClassBuddy entsperren") {
+        if await authenticate(reason: loc("ClassBuddy entsperren")) {
             isLocked = false
         }
     }
@@ -91,7 +91,7 @@ final class AppSecurity {
 
     func disablePrivacyMode() async {
         guard isPrivacyModeOn else { return }
-        if await authenticate(reason: "Sensible Informationen wieder anzeigen") {
+        if await authenticate(reason: loc("Sensible Informationen wieder anzeigen")) {
             isPrivacyModeOn = false
         }
     }
@@ -124,7 +124,7 @@ final class AppSecurity {
             // Simulator ohne eingerichteten Code: nicht aussperren.
             return true
             #else
-            lastError = error?.localizedDescription ?? "Authentifizierung nicht verfügbar."
+            lastError = error?.localizedDescription ?? loc("Authentifizierung nicht verfügbar.")
             return false
             #endif
         }

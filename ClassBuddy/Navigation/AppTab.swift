@@ -17,11 +17,11 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
 
     var title: String {
         switch self {
-        case .dashboard: "Übersicht"
+        case .dashboard: loc("Übersicht")
         case .calendar: "Kalender"
-        case .students: "Schüler"
-        case .rooms: "Räume"
-        case .settings: "Einstellungen"
+        case .students: loc("Schüler")
+        case .rooms: loc("Räume")
+        case .settings: loc("Einstellungen")
         case .feedback: "Feedback"
         }
     }
@@ -84,7 +84,7 @@ enum AppTabSection: String, CaseIterable, Identifiable {
         switch self {
         case .main: ""
         case .schoolClass: "Klasse"
-        case .other: "Sonstige"
+        case .other: loc("Sonstige")
         }
     }
 

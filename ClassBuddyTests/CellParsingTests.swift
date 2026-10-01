@@ -5,6 +5,11 @@ import Testing
 /// Tolerantes Lesen von Zellwerten – auch nach dem Bearbeiten in Excel/Numbers.
 @Suite("Excel-Zellwerte")
 struct CellParsingTests {
+    /// Erwartete Texte sind deutsch – unabhängig von der Sprache des Simulators.
+    init() {
+        AppLanguage.current = .german
+    }
+
     private typealias Cell = Backup.Cell
 
     private nonisolated static func day(_ year: Int, _ month: Int, _ day: Int, hour: Int = 0, minute: Int = 0) -> Date {

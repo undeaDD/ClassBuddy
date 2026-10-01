@@ -33,10 +33,10 @@ enum Birthdays {
 
     /// „Heute · wird 13 · +1“ für die Kachel.
     static func detail(for upcoming: [Upcoming]) -> String {
-        guard let first = upcoming.first else { return "Keine Geburtstage eingetragen" }
-        let when = first.daysUntil == 0 ? "Heute" : first.daysUntil == 1 ? "Morgen" : "in \(first.daysUntil) Tagen"
+        guard let first = upcoming.first else { return loc("Keine Geburtstage eingetragen") }
+        let when = first.daysUntil == 0 ? "Heute" : first.daysUntil == 1 ? loc("Morgen") : loc("in \(first.daysUntil) Tagen")
         let sameDay = upcoming.filter { $0.daysUntil == first.daysUntil }.count - 1
-        return "\(when) · wird \(first.turningAge)" + (sameDay > 0 ? " · +\(sameDay)" : "")
+        return loc("\(when) · wird \(first.turningAge)") + (sameDay > 0 ? " · +\(sameDay)" : "")
     }
 }
 
@@ -51,8 +51,8 @@ enum LessonProgress {
 
         guard isSchoolDay, let slot = schedule.slots.first(where: { $0.start <= minute && minute < $0.end }) else {
             let next = isSchoolDay ? schedule.slots.first { $0.start > minute } : nil
-            let hint = next.map { "Nächste: \($0.number). Stunde um \($0.start.clockString)" } ?? "Heute kein Unterricht mehr"
-            return ("Keine aktive Stunde", hint)
+            let hint = next.map { loc("Nächste: \($0.number). Stunde um \($0.start.clockString)") } ?? loc("Heute kein Unterricht mehr")
+            return (loc("Keine aktive Stunde"), hint)
         }
 
         // Auf volle Minuten aufrunden: 22:10 übrig → „23 min“.
@@ -60,10 +60,10 @@ enum LessonProgress {
         let remaining = (remainingSeconds + 59) / 60
         let value = remaining >= 60 ? "\(remaining / 60) h \(remaining % 60) min" : "\(remaining) min"
 
-        var parts = ["\(slot.number). Stunde"]
+        var parts = [loc("\(slot.number). Stunde")]
         if let lesson = schedule.lesson(on: now, slotIndex: slot.index), let schoolClass = lesson.schoolClass {
             parts.append(schoolClass.shortName)
-            if !lesson.subject.isEmpty { parts.append(lesson.subject) }
+            if !lesson.subject.isEmpty { parts.append(SchoolClass.displayName(ofSubject: lesson.subject)) }
         } else {
             parts.append("frei")
         }

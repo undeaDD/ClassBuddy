@@ -103,7 +103,7 @@ struct SchoolSettingsView: View {
                 Picker(selection: $settings.values.federalState) {
                     Text("Keins").tag(String?.none)
                     ForEach(HolidayImporter.federalStates, id: \.code) { state in
-                        Text(state.name).tag(Optional(state.code))
+                        Text(HolidayImporter.displayName(ofState: state.code)).tag(Optional(state.code))
                     }
                 } label: {
                     Label("Bundesland", image: .globe)
@@ -112,7 +112,7 @@ struct SchoolSettingsView: View {
                 Button {
                     Task { await importHolidays() }
                 } label: {
-                    SettingsActionLabel(title: "Ferien & Feiertage importieren", image: .cloudDownload, isLoading: isImporting)
+                    SettingsActionLabel(title: loc("Ferien & Feiertage importieren"), image: .cloudDownload, isLoading: isImporting)
                 }
                 .disabled(settings.values.federalState == nil || isImporting)
 
@@ -136,9 +136,12 @@ struct SchoolSettingsView: View {
     }
 
     private var importFooter: String {
-        var parts = ["Quelle: OpenHolidays API (openholidaysapi.org). Es werden nur öffentliche Ferientermine abgerufen."]
+        var parts = [loc("""
+            Derzeit nur für deutsche Bundesländer. Quelle: OpenHolidays API (openholidaysapi.org). \
+            Es werden nur öffentliche Ferientermine abgerufen.
+            """)]
         if let date = settings.values.holidaysImportedAt {
-            parts.append("Zuletzt importiert: \(date.formatted(date: .abbreviated, time: .shortened)).")
+            parts.append(loc("Zuletzt importiert: \(date.appFormatted(date: .abbreviated, time: .shortened))."))
         }
         return parts.joined(separator: " ")
     }
@@ -146,8 +149,8 @@ struct SchoolSettingsView: View {
     private func dateRange(_ holiday: Holiday) -> String {
         let style = Date.FormatStyle.dateTime.day().month(.abbreviated)
         return Calendar.school.isDate(holiday.startDate, inSameDayAs: holiday.endDate)
-            ? holiday.startDate.formatted(style)
-            : "\(holiday.startDate.formatted(style)) – \(holiday.endDate.formatted(style))"
+            ? holiday.startDate.appFormatted(style)
+            : "\(holiday.startDate.appFormatted(style)) – \(holiday.endDate.appFormatted(style))"
     }
 
     private func importHolidays() async {
@@ -157,7 +160,7 @@ struct SchoolSettingsView: View {
         do {
             let count = try await HolidayImporter.importHolidays(for: state, into: modelContext)
             settings.values.holidaysImportedAt = .now
-            toasts.success("\(count) Ferien und Feiertage importiert")
+            toasts.success(loc("\(count) Ferien und Feiertage importiert"))
         } catch {
             toasts.error(error.localizedDescription)
         }

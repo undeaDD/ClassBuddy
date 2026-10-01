@@ -102,7 +102,7 @@ private struct MoreView: View {
                 }
             }
             .navigationTitle("Mehr")
-            .navigationSubtitle("Was möchtest du als Nächstes tun?")
+            .navigationSubtitle("Was möchten Sie als Nächstes tun?")
             .navigationBarMinimizesOnScroll()
             .navigationDestination(for: AppTab.self) { tab in
                 AppTabDestination(tab: tab)

@@ -4,6 +4,11 @@ import Testing
 
 @Suite("Wetter")
 struct WeatherTests {
+    /// Erwartete Texte sind deutsch – unabhängig von der Sprache des Simulators.
+    init() {
+        AppLanguage.current = .german
+    }
+
     @Test("WMO-Codes → Beschreibung", arguments: [
         (0, "Klar"), (2, "Teilweise bewölkt"), (3, "Bedeckt"), (48, "Nebel"),
         (61, "Regen"), (80, "Regenschauer"), (95, "Gewitter"), (99, "Gewitter mit Hagel"), (12_345, "Unbekannt"),

@@ -8,6 +8,7 @@ extension Backup {
     struct ImportedSettings {
         var values: SchoolSettings.Values
         var appearance: AppAppearance?
+        var language: AppLanguage?
     }
 
     /// Ersetzt die App-Daten durch den Inhalt der Datei.
@@ -206,10 +207,10 @@ extension Backup {
                 subjects: Cell.parseList(profile["Hauptfächer"])
             )
         }
-        let appearance = workbook[Sheet.app].map(KeyValues.init).flatMap { app in
-            AppAppearance.allCases.first { $0.title == app["Erscheinungsbild"] }
-        }
-        return ImportedSettings(values: values, appearance: appearance)
+        let app = workbook[Sheet.app].map(KeyValues.init)
+        let appearance = app.flatMap { app in AppAppearance.allCases.first { $0.title == app["Erscheinungsbild"] } }
+        let language = app.flatMap { app in AppLanguage(backupTitle: app["Sprache"]) }
+        return ImportedSettings(values: values, appearance: appearance, language: language)
     }
 
     /// Kopierte Dokumente, die nach dem Import keiner Kachel mehr gehören, entfernen.

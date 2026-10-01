@@ -60,15 +60,15 @@ private struct PencilQuickActionsModifier: ViewModifier {
 
     private var actions: [QuickAction] {
         [
-            QuickAction(id: "dashboard", title: "Übersicht", symbol: AppTab.dashboard.symbol) { app.open(.dashboard) },
-            QuickAction(id: "students", title: "Schüler", symbol: AppTab.students.symbol) { app.open(.students) },
+            QuickAction(id: "dashboard", title: loc("Übersicht"), symbol: AppTab.dashboard.symbol) { app.open(.dashboard) },
+            QuickAction(id: "students", title: loc("Schüler"), symbol: AppTab.students.symbol) { app.open(.students) },
             QuickAction(id: "calendar", title: "Kalender", symbol: AppTab.calendar.symbol) { app.open(.calendar) },
             QuickAction(id: "class", title: "Klasse", symbol: .custom(.coinsSwap)) {
                 app.isClassPickerPresented = true
             },
             QuickAction(
                 id: "privacy",
-                title: security.isPrivacyModeOn ? "Anzeigen" : "Verbergen",
+                title: security.isPrivacyModeOn ? loc("Anzeigen") : loc("Verbergen"),
                 symbol: .custom(security.isPrivacyModeOn ? .eye : .eyeClosed),
                 tint: .orange
             ) {

@@ -71,7 +71,7 @@ struct StudentEditorView: View {
                     CancelButton()
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    ConfirmButton(title: isNew ? "Anlegen" : "Sichern", action: save)
+                    ConfirmButton(title: isNew ? loc("Anlegen") : loc("Sichern"), action: save)
                         .disabled(!isValid)
                 }
             }

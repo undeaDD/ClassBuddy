@@ -6,6 +6,11 @@ import Testing
 /// Tests mit einer In-Memory-Datenbank (berührt keine echten App-Daten).
 @Suite("Daten")
 struct DataTests {
+    /// Erwartete Texte sind deutsch – unabhängig von der Sprache des Simulators.
+    init() {
+        AppLanguage.current = .german
+    }
+
     private static func makeContext() throws -> ModelContext {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, Lesson.self, CalendarEntry.self, Holiday.self, DashboardLink.self,

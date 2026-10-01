@@ -179,6 +179,7 @@ enum Backup {
             XLSXSheet(name: Sheet.app, rows: [
                 ["Schlüssel", "Wert"],
                 ["Erscheinungsbild", appearance.title],
+                ["Sprache", AppLanguage.stored.backupTitle],
             ]),
         ]
     }
