@@ -128,20 +128,33 @@ struct IconThemeSection: View {
             .contentShape(.rect)
         }
         .accessibilityAddTraits(isSelected ? .isSelected : [])
-        .swipeActions(edge: .trailing) {
-            if case .pack(let pack) = theme {
-                Button("Entfernen", icon: .trash, role: .destructive) {
-                    manager.remove(pack)
-                    HomeScreenAction.register()
-                    toasts.success(loc("„\(pack.name)“ entfernt"))
-                }
-                // Lädt das zip erneut von derselben Adresse (ersetzt das installierte Paket).
-                if let source = pack.sourceURL.flatMap(URL.init(string:)) {
-                    Button("Aktualisieren", icon: .import) { update(from: source) }
-                        .tint(accent)
-                }
+        // Pakete: nach rechts wischen = Aktualisieren (lädt das zip erneut von derselben Adresse),
+        // nach links wischen = Entfernen; beides auch per langem Drücken.
+        .swipeActions(edge: .leading) {
+            if let source = theme.pack?.sourceURL.flatMap({ URL(string: $0) }) {
+                Button("Aktualisieren", icon: .import) { update(from: source) }
+                    .tint(accent)
             }
         }
+        .swipeActions(edge: .trailing) {
+            if let pack = theme.pack {
+                Button("Entfernen", icon: .trash, role: .destructive) { remove(pack) }
+            }
+        }
+        .contextMenu {
+            if let pack = theme.pack {
+                if let source = pack.sourceURL.flatMap({ URL(string: $0) }) {
+                    Button("Aktualisieren", icon: .import) { update(from: source) }
+                }
+                Button("Entfernen", destructiveIcon: .trash) { remove(pack) }
+            }
+        }
+    }
+
+    private func remove(_ pack: IconPack) {
+        manager.remove(pack)
+        HomeScreenAction.register()
+        toasts.success(loc("„\(pack.name)“ entfernt"))
     }
 
     private func update(from url: URL) {

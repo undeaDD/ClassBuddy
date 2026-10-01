@@ -23,6 +23,11 @@ nonisolated enum IconTheme: Identifiable, Hashable, Sendable {
         }
     }
 
+    /// Installiertes Paket, falls das Theme eines ist.
+    var pack: IconPack? {
+        if case .pack(let pack) = self { pack } else { nil }
+    }
+
     var title: String {
         switch self {
         case .builtIn: "Iconoir"
