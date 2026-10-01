@@ -46,6 +46,7 @@ nonisolated enum AppIcon: String, CaseIterable, Sendable {
     case number1Circle = "number1-circle"
     case page = "page"
     case palette = "palette"
+    case phone = "phone"
     case plus = "plus"
     case search = "search"
     case sendMail = "send-mail"

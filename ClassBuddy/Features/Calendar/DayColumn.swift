@@ -201,7 +201,7 @@ struct DayColumn: View {
     @ViewBuilder
     private func editMenu(edit: @escaping () -> Void, remove: @escaping () -> Void) -> some View {
         Button("Bearbeiten", icon: .editPencil, action: edit)
-        Button("Entfernen", icon: .trash, role: .destructive, action: remove)
+        Button("Entfernen", destructiveIcon: .trash, action: remove)
     }
 
     private func delete(_ model: some PersistentModel) {

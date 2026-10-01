@@ -109,7 +109,7 @@ struct TimerCard: View {
             if timer.isRunning {
                 Button("+1 Minute", icon: .plus) { timer.extend(byMinutes: 1) }
                 Button("+5 Minuten", icon: .plus) { timer.extend(byMinutes: 5) }
-                Button("Stoppen", icon: .xmark, role: .destructive) { timer.stop() }
+                Button("Stoppen", destructiveIcon: .xmark) { timer.stop() }
             } else {
                 ForEach(ClassTimer.presets, id: \.self) { minutes in
                     Button("\(minutes) Minuten") { timer.start(minutes: minutes) }

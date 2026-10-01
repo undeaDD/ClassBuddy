@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DDDF2C0B0EF2C9546CB53FCC /* PhotoCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75AFEEA075C5FC27D985B89 /* PhotoCropView.swift */; };
 		DA324E96A29BC0499AABBCBD /* AppearanceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0F93DC3D59C0C412D7D676 /* AppearanceSettings.swift */; };
 		ED870F799CFBACB2C95175B5 /* IconPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45B842799400D6FDE2324EA /* IconPack.swift */; };
 		824C54D8AE8F559316779459 /* IconTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D9072F12DEC822C6F30D7D /* IconTheme.swift */; };
@@ -190,6 +191,7 @@
 		C44C1138E7C38D4F949012B0 /* PencilQuickActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilQuickActions.swift; sourceTree = "<group>"; };
 		C4D4945472C726B775CA4248 /* DashboardLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardLink.swift; sourceTree = "<group>"; };
 		CB87ECDFF4B646B1CAC9D192 /* StudentEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentEditorView.swift; sourceTree = "<group>"; };
+		B75AFEEA075C5FC27D985B89 /* PhotoCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCropView.swift; sourceTree = "<group>"; };
 		CECC0D954543DD7EEE3F46F6 /* licenses.en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = licenses.en.html; sourceTree = "<group>"; };
 		CF560C8A51BA20B8652DA054 /* ClassBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClassBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00C330E0B4BABBCFBC77103 /* AppSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSymbol.swift; sourceTree = "<group>"; };
@@ -396,6 +398,7 @@
 			isa = PBXGroup;
 			children = (
 				CB87ECDFF4B646B1CAC9D192 /* StudentEditorView.swift */,
+				B75AFEEA075C5FC27D985B89 /* PhotoCropView.swift */,
 				9C838201C48843117125D1F2 /* StudentsView.swift */,
 			);
 			path = Students;
@@ -567,6 +570,7 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				DDDF2C0B0EF2C9546CB53FCC /* PhotoCropView.swift in Sources */,
 				DA324E96A29BC0499AABBCBD /* AppearanceSettings.swift in Sources */,
 				ED870F799CFBACB2C95175B5 /* IconPack.swift in Sources */,
 				824C54D8AE8F559316779459 /* IconTheme.swift in Sources */,

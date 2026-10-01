@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftData
 import SwiftUI
 
@@ -25,6 +26,18 @@ struct StudentEditorView: View {
     @State private var birthday: Date?
     @State private var gender: Gender?
     @State private var notes: String
+    @State private var phone: String
+    @State private var email: String
+    @State private var otherContact: String
+    @State private var photo: Data?
+    @State private var photoSelection: PhotosPickerItem?
+    /// Gewähltes Foto, bevor der Ausschnitt feststeht.
+    @State private var cropRequest: CropRequest?
+
+    private struct CropRequest: Identifiable {
+        let id = UUID()
+        let image: UIImage
+    }
 
     init(route: StudentEditorRoute) {
         self.route = route
@@ -34,6 +47,10 @@ struct StudentEditorView: View {
         _birthday = State(initialValue: student?.birthday)
         _gender = State(initialValue: student?.gender)
         _notes = State(initialValue: student?.notes ?? "")
+        _phone = State(initialValue: student?.phone ?? "")
+        _email = State(initialValue: student?.email ?? "")
+        _otherContact = State(initialValue: student?.otherContact ?? "")
+        _photo = State(initialValue: student?.photo)
     }
 
     private var isNew: Bool {
@@ -48,8 +65,30 @@ struct StudentEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    StudentAvatar(initials: initials, photo: photo, gender: gender, size: 88)
+                        .frame(maxWidth: .infinity)
+                        .listRowBackground(Color.clear)
+                }
+
                 Section("Name") {
                     NameFields(firstName: $firstName, lastName: $lastName)
+                }
+
+                Section("Foto") {
+                    photoRow
+                }
+
+                Section("Kontakt") {
+                    ContactField(title: "Telefon", text: $phone, icon: .phone)
+                        .keyboardType(.phonePad)
+                        .textContentType(.telephoneNumber)
+                    ContactField(title: "E-Mail", text: $email, icon: .sendMail)
+                        .keyboardType(.emailAddress)
+                        .textContentType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    ContactField(title: "Sonstiges (z. B. Eltern)", text: $otherContact, icon: .notes)
                 }
 
                 Section("Optional") {
@@ -64,6 +103,21 @@ struct StudentEditorView: View {
                 }
             }
             .readableFormWidth()
+            .onChange(of: photoSelection) { _, item in
+                guard let item else { return }
+                photoSelection = nil
+                Task {
+                    // Für den Zuschnitt auf 2048 px verkleinern – große Fotos bleiben so flüssig.
+                    guard let data = try? await item.loadTransferable(type: Data.self),
+                          let prepared = StudentPhoto.prepare(data, maxPixel: 2048),
+                          let image = UIImage(data: prepared)
+                    else { return }
+                    cropRequest = CropRequest(image: image)
+                }
+            }
+            .fullScreenCover(item: $cropRequest) { request in
+                PhotoCropView(image: request.image) { photo = $0 }
+            }
             .navigationTitle(isNew ? "Neuer Schüler" : "Schüler bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -74,6 +128,31 @@ struct StudentEditorView: View {
                     ConfirmButton(title: isNew ? loc("Anlegen") : loc("Sichern"), action: save)
                         .disabled(!isValid)
                 }
+            }
+        }
+    }
+
+    private var initials: String {
+        [firstName.first, lastName.first].compactMap { $0 }.map(String.init).joined()
+    }
+
+    /// Foto wählen bzw. ändern; das x entfernt es wieder (wie beim Geburtstag).
+    private var photoRow: some View {
+        HStack {
+            PhotosPicker(selection: $photoSelection, matching: .images) {
+                Label {
+                    Text(photo == nil ? "Foto auswählen" : "Foto ändern")
+                        .foregroundStyle(Color.primary)
+                } icon: {
+                    Image(icon: .image)
+                }
+            }
+            Spacer()
+            if photo != nil {
+                Button("Foto entfernen", icon: .xmark) { photo = nil }
+                    .labelStyle(.iconOnly)
+                    .foregroundStyle(.tint)
+                    .buttonStyle(.borderless)
             }
         }
     }
@@ -92,7 +171,27 @@ struct StudentEditorView: View {
         student.birthday = birthday
         student.gender = gender
         student.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+        student.phone = phone.trimmingCharacters(in: .whitespaces)
+        student.email = email.trimmingCharacters(in: .whitespaces)
+        student.otherContact = otherContact.trimmingCharacters(in: .whitespacesAndNewlines)
+        student.photo = photo
         try? modelContext.save()
         dismiss()
+    }
+}
+
+/// Eine Kontaktzeile: Icon vorne, Eingabefeld, im Privatsphäre-Modus verborgen.
+private struct ContactField: View {
+    let title: LocalizedStringKey
+    @Binding var text: String
+    let icon: AppIcon
+
+    var body: some View {
+        Label {
+            TextField(title, text: $text)
+                .sensitive()
+        } icon: {
+            Image(icon: icon)
+        }
     }
 }

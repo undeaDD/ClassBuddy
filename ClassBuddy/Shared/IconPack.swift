@@ -10,6 +10,8 @@ nonisolated struct IconPack: Codable, Identifiable, Hashable, Sendable {
     var version: String?
     var license: String?
     var url: String?
+    /// Adresse, von der das Paket geladen wurde (für „Aktualisieren“); nicht Teil des Manifests im zip.
+    var sourceURL: String?
 
     var directory: URL { IconPackStore.directory.appending(path: id, directoryHint: .isDirectory) }
 
@@ -73,7 +75,10 @@ nonisolated enum IconPackStore {
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
             throw InstallError.download("HTTP \(http.statusCode)")
         }
-        return try install(archive: data)
+        var pack = try install(archive: data)
+        pack.sourceURL = url.absoluteString
+        try JSONEncoder().encode(pack).write(to: pack.directory.appending(path: "manifest.json"))
+        return pack
     }
 
     /// Prüft und installiert ein zip: nur `manifest.json` und `<bekanntes Icon>.pdf` werden übernommen.
