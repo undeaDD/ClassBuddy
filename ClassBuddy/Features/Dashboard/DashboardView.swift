@@ -428,7 +428,7 @@ extension DashboardView {
             if canEdit {
                 Button("Bearbeiten", icon: .editPencil) { linkEditorRoute = .edit(link) }
                 Button("Ausblenden", icon: .eyeClosed) { setHidden(true, link.cardID, in: schoolClass) }
-                Button("Entfernen", icon: .trash, role: .destructive) { remove(link) }
+                Button("Entfernen", destructiveIcon: .trash) { remove(link) }
             }
         }
     }

@@ -251,10 +251,50 @@ enum DummyData {
                 birthday: birthday,
                 gender: gender,
                 notes: number % 4 == 1 ? "Sitzt gern vorne." : "",
+                phone: number % 3 == 0 ? String(format: "+49 151 %04d %04d", 1000 + classIndex * 97 + number, 2000 + number * 31) : "",
+                email: number % 2 == 0 ? Self.email(firstName: firstName, lastName: lastName) : "",
+                otherContact: number % 5 == 2 ? "Mutter: 0234 \(5550 + number), nachmittags erreichbar" : "",
+                photo: number % 4 == 0 ? Self.dummyPhoto(seed: number + classIndex * 13) : nil,
                 schoolClass: schoolClass
             )
             context.insert(student)
         }
+    }
+
+    /// vorname.nachname@example.org (Umlaute ersetzt, Domain für Beispiele reserviert).
+    private static func email(firstName: String, lastName: String) -> String {
+        let local = "\(firstName).\(lastName)".lowercased()
+            .replacingOccurrences(of: "ä", with: "ae").replacingOccurrences(of: "ö", with: "oe")
+            .replacingOccurrences(of: "ü", with: "ue").replacingOccurrences(of: "ß", with: "ss")
+        return "\(local)@example.org"
+    }
+
+    /// Platzhalter-Foto: Farbverlauf mit Tier-Emoji (kein echtes Foto).
+    private static func dummyPhoto(seed: Int) -> Data? {
+        let emojis = ["🦊", "🐼", "🐯", "🐸", "🐨", "🦁", "🐙", "🐧"]
+        let colors: [UIColor] = [.systemTeal, .systemOrange, .systemPurple, .systemGreen, .systemPink, .systemIndigo]
+        let size = CGSize(width: 256, height: 256)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let image = UIGraphicsImageRenderer(size: size, format: format).image { context in
+            let top = colors[seed % colors.count], bottom = colors[(seed + 2) % colors.count]
+            let gradient = CGGradient(
+                colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                colors: [top.cgColor, bottom.cgColor] as CFArray,
+                locations: [0, 1]
+            )
+            if let gradient {
+                context.cgContext.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: size.height), options: [])
+            }
+            let emoji = emojis[seed % emojis.count] as NSString
+            let font = UIFont.systemFont(ofSize: 150)
+            let textSize = emoji.size(withAttributes: [.font: font])
+            emoji.draw(
+                at: CGPoint(x: (size.width - textSize.width) / 2, y: (size.height - textSize.height) / 2),
+                withAttributes: [.font: font]
+            )
+        }
+        return image.jpegData(compressionQuality: 0.8)
     }
 
     /// Wöchentlicher Stundenplan Mo–Fr plus drei einmalige Stunden in freien Slots dieser Woche.

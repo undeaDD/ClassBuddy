@@ -335,6 +335,16 @@
         }
       }
     },
+    "Aktualisieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update"
+          }
+        }
+      }
+    },
     "Aktuelle Stunde" : {
       "localizations" : {
         "en" : {
@@ -623,6 +633,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hidden"
+          }
+        }
+      }
+    },
+    "Ausschnitt wählen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose crop"
           }
         }
       }
@@ -1159,6 +1179,16 @@
         }
       }
     },
+    "E-Mail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email"
+          }
+        }
+      }
+    },
     "E-Mail (Sekretariat)" : {
       "localizations" : {
         "en" : {
@@ -1259,12 +1289,12 @@
         }
       }
     },
-    "Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. Ein Import ersetzt alle Daten. Dokumente (Dateien) sind nicht enthalten." : {
+    "Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. Ein Import ersetzt alle Daten. Dokumente (Dateien) und Schülerfotos sind nicht enthalten." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An .xlsx file with one sheet per area (sheet and column names are in German). Editable in Excel or Numbers. An import replaces all data. Documents (files) are not included."
+            "value" : "An .xlsx file with one sheet per area (sheet and column names are in German). Editable in Excel or Numbers. An import replaces all data. Documents (files) and student photos are not included."
           }
         }
       }
@@ -1610,6 +1640,36 @@
         }
       }
     },
+    "Foto" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo"
+          }
+        }
+      }
+    },
+    "Foto auswählen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose photo"
+          }
+        }
+      }
+    },
+    "Foto entfernen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove photo"
+          }
+        }
+      }
+    },
     "Foto hinzugefügt" : {
       "localizations" : {
         "en" : {
@@ -1626,6 +1686,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The photo could not be added: %@"
+          }
+        }
+      }
+    },
+    "Foto ändern" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change photo"
+          }
+        }
+      }
+    },
+    "Fotoausschnitt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photo crop"
           }
         }
       }
@@ -2510,6 +2590,16 @@
         }
       }
     },
+    "Kontakt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contact"
+          }
+        }
+      }
+    },
     "Kopiert die Versionsangaben" : {
       "localizations" : {
         "en" : {
@@ -2807,6 +2897,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lock with %@"
+          }
+        }
+      }
+    },
+    "Mit zwei Fingern zoomen, mit einem Finger verschieben." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pinch with two fingers to zoom, drag with one finger to move."
           }
         }
       }
@@ -3772,6 +3872,16 @@
         }
       }
     },
+    "Sonstiges (z. B. Eltern)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other (e.g. parents)"
+          }
+        }
+      }
+    },
     "Spanisch" : {
       "localizations" : {
         "en" : {
@@ -4001,6 +4111,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Partly cloudy · ↑ 19° ↓ 9°"
+          }
+        }
+      }
+    },
+    "Telefon" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone"
           }
         }
       }
@@ -4612,6 +4732,16 @@
         }
       }
     },
+    "Übernehmen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use"
+          }
+        }
+      }
+    },
     "Übersicht" : {
       "localizations" : {
         "en" : {
@@ -4628,6 +4758,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostly clear"
+          }
+        }
+      }
+    },
+    "„%@“ aktualisiert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” updated"
           }
         }
       }

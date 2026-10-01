@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import UIKit
 
 /// Schülerin / Schüler einer Klasse. Alle Felder gelten als sensibel (`.sensitive()`).
 @Model
@@ -11,6 +12,14 @@ final class Student {
     /// `Gender.rawValue`; `nil` = keine Angabe.
     var genderRaw: String?
     var notes: String
+    var phone: String = ""
+    var email: String = ""
+    /// Weitere Kontaktangaben als Freitext (z. B. Eltern, Messenger).
+    var otherContact: String = ""
+    /// Profilfoto statt der Initialen: verkleinertes JPEG (`StudentPhoto`). Liegt nur im App-Container –
+    /// durch die Sandbox für andere Apps unzugänglich und per iOS-Datenschutz verschlüsselt, solange
+    /// ein Gerätecode gesetzt ist. Nicht im Excel-Export enthalten.
+    @Attribute(.externalStorage) var photo: Data?
     var createdAt: Date
     var schoolClass: SchoolClass?
 
@@ -21,6 +30,10 @@ final class Student {
         birthday: Date? = nil,
         gender: Gender? = nil,
         notes: String = "",
+        phone: String = "",
+        email: String = "",
+        otherContact: String = "",
+        photo: Data? = nil,
         createdAt: Date = .now,
         schoolClass: SchoolClass? = nil
     ) {
@@ -30,6 +43,10 @@ final class Student {
         self.birthday = birthday
         self.genderRaw = gender?.rawValue
         self.notes = notes
+        self.phone = phone
+        self.email = email
+        self.otherContact = otherContact
+        self.photo = photo
         self.createdAt = createdAt
         self.schoolClass = schoolClass
     }
@@ -104,6 +121,9 @@ extension Student {
         var birthday: Date?
         var gender: String?
         var notes: String
+        var phone: String
+        var email: String
+        var otherContact: String
         var createdAt: Date
     }
 
@@ -115,7 +135,40 @@ extension Student {
             birthday: birthday,
             gender: genderRaw,
             notes: notes,
+            phone: phone,
+            email: email,
+            otherContact: otherContact,
             createdAt: createdAt
         )
+    }
+}
+
+/// Profilfotos: beim Übernehmen auf höchstens 512 px verkleinert (JPEG), beim Anzeigen zwischengespeichert.
+nonisolated enum StudentPhoto {
+    static let maxPixelSize: CGFloat = 512
+
+    /// Verkleinert ein gewähltes Bild; `nil`, wenn es kein lesbares Bild ist.
+    static func prepare(_ data: Data, maxPixel: CGFloat = maxPixelSize) -> Data? {
+        guard let image = UIImage(data: data) else { return nil }
+        let longest = max(image.size.width, image.size.height)
+        let scale = min(1, maxPixel / max(longest, 1))
+        let size = CGSize(width: (image.size.width * scale).rounded(), height: (image.size.height * scale).rounded())
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: size, format: format)
+            .image { _ in image.draw(in: CGRect(origin: .zero, size: size)) }
+            .jpegData(compressionQuality: 0.8)
+    }
+
+    /// NSCache ist threadsicher.
+    nonisolated(unsafe) private static let cache = NSCache<NSData, UIImage>()
+
+    /// Dekodiertes Bild, zwischengespeichert (Listen zeichnen Avatare sehr oft).
+    static func image(from data: Data) -> UIImage? {
+        let key = data as NSData
+        if let cached = cache.object(forKey: key) { return cached }
+        guard let image = UIImage(data: data) else { return nil }
+        cache.setObject(image, forKey: key)
+        return image
     }
 }

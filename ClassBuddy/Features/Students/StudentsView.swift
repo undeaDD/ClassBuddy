@@ -140,7 +140,7 @@ struct StudentsView: View {
         .contextMenu {
             if canEdit {
                 Button("Bearbeiten", icon: .editPencil) { editorRoute = .edit(student) }
-                Button("Löschen", icon: .trash, role: .destructive) { studentPendingDeletion = student }
+                Button("Löschen", destructiveIcon: .trash) { studentPendingDeletion = student }
             }
         }
     }
@@ -182,21 +182,46 @@ struct StudentsView: View {
 
 /// Kreis mit Initialen und kleinem Geschlechts-Indikator.
 struct StudentAvatar: View {
-    let student: Student
+    let initials: String
+    var photo: Data?
+    var gender: Gender?
     var size: CGFloat = 40
 
+    init(student: Student, size: CGFloat = 40) {
+        self.init(initials: student.initials, photo: student.photo, gender: student.gender, size: size)
+    }
+
+    init(initials: String, photo: Data?, gender: Gender?, size: CGFloat = 40) {
+        self.initials = initials
+        self.photo = photo
+        self.gender = gender
+        self.size = size
+    }
+
     var body: some View {
-        Text(student.initials.isEmpty ? "?" : student.initials)
-            .font(.system(size: size * 0.38, weight: .semibold, design: .rounded))
-            .foregroundStyle(.tint)
-            .frame(width: size, height: size)
-            .background(.tint.opacity(0.15), in: .circle)
-            .overlay(alignment: .bottomTrailing) {
-                if let gender = student.gender {
-                    GenderBadge(gender: gender, size: size * 0.42)
-                        .offset(x: size * 0.08, y: size * 0.08)
-                }
+        Group {
+            if let image = photo.flatMap(StudentPhoto.image(from:)) {
+                // Foto im Privatsphäre-Modus unscharf.
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: size, height: size)
+                    .clipShape(.circle)
+                    .sensitiveBlur(radius: size / 4)
+            } else {
+                Text(initials.isEmpty ? "?" : initials)
+                    .font(.system(size: size * 0.38, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.tint)
+                    .frame(width: size, height: size)
+                    .background(.tint.opacity(0.15), in: .circle)
             }
+        }
+        .overlay(alignment: .bottomTrailing) {
+            if let gender {
+                GenderBadge(gender: gender, size: size * 0.42)
+                    .offset(x: size * 0.08, y: size * 0.08)
+            }
+        }
     }
 }
 

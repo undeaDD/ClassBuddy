@@ -59,6 +59,7 @@ struct AccentColorGrid: View {
 /// Jede Zeile zeigt als Vorschau das Zahnrad im jeweiligen Stil; Pakete per Wischen entfernen.
 struct IconThemeSection: View {
     @Environment(ToastCenter.self) private var toasts
+    @Environment(\.appAccent) private var accent
     @State private var isURLPromptPresented = false
     @State private var urlText = ""
     @State private var isDownloading = false
@@ -134,6 +135,27 @@ struct IconThemeSection: View {
                     HomeScreenAction.register()
                     toasts.success(loc("„\(pack.name)“ entfernt"))
                 }
+                // Lädt das zip erneut von derselben Adresse (ersetzt das installierte Paket).
+                if let source = pack.sourceURL.flatMap(URL.init(string:)) {
+                    Button("Aktualisieren", icon: .import) { update(from: source) }
+                        .tint(accent)
+                }
+            }
+        }
+    }
+
+    private func update(from url: URL) {
+        isDownloading = true
+        Task {
+            defer { isDownloading = false }
+            do {
+                let pack = try await IconPackStore.download(from: url)
+                manager.reloadPacks()
+                withAnimation(.smooth) { manager.theme = .pack(pack) }
+                HomeScreenAction.register()
+                toasts.success(loc("„\(pack.name)“ aktualisiert"))
+            } catch {
+                toasts.error(error.localizedDescription)
             }
         }
     }

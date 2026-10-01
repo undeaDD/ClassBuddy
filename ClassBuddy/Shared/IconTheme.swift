@@ -76,6 +76,7 @@ nonisolated enum IconTheme: Identifiable, Hashable, Sendable {
         .number1Circle: "1.circle",
         .page: "doc",
         .palette: "paintpalette",
+        .phone: "phone",
         .plus: "plus",
         .search: "magnifyingglass",
         .sendMail: "envelope",
@@ -214,5 +215,21 @@ extension Button where Label == SwiftUI.Label<Text, Image> {
     @_disfavoredOverload
     init<S: StringProtocol>(_ title: S, icon: AppIcon, role: ButtonRole? = nil, action: @escaping () -> Void) {
         self.init(role: role, action: action) { SwiftUI.Label(title, icon: icon) }
+    }
+}
+
+extension Button where Label == SwiftUI.Label<Text, Image> {
+    /// Löschen & Co. in Menüs (Kontextmenü, `Menu`): rote Schrift und **rotes** Icon – Menüs färben
+    /// eigene Icons sonst nicht mit. Nicht für Wisch-Aktionen (dort weißes Icon auf Rot).
+    init(_ titleKey: LocalizedStringKey, destructiveIcon icon: AppIcon, action: @escaping () -> Void) {
+        self.init(role: .destructive, action: action) {
+            SwiftUI.Label {
+                Text(titleKey)
+            } icon: {
+                IconManager.shared.uiImage(icon)
+                    .map { Image(uiImage: $0.withTintColor(.systemRed, renderingMode: .alwaysOriginal)) }
+                    ?? Image(icon: icon)
+            }
+        }
     }
 }

@@ -165,7 +165,7 @@ struct ClassPickerView: View {
         // Nach links wischen: löschen
         .swipeActions(edge: .trailing) {
             if canEdit {
-                Button("Löschen", icon: .trash, role: .destructive) {
+                Button("Löschen", destructiveIcon: .trash) {
                     classPendingDeletion = schoolClass
                 }
             }

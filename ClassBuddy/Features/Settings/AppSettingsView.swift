@@ -108,7 +108,7 @@ struct AppSettingsView: View {
         loc("""
             Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, \
             Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. \
-            Ein Import ersetzt alle Daten. Dokumente (Dateien) sind nicht enthalten.
+            Ein Import ersetzt alle Daten. Dokumente (Dateien) und Schülerfotos sind nicht enthalten.
             """)
     }
 

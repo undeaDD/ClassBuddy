@@ -30,6 +30,10 @@ extension Backup {
             .filter { $0.kind.isStoredFile }
             .reduce(into: [UUID: String]()) { $0[$1.id] = $1.location }
 
+        // Fotos stehen nicht in der Datei: die von Schülern mit gleicher ID behalten, alle anderen entfallen.
+        let existingPhotos = try context.fetch(FetchDescriptor<Student>())
+            .reduce(into: [UUID: Data]()) { photos, student in photos[student.id] = student.photo }
+
         try context.delete(model: Student.self)
         try context.delete(model: Lesson.self)
         try context.delete(model: DashboardLink.self)
@@ -37,7 +41,7 @@ extension Backup {
         try context.delete(model: Holiday.self)
         try context.delete(model: SchoolClass.self)
 
-        var importer = Importer(context: context, existingFiles: existingFiles)
+        var importer = Importer(context: context, existingFiles: existingFiles, existingPhotos: existingPhotos)
         importer.importClasses(table(Sheet.classes))
         importer.importStudents(table(Sheet.students))
         importer.importLessons(table(Sheet.lessons))
@@ -55,6 +59,7 @@ extension Backup {
     private struct Importer {
         let context: ModelContext
         let existingFiles: [UUID: String]
+        let existingPhotos: [UUID: Data]
         var summary = ImportSummary()
         var classesByID: [UUID: SchoolClass] = [:]
         var keptFileLocations: Set<String> = []
@@ -90,13 +95,18 @@ extension Backup {
                 guard let schoolClass = schoolClass(for: row),
                       !(row["Vorname"].isEmpty && row["Nachname"].isEmpty)
                 else { continue }
+                let id = UUID(uuidString: row["ID"]) ?? UUID()
                 context.insert(Student(
-                    id: UUID(uuidString: row["ID"]) ?? UUID(),
+                    id: id,
                     firstName: row["Vorname"],
                     lastName: row["Nachname"],
                     birthday: Cell.parseDate(row["Geburtstag"]),
                     gender: Cell.parseGender(row["Geschlecht"]),
                     notes: row["Notizen"],
+                    phone: row["Telefon"],
+                    email: row["E-Mail"],
+                    otherContact: row["Sonstiges"],
+                    photo: existingPhotos[id],
                     createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now,
                     schoolClass: schoolClass
                 ))

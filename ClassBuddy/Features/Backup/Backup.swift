@@ -81,6 +81,8 @@ enum Backup {
             ["Formatversion", "\(formatVersion)"],
             ["Exportiert am", Cell.dateTime(.now)],
             ["App-Version", AppInfo.version],
+            ["Hinweis", "Schülerfotos sind nicht enthalten und bleiben auf dem Gerät. Beim Import behalten Schüler mit "
+                + "gleicher ID ihr Foto, die Fotos aller anderen werden gelöscht."],
         ])
     }
 
@@ -99,11 +101,13 @@ enum Backup {
 
     private static func studentsSheet(_ classes: [SchoolClass]) -> XLSXSheet {
         XLSXSheet(name: Sheet.students, rows: [
-            ["ID", "Klassen-ID", "Klasse", "Vorname", "Nachname", "Geburtstag", "Geschlecht", "Notizen", "Erstellt"],
+            ["ID", "Klassen-ID", "Klasse", "Vorname", "Nachname", "Geburtstag", "Geschlecht", "Notizen",
+             "Telefon", "E-Mail", "Sonstiges", "Erstellt"],
         ] + classes.flatMap { schoolClass in
             schoolClass.sortedStudents.map {
                 [$0.id.uuidString, schoolClass.id.uuidString, schoolClass.shortName, $0.firstName, $0.lastName,
-                 Cell.date($0.birthday), $0.gender?.title ?? "", $0.notes, Cell.dateTime($0.createdAt)]
+                 Cell.date($0.birthday), $0.gender?.title ?? "", $0.notes,
+                 $0.phone, $0.email, $0.otherContact, Cell.dateTime($0.createdAt)]
             }
         })
     }
