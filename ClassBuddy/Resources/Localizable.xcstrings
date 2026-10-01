@@ -355,6 +355,16 @@
         }
       }
     },
+    "Akzentfarbe" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accent color"
+          }
+        }
+      }
+    },
     "Alle lokalen Daten löschen" : {
       "localizations" : {
         "en" : {
@@ -728,6 +738,16 @@
         }
       }
     },
+    "Bernstein" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amber"
+          }
+        }
+      }
+    },
     "Bild" : {
       "localizations" : {
         "en" : {
@@ -794,6 +814,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Please don't delete"
+          }
+        }
+      }
+    },
+    "Blau" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blue"
           }
         }
       }
@@ -928,6 +958,26 @@
         }
       }
     },
+    "Das Paket enthält keine passenden Icons." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The pack contains no matching icons."
+          }
+        }
+      }
+    },
+    "Das Paket ist zu groß (höchstens 20 MB)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The pack is too large (20 MB at most)."
+          }
+        }
+      }
+    },
     "Datei konnte nicht gelesen werden: %@" : {
       "localizations" : {
         "en" : {
@@ -1029,6 +1079,16 @@
         }
       }
     },
+    "Die Datei ist kein gültiges zip-Archiv." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is not a valid zip archive."
+          }
+        }
+      }
+    },
     "Die Klasse und alle %lld Schüler werden entfernt. Das kann nicht rückgängig gemacht werden." : {
       "localizations" : {
         "en" : {
@@ -1075,6 +1135,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Document added"
+          }
+        }
+      }
+    },
+    "Download fehlgeschlagen: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download failed: %@"
           }
         }
       }
@@ -1165,6 +1235,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A photo from your library, e.g. a photo of the board."
+          }
+        }
+      }
+    },
+    "Ein zip mit manifest.json und PDF-Icons, erstellt mit scripts/build-icon-pack.sh." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A zip with manifest.json and PDF icons, created with scripts/build-icon-pack.sh."
           }
         }
       }
@@ -1376,6 +1456,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Send feedback"
+          }
+        }
+      }
+    },
+    "Fehlende Icons eines Pakets erscheinen im Iconoir-Stil. Pakete per Wischen entfernen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icons missing from a pack appear in the Iconoir style. Swipe to remove packs."
           }
         }
       }
@@ -1691,12 +1781,32 @@
         }
       }
     },
+    "Graphit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graphite"
+          }
+        }
+      }
+    },
     "Gruppenfoto" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Group photo"
+          }
+        }
+      }
+    },
+    "Grün" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Green"
           }
         }
       }
@@ -1842,6 +1952,26 @@
         }
       }
     },
+    "https://…/paket.zip" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "https://…/pack.zip"
+          }
+        }
+      }
+    },
+    "Icons" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Icons"
+          }
+        }
+      }
+    },
     "Ihnen fehlt eine Kachel? Schreiben Sie kurz, was sie zeigen soll." : {
       "localizations" : {
         "en" : {
@@ -1929,6 +2059,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "in 5 days · turns 13"
+          }
+        }
+      }
+    },
+    "Indigo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indigo"
           }
         }
       }
@@ -2440,6 +2580,16 @@
         }
       }
     },
+    "Laden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load"
+          }
+        }
+      }
+    },
     "Latein" : {
       "localizations" : {
         "en" : {
@@ -2487,6 +2637,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "First create a class at the top left."
+          }
+        }
+      }
+    },
+    "Lila" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purple"
           }
         }
       }
@@ -2561,6 +2721,26 @@
         }
       }
     },
+    "manifest.json fehlt im Paket." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "manifest.json is missing from the pack."
+          }
+        }
+      }
+    },
+    "manifest.json ist ungültig (id und name nötig, id nur a–z, 0–9 und -)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "manifest.json is invalid (id and name required, id only a–z, 0–9 and -)."
+          }
+        }
+      }
+    },
     "Mathematik" : {
       "localizations" : {
         "en" : {
@@ -2597,6 +2777,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "My Profile"
+          }
+        }
+      }
+    },
+    "Mint" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mint"
           }
         }
       }
@@ -2877,6 +3067,16 @@
         }
       }
     },
+    "Nur https-Adressen sind erlaubt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only https addresses are allowed."
+          }
+        }
+      }
+    },
     "Nur https:// oder App-Links (z. B. notability://) sind erlaubt, kein http, ftp oder file." : {
       "localizations" : {
         "en" : {
@@ -2953,6 +3153,16 @@
         }
       }
     },
+    "Orange" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        }
+      }
+    },
     "Ort" : {
       "localizations" : {
         "en" : {
@@ -2969,6 +3179,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enter the school's city in the school settings"
+          }
+        }
+      }
+    },
+    "Paket aus Dateien installieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Install pack from Files"
+          }
+        }
+      }
+    },
+    "Paket von URL laden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load pack from URL"
           }
         }
       }
@@ -3039,6 +3269,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Physics"
+          }
+        }
+      }
+    },
+    "Pink" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pink"
           }
         }
       }
@@ -3185,6 +3425,16 @@
         }
       }
     },
+    "Rot" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red"
+          }
+        }
+      }
+    },
     "Räume" : {
       "localizations" : {
         "en" : {
@@ -3236,7 +3486,7 @@
         }
       }
     },
-    "Sag mir lieber, was fehlt" : {
+    "Sagen Sie mir lieber, was fehlt" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3922,6 +4172,16 @@
         }
       }
     },
+    "Türkis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teal"
+          }
+        }
+      }
+    },
     "Uhrzeit, Wochentag, Datum und Kalenderwoche." : {
       "localizations" : {
         "en" : {
@@ -4378,6 +4638,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mostly clear"
+          }
+        }
+      }
+    },
+    "„%@“ entfernt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” removed"
+          }
+        }
+      }
+    },
+    "„%@“ installiert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%@” installed"
           }
         }
       }

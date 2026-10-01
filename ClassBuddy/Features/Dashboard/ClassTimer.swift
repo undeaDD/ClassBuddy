@@ -107,9 +107,9 @@ struct TimerCard: View {
     var body: some View {
         Menu {
             if timer.isRunning {
-                Button("+1 Minute", image: .plus) { timer.extend(byMinutes: 1) }
-                Button("+5 Minuten", image: .plus) { timer.extend(byMinutes: 5) }
-                Button("Stoppen", image: .xmark, role: .destructive) { timer.stop() }
+                Button("+1 Minute", icon: .plus) { timer.extend(byMinutes: 1) }
+                Button("+5 Minuten", icon: .plus) { timer.extend(byMinutes: 5) }
+                Button("Stoppen", icon: .xmark, role: .destructive) { timer.stop() }
             } else {
                 ForEach(ClassTimer.presets, id: \.self) { minutes in
                     Button("\(minutes) Minuten") { timer.start(minutes: minutes) }
@@ -134,7 +134,7 @@ struct TimerCard: View {
                     Text(ClassTimer.remainingText(until: end, now: now))
                         .font(.system(size: 44, weight: .bold, design: .rounded))
                         .monospacedDigit()
-                        .foregroundStyle(Color.accentColor)
+                        .foregroundStyle(.tint)
                         .contentTransition(.numericText(countsDown: true))
                     Text("\(timer.durationMinutes) min · endet um \(end.appFormatted(date: .omitted, time: .shortened))")
                         .font(.subheadline)

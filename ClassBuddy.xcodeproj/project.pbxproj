@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA324E96A29BC0499AABBCBD /* AppearanceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0F93DC3D59C0C412D7D676 /* AppearanceSettings.swift */; };
+		ED870F799CFBACB2C95175B5 /* IconPack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C45B842799400D6FDE2324EA /* IconPack.swift */; };
+		824C54D8AE8F559316779459 /* IconTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D9072F12DEC822C6F30D7D /* IconTheme.swift */; };
+		92318B030D0FDD2C97F688AE /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B51B1591D25998249E52C6 /* AppIcon.swift */; };
+		7201A085B254FD8346DA0CF2 /* WiggleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C3E8DDC5FB89B43A137AE8 /* WiggleModifier.swift */; };
+		ADA8E806D651637BB2A51229 /* AppAccent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A7DEF83E6763DF8BFA1644 /* AppAccent.swift */; };
 		0016BF948735B154AC48FB94 /* XLSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520560E0BF66558DE32A34D /* XLSX.swift */; };
 		01CE987455CBFB4360537259 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7B56D4973387936A0E06B /* Weather.swift */; };
 		041EDD8E52FC9A70B471C5CD /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6AB5A47C4368067847CE31 /* AppTabView.swift */; };
@@ -144,6 +150,7 @@
 		5F5E83768A3055F73116717F /* ZipArchive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZipArchive.swift; sourceTree = "<group>"; };
 		65A1E1B423E8FA3229BA5412 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		682EF27D860985CC8FFA663A /* AppSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsView.swift; sourceTree = "<group>"; };
+		CD0F93DC3D59C0C412D7D676 /* AppearanceSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettings.swift; sourceTree = "<group>"; };
 		6A76053CA3209A5EDC2ED99F /* excel-edited.xlsx */ = {isa = PBXFileReference; lastKnownFileType = file; path = "excel-edited.xlsx"; sourceTree = "<group>"; };
 		6FF9124C1931B405BB777E91 /* ClassScopedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassScopedView.swift; sourceTree = "<group>"; };
 		723E830E960FEC552AC32623 /* CardGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGallery.swift; sourceTree = "<group>"; };
@@ -151,6 +158,10 @@
 		7B372F8814CE72C779B26265 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeacherProfileView.swift; sourceTree = "<group>"; };
 		81521268D282D6DF06A5E6D2 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
+		C7D9072F12DEC822C6F30D7D /* IconTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconTheme.swift; sourceTree = "<group>"; };
+		C45B842799400D6FDE2324EA /* IconPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPack.swift; sourceTree = "<group>"; };
+		26B51B1591D25998249E52C6 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
+		66A7DEF83E6763DF8BFA1644 /* AppAccent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAccent.swift; sourceTree = "<group>"; };
 		82B7B56D4973387936A0E06B /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		8737C4298AA78E18F6D25A7E /* ClassBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassBadge.swift; sourceTree = "<group>"; };
 		8750B322EDEC4B4625B5BBAB /* privacy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy.html; sourceTree = "<group>"; };
@@ -185,6 +196,7 @@
 		D41DC12A563B629FA7ADBEAC /* BackupCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCells.swift; sourceTree = "<group>"; };
 		DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetTests.swift; sourceTree = "<group>"; };
 		DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptCard.swift; sourceTree = "<group>"; };
+		59C3E8DDC5FB89B43A137AE8 /* WiggleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiggleModifier.swift; sourceTree = "<group>"; };
 		E2F04E1C451C09A579F79EE9 /* CellParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellParsingTests.swift; sourceTree = "<group>"; };
 		E35B3B7628591F7C2DCD3DD3 /* ClassEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassEditorView.swift; sourceTree = "<group>"; };
 		EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -320,6 +332,7 @@
 			isa = PBXGroup;
 			children = (
 				682EF27D860985CC8FFA663A /* AppSettingsView.swift */,
+				CD0F93DC3D59C0C412D7D676 /* AppearanceSettings.swift */,
 				575AD37B4A16A6434F248CD5 /* DebugMenuView.swift */,
 				7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */,
 				BA5B1F6CF676098DEB914826 /* SchoolSettingsView.swift */,
@@ -394,6 +407,10 @@
 				1FF8047550DFEAE0A19A1E2B /* Haptics.swift */,
 				A496E9CD0C20BDF78BA147A7 /* Toast.swift */,
 				81521268D282D6DF06A5E6D2 /* AppLanguage.swift */,
+				C7D9072F12DEC822C6F30D7D /* IconTheme.swift */,
+				C45B842799400D6FDE2324EA /* IconPack.swift */,
+				26B51B1591D25998249E52C6 /* AppIcon.swift */,
+				66A7DEF83E6763DF8BFA1644 /* AppAccent.swift */,
 				897588662DA32E79AE83FDC1 /* ColorHex.swift */,
 				A22B00150D405734C85B655E /* PersonFields.swift */,
 				D00C330E0B4BABBCFBC77103 /* AppSymbol.swift */,
@@ -447,6 +464,7 @@
 				3DE897C819A0937DF76AF7C8 /* Favicon.swift */,
 				73E66C43B8A650EDCA9DBFCD /* LinkEditorView.swift */,
 				DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */,
+				59C3E8DDC5FB89B43A137AE8 /* WiggleModifier.swift */,
 				FEC4CFBA75EED9BB490A0C24 /* CardScript.swift */,
 				A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */,
 			);
@@ -549,6 +567,12 @@
 		081E3143DC367976FCEE9B2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				DA324E96A29BC0499AABBCBD /* AppearanceSettings.swift in Sources */,
+				ED870F799CFBACB2C95175B5 /* IconPack.swift in Sources */,
+				824C54D8AE8F559316779459 /* IconTheme.swift in Sources */,
+				92318B030D0FDD2C97F688AE /* AppIcon.swift in Sources */,
+				7201A085B254FD8346DA0CF2 /* WiggleModifier.swift in Sources */,
+				ADA8E806D651637BB2A51229 /* AppAccent.swift in Sources */,
 				824A0243381D3E7DF6BDC1CA /* AppLanguage.swift in Sources */,
 				EFCCB54B9C8E37EE67197E3B /* ClassTimer.swift in Sources */,
 				AB615A72469E1F9D6A36271B /* InstallInfo.swift in Sources */,

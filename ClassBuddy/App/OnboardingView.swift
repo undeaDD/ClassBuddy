@@ -57,7 +57,7 @@ struct OnboardingView: View {
             content
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Button("Schließen", image: .xmark, action: onFinish)
+                        Button("Schließen", icon: .xmark, action: onFinish)
                     }
                 }
         }
@@ -100,7 +100,7 @@ struct OnboardingView: View {
         .frame(maxWidth: .infinity)
         .background {
             Rectangle()
-                .fill(Color.accentColor.opacity(0.08).gradient)
+                .fill(.tint.opacity(0.08))
                 .ignoresSafeArea()
         }
         .background(Color(.systemBackground))
@@ -140,7 +140,7 @@ struct OnboardingView: View {
         HStack(spacing: 8) {
             ForEach(pages.indices, id: \.self) { index in
                 Capsule()
-                    .fill(index == page ? Color.accentColor : Color.secondary.opacity(0.3))
+                    .fill(index == page ? AnyShapeStyle(.tint) : AnyShapeStyle(Color.secondary.opacity(0.3)))
                     .frame(width: index == page ? 20 : 8, height: 8)
             }
         }

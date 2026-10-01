@@ -118,12 +118,12 @@ struct CalendarView: View {
                 Button {
                     app.calendarFocusClassID = nil
                 } label: {
-                    Label("Nur \(focusClass.title)", image: .xmark)
+                    Label("Nur \(focusClass.title)", icon: .xmark)
                         .labelStyle(.titleAndIcon)
                 }
                 .tint(focusClass.displayColor)
             }
-            Button("Neuer Termin", image: .plus) { isNewEntryPresented = true }
+            Button("Neuer Termin", icon: .plus) { isNewEntryPresented = true }
                 .disabled(security.isPrivacyModeOn)
         }
         // ← Heute → schwebt unten über dem Inhalt und rutscht in die minimierte Tab-Leiste.
@@ -163,13 +163,13 @@ struct CalendarView: View {
                 VStack(spacing: 2) {
                     Text(day.date.appFormatted(.dateTime.weekday(.abbreviated)))
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(isToday ? Color.accentColor : .secondary)
+                        .foregroundStyle(isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
                     Text(day.date.appFormatted(.dateTime.day()))
                         .font(.title3.weight(isToday ? .bold : .regular))
                         .monospacedDigit()
                         .foregroundStyle(isToday ? .white : .primary)
                         .frame(width: 34, height: 34)
-                        .background(isToday ? Color.accentColor : .clear, in: .circle)
+                        .background(isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.clear), in: .circle)
                     Text(schedule.holiday(on: day.date)?.name ?? " ")
                         .font(.caption2)
                         .foregroundStyle(.orange)
@@ -220,14 +220,14 @@ struct CalendarPager: View {
 
     var body: some View {
         HStack(spacing: 24) {
-            Button(device.isPhone ? "Vorherige Tage" : "Vorherige Woche", image: .navArrowLeft) { move(by: -1) }
+            Button(device.isPhone ? "Vorherige Tage" : "Vorherige Woche", icon: .navArrowLeft) { move(by: -1) }
             Button("Heute") { app.calendarDate = calendar.startOfDay(for: .now) }
                 .fontWeight(.semibold)
-            Button(device.isPhone ? "Nächste Tage" : "Nächste Woche", image: .navArrowRight) { move(by: 1) }
+            Button(device.isPhone ? "Nächste Tage" : "Nächste Woche", icon: .navArrowRight) { move(by: 1) }
         }
         .labelStyle(.iconOnly)
         .buttonStyle(.plain)
-        .foregroundStyle(Color.accentColor)
+        .foregroundStyle(.tint)
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
         .glassEffect(.regular.interactive(), in: .capsule)

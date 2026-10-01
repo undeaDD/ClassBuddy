@@ -73,6 +73,7 @@ struct AppSettingsView: View {
     @AppStorage(AppPreference.minimizesBarsOnScroll) private var minimizesBarsOnScroll = true
     @AppStorage(AppPreference.hapticFeedback) private var hapticFeedback = false
     @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
+    @AppStorage(AppAccent.storageKey) private var accent = AppAccent.defaultValue
 
     /// Erst `loc` umstellen, dann – nach dem Schließen des Menüs – speichern: Das baut die ganze
     /// Oberfläche neu auf (`.id` an der Wurzel), was bei noch offenem Menü hängen kann.
@@ -126,7 +127,7 @@ struct AppSettingsView: View {
                         Text(verbatim: option.title).tag(option)
                     }
                 } label: {
-                    Label("Sprache", image: .translate)
+                    Label("Sprache", icon: .translate)
                 }
                 .pickerStyle(.menu)
                 Picker(selection: $appearance) {
@@ -134,20 +135,20 @@ struct AppSettingsView: View {
                         Text(option.displayTitle).tag(option)
                     }
                 } label: {
-                    Label("Erscheinungsbild", image: .palette)
+                    Label("Erscheinungsbild", icon: .palette)
                 }
                 .pickerStyle(.menu)
                 Toggle(isOn: $hidesTabLabels) {
-                    Label("Tab-Titel ausblenden", image: .label)
+                    Label("Tab-Titel ausblenden", icon: .label)
                 }
                 Toggle(isOn: $minimizesBarsOnScroll) {
-                    Label("UI Minimieren", image: .swipeLeftGesture)
+                    Label("UI Minimieren", icon: .swipeLeftGesture)
                 }
                 Toggle(isOn: $hapticFeedback) {
-                    Label("Haptisches Feedback", image: .sineWave)
+                    Label("Haptisches Feedback", icon: .sineWave)
                 }
                 Toggle(isOn: $keepsScreenAwake) {
-                    Label("Bildschirm wach halten", image: .lockSlash)
+                    Label("Bildschirm wach halten", icon: .lockSlash)
                 }
             } header: {
                 Text("Darstellung")
@@ -159,17 +160,23 @@ struct AppSettingsView: View {
                     """)
             }
 
+            Section("Akzentfarbe") {
+                AccentColorGrid(selection: $accent)
+            }
+
+            IconThemeSection()
+
             Section("Hilfe") {
                 Button {
                     hasCompletedOnboarding = false
                 } label: {
-                    SettingsActionLabel(title: loc("Einführung erneut anzeigen"), image: .helpCircle)
+                    SettingsActionLabel(title: loc("Einführung erneut anzeigen"), icon: .helpCircle)
                 }
             }
 
             Section {
                 Toggle(isOn: appLockBinding) {
-                    Label("Mit \(security.biometryName) sperren", image: .fingerprintLockCircle)
+                    Label("Mit \(security.biometryName) sperren", icon: .fingerprintLockCircle)
                 }
                 .disabled(security.isAuthenticating)
             } header: {
@@ -180,12 +187,12 @@ struct AppSettingsView: View {
 
             Section {
                 Button(action: export) {
-                    SettingsActionLabel(title: loc("Exportieren"), image: .shareIos)
+                    SettingsActionLabel(title: loc("Exportieren"), icon: .shareIos)
                 }
                 Button {
                     isImporterPresented = true
                 } label: {
-                    SettingsActionLabel(title: loc("Importieren"), image: .import)
+                    SettingsActionLabel(title: loc("Importieren"), icon: .import)
                 }
             } header: {
                 Text("Export & Import")
@@ -202,12 +209,12 @@ struct AppSettingsView: View {
                         ProgressView()
                     }
                 } label: {
-                    Label("Belegter Speicher", image: .data)
+                    Label("Belegter Speicher", icon: .data)
                 }
                 Button(role: .destructive) {
                     isDeleteConfirmationPresented = true
                 } label: {
-                    SettingsActionLabel(title: loc("Alle lokalen Daten löschen"), image: .trash, isDestructive: true)
+                    SettingsActionLabel(title: loc("Alle lokalen Daten löschen"), icon: .trash, isDestructive: true)
                 }
                 .disabled(security.isPrivacyModeOn)
             } header: {
@@ -282,6 +289,8 @@ struct AppSettingsView: View {
             let result = try Backup.import(data, context: modelContext, currentSettings: settings.values)
             settings.values = result.settings.values
             if let imported = result.settings.appearance { appearance = imported }
+            if let imported = result.settings.accent { accent = imported }
+            if let imported = result.settings.iconTheme { IconManager.shared.theme = imported }
             if let imported = result.settings.language, imported != language {
                 AppLanguage.current = imported
                 language = imported

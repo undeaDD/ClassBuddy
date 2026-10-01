@@ -11,14 +11,14 @@ struct NameFields: View {
                 .textContentType(.givenName)
                 .sensitive()
         } icon: {
-            Image(.label)
+            Image(icon: .label)
         }
         Label {
             TextField("Nachname", text: $lastName)
                 .textContentType(.familyName)
                 .sensitive()
         } icon: {
-            Image(.label)
+            Image(icon: .label)
         }
     }
 }
@@ -42,7 +42,7 @@ struct GenderPicker: View {
     }
 
     private var label: some View {
-        Label("Geschlecht", image: .genderUnknown)
+        Label("Geschlecht", icon: .genderUnknown)
     }
 
     private var picker: some View {
@@ -75,15 +75,15 @@ struct BirthdayField: View {
                 in: ...Date.now,
                 displayedComponents: .date
             ) {
-                Label("Geburtstag", image: .birthday)
+                Label("Geburtstag", icon: .birthday)
             }
             .opacity(birthday == nil ? 0.45 : 1)
             .sensitive()
 
             if birthday != nil {
-                Button("Geburtstag entfernen", image: .xmark) { birthday = nil }
+                Button("Geburtstag entfernen", icon: .xmark) { birthday = nil }
                     .labelStyle(.iconOnly)
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(.tint)
                     .buttonStyle(.borderless)
                     .padding(.leading, 6)
             }

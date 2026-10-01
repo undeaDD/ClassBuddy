@@ -7,6 +7,7 @@ struct ClassEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(SchoolSettings.self) private var settings
+    @Environment(\.appAccent) private var accent
 
     let schoolClass: SchoolClass?
     var onSave: (SchoolClass) -> Void = { _ in }
@@ -51,12 +52,12 @@ struct ClassEditorView: View {
                         TextField("Kürzel (z. B. 7b)", text: $shortName)
                             .textInputAutocapitalization(.never)
                     } icon: {
-                        Image(.label)
+                        Image(icon: .label)
                     }
                     Label {
                         TextField("Schuljahr", text: $schoolYear)
                     } icon: {
-                        Image(.calendar)
+                        Image(icon: .calendar)
                     }
                 }
 
@@ -70,7 +71,7 @@ struct ClassEditorView: View {
                     NavigationLink {
                         SubjectPickerView(subjects: $subjects, preferred: settings.values.teacher.subjects)
                     } label: {
-                        Label("Fach hinzufügen", image: .graduationCap)
+                        Label("Fach hinzufügen", icon: .graduationCap)
                     }
                 } header: {
                     Text("Fächer")
@@ -116,7 +117,7 @@ struct ClassEditorView: View {
     }
 
     private var selectionCheck: some View {
-        Image(.check)
+        Image(icon: .check)
             .iconSize(18)
             .foregroundStyle(.white)
             .allowsHitTesting(false)
@@ -129,7 +130,7 @@ struct ClassEditorView: View {
         ColorPicker(
             "Eigene Farbe",
             selection: Binding(
-                get: { Color(hex: isCustomColor ? colorRaw : lastCustomColor) ?? .accentColor },
+                get: { Color(hex: isCustomColor ? colorRaw : lastCustomColor) ?? accent },
                 set: { newColor in
                     let hex = newColor.hexString
                     lastCustomColor = hex
@@ -198,7 +199,7 @@ struct SubjectPickerView: View {
                 HStack {
                     TextField("Eigenes Fach", text: $customSubject)
                         .onSubmit(addCustomSubject)
-                    Button("Hinzufügen", image: .check, action: addCustomSubject)
+                    Button("Hinzufügen", icon: .check, action: addCustomSubject)
                         .labelStyle(.iconOnly)
                         .disabled(customSubject.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
@@ -229,7 +230,7 @@ struct SubjectPickerView: View {
                     .foregroundStyle(Color.primary)
                 Spacer()
                 if isSelected {
-                    Image(.check)
+                    Image(icon: .check)
                         .iconSize(20)
                         .foregroundStyle(.tint)
                 }

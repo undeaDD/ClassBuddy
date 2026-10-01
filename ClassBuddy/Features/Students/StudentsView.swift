@@ -4,6 +4,7 @@ import SwiftUI
 /// Schülerliste der ausgewählten Klasse: alphabetisch nach Vornamen gruppiert,
 /// durchsuchbar. Im Privatsphäre-Modus nur lesend.
 struct StudentsView: View {
+    @Environment(\.appAccent) private var accent
     @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
     @Environment(\.modelContext) private var modelContext
@@ -29,7 +30,7 @@ struct StudentsView: View {
         .navigationSubtitle(selectedClass.map { loc("\($0.students.count) Schüler") } ?? "")
         .appChrome(tab: .students) {
             if let selectedClass {
-                Button("Schüler hinzufügen", image: .plus) {
+                Button("Schüler hinzufügen", icon: .plus) {
                     editorRoute = .new(selectedClass)
                 }
                 .disabled(!canEdit)
@@ -110,14 +111,14 @@ struct StudentsView: View {
             Spacer()
             // Notizen-Hinweis (im Privatsphäre-Modus verborgen), dann Pfeil wie bei anderen Zeilen.
             if !student.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                Image(.notes)
+                Image(icon: .notes)
                     .iconSize(18)
                     .foregroundStyle(.secondary)
                     .padding(.trailing, 4)
                     .sensitive()
                     .accessibilityLabel("Hat Notizen")
             }
-            Image(.navArrowRight)
+            Image(icon: .navArrowRight)
                 .iconSize(18)
                 .foregroundStyle(.tertiary)
                 .accessibilityHidden(true)
@@ -126,20 +127,20 @@ struct StudentsView: View {
         // Nach rechts wischen: bearbeiten
         .swipeActions(edge: .leading) {
             if canEdit {
-                Button("Bearbeiten", image: .editPencil) { editorRoute = .edit(student) }
-                    .tint(.accentColor)
+                Button("Bearbeiten", icon: .editPencil) { editorRoute = .edit(student) }
+                    .tint(accent)
             }
         }
         // Nach links wischen: löschen
         .swipeActions(edge: .trailing) {
             if canEdit {
-                Button("Löschen", image: .trash, role: .destructive) { studentPendingDeletion = student }
+                Button("Löschen", icon: .trash, role: .destructive) { studentPendingDeletion = student }
             }
         }
         .contextMenu {
             if canEdit {
-                Button("Bearbeiten", image: .editPencil) { editorRoute = .edit(student) }
-                Button("Löschen", image: .trash, role: .destructive) { studentPendingDeletion = student }
+                Button("Bearbeiten", icon: .editPencil) { editorRoute = .edit(student) }
+                Button("Löschen", icon: .trash, role: .destructive) { studentPendingDeletion = student }
             }
         }
     }

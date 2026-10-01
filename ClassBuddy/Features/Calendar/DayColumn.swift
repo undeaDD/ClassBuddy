@@ -200,8 +200,8 @@ struct DayColumn: View {
 
     @ViewBuilder
     private func editMenu(edit: @escaping () -> Void, remove: @escaping () -> Void) -> some View {
-        Button("Bearbeiten", image: .editPencil, action: edit)
-        Button("Entfernen", image: .trash, role: .destructive, action: remove)
+        Button("Bearbeiten", icon: .editPencil, action: edit)
+        Button("Entfernen", icon: .trash, role: .destructive, action: remove)
     }
 
     private func delete(_ model: some PersistentModel) {
@@ -260,7 +260,7 @@ private struct SlotCell: View {
         // Einmalig-Symbol vor dem Kürzel (unten), damit oben Platz für das Fach bleibt.
         let className = HStack(alignment: .lastTextBaseline, spacing: 3) {
             if !lesson.isRecurring {
-                Image(.number1Circle).iconSize(12)
+                Image(icon: .number1Circle).iconSize(12)
             }
             Text(schoolClass.shortName)
                 .font(.title3.weight(.bold))
@@ -310,6 +310,7 @@ private struct SlotCell: View {
 /// (Farbstreifen links, Kürzel unten rechts). Gedimmt wie Stunden beim Kalender-Fokus.
 /// Zeigt so viel, wie in die Karte passt (kurze Termine: nur Titel bzw. Titel + Kürzel).
 private struct EntryCard: View {
+    @Environment(\.appAccent) private var accent
     let entry: CalendarEntry
     var isDimmed = false
 
@@ -335,7 +336,7 @@ private struct EntryCard: View {
                 .padding(.horizontal, 6)
                 .padding(.vertical, 4)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .background(Color.accentColor.gradient, in: shape)
+                .background(accent.gradient, in: shape)
             }
         }
         .contentShape(.hoverEffect, shape)

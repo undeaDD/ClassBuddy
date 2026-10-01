@@ -1,27 +1,29 @@
 import SwiftUI
 import UIKit
 
-/// Einheitliche Icon-Quelle für die ganze App: nur eigene Icons aus
-/// `Assets.xcassets/Icons` (SVG, Template-Rendering, übernimmt also Tint/Vordergrundfarbe).
-/// Neue SVGs ins `Icons/`-Postfach legen und `scripts/sync-icons.sh` ausführen.
+/// Icon als Wert (z. B. Symbol einer Kachel oder eines Tabs). Das Bild kommt aus dem aktiven
+/// Icon-Theme (`IconManager`). Neue SVGs ins `Icons/`-Postfach legen und `scripts/sync-icons.sh` ausführen.
 nonisolated enum AppSymbol: Hashable, Sendable {
-    case custom(ImageResource)
+    case custom(AppIcon)
 
+    @MainActor
     var image: Image {
         switch self {
-        case .custom(let resource): Image(resource)
+        case .custom(let icon): Image(icon: icon)
         }
     }
 
     /// UIKit-Bild des Symbols (z. B. um die Farbe fest vorzugeben).
+    @MainActor
     var uiImage: UIImage? {
         switch self {
-        case .custom(let resource): UIImage(resource: resource)
+        case .custom(let icon): IconManager.shared.uiImage(icon)
         }
     }
 
     /// Bild in fester Farbe (nicht mehr vom System einfärbbar); dynamische Farben
     /// wie `.label` passen sich weiterhin an Hell/Dunkel an.
+    @MainActor
     func fixedColorImage(_ color: UIColor) -> Image {
         guard let uiImage else { return image }
         return Image(uiImage: uiImage.withTintColor(color, renderingMode: .alwaysOriginal))

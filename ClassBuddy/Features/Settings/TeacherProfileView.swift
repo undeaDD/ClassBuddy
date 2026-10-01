@@ -24,7 +24,7 @@ struct TeacherProfileView: View {
                             : settings.values.teacher.subjects.map(SchoolClass.displayName(ofSubject:)).joined(separator: ", "))
                             .lineLimit(1)
                     } label: {
-                        Label("Hauptfächer", image: .graduationCap)
+                        Label("Hauptfächer", icon: .graduationCap)
                     }
                 }
             } footer: {

@@ -12,7 +12,8 @@ struct QuickAction: Identifiable {
     let id: String
     let title: String
     let symbol: AppSymbol
-    var tint: Color = .accentColor
+    /// `nil` = Akzentfarbe.
+    var tint: Color?
     let perform: () -> Void
 }
 
@@ -93,6 +94,7 @@ private struct PencilQuickActionsModifier: ViewModifier {
 
 /// Kreisförmig um den Stift angeordnete Aktionen.
 struct RadialQuickMenu: View {
+    @Environment(\.appAccent) private var accent
     static let radius: CGFloat = 92
 
     let center: CGPoint
@@ -111,7 +113,7 @@ struct RadialQuickMenu: View {
             GlassEffectContainer(spacing: 20) {
                 ZStack {
                     Button(action: dismiss) {
-                        Image(.xmark)
+                        Image(icon: .xmark)
                             .iconSize(22)
                             .frame(width: 44, height: 44)
                     }
@@ -146,7 +148,7 @@ struct RadialQuickMenu: View {
                     .lineLimit(1)
                     .fixedSize()
             }
-            .foregroundStyle(action.tint)
+            .foregroundStyle(action.tint ?? accent)
             .frame(width: 68, height: 68)
         }
         .buttonStyle(.plain)

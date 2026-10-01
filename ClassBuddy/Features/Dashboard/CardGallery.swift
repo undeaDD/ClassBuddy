@@ -210,8 +210,8 @@ struct CardGalleryView: View {
     private func tile(_ template: CardTemplate) -> some View {
         if template == .image {
             Menu {
-                Button("Aus „Fotos“", image: .image) { select(.photo) }
-                Button("Aus „Dateien“", image: .page) { select(.imageFile) }
+                Button("Aus „Fotos“", icon: .image) { select(.photo) }
+                Button("Aus „Dateien“", icon: .page) { select(.imageFile) }
             } label: {
                 tileLabel(template)
             }
