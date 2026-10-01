@@ -43,7 +43,7 @@ struct LessonEditorView: View {
                             Text(schoolClass.title).tag(Optional(schoolClass.id))
                         }
                     } label: {
-                        Label("Klasse", image: .community)
+                        Label("Klasse", icon: .community)
                     }
                     Picker(selection: $subject) {
                         Text("Kein Fach").tag("")
@@ -51,7 +51,7 @@ struct LessonEditorView: View {
                             Text(SchoolClass.displayName(ofSubject: subject)).tag(subject)
                         }
                     } label: {
-                        Label("Fach", image: .graduationCap)
+                        Label("Fach", icon: .graduationCap)
                     }
                     .disabled(selectedClass?.subjects.isEmpty ?? true)
                 } footer: {
@@ -64,7 +64,7 @@ struct LessonEditorView: View {
 
                 Section {
                     Toggle(isOn: $isRecurring) {
-                        Label("Jede Woche", image: .number1Circle)
+                        Label("Jede Woche", icon: .number1Circle)
                     }
                 } footer: {
                     Text(isRecurring
@@ -165,13 +165,13 @@ struct EntryEditorView: View {
                         TextField("Titel", text: $title)
                             .sensitive()
                     } icon: {
-                        Image(.label)
+                        Image(icon: .label)
                     }
                     DatePicker(selection: $start) {
-                        Label("Beginn", image: .calendar)
+                        Label("Beginn", icon: .calendar)
                     }
                     Stepper(value: $duration, in: 15...(12 * 60), step: 15) {
-                        Label("Dauer: \(durationText)", image: .timer)
+                        Label("Dauer: \(durationText)", icon: .timer)
                     }
                     // Optional: Termin einer Klasse zuordnen → in deren Farbe (z. B. Ausflug, Elternabend).
                     Picker(selection: $classID) {
@@ -180,7 +180,7 @@ struct EntryEditorView: View {
                             Text(schoolClass.title).tag(Optional(schoolClass.id))
                         }
                     } label: {
-                        Label("Klasse", image: .community)
+                        Label("Klasse", icon: .community)
                     }
                 }
                 Section("Notizen") {
@@ -244,7 +244,7 @@ struct CancelButton: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        Button("Abbrechen", image: .xmark, role: .cancel) { dismiss() }
+        Button("Abbrechen", icon: .xmark, role: .cancel) { dismiss() }
     }
 }
 
@@ -254,7 +254,7 @@ struct ConfirmButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(title, image: .check, role: .confirm, action: action)
+        Button(title, icon: .check, role: .confirm, action: action)
     }
 }
 
@@ -274,6 +274,7 @@ extension View {
 
 private struct ProminentGlassButton: ViewModifier {
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.appAccent) private var accent
 
     func body(content: Content) -> some View {
         content
@@ -281,7 +282,7 @@ private struct ProminentGlassButton: ViewModifier {
             .buttonStyle(.plain)
             .foregroundStyle(.white)
             .padding(8)
-            .glassEffect(.regular.tint(.accentColor).interactive(), in: .circle)
+            .glassEffect(.regular.tint(accent).interactive(), in: .circle)
             .opacity(isEnabled ? 1 : 0.4)
     }
 }

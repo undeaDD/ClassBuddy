@@ -21,17 +21,17 @@ struct SettingsView: View {
                 NavigationLink {
                     TeacherProfileView()
                 } label: {
-                    Label("Mein Profil", image: .userCircle)
+                    Label("Mein Profil", icon: .userCircle)
                 }
                 NavigationLink {
                     SchoolSettingsView()
                 } label: {
-                    Label("Schuleinstellungen", image: .bank)
+                    Label("Schuleinstellungen", icon: .bank)
                 }
                 NavigationLink {
                     AppSettingsView()
                 } label: {
-                    Label("App-Einstellungen", image: .app)
+                    Label("App-Einstellungen", icon: .app)
                 }
             } header: {
                 Text("Kategorien")
@@ -44,7 +44,7 @@ struct SettingsView: View {
                     NavigationLink {
                         DebugMenuView()
                     } label: {
-                        Label("Debug-Menü", image: .bug)
+                        Label("Debug-Menü", icon: .bug)
                     }
                 }
             }
@@ -61,12 +61,12 @@ struct SettingsView: View {
             }
 
             Section {
-                ExternalLinkRow(title: "GitHub", image: .githubCircle, url: AppInfo.sourceCodeURL)
-                ExternalLinkRow(title: loc("Kaffee spendieren"), image: .donate, url: AppInfo.donationURL)
+                ExternalLinkRow(title: "GitHub", icon: .githubCircle, url: AppInfo.sourceCodeURL)
+                ExternalLinkRow(title: loc("Kaffee spendieren"), icon: .donate, url: AppInfo.donationURL)
                 // Einfacher mailto-Link.
                 ExternalLinkRow(
                     title: loc("Feedback senden"),
-                    image: .sendMail,
+                    icon: .sendMail,
                     url: AppInfo.feedbackMailURL,
                     hint: loc("Öffnet die Mail-App")
                 )
@@ -82,7 +82,7 @@ struct SettingsView: View {
                         Label {
                             Text("Info").foregroundStyle(Color.primary)
                         } icon: {
-                            Image(.version)
+                            Image(icon: .version)
                         }
                     }
                 }
@@ -98,7 +98,7 @@ struct SettingsView: View {
         .navigationTitle(AppTab.settings.title)
         .appChrome(tab: .settings) {
             ShareLink(item: AppInfo.shareURL, subject: Text("ClassBuddy"), message: Text(AppInfo.shareMessage)) {
-                Label("App teilen", image: .shareIos)
+                Label("App teilen", icon: .shareIos)
             }
         }
     }
@@ -108,7 +108,7 @@ struct SettingsView: View {
 private struct ExternalLinkRow: View {
     @Environment(\.openURL) private var openURL
     let title: String
-    let image: ImageResource
+    let icon: AppIcon
     let url: URL
     var hint = loc("Öffnet in Safari")
 
@@ -120,10 +120,10 @@ private struct ExternalLinkRow: View {
                 Label {
                     Text(title).foregroundStyle(Color.primary)
                 } icon: {
-                    Image(image)
+                    Image(icon: icon)
                 }
                 Spacer()
-                Image(.arrowUpRight)
+                Image(icon: .arrowUpRight)
                     .iconSize(18)
                     .foregroundStyle(.tertiary)
             }
@@ -217,7 +217,7 @@ private struct HeroChip: View {
 struct SettingsActionLabel: View {
     @Environment(\.isEnabled) private var isEnabled
     let title: String
-    let image: ImageResource
+    let icon: AppIcon
     var isDestructive = false
     var showsChevron = true
     /// Statt des Pfeils ein Ladeindikator.
@@ -228,13 +228,15 @@ struct SettingsActionLabel: View {
             Label {
                 Text(title).foregroundStyle(isEnabled ? (isDestructive ? Color.red : Color.primary) : Color.secondary)
             } icon: {
-                Image(image).foregroundStyle(isEnabled ? (isDestructive ? Color.red : Color.accentColor) : Color.secondary)
+                Image(icon: icon).foregroundStyle(
+                    isEnabled ? (isDestructive ? AnyShapeStyle(Color.red) : AnyShapeStyle(.tint)) : AnyShapeStyle(Color.secondary)
+                )
             }
             Spacer()
             if isLoading {
                 ProgressView()
             } else if showsChevron {
-                Image(.navArrowRight)
+                Image(icon: .navArrowRight)
                     .iconSize(16)
                     .foregroundStyle(.tertiary)
             }
@@ -291,12 +293,28 @@ struct LegalDocumentView: View {
             .navigationTitle(document.title)
             .navigationBarTitleDisplayMode(.inline)
             .task {
-                guard let url = document.url, let html = try? String(contentsOf: url, encoding: .utf8) else { return }
+                guard let url = document.url, var html = try? String(contentsOf: url, encoding: .utf8) else { return }
+                html = Self.applyingAccent(to: html)
                 // Ladefehler einer lokalen Datei: Seite bleibt leer, kein weiterer Umgang nötig.
                 do {
                     for try await _ in page.load(html: html, baseURL: url.deletingLastPathComponent()) {}
                 } catch {}
             }
+    }
+}
+
+extension LegalDocumentView {
+    /// Die HTML-Seiten haben das ClassBuddy-Braun fest in der CSS – durch die gewählte Akzentfarbe ersetzen.
+    static func applyingAccent(to html: String) -> String {
+        let value = UserDefaults.standard.string(forKey: AppAccent.storageKey) ?? AppAccent.defaultValue
+        guard value != AppAccent.defaultValue else { return html }
+        let light = AppAccent.cssHex(for: value, dark: false)
+        let dark = AppAccent.cssHex(for: value, dark: true)
+        return html
+            .replacingOccurrences(of: "--accent: #9c6830;", with: "--accent: \(light);")
+            .replacingOccurrences(of: "--pill: rgba(156, 104, 48, 0.12);", with: "--pill: \(light)1f;")
+            .replacingOccurrences(of: "--accent: #cd9c5e;", with: "--accent: \(dark);")
+            .replacingOccurrences(of: "--pill: rgba(205, 156, 94, 0.16);", with: "--pill: \(dark)29;")
     }
 }
 

@@ -52,3 +52,24 @@ EOF
   rm "$png"
   print "✓ $name (Illustration)"
 done
+
+# AppIcon.swift neu erzeugen: ein Fall je Icon im Katalog (Name wie Xcodes ImageResource, z. B. edit-pencil → editPencil).
+generated="$root/ClassBuddy/Shared/AppIcon.swift"
+{
+  print '// Automatisch erzeugt von scripts/sync-icons.sh – nicht von Hand bearbeiten.'
+  print ''
+  print '/// Alle Icons der App. Das Bild liefert das aktive Icon-Theme (`IconManager`),'
+  print '/// Fallback ist das eingebaute Iconoir-SVG aus `Assets.xcassets/Icons/<rawValue>`.'
+  print 'nonisolated enum AppIcon: String, CaseIterable, Sendable {'
+  for set in "$catalog"/*.imageset(N); do
+    name="${set:t:r}"
+    camel="${${(C)name//-/ }// /}"          # edit-pencil → EditPencil
+    camel="${(L)camel[1]}${camel[2,-1]}"     # → editPencil
+    case "$camel" in
+      import|default|case|class|func|return|self|switch|var|let|in|is|as) camel="\`$camel\`" ;;
+    esac
+    print "    case $camel = \"$name\""
+  done
+  print '}'
+} > "$generated"
+print "✓ AppIcon.swift ($(grep -c '    case ' "$generated") Icons)"

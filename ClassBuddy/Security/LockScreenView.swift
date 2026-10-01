@@ -13,13 +13,13 @@ struct LockScreenView: View {
                 .fill(.thinMaterial)
                 .ignoresSafeArea()
             Rectangle()
-                .fill(Color.accentColor.opacity(0.08).gradient)
+                .fill(.tint.opacity(0.08))
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
-                Image(.fingerprintLockCircle)
+                Image(icon: .fingerprintLockCircle)
                     .iconSize(120)
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(.tint)
 
                 VStack(spacing: 6) {
                     Text("ClassBuddy ist gesperrt")
@@ -57,9 +57,9 @@ struct PrivacyCoverView: View {
             .fill(.regularMaterial)
             .ignoresSafeArea()
             .overlay {
-                Image(.lock)
+                Image(icon: .lock)
                     .iconSize(80)
-                    .foregroundStyle(Color.accentColor)
+                    .foregroundStyle(.tint)
             }
     }
 }

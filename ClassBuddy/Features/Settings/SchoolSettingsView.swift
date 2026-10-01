@@ -25,7 +25,7 @@ struct SchoolSettingsView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                     if let url = settings.values.school.websiteURL {
-                        Button("Öffnen", image: .navArrowRight) { openURL(url) }
+                        Button("Öffnen", icon: .navArrowRight) { openURL(url) }
                             .labelStyle(.iconOnly)
                     }
                 }
@@ -71,7 +71,7 @@ struct SchoolSettingsView: View {
                 }
                 .onDelete { settings.values.breaks.remove(atOffsets: $0) }
 
-                Button("Pause hinzufügen", image: .plus) {
+                Button("Pause hinzufügen", icon: .plus) {
                     let start = settings.slots.last?.end ?? settings.values.dayStart
                     settings.values.breaks.append(BreakTime(start: start, duration: 15))
                 }
@@ -94,7 +94,7 @@ struct SchoolSettingsView: View {
 
             Section("Kalender") {
                 Toggle(isOn: $settings.values.showWeekends) {
-                    Label("Wochenende anzeigen", image: .calendar)
+                    Label("Wochenende anzeigen", icon: .calendar)
                 }
             }
 
@@ -106,13 +106,13 @@ struct SchoolSettingsView: View {
                         Text(HolidayImporter.displayName(ofState: state.code)).tag(Optional(state.code))
                     }
                 } label: {
-                    Label("Bundesland", image: .globe)
+                    Label("Bundesland", icon: .globe)
                 }
                 .pickerStyle(.navigationLink)
                 Button {
                     Task { await importHolidays() }
                 } label: {
-                    SettingsActionLabel(title: loc("Ferien & Feiertage importieren"), image: .cloudDownload, isLoading: isImporting)
+                    SettingsActionLabel(title: loc("Ferien & Feiertage importieren"), icon: .cloudDownload, isLoading: isImporting)
                 }
                 .disabled(settings.values.federalState == nil || isImporting)
 

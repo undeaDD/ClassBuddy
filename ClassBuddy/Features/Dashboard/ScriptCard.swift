@@ -162,11 +162,11 @@ struct ScriptEditorView: View {
                 }
 
                 Section {
-                    Button("Beispiel wiederherstellen", image: .plus) {
+                    Button("Beispiel wiederherstellen", icon: .plus) {
                         source = CardScript.example
                         state = "{}"
                     }
-                    Button("Gespeicherten Zustand zurücksetzen", image: .trash, role: .destructive) {
+                    Button("Gespeicherten Zustand zurücksetzen", icon: .trash, role: .destructive) {
                         state = "{}"
                     }
                     .disabled(state == "{}")

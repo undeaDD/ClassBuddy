@@ -141,7 +141,7 @@ struct DashboardView: View {
     private func hiddenSection(for schoolClass: SchoolClass) -> some View {
         let hidden = hiddenCardIDs(for: schoolClass)
         return VStack(alignment: .leading, spacing: 12) {
-            Label("Ausgeblendet", image: .eyeClosed)
+            Label("Ausgeblendet", icon: .eyeClosed)
                 .font(.headline)
                 .foregroundStyle(.secondary)
 
@@ -186,13 +186,12 @@ struct DashboardView: View {
                         Button(isHidden ? "Einblenden" : "Ausblenden", image: isHidden ? .eye : .eyeClosed) {
                             setHidden(!isHidden, cardID, in: schoolClass)
                         }
-                        Button("Entfernen", image: .xmark) {
+                        Button("Entfernen", icon: .xmark) {
                             removeCard(cardID, in: schoolClass)
                         }
                     }
                     .labelStyle(.iconOnly)
-                    .foregroundStyle(Color.accentColor)
-                    .tint(Color.accentColor)
+                    .foregroundStyle(.tint)
                     .buttonStyle(.glass)
                     .buttonBorderShape(.circle)
                     .offset(x: 8, y: -8)
@@ -427,9 +426,9 @@ extension DashboardView {
         }
         .contextMenu {
             if canEdit {
-                Button("Bearbeiten", image: .editPencil) { linkEditorRoute = .edit(link) }
-                Button("Ausblenden", image: .eyeClosed) { setHidden(true, link.cardID, in: schoolClass) }
-                Button("Entfernen", image: .trash, role: .destructive) { remove(link) }
+                Button("Bearbeiten", icon: .editPencil) { linkEditorRoute = .edit(link) }
+                Button("Ausblenden", icon: .eyeClosed) { setHidden(true, link.cardID, in: schoolClass) }
+                Button("Entfernen", icon: .trash, role: .destructive) { remove(link) }
             }
         }
     }

@@ -9,6 +9,8 @@ extension Backup {
         var values: SchoolSettings.Values
         var appearance: AppAppearance?
         var language: AppLanguage?
+        var accent: String?
+        var iconTheme: IconTheme?
     }
 
     /// Ersetzt die App-Daten durch den Inhalt der Datei.
@@ -210,7 +212,9 @@ extension Backup {
         let app = workbook[Sheet.app].map(KeyValues.init)
         let appearance = app.flatMap { app in AppAppearance.allCases.first { $0.title == app["Erscheinungsbild"] } }
         let language = app.flatMap { app in AppLanguage(backupTitle: app["Sprache"]) }
-        return ImportedSettings(values: values, appearance: appearance, language: language)
+        let accent = app.map { $0["Akzentfarbe"].trimmingCharacters(in: .whitespaces) }.flatMap { AppAccent.isValid($0) ? $0 : nil }
+        let iconTheme = app.flatMap { app in IconManager.shared.themes.first { $0.title == app["Icons"] } }
+        return ImportedSettings(values: values, appearance: appearance, language: language, accent: accent, iconTheme: iconTheme)
     }
 
     /// Kopierte Dokumente, die nach dem Import keiner Kachel mehr gehören, entfernen.

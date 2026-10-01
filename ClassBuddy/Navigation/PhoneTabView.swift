@@ -54,7 +54,7 @@ struct PhoneTabView: View {
                 MoreView(path: $morePath)
                     .id(moreStackID)
             } label: {
-                TabBarLabel(title: "Mehr", image: Image(.moreHoriz), hidesTitle: hidesTabLabels)
+                TabBarLabel(title: "Mehr", image: Image(icon: .moreHoriz), hidesTitle: hidesTabLabels)
             }
         }
         // Beim Runterscrollen auf den aktiven Tab schrumpfen, beim Hochscrollen wieder groß.
@@ -143,7 +143,7 @@ private struct MoreView: View {
                         tab.symbol.image
                     }
                     Spacer()
-                    Image(.arrowUpRight)
+                    Image(icon: .arrowUpRight)
                         .iconSize(18)
                         .foregroundStyle(.tertiary)
                 }

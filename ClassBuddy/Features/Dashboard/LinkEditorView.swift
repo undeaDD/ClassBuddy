@@ -101,7 +101,7 @@ struct LinkEditorView: View {
         case .shortcut:
             TextField("Name des Kurzbefehls", text: $target)
                 .autocorrectionDisabled()
-            Button("Kurzbefehle-App öffnen", image: .navArrowRight) {
+            Button("Kurzbefehle-App öffnen", icon: .navArrowRight) {
                 if let url = URL(string: "shortcuts://") { openURL(url) }
             }
         case .file, .image, .script:

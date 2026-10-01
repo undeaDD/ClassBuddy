@@ -13,18 +13,26 @@ enum HomeScreenAction: String {
         case .calendar:
             UIApplicationShortcutItem(
                 type: rawValue,
-                localizedTitle: "Kalender",
+                localizedTitle: loc("Kalender"),
                 localizedSubtitle: loc("Stundenplan dieser Woche"),
-                icon: UIApplicationShortcutIcon(templateImageName: "calendar")
+                icon: Self.shortcutIcon(.calendar)
             )
         case .feedback:
             UIApplicationShortcutItem(
                 type: rawValue,
                 localizedTitle: loc("Bitte nicht löschen"),
-                localizedSubtitle: loc("Sag mir lieber, was fehlt"),
-                icon: UIApplicationShortcutIcon(templateImageName: "send-mail")
+                localizedSubtitle: loc("Sagen Sie mir lieber, was fehlt"),
+                icon: Self.shortcutIcon(.sendMail)
             )
         }
+    }
+
+    /// Symbol im aktiven Icon-Theme (Iconoir aus dem Katalog bzw. SF Symbol).
+    private static func shortcutIcon(_ icon: AppIcon) -> UIApplicationShortcutIcon {
+        if IconManager.shared.theme == .sfSymbols, let name = IconTheme.sfSymbolNames[icon] {
+            return UIApplicationShortcutIcon(systemImageName: name)
+        }
+        return UIApplicationShortcutIcon(templateImageName: icon.rawValue)
     }
 
     static func register() {

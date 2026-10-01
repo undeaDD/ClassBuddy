@@ -8,7 +8,7 @@ final class ToastCenter {
         enum Style {
             case success, error, info
 
-            var icon: ImageResource {
+            var icon: AppIcon {
                 switch self {
                 case .success: .toastSuccess
                 case .error: .toastError
@@ -20,7 +20,8 @@ final class ToastCenter {
                 switch self {
                 case .success: .green
                 case .error: .red
-                case .info: .accentColor
+                // Fest gelb (Hinweis-Icon), unabhängig von der Akzentfarbe.
+                case .info: .yellow
                 }
             }
         }
@@ -68,7 +69,7 @@ struct ToastOverlay: View {
         ZStack {
             if let toast = toasts.current {
                 HStack(spacing: 10) {
-                    Image(toast.style.icon)
+                    Image(icon: toast.style.icon)
                         .iconSize(22)
                         .foregroundStyle(toast.style.color)
                     Text(toast.message)

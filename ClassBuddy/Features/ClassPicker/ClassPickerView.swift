@@ -4,6 +4,7 @@ import SwiftUI
 /// Liste aller Klassen: wechseln, anlegen, bearbeiten, löschen.
 /// iPad: Popover; iPhone: Sheet. Abwählen durch erneutes Antippen der aktiven Klasse.
 struct ClassPickerView: View {
+    @Environment(\.appAccent) private var accent
     @Environment(AppModel.self) private var app
     @Environment(\.device) private var device
     @Environment(AppSecurity.self) private var security
@@ -77,7 +78,7 @@ struct ClassPickerView: View {
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Neue Klasse", image: .plus) { editorRoute = .new }
+                    Button("Neue Klasse", icon: .plus) { editorRoute = .new }
                         .glassToolbarButton(prominent: true)
                         .disabled(!canEdit)
                 }
@@ -143,7 +144,7 @@ struct ClassPickerView: View {
                 }
                 Spacer()
                 if app.selectedClassID == schoolClass.id {
-                    Image(.check)
+                    Image(icon: .check)
                         .iconSize(20)
                         .foregroundStyle(.tint)
                 }
@@ -155,16 +156,16 @@ struct ClassPickerView: View {
         // Nach rechts wischen: bearbeiten
         .swipeActions(edge: .leading) {
             if canEdit {
-                Button("Bearbeiten", image: .editPencil) {
+                Button("Bearbeiten", icon: .editPencil) {
                     editorRoute = .edit(schoolClass)
                 }
-                .tint(.accentColor)
+                .tint(accent)
             }
         }
         // Nach links wischen: löschen
         .swipeActions(edge: .trailing) {
             if canEdit {
-                Button("Löschen", image: .trash, role: .destructive) {
+                Button("Löschen", icon: .trash, role: .destructive) {
                     classPendingDeletion = schoolClass
                 }
             }
@@ -172,10 +173,10 @@ struct ClassPickerView: View {
         // Lange drücken (Finger oder Apple Pencil) bzw. Rechtsklick.
         .contextMenu {
             if canEdit {
-                Button("Bearbeiten", image: .editPencil) {
+                Button("Bearbeiten", icon: .editPencil) {
                     editorRoute = .edit(schoolClass)
                 }
-                Button("Löschen", image: .trash, role: .destructive) {
+                Button("Löschen", icon: .trash, role: .destructive) {
                     classPendingDeletion = schoolClass
                 }
             }

@@ -180,6 +180,8 @@ enum Backup {
                 ["Schlüssel", "Wert"],
                 ["Erscheinungsbild", appearance.title],
                 ["Sprache", AppLanguage.stored.backupTitle],
+                ["Akzentfarbe", UserDefaults.standard.string(forKey: AppAccent.storageKey) ?? AppAccent.defaultValue],
+                ["Icons", IconManager.shared.theme.title],
             ]),
         ]
     }

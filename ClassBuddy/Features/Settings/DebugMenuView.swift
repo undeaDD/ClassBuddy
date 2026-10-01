@@ -22,11 +22,11 @@ struct DebugMenuView: View {
     var body: some View {
         Form {
             Section {
-                DebugActionRow(title: loc("Testdaten einfügen"), image: .plus) {
+                DebugActionRow(title: loc("Testdaten einfügen"), icon: .plus) {
                     insertDummyData()
                 }
                 .disabled(hasDummyData)
-                DebugActionRow(title: loc("Testdaten entfernen"), image: .trash) {
+                DebugActionRow(title: loc("Testdaten entfernen"), icon: .trash) {
                     removeDummyData()
                 }
                 .disabled(!hasDummyData)
@@ -40,17 +40,17 @@ struct DebugMenuView: View {
             }
 
             Section("Sperre & Privatsphäre") {
-                DebugActionRow(title: loc("App jetzt sperren"), image: .lock) {
+                DebugActionRow(title: loc("App jetzt sperren"), icon: .lock) {
                     guard security.isAppLockEnabled else {
                         toasts.error(loc("App-Sperre ist in den App-Einstellungen ausgeschaltet."))
                         return
                     }
                     security.lock()
                 }
-                DebugActionRow(title: loc("Sperrbildschirm mit Fehlermeldung"), image: .fingerprintLockCircle) {
+                DebugActionRow(title: loc("Sperrbildschirm mit Fehlermeldung"), icon: .fingerprintLockCircle) {
                     isLockPreviewPresented = true
                 }
-                DebugActionRow(title: loc("Privatsphäre-Abdeckung"), image: .eyeClosed) {
+                DebugActionRow(title: loc("Privatsphäre-Abdeckung"), icon: .eyeClosed) {
                     isPrivacyCoverPresented = true
                 }
             }
@@ -63,7 +63,7 @@ struct DebugMenuView: View {
                         symbol: .custom(.userXmark)
                     )
                 } label: {
-                    Label("Keine Klasse ausgewählt", image: .userXmark)
+                    Label("Keine Klasse ausgewählt", icon: .userXmark)
                 }
                 NavigationLink {
                     EmptyStateView(
@@ -86,14 +86,14 @@ struct DebugMenuView: View {
                 NavigationLink {
                     SearchEmptyStateView(text: "Xylophon")
                 } label: {
-                    Label("Suche ohne Treffer", image: .search)
+                    Label("Suche ohne Treffer", icon: .search)
                 }
             }
 
             Section("Toasts") {
-                DebugActionRow(title: loc("Erfolg"), image: .toastSuccess) { toasts.success(loc("Export gespeichert")) }
-                DebugActionRow(title: loc("Hinweis"), image: .toastWarning) { toasts.info(loc("Keine Änderungen gefunden")) }
-                DebugActionRow(title: loc("Fehler"), image: .toastError) { toasts.error(loc("Import fehlgeschlagen: Datei beschädigt")) }
+                DebugActionRow(title: loc("Erfolg"), icon: .toastSuccess) { toasts.success(loc("Export gespeichert")) }
+                DebugActionRow(title: loc("Hinweis"), icon: .toastWarning) { toasts.info(loc("Keine Änderungen gefunden")) }
+                DebugActionRow(title: loc("Fehler"), icon: .toastError) { toasts.error(loc("Import fehlgeschlagen: Datei beschädigt")) }
             }
         }
         .navigationTitle("Debug-Menü")
@@ -113,7 +113,7 @@ struct DebugMenuView: View {
 
     private func closeButton(_ action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Label("Schließen", image: .xmark)
+            Label("Schließen", icon: .xmark)
                 .labelStyle(.iconOnly)
                 .padding(6)
         }
@@ -151,7 +151,7 @@ struct DebugMenuView: View {
 private struct DebugActionRow: View {
     @Environment(\.isEnabled) private var isEnabled
     let title: String
-    let image: ImageResource
+    let icon: AppIcon
     let action: () -> Void
 
     var body: some View {
@@ -159,7 +159,7 @@ private struct DebugActionRow: View {
             Label {
                 Text(title).foregroundStyle(isEnabled ? Color.primary : Color.secondary)
             } icon: {
-                Image(image)
+                Image(icon: icon)
             }
         }
     }
