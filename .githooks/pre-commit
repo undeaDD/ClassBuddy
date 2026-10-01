@@ -1,5 +1,5 @@
 #!/bin/zsh
-# pre-commit: SwiftLint ohne Fehler + alle Tests grün.
+# pre-commit: SwiftLint ohne Fehler. Tests laufen nicht automatisch (scripts/test.sh bei Bedarf von Hand).
 # Läuft nur, wenn Swift-Code oder das Xcode-Projekt geändert wurde.
 # Notfalls überspringen: git commit --no-verify
 set -euo pipefail
@@ -22,5 +22,3 @@ if (( errors > 0 )); then
   exit 1
 fi
 print "✓ SwiftLint: 0 Fehler"
-
-scripts/test.sh

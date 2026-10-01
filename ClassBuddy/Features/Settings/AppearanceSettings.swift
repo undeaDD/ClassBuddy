@@ -1,5 +1,4 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// Vorgaben als Farbkreise plus eigene Farbe (systemeigene Farbauswahl) – wirkt sofort.
 struct AccentColorGrid: View {
@@ -55,11 +54,11 @@ struct AccentColorGrid: View {
     }
 }
 
-/// Icon-Themes: eingebaut, SF Symbols und installierte Pakete (zip, siehe `scripts/build-icon-pack.sh`).
+/// Icon-Themes: eingebaut, SF Symbols und Pakete, die per URL geladen und lokal gespeichert werden
+/// (zip, siehe `scripts/build-icon-pack.sh`).
 /// Jede Zeile zeigt als Vorschau das Zahnrad im jeweiligen Stil; Pakete per Wischen entfernen.
 struct IconThemeSection: View {
     @Environment(ToastCenter.self) private var toasts
-    @State private var isFileImporterPresented = false
     @State private var isURLPromptPresented = false
     @State private var urlText = ""
     @State private var isDownloading = false
@@ -72,11 +71,6 @@ struct IconThemeSection: View {
                 row(for: theme)
             }
             Button {
-                isFileImporterPresented = true
-            } label: {
-                SettingsActionLabel(title: loc("Paket aus Dateien installieren"), icon: .import)
-            }
-            Button {
                 isURLPromptPresented = true
             } label: {
                 SettingsActionLabel(title: loc("Paket von URL laden"), icon: .cloudDownload, isLoading: isDownloading)
@@ -86,14 +80,6 @@ struct IconThemeSection: View {
             Text("Icons")
         } footer: {
             Text("Fehlende Icons eines Pakets erscheinen im Iconoir-Stil. Pakete per Wischen entfernen.")
-        }
-        .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.zip]) { result in
-            install {
-                let url = try result.get()
-                let accessing = url.startAccessingSecurityScopedResource()
-                defer { if accessing { url.stopAccessingSecurityScopedResource() } }
-                return try IconPackStore.install(archive: Data(contentsOf: url))
-            }
         }
         .alert("Paket von URL laden", isPresented: $isURLPromptPresented) {
             TextField("https://…/paket.zip", text: $urlText)
@@ -167,14 +153,6 @@ struct IconThemeSection: View {
             } catch {
                 toasts.error(error.localizedDescription)
             }
-        }
-    }
-
-    private func install(_ work: () throws -> IconPack) {
-        do {
-            finishInstall(try work())
-        } catch {
-            toasts.error(error.localizedDescription)
         }
     }
 

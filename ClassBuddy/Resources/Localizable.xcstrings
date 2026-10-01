@@ -3183,16 +3183,6 @@
         }
       }
     },
-    "Paket aus Dateien installieren" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Install pack from Files"
-          }
-        }
-      }
-    },
     "Paket von URL laden" : {
       "localizations" : {
         "en" : {

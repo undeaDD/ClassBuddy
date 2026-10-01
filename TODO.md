@@ -210,30 +210,8 @@ Umfassende Optimierung für das iPhone, Behebung von Layout- und Navigationsfehl
 
 ---
 
-# TODO: Sprache (Englisch)
+# TODO: Alternatives App-Icon (optional)
 
-- [ ] **Lokalisierung Englisch** (String Catalog `Localizable.xcstrings`, Deutsch bleibt Ausgangssprache)
-  - Alle UI-Texte, Toasts, Kachel-Galerie, Einführung, Datums-/Zahlenformate prüfen
-  - Beispiel-Skript der Skript-Kachel und Fehlermeldungen von `CardScript` mit übersetzen
-- [ ] **Sprachauswahl in den App-Einstellungen** (System / Deutsch / Englisch), wirkt ohne Neustart soweit möglich
-- [ ] Im Excel-Export/-Import mitnehmen (Blatt „App“, wie Erscheinungsbild)
-
----
-
-# TODO: Akzentfarbe
-
-- [ ] **Akzentfarbe wählbar in den App-Einstellungen** (Vorgaben + eigene Farbe, Standard = heutiges Blau)
-  - Überall statt `Color.accentColor` bzw. per `.tint` an der Wurzel; Toolbar, Toggles, Kacheln, Icons prüfen
-- [ ] Im Excel-Export/-Import mitnehmen (Blatt „App“)
-
----
-
-# TODO: Alternative Icons
-
-- [ ] **Icon-Themes**: andere Icon-Sätze statt der eingebauten Iconoir-SVGs
-  - Idee: Theme per URL laden (SVG-Paket) oder als Icon-Font; lokal cachen, Fallback auf eingebaute Icons
-  - `AppSymbol` ist die zentrale Stelle – dort das Theme auflösen
-  - Offen: Format, Sicherheit (nur https, Größe begrenzen), Umgang mit fehlenden Icons
 - [ ] Optional: alternatives App-Icon (`UIApplication.setAlternateIconName`)
 
 ---
