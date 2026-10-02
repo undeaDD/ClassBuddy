@@ -57,6 +57,10 @@ enum AppPreference {
     static let minimizesBarsOnScroll = "app.minimizesBarsOnScroll"
     /// Leichtes Vibrieren bei Taps, Klassenwechsel und Meldungen (Standard: aus).
     static let hapticFeedback = "app.hapticFeedback"
+    /// Tab beim App-Start (Standard: Übersicht).
+    static let startTab = "app.startTab"
+    /// Timer-Ende nur mit Vibration statt Ton (nur iPhone, Standard: aus).
+    static let timerVibratesOnly = "app.timerVibratesOnly"
 }
 
 /// Einstellungen → App-Einstellungen: Darstellung, App-Sperre, lokale Daten.
@@ -67,11 +71,12 @@ struct AppSettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ToastCenter.self) private var toasts
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
-    @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
     @AppStorage(AppPreference.hidesTabLabels) private var hidesTabLabels = false
     @AppStorage(AppPreference.keepsScreenAwake) private var keepsScreenAwake = false
     @AppStorage(AppPreference.minimizesBarsOnScroll) private var minimizesBarsOnScroll = true
     @AppStorage(AppPreference.hapticFeedback) private var hapticFeedback = false
+    @AppStorage(AppPreference.startTab) private var startTab: AppTab = .dashboard
+    @AppStorage(AppPreference.timerVibratesOnly) private var timerVibratesOnly = false
     @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
     @AppStorage(AppAccent.storageKey) private var accent = AppAccent.defaultValue
 
@@ -98,18 +103,11 @@ struct AppSettingsView: View {
     @State private var pendingImport: Data?
 
     private static var deleteInfo: String {
-        loc("""
-            Löscht Klassen, Schüler, Stunden, Termine, Ferien, Kacheln und Dokumente sowie \
-            Profil- und Schuleinstellungen. App-Sperre und Darstellung bleiben erhalten.
-            """)
+        loc("Löscht alle Inhalte und Einstellungen. App-Sperre und Darstellung bleiben.")
     }
 
     private static var transferInfo: String {
-        loc("""
-            Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, \
-            Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. \
-            Ein Import ersetzt alle Daten. Dokumente (Dateien) und Schülerfotos sind nicht enthalten.
-            """)
+        loc("Excel-Datei, bearbeitbar in Excel oder Numbers. Ein Import ersetzt alle Daten; Dokumente und Fotos fehlen.")
     }
 
     private var appLockBinding: Binding<Bool> {
@@ -130,6 +128,33 @@ struct AppSettingsView: View {
                     Label("Sprache", icon: .translate)
                 }
                 .pickerStyle(.menu)
+                Picker(selection: $startTab) {
+                    ForEach(AppTab.startTabs) { tab in
+                        Text(tab.title).tag(tab)
+                    }
+                } label: {
+                    Label("Start-Tab", symbol: AppTab.dashboard.symbol)
+                }
+                .pickerStyle(.menu)
+                Toggle(isOn: $hapticFeedback) {
+                    Label("Haptisches Feedback", icon: .sineWave)
+                }
+                // iPads können nicht vibrieren.
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    Toggle(isOn: $timerVibratesOnly) {
+                        Label("Timer nur vibrieren", icon: .timer)
+                    }
+                }
+                Toggle(isOn: $keepsScreenAwake) {
+                    Label("Bildschirm wach halten", icon: .lockSlash)
+                }
+            } header: {
+                Text("Allgemein")
+            } footer: {
+                Text("Wach halten gilt, solange die App geöffnet ist.")
+            }
+
+            Section {
                 Picker(selection: $appearance) {
                     ForEach(AppAppearance.allCases) { option in
                         Text(option.displayTitle).tag(option)
@@ -138,41 +163,20 @@ struct AppSettingsView: View {
                     Label("Erscheinungsbild", icon: .palette)
                 }
                 .pickerStyle(.menu)
+                AccentColorRow(selection: $accent)
                 Toggle(isOn: $hidesTabLabels) {
                     Label("Tab-Titel ausblenden", icon: .label)
                 }
                 Toggle(isOn: $minimizesBarsOnScroll) {
                     Label("UI Minimieren", icon: .swipeLeftGesture)
                 }
-                Toggle(isOn: $hapticFeedback) {
-                    Label("Haptisches Feedback", icon: .sineWave)
-                }
-                Toggle(isOn: $keepsScreenAwake) {
-                    Label("Bildschirm wach halten", icon: .lockSlash)
-                }
             } header: {
                 Text("Darstellung")
             } footer: {
-                Text("""
-                    Tab-Titel betreffen die untere Tab-Leiste (iPhone). UI Minimieren verkleinert Tab- und Navigationsleiste \
-                    beim Runterscrollen. Haptisches Feedback vibriert leicht bei Kacheln, Klassenwechsel und Meldungen. \
-                    Wach halten gilt, solange die App geöffnet ist.
-                    """)
-            }
-
-            Section("Akzentfarbe") {
-                AccentColorGrid(selection: $accent)
+                Text("Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Leisten beim Scrollen.")
             }
 
             IconThemeSection()
-
-            Section("Hilfe") {
-                Button {
-                    hasCompletedOnboarding = false
-                } label: {
-                    SettingsActionLabel(title: loc("Einführung erneut anzeigen"), icon: .helpCircle)
-                }
-            }
 
             Section {
                 Toggle(isOn: appLockBinding) {
@@ -182,7 +186,7 @@ struct AppSettingsView: View {
             } header: {
                 Text("App-Sperre")
             } footer: {
-                Text("Sperrt die App beim Start und beim Wechsel in den Hintergrund. Ausschalten erfordert \(security.biometryName).")
+                Text("Beim Start und im Hintergrund. Ausschalten erfordert \(security.biometryName).")
             }
 
             Section {

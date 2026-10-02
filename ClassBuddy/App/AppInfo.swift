@@ -19,6 +19,11 @@ enum AppInfo {
     /// Spendenlink (PayPal.Me).
     static let donationURL = URL(string: "https://www.paypal.com/paypalme/undeaDD")!
 
+    /// Versionsnummer ohne Build, z. B. „0.1.0“ (für „Neuigkeiten“).
+    static var shortVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
+
     static var version: String {
         let info = Bundle.main.infoDictionary
         let version = info?["CFBundleShortVersionString"] as? String ?? "–"

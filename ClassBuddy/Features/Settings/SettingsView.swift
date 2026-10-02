@@ -5,6 +5,8 @@ import WebKit
 struct SettingsView: View {
     @Environment(\.openURL) private var openURL
     @Environment(ToastCenter.self) private var toasts
+    @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
+    @State private var isWhatsNewPresented = false
 
     private var versionText: String {
         "\(AppInfo.version) · \(UIDevice.current.systemVersion) · \(InstallInfo.shortDeviceModel)"
@@ -35,6 +37,29 @@ struct SettingsView: View {
                 }
             } header: {
                 Text("Kategorien")
+            }
+
+            Section("Aktionen") {
+                Button {
+                    hasCompletedOnboarding = false
+                } label: {
+                    SettingsActionLabel(title: loc("Einführung erneut anzeigen"), icon: .helpCircle)
+                }
+                if WhatsNew.releases.first != nil {
+                    Button {
+                        isWhatsNewPresented = true
+                    } label: {
+                        SettingsActionLabel(title: loc("Neuigkeiten erneut anzeigen"), icon: .version)
+                    }
+                }
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    ExternalLinkRow(
+                        title: loc("Systemeinstellungen öffnen"),
+                        icon: .settings,
+                        url: url,
+                        hint: loc("Öffnet die Einstellungen-App")
+                    )
+                }
             }
 
             #if DEBUG
@@ -96,6 +121,15 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(AppTab.settings.title)
+        // Am Form, nicht an der Section: Modifier einer Section gehen an jede ihrer Zeilen
+        // (dreimal dasselbe Sheet → Hänger beim Schließen und Scrollen).
+        .sheet(isPresented: $isWhatsNewPresented) {
+            // Immer die neueste Version, auch wenn die installierte (noch) keinen Eintrag hat.
+            if let release = WhatsNew.releases.first {
+                WhatsNewView(release: release) { isWhatsNewPresented = false }
+                    .presentationSizing(.form)
+            }
+        }
         .appChrome(tab: .settings) {
             ShareLink(item: AppInfo.shareURL, subject: Text("ClassBuddy"), message: Text(AppInfo.shareMessage)) {
                 Label("App teilen", icon: .shareIos)
