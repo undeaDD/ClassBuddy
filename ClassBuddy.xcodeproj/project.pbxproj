@@ -16,6 +16,7 @@
 		ADA8E806D651637BB2A51229 /* AppAccent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A7DEF83E6763DF8BFA1644 /* AppAccent.swift */; };
 		0016BF948735B154AC48FB94 /* XLSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520560E0BF66558DE32A34D /* XLSX.swift */; };
 		01CE987455CBFB4360537259 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7B56D4973387936A0E06B /* Weather.swift */; };
+		D1B0057A9E3C4F21A8B6C001 /* DailyBoost.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B0057A9E3C4F21A8B6C002 /* DailyBoost.swift */; };
 		041EDD8E52FC9A70B471C5CD /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6AB5A47C4368067847CE31 /* AppTabView.swift */; };
 		095105AB524AA19F029B3D69 /* ScriptCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */; };
 		125D8EC22A8E701DD657483E /* collaborators.en.html in Resources */ = {isa = PBXBuildFile; fileRef = 00D91AF2928F4BA7AE559060 /* collaborators.en.html */; };
@@ -25,6 +26,7 @@
 		1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682EF27D860985CC8FFA663A /* AppSettingsView.swift */; };
 		1F038FAF7CB75D5DFBAFBCE0 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3788C18526F115CA2D3BA045 /* AppTab.swift */; };
 		200AF034F81588E18D3F1B96 /* BackupCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41DC12A563B629FA7ADBEAC /* BackupCells.swift */; };
+		D1B0057A9E3C4F21A8B6C003 /* WhatsNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B0057A9E3C4F21A8B6C004 /* WhatsNewView.swift */; };
 		21BE51325B78F5751A74C0E0 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369460E9297D0350E5B4332F /* OnboardingView.swift */; };
 		2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B1F9ED4838514B91933B244 /* Assets.xcassets */; };
 		2C2DAF69C71A130D500C359A /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F4ABB29E0AF9BA4213EA2A0 /* ConfigurationTests.swift */; };
@@ -136,6 +138,7 @@
 		2D081FCB1B922D54E4FB7FBE /* Sensitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sensitive.swift; sourceTree = "<group>"; };
 		2D854BC03612933534A6FD41 /* LessonSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonSchedule.swift; sourceTree = "<group>"; };
 		2EEFF2B434D6D5F8A4CE0512 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		D1B0057A9E3C4F21A8B6C004 /* WhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewView.swift; sourceTree = "<group>"; };
 		369460E9297D0350E5B4332F /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		3788C18526F115CA2D3BA045 /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
 		3DE897C819A0937DF76AF7C8 /* Favicon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Favicon.swift; sourceTree = "<group>"; };
@@ -163,6 +166,7 @@
 		C45B842799400D6FDE2324EA /* IconPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPack.swift; sourceTree = "<group>"; };
 		26B51B1591D25998249E52C6 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		66A7DEF83E6763DF8BFA1644 /* AppAccent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAccent.swift; sourceTree = "<group>"; };
+		D1B0057A9E3C4F21A8B6C002 /* DailyBoost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyBoost.swift; sourceTree = "<group>"; };
 		82B7B56D4973387936A0E06B /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		8737C4298AA78E18F6D25A7E /* ClassBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassBadge.swift; sourceTree = "<group>"; };
 		8750B322EDEC4B4625B5BBAB /* privacy.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy.html; sourceTree = "<group>"; };
@@ -266,6 +270,7 @@
 				964BD5DCFEB72AE4722C536B /* RootView.swift */,
 				9979637F19208E99A2D87326 /* HomeScreenActions.swift */,
 				369460E9297D0350E5B4332F /* OnboardingView.swift */,
+				D1B0057A9E3C4F21A8B6C004 /* WhatsNewView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -461,6 +466,7 @@
 			children = (
 				AEA107D0C849C5337E26C6AF /* ClassTimer.swift */,
 				1AF0AA061501603293957C0A /* DashboardLogic.swift */,
+				D1B0057A9E3C4F21A8B6C002 /* DailyBoost.swift */,
 				82B7B56D4973387936A0E06B /* Weather.swift */,
 				723E830E960FEC552AC32623 /* CardGallery.swift */,
 				9B3B54810C7667A2C9742973 /* DashboardCards.swift */,
@@ -584,6 +590,7 @@
 				A4124B7999D6A6AF4765999E /* Haptics.swift in Sources */,
 				4401BE6A2DBD523FB11F4E84 /* DashboardLogic.swift in Sources */,
 				D54AEC746043791E0A6A6D9D /* ColorHex.swift in Sources */,
+				D1B0057A9E3C4F21A8B6C001 /* DailyBoost.swift in Sources */,
 				01CE987455CBFB4360537259 /* Weather.swift in Sources */,
 				200AF034F81588E18D3F1B96 /* BackupCells.swift in Sources */,
 				CAC28EE70B7409F7BD7D9B12 /* BackupImport.swift in Sources */,
@@ -637,6 +644,7 @@
 				9207713D3C3A17C047A6AEFF /* RootView.swift in Sources */,
 				7D025A24A23F4D2CBB5CF926 /* HomeScreenActions.swift in Sources */,
 				21BE51325B78F5751A74C0E0 /* OnboardingView.swift in Sources */,
+				D1B0057A9E3C4F21A8B6C003 /* WhatsNewView.swift in Sources */,
 				FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */,
 				9CFB32BA7C1FF3D07DAE9AD2 /* Sensitive.swift in Sources */,
 			);

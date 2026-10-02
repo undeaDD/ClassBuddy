@@ -216,7 +216,7 @@ struct DashboardView: View {
 
     /// Alle Kacheln in gespeicherter Reihenfolge; neue hinten, gelöschte fallen raus.
     private func orderedCardIDs(for schoolClass: SchoolClass) -> [String] {
-        let available = DashboardBuiltInCard.allCases.map(\.rawValue)
+        let available = DashboardBuiltInCard.allCases.filter(\.isSupported).map(\.rawValue)
             + schoolClass.dashboardLinks.sorted { $0.createdAt < $1.createdAt }.map(\.cardID)
         let saved = schoolClass.dashboardOrder.filter(available.contains)
         return saved + available.filter { !saved.contains($0) }
@@ -410,6 +410,8 @@ extension DashboardView {
                 school: settings.values.school,
                 federalStateName: HolidayImporter.federalStates.first { $0.code == settings.values.federalState }?.name
             )
+        case .dailyBoost:
+            DailyBoostCard()
         }
     }
 

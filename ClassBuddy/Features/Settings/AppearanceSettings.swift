@@ -1,56 +1,20 @@
 import SwiftUI
 
-/// Vorgaben als Farbkreise plus eigene Farbe (systemeigene Farbauswahl) – wirkt sofort.
-struct AccentColorGrid: View {
+/// Eine Zeile mit der systemeigenen Farbauswahl rechts – wirkt sofort.
+/// Gespeicherte Vorgaben (`amber`, `blue` …) zeigt der Farbwähler als ihre Farbe an.
+struct AccentColorRow: View {
     @Binding var selection: String
-    @AppStorage("app.lastCustomAccent") private var lastCustomColor = "#2F6FDE"
-
-    private var isCustom: Bool { !AppAccent.presets.contains { $0.id == selection } }
 
     var body: some View {
-        // Bricht auf schmalen Bildschirmen in mehrere Zeilen um.
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 44), spacing: 12)], spacing: 12) {
-            ForEach(AppAccent.presets) { preset in
-                Circle()
-                    .fill(Color(uiColor: preset.color).gradient)
-                    .frame(width: 36, height: 36)
-                    .overlay {
-                        if preset.id == selection { check }
-                    }
-                    .onTapGesture {
-                        Haptics.selection()
-                        selection = preset.id
-                    }
-                    .hoverEffect(.lift)
-                    .accessibilityLabel(Text(preset.name))
-                    .accessibilityAddTraits(preset.id == selection ? .isSelected : [])
-            }
-            ColorPicker(
-                "Eigene Farbe",
-                selection: Binding(
-                    get: { Color(hex: isCustom ? selection : lastCustomColor) ?? .blue },
-                    set: { newColor in
-                        lastCustomColor = newColor.hexString
-                        selection = newColor.hexString
-                    }
-                ),
-                supportsOpacity: false
-            )
-            .labelsHidden()
-            .frame(width: 36, height: 36)
-            .overlay {
-                if isCustom { check }
-            }
-            .accessibilityAddTraits(isCustom ? .isSelected : [])
+        ColorPicker(
+            selection: Binding(
+                get: { AppAccent.color(for: selection) },
+                set: { selection = $0.hexString }
+            ),
+            supportsOpacity: false
+        ) {
+            Label("Akzentfarbe", icon: .fillColor)
         }
-        .padding(.vertical, 4)
-    }
-
-    private var check: some View {
-        Image(icon: .check)
-            .iconSize(18)
-            .foregroundStyle(.white)
-            .allowsHitTesting(false)
     }
 }
 
@@ -77,21 +41,22 @@ struct IconThemeSection: View {
                 SettingsActionLabel(title: loc("Paket von URL laden"), icon: .cloudDownload, isLoading: isDownloading)
             }
             .disabled(isDownloading)
+            // An der Zeile, nicht an der Section (sonst hängt jede Zeile ein eigenes Alert an).
+            .alert("Paket von URL laden", isPresented: $isURLPromptPresented) {
+                TextField("https://…/paket.zip", text: $urlText)
+                    .textContentType(.URL)
+                    .keyboardType(.URL)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                Button("Abbrechen", role: .cancel) {}
+                Button("Laden") { download() }
+            } message: {
+                Text("Ein zip mit manifest.json und PDF-Icons, erstellt mit scripts/build-icon-pack.sh.")
+            }
         } header: {
             Text("Icons")
         } footer: {
             Text("Fehlende Icons eines Pakets erscheinen im Iconoir-Stil. Pakete per Wischen entfernen.")
-        }
-        .alert("Paket von URL laden", isPresented: $isURLPromptPresented) {
-            TextField("https://…/paket.zip", text: $urlText)
-                .textContentType(.URL)
-                .keyboardType(.URL)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-            Button("Abbrechen", role: .cancel) {}
-            Button("Laden") { download() }
-        } message: {
-            Text("Ein zip mit manifest.json und PDF-Icons, erstellt mit scripts/build-icon-pack.sh.")
         }
     }
 

@@ -33,6 +33,8 @@ final class AppModel {
     private static let selectedClassKey = "app.selectedClassID"
 
     init() {
+        let startTab = UserDefaults.standard.string(forKey: AppPreference.startTab).flatMap(AppTab.init(rawValue:))
+        selectedTab = startTab.flatMap { AppTab.startTabs.contains($0) ? $0 : nil } ?? .dashboard
         selectedClassID = UserDefaults.standard.string(forKey: Self.selectedClassKey).flatMap(UUID.init)
     }
 

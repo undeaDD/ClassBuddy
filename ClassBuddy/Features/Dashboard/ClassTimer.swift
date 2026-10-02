@@ -66,6 +66,11 @@ final class ClassTimer {
             : String(format: "%02d:%02d", minutes, rest)
     }
 
+    /// App-Einstellung „Timer nur vibrieren“ (nur iPhone).
+    private static var vibratesOnly: Bool {
+        UIDevice.current.userInterfaceIdiom == .phone && UserDefaults.standard.bool(forKey: AppPreference.timerVibratesOnly)
+    }
+
     private func scheduleFinish() {
         finishTask?.cancel()
         guard let endDate else { return }
@@ -80,7 +85,7 @@ final class ClassTimer {
         endDate = nil
         // Im Vordergrund: Ton + Rückmeldung; die Mitteilung ist dann überflüssig.
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.notificationID])
-        AudioServicesPlaySystemSound(1005)
+        AudioServicesPlaySystemSound(Self.vibratesOnly ? kSystemSoundID_Vibrate : 1005)
         onFinish?()
     }
 
@@ -93,7 +98,7 @@ final class ClassTimer {
         let content = UNMutableNotificationContent()
         content.title = loc("Timer abgelaufen")
         content.body = loc("\(durationMinutes) Minuten sind um.")
-        content.sound = .default
+        content.sound = Self.vibratesOnly ? nil : .default
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endDate.timeIntervalSinceNow, 1), repeats: false)
         center.removePendingNotificationRequests(withIdentifiers: [Self.notificationID])
         try? await center.add(UNNotificationRequest(identifier: Self.notificationID, content: content, trigger: trigger))

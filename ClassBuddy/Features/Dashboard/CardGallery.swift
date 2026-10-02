@@ -13,14 +13,20 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
     case dateTime = "tool.dateTime"
     case weather = "tool.weather"
     case weeklyHours = "stat.weeklyHours"
+    case dailyBoost = "tool.dailyBoost"
 
     var id: String { rawValue }
 
     var isHiddenByDefault: Bool {
         switch self {
         case .students, .nextLesson: false
-        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours: true
+        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost: true
         }
+    }
+
+    /// Auf diesem Gerät nutzbar (Tagesmotivation braucht Apple Intelligence); sonst nirgends angeboten.
+    var isSupported: Bool {
+        self == .dailyBoost ? DailyBoost.isAvailable : true
     }
 
     var title: String {
@@ -34,6 +40,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dateTime: loc("Datum & Uhrzeit")
         case .weather: loc("Wetter")
         case .weeklyHours: loc("Wochenstunden")
+        case .dailyBoost: loc("Tagesmotivation")
         }
     }
 
@@ -48,6 +55,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dateTime: loc("Uhrzeit, Wochentag, Datum und Kalenderwoche.")
         case .weather: loc("Aktuelles Wetter am Schulort (Ort aus den Schuleinstellungen).")
         case .weeklyHours: loc("Wie viel Ihres Unterrichts diese Woche schon geschafft ist.")
+        case .dailyBoost: loc("Ein fröhlicher Satz für den Tag, lokal mit Apple Intelligence – antippen für einen neuen.")
         }
     }
 
@@ -62,6 +70,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dateTime: .custom(.time)
         case .weather: .custom(.temperature)
         case .weeklyHours: .custom(.graphUp)
+        case .dailyBoost: .custom(.quoteSolid)
         }
     }
 
@@ -77,6 +86,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dateTime: ("08:15", loc("Dienstag, 29. September · KW 40"))
         case .weather: ("17°", loc("Teilweise bewölkt · ↑ 19° ↓ 9°"))
         case .weeklyHours: ("58 %", loc("14 h erledigt · 24 h gesamt"))
+        case .dailyBoost: (loc("Irgendwo in Ihrer Klasse wartet heute ein Aha-Moment."), "")
         }
     }
 }
@@ -159,7 +169,7 @@ struct CardGalleryView: View {
     private let columns = [GridItem(.adaptive(minimum: 260, maximum: 340), spacing: 20)]
 
     private var availableBuiltIns: [CardTemplate] {
-        DashboardBuiltInCard.allCases.filter { !visibleBuiltIns.contains($0) }.map(CardTemplate.builtIn)
+        DashboardBuiltInCard.allCases.filter { $0.isSupported && !visibleBuiltIns.contains($0) }.map(CardTemplate.builtIn)
     }
 
     var body: some View {
@@ -267,6 +277,8 @@ private struct TemplatePreview: View {
         switch template {
         case .builtIn(.weeklyHours):
             WeeklyHoursCard(result: WeeklyWorkload.Result(doneMinutes: 14 * 60, totalMinutes: 24 * 60)) {}
+        case .builtIn(.dailyBoost):
+            DailyBoostCard(previewText: DashboardBuiltInCard.dailyBoost.previewValue.value)
         case .builtIn(let card):
             StatCard(title: card.title, value: card.previewValue.value, detail: card.previewValue.detail, symbol: card.symbol) {}
         case .image, .photo, .imageFile:

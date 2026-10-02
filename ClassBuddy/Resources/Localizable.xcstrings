@@ -335,6 +335,16 @@
         }
       }
     },
+    "Aktionen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actions"
+          }
+        }
+      }
+    },
     "Aktualisieren" : {
       "localizations" : {
         "en" : {
@@ -421,6 +431,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete everything"
+          }
+        }
+      }
+    },
+    "Allgemein" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
           }
         }
       }
@@ -678,6 +698,16 @@
         }
       }
     },
+    "Bald noch viel mehr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Much more coming soon"
+          }
+        }
+      }
+    },
     "Bayern" : {
       "localizations" : {
         "en" : {
@@ -714,6 +744,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start"
+          }
+        }
+      }
+    },
+    "Beim Start und im Hintergrund. Ausschalten erfordert %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At launch and in the background. Turning off requires %@."
           }
         }
       }
@@ -1269,6 +1309,16 @@
         }
       }
     },
+    "Ein fröhlicher Satz für den Tag, lokal mit Apple Intelligence – antippen für einen neuen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cheerful line for your day, made on-device with Apple Intelligence. Tap for a new one."
+          }
+        }
+      }
+    },
     "Ein zip mit manifest.json und PDF-Icons, erstellt mit scripts/build-icon-pack.sh." : {
       "localizations" : {
         "en" : {
@@ -1285,16 +1335,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show"
-          }
-        }
-      }
-    },
-    "Eine .xlsx-Datei mit einem Blatt je Bereich: Klassen, Schüler, Stunden, Termine, Kacheln, Ferien, Schule, Schultag, Pausen, Profil, App. In Excel/Numbers bearbeitbar. Ein Import ersetzt alle Daten. Dokumente (Dateien) und Schülerfotos sind nicht enthalten." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An .xlsx file with one sheet per area (sheet and column names are in German). Editable in Excel or Numbers. An import replaces all data. Documents (files) and student photos are not included."
           }
         }
       }
@@ -1410,6 +1450,16 @@
         }
       }
     },
+    "Excel-Datei, bearbeitbar in Excel oder Numbers. Ein Import ersetzt alle Daten; Dokumente und Fotos fehlen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excel file, editable in Excel or Numbers. An import replaces all data; documents and photos are not included."
+          }
+        }
+      }
+    },
     "Export & Import" : {
       "localizations" : {
         "en" : {
@@ -1506,6 +1556,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Error"
+          }
+        }
+      }
+    },
+    "Fehlt etwas oder hakt es irgendwo? Schreiben Sie mir über „Feedback senden“." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing something or stuck somewhere? Write to me via “Send feedback”."
           }
         }
       }
@@ -1767,6 +1827,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No subjects have been added for this class yet."
+          }
+        }
+      }
+    },
+    "Ganz nach Ihrem Geschmack" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make it yours"
           }
         }
       }
@@ -2072,6 +2142,16 @@
         }
       }
     },
+    "Ihre Meinung zählt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your opinion matters"
+          }
+        }
+      }
+    },
     "Import fehlgeschlagen: %@" : {
       "localizations" : {
         "en" : {
@@ -2189,6 +2269,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Internet only via fetch in tap(ctx): one https request, at most 5 s, text only. No files, no access to student data."
+          }
+        }
+      }
+    },
+    "Irgendwo in Ihrer Klasse wartet heute ein Aha-Moment." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Somewhere in your class, an aha moment is waiting today."
           }
         }
       }
@@ -2319,6 +2409,16 @@
         }
       }
     },
+    "Kacheln, Akzentfarbe, Icons und Start-Tab: Richten Sie die App so ein, wie Sie arbeiten." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cards, accent color, icons and start tab: set up the app the way you work."
+          }
+        }
+      }
+    },
     "Kaffee spendieren" : {
       "localizations" : {
         "en" : {
@@ -2355,6 +2455,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No subject"
+          }
+        }
+      }
+    },
+    "Kein Konto, keine Cloud: Alle Daten bleiben auf diesem Gerät, geschützt mit Face ID." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No account, no cloud: all data stays on this device, protected with Face ID."
           }
         }
       }
@@ -2580,6 +2690,26 @@
         }
       }
     },
+    "Klassen und Schüler" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classes and students"
+          }
+        }
+      }
+    },
+    "Klassen mit Fächern und Farben, Schülerlisten, Stundenplan und Termine an einem Ort." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classes with subjects and colors, student lists, timetable and appointments in one place."
+          }
+        }
+      }
+    },
     "Klassen, Schüler und Stundenplan – lokal und mit Face ID geschützt." : {
       "localizations" : {
         "en" : {
@@ -2791,12 +2921,12 @@
         }
       }
     },
-    "Löscht Klassen, Schüler, Stunden, Termine, Ferien, Kacheln und Dokumente sowie Profil- und Schuleinstellungen. App-Sperre und Darstellung bleiben erhalten." : {
+    "Löscht alle Inhalte und Einstellungen. App-Sperre und Darstellung bleiben." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deletes classes, students, lessons, appointments, holidays, cards and documents as well as profile and school settings. App lock and appearance are kept."
+            "value" : "Deletes all content and settings. App lock and appearance are kept."
           }
         }
       }
@@ -3011,6 +3141,16 @@
         }
       }
     },
+    "Neu in ClassBuddy" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New in ClassBuddy"
+          }
+        }
+      }
+    },
     "Neue Kachel" : {
       "localizations" : {
         "en" : {
@@ -3047,6 +3187,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "New appointment"
+          }
+        }
+      }
+    },
+    "Neuigkeiten erneut anzeigen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show what's new again"
           }
         }
       }
@@ -3393,6 +3543,16 @@
         }
       }
     },
+    "Privat, offline, DSGVO-konform" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private, offline, GDPR-compliant"
+          }
+        }
+      }
+    },
     "Privatsphäre-Abdeckung" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3542,6 +3702,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rooms (placeholder)"
+          }
+        }
+      }
+    },
+    "Räume, Sitzpläne und vieles mehr sind schon in Arbeit." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rooms, seating plans and much more are already in the works."
           }
         }
       }
@@ -3914,16 +4084,6 @@
         }
       }
     },
-    "Sperrt die App beim Start und beim Wechsel in den Hintergrund. Ausschalten erfordert %@." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Locks the app at launch and when it moves to the background. Turning this off requires %@."
-          }
-        }
-      }
-    },
     "Sport" : {
       "localizations" : {
         "en" : {
@@ -3950,6 +4110,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heavy rain"
+          }
+        }
+      }
+    },
+    "Start-Tab" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start tab"
           }
         }
       }
@@ -4065,6 +4235,16 @@
         }
       }
     },
+    "Systemeinstellungen öffnen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open system settings"
+          }
+        }
+      }
+    },
     "Tab-Titel ausblenden" : {
       "localizations" : {
         "en" : {
@@ -4075,12 +4255,22 @@
         }
       }
     },
-    "Tab-Titel betreffen die untere Tab-Leiste (iPhone). UI Minimieren verkleinert Tab- und Navigationsleiste beim Runterscrollen. Haptisches Feedback vibriert leicht bei Kacheln, Klassenwechsel und Meldungen. Wach halten gilt, solange die App geöffnet ist." : {
+    "Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Leisten beim Scrollen." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tab titles affect the bottom tab bar (iPhone). Minimize UI shrinks the tab and navigation bars when scrolling down. Haptic feedback vibrates lightly for cards, class changes and messages. Keep screen awake applies while the app is open."
+            "value" : "Tab titles exist on iPhone only. Minimize UI shrinks the bars while scrolling."
+          }
+        }
+      }
+    },
+    "Tagesmotivation" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily boost"
           }
         }
       }
@@ -4251,6 +4441,16 @@
         }
       }
     },
+    "Timer nur vibrieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer: vibrate only"
+          }
+        }
+      }
+    },
     "Titel" : {
       "localizations" : {
         "en" : {
@@ -4352,6 +4552,16 @@
         }
       }
     },
+    "Version %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@"
+          }
+        }
+      }
+    },
     "Version in die Zwischenablage kopiert" : {
       "localizations" : {
         "en" : {
@@ -4418,6 +4628,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Preview"
+          }
+        }
+      }
+    },
+    "Wach halten gilt, solange die App geöffnet ist." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep awake applies while the app is open."
           }
         }
       }
@@ -4698,6 +4918,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open"
+          }
+        }
+      }
+    },
+    "Öffnet die Einstellungen-App" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the Settings app"
           }
         }
       }

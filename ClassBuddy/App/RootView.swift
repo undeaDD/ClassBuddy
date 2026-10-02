@@ -8,6 +8,7 @@ struct RootView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
     @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
+    @AppStorage(WhatsNew.storageKey) private var lastSeenWhatsNew = ""
     @AppStorage(AppPreference.keepsScreenAwake) private var keepsScreenAwake = false
     @Environment(\.openURL) private var openURL
     private let homeScreenActions = HomeScreenActionCenter.shared
@@ -35,12 +36,19 @@ struct RootView: View {
             // dabei gesperrt, verschwindet sie und erscheint danach wieder – erledigt über „Los geht’s“ oder xmark.
             // Zwei getrennte Präsentationen statt if/else, damit die App beim Größenwechsel nicht neu aufgebaut wird.
             .fullScreenCover(isPresented: onboardingBinding(isPhone: true)) {
-                OnboardingView { hasCompletedOnboarding = true }
+                OnboardingView(onFinish: finishOnboarding)
             }
             .sheet(isPresented: onboardingBinding(isPhone: false)) {
-                OnboardingView { hasCompletedOnboarding = true }
+                OnboardingView(onFinish: finishOnboarding)
                     .presentationSizing(.form)
                     .interactiveDismissDisabled()
+            }
+            // Neuigkeiten einmal nach jedem Update (nicht nach der Einführung einer Neuinstallation).
+            .sheet(isPresented: whatsNewBinding) {
+                if let release = WhatsNew.current {
+                    WhatsNewView(release: release) { lastSeenWhatsNew = release.version }
+                        .presentationSizing(.form)
+                }
             }
             .overlay {
                 if security.isLocked {
@@ -81,6 +89,24 @@ extension RootView {
         case .calendar: app.open(.calendar)
         case .feedback: openURL(AppInfo.feedbackMailURL)
         }
+    }
+
+    /// Wer die Einführung gerade gesehen hat, braucht die Neuigkeiten dieser Version nicht mehr.
+    private func finishOnboarding() {
+        hasCompletedOnboarding = true
+        lastSeenWhatsNew = AppInfo.shortVersion
+    }
+
+    private var whatsNewBinding: Binding<Bool> {
+        Binding(
+            get: {
+                guard let release = WhatsNew.current else { return false }
+                return hasCompletedOnboarding && !security.isLocked && lastSeenWhatsNew != release.version
+            },
+            set: { isPresented in
+                if !isPresented, let release = WhatsNew.current { lastSeenWhatsNew = release.version }
+            }
+        )
     }
 
     private func onboardingBinding(isPhone: Bool) -> Binding<Bool> {
