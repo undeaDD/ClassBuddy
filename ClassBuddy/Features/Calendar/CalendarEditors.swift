@@ -156,6 +156,7 @@ struct EntryEditorView: View {
     @Environment(\.device) private var device
     @Query(sort: [SortDescriptor(\SchoolClass.schoolYear, order: .reverse), SortDescriptor(\SchoolClass.shortName)])
     private var classes: [SchoolClass]
+    @Query(sort: [SortDescriptor(\Room.sortIndex), SortDescriptor(\Room.name)]) private var rooms: [Room]
 
     let entry: CalendarEntry?
     /// Als Sheet gezeigt (nicht als Popover) → Abbrechen-Button nötig.
@@ -168,6 +169,7 @@ struct EntryEditorView: View {
     @State private var duration: Int
     @State private var notes: String
     @State private var classID: UUID?
+    @State private var roomID: UUID?
 
     init(entry: CalendarEntry?, day: Date, startMinute: Int, isSheet: Bool = false, onSave: @escaping (Date) -> Void = { _ in }) {
         self.entry = entry
@@ -179,6 +181,7 @@ struct EntryEditorView: View {
         _duration = State(initialValue: entry.map { max(Int($0.end.timeIntervalSince($0.start) / 60), 15) } ?? 60)
         _notes = State(initialValue: entry?.notes ?? "")
         _classID = State(initialValue: entry?.schoolClass?.id)
+        _roomID = State(initialValue: entry?.room?.id)
     }
 
     var body: some View {
@@ -206,6 +209,15 @@ struct EntryEditorView: View {
                     } label: {
                         Label("Klasse", icon: .community)
                     }
+                    // Optional: Raum → Antippen des Termins öffnet den Sitzplan (ohne Klasse leer, z. B. zum Drucken).
+                    Picker(selection: $roomID) {
+                        Text("Kein Raum").tag(UUID?.none)
+                        ForEach(rooms) { room in
+                            Text(room.name).tag(Optional(room.id))
+                        }
+                    } label: {
+                        Label("Raum", symbol: AppTab.rooms.symbol)
+                    }
                 }
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
@@ -231,7 +243,7 @@ struct EntryEditorView: View {
                 }
             }
         }
-        .editorPresentation(device, width: 380, height: entry == nil ? 424 : 494)
+        .editorPresentation(device, width: 380, height: entry == nil ? 468 : 538)
     }
 
     private var durationText: String {
@@ -251,6 +263,7 @@ struct EntryEditorView: View {
         target.end = start.addingTimeInterval(TimeInterval(duration * 60))
         target.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         target.schoolClass = classes.first { $0.id == classID }
+        target.room = rooms.first { $0.id == roomID }
         try? modelContext.save()
         onSave(start)
         dismiss()

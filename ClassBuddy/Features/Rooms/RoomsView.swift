@@ -9,7 +9,11 @@ struct RoomsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ToastCenter.self) private var toasts
     @Environment(\.device) private var device
+    @Environment(\.dismiss) private var dismiss
     @Query(sort: [SortDescriptor(\Room.sortIndex), SortDescriptor(\Room.name)]) private var rooms: [Room]
+
+    /// Als Sheet aus Kalender oder Übersicht (iPhone): Schließen statt Klassen-Button.
+    var isModal = false
 
     @State private var searchText = ""
     @State private var editorRoute: RoomEditorRoute?
@@ -24,10 +28,7 @@ struct RoomsView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle(AppTab.rooms.title)
             .navigationSubtitle(rooms.count == 1 ? loc("1 Raum") : loc("\(rooms.count) Räume"))
-            .appChrome(tab: .rooms) {
-                Button("Raum hinzufügen", icon: .plus) { editorRoute = .new }
-                    .disabled(!canEdit)
-            }
+            .modifier(RoomsChrome(isModal: isModal, canEdit: canEdit, add: { editorRoute = .new }, close: { dismiss() }))
             .fullScreenCover(item: $editorRoute) { route in
                 RoomEditorView(route: route, nextSortIndex: (rooms.map(\.sortIndex).max() ?? -1) + 1)
                     .softScrollEdges()
@@ -81,8 +82,9 @@ struct RoomsView: View {
 
     private func grid(_ rooms: [Room]) -> some View {
         LazyVGrid(
+            // iPhone: Karten über die ganze Breite (wie die Übersichtskarten auf schmalen Bildschirmen).
             columns: device.isPhone
-                ? [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+                ? [GridItem(.flexible())]
                 : [GridItem(.adaptive(minimum: 240, maximum: 320), spacing: 16)],
             alignment: .leading,
             spacing: device.isPhone ? 12 : 16
@@ -164,6 +166,37 @@ struct RoomsView: View {
             toasts.success(loc("Raum entfernt"))
         } catch {
             toasts.error(loc("Löschen fehlgeschlagen: \(error.localizedDescription)"))
+        }
+    }
+}
+
+/// Toolbar: im Tab die gemeinsame (Klasse, Hinzufügen, Privatsphäre), als Sheet Schließen statt Klasse.
+private struct RoomsChrome: ViewModifier {
+    let isModal: Bool
+    let canEdit: Bool
+    let add: () -> Void
+    let close: () -> Void
+
+    func body(content: Content) -> some View {
+        if isModal {
+            content.toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Schließen", icon: .xmark, role: .close, action: close)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Raum hinzufügen", icon: .plus, action: add)
+                        .disabled(!canEdit)
+                }
+                ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                ToolbarItem(placement: .topBarTrailing) {
+                    PrivacyModeButton()
+                }
+            }
+        } else {
+            content.appChrome(tab: .rooms) {
+                Button("Raum hinzufügen", icon: .plus, action: add)
+                    .disabled(!canEdit)
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 /// Kachel „Aktueller Raum“ bzw. „Nächster Raum“; öffnet den Sitzplan (ohne Raum: die Raumübersicht).
 struct CurrentRoomCard: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.device) private var device
     let schedule: LessonSchedule
     let classID: UUID
 
@@ -16,9 +17,9 @@ struct CurrentRoomCard: View {
                 symbol: DashboardBuiltInCard.room.symbol
             ) {
                 if let result {
-                    app.openSeatingPlan(room: result.room, schoolClass: result.next.lesson.schoolClass)
+                    app.openSeatingPlan(room: result.room, schoolClass: result.next.lesson.schoolClass, subject: result.next.lesson.subject)
                 } else {
-                    app.open(.rooms)
+                    app.openRooms(isPhone: device.isPhone)
                 }
             }
         }

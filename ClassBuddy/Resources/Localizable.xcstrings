@@ -148,6 +148,16 @@
         }
       }
     },
+    "%lld dB" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dB"
+          }
+        }
+      }
+    },
     "%lld Ferien und Feiertage importiert" : {
       "localizations" : {
         "en" : {
@@ -214,6 +224,16 @@
         }
       }
     },
+    "%lld Notizen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld notes"
+          }
+        }
+      }
+    },
     "%lld Plätze" : {
       "localizations" : {
         "en" : {
@@ -240,6 +260,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld students"
+          }
+        }
+      }
+    },
+    "%lld Schüler ohne Platz – es gibt nicht genug Tische." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld students without a seat – there are not enough tables."
+          }
+        }
+      }
+    },
+    "%lld Sitzplätze" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld seats"
           }
         }
       }
@@ -306,6 +346,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "+5 minutes"
+          }
+        }
+      }
+    },
+    "1 Notiz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 note"
           }
         }
       }
@@ -387,6 +437,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "4 classes with students, a timetable (weekly and one-off) and appointments in the current week. Can only be inserted once – again only after removing it (or “Delete all local data”)."
+          }
+        }
+      }
+    },
+    "58 dB" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "58 dB"
           }
         }
       }
@@ -491,6 +551,16 @@
         }
       }
     },
+    "Alle haben einen Platz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Everyone has a seat"
+          }
+        }
+      }
+    },
     "Alle lokalen Daten löschen" : {
       "localizations" : {
         "en" : {
@@ -531,6 +601,56 @@
         }
       }
     },
+    "Alle Plätze freigeben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear all seats"
+          }
+        }
+      }
+    },
+    "Alle Plätze freigeben?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear all seats?"
+          }
+        }
+      }
+    },
+    "Alle Plätze freigegeben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All seats cleared"
+          }
+        }
+      }
+    },
+    "Alle Schüler der Klasse bekommen neue, zufällige Plätze." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All students of the class get new, random seats."
+          }
+        }
+      }
+    },
+    "Alle Schüler der Klasse verlieren ihren Platz in diesem Raum." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All students of the class lose their seat in this room."
+          }
+        }
+      }
+    },
     "Alles löschen" : {
       "localizations" : {
         "en" : {
@@ -547,6 +667,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "General"
+          }
+        }
+      }
+    },
+    "Als PDF exportieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export as PDF"
+          }
+        }
+      }
+    },
+    "Angenehm ruhig" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nice and quiet"
           }
         }
       }
@@ -597,6 +737,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tap to pick"
+          }
+        }
+      }
+    },
+    "Antippen zum Messen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to measure"
           }
         }
       }
@@ -729,6 +879,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Assembly hall"
+          }
+        }
+      }
+    },
+    "Aus" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
           }
         }
       }
@@ -1094,6 +1254,16 @@
         }
       }
     },
+    "ClassBuddy %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClassBuddy %@"
+          }
+        }
+      }
+    },
     "ClassBuddy entsperren" : {
       "localizations" : {
         "en" : {
@@ -1355,6 +1525,26 @@
         }
       }
     },
+    "Diese Klasse hat noch keine Schülerinnen und Schüler." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This class has no students yet."
+          }
+        }
+      }
+    },
+    "Dieser Raum hat noch keine Tische. Zeichnen Sie sie im Raum-Editor." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This room has no tables yet. Draw them in the room editor."
+          }
+        }
+      }
+    },
     "Divers" : {
       "localizations" : {
         "en" : {
@@ -1401,16 +1591,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Download failed: %@"
-          }
-        }
-      }
-    },
-    "Drucken oder als PDF teilen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Print or share as PDF"
           }
         }
       }
@@ -2387,12 +2567,12 @@
         }
       }
     },
-    "Hier ordnen Sie bald die Schülerinnen und Schüler per Drag & Drop den Tischen zu." : {
+    "Hier entstehen bald die Notizen für dieses Fach." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Soon you'll assign students to tables here using drag and drop."
+            "value" : "Notes for this subject will appear here soon."
           }
         }
       }
@@ -2915,12 +3095,32 @@
         }
       }
     },
+    "Keine Fächer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No subjects"
+          }
+        }
+      }
+    },
     "Keine Geburtstage eingetragen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "No birthdays entered"
+          }
+        }
+      }
+    },
+    "Keine Klasse" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No class"
           }
         }
       }
@@ -3072,6 +3272,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Class or subject"
+          }
+        }
+      }
+    },
+    "Klasse wählen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose class"
           }
         }
       }
@@ -3246,6 +3456,36 @@
         }
       }
     },
+    "Lautstärke" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noise level"
+          }
+        }
+      }
+    },
+    "Lautstärke-Ampel über das Mikrofon – antippen zum Ein- und Ausschalten. Es wird nichts aufgenommen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noise traffic light using the microphone – tap to turn on and off. Nothing is recorded."
+          }
+        }
+      }
+    },
+    "Lebhaft" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lively"
+          }
+        }
+      }
+    },
     "Leerzustände" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3263,6 +3503,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create your first class to assign students, lessons and cards."
+          }
+        }
+      }
+    },
+    "Legen Sie im Tab „Schüler“ die Schülerinnen und Schüler der %@ an." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the students of %@ in the “Students” tab."
           }
         }
       }
@@ -3293,6 +3543,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Teacher's desk"
+          }
+        }
+      }
+    },
+    "Lehrkraft" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teacher"
           }
         }
       }
@@ -3447,6 +3707,36 @@
         }
       }
     },
+    "Mikrofon in den iOS-Einstellungen erlauben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow the microphone in iOS Settings"
+          }
+        }
+      }
+    },
+    "Mikrofon nicht verfügbar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Microphone not available"
+          }
+        }
+      }
+    },
+    "Mikrofon wird gestartet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starting microphone"
+          }
+        }
+      }
+    },
     "Mint" : {
       "localizations" : {
         "en" : {
@@ -3483,6 +3773,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pinch with two fingers to zoom, drag with one finger to move."
+          }
+        }
+      }
+    },
+    "Mit ❤️ gemacht von Devsforge.de" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Made with ❤️ by Devsforge.de"
           }
         }
       }
@@ -3693,6 +3993,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No classes yet"
+          }
+        }
+      }
+    },
+    "Noch keine Notizen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No notes yet"
           }
         }
       }
@@ -4019,12 +4329,42 @@
         }
       }
     },
+    "Platz freigeben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear seat"
+          }
+        }
+      }
+    },
     "PLZ" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Postal code"
+          }
+        }
+      }
+    },
+    "Plätze zufällig verteilt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seats shuffled"
+          }
+        }
+      }
+    },
+    "Plätze ändern" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change seats"
           }
         }
       }
@@ -4127,6 +4467,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Room"
+          }
+        }
+      }
+    },
+    "Raum bearbeiten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit room"
           }
         }
       }
@@ -4532,6 +4882,16 @@
         }
       }
     },
+    "Schüler wählen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose student"
+          }
+        }
+      }
+    },
     "Schülerdaten sind geschützt." : {
       "localizations" : {
         "en" : {
@@ -4704,6 +5064,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Save"
+          }
+        }
+      }
+    },
+    "Speichern fehlgeschlagen: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving failed: %@"
           }
         }
       }
@@ -5127,6 +5497,16 @@
         }
       }
     },
+    "Tippen Sie auf einen freien Tisch und dann auf einen Schüler – oder ziehen Sie einen Schüler auf einen Tisch." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap a free table and then a student – or drag a student onto a table."
+          }
+        }
+      }
+    },
     "Tisch" : {
       "localizations" : {
         "en" : {
@@ -5164,6 +5544,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toasts"
+          }
+        }
+      }
+    },
+    "Tragen Sie bei der Klasse die Fächer ein, die Sie dort unterrichten." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the subjects you teach to the class."
           }
         }
       }
@@ -5608,6 +5998,26 @@
         }
       }
     },
+    "Wählen Sie einen Schüler für den markierten Tisch." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a student for the highlighted table."
+          }
+        }
+      }
+    },
+    "Wählen Sie oben eine Klasse, um ihren Sitzplan zu sehen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a class at the top to see its seating plan."
+          }
+        }
+      }
+    },
     "Wählen Sie oben links eine Klasse aus." : {
       "localizations" : {
         "en" : {
@@ -5678,12 +6088,42 @@
         }
       }
     },
+    "Zu laut" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Too loud"
+          }
+        }
+      }
+    },
     "Zufallsauswahl" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Random pick"
+          }
+        }
+      }
+    },
+    "Zufällig verteilen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shuffle seats"
+          }
+        }
+      }
+    },
+    "Zufällig verteilen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shuffle seats?"
           }
         }
       }
@@ -5784,6 +6224,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "via %@"
+          }
+        }
+      }
+    },
+    "Über langes Drücken auf einen Schüler geben Sie seinen Platz wieder frei." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long-press a student to clear their seat."
           }
         }
       }

@@ -1,36 +1,74 @@
-# TODO: Räume
+# TODO: Notizen
 
-Räume, Editor, Verknüpfungen und Excel-Export sind umgesetzt. Offen sind nur noch die Punkte unten.
+Der Tab „Notizen“ (nach „Räume“) und die Wege dorthin stehen schon als Platzhalter:
+Schülerliste (Tab oder „Schüler“) → Fächer des Schülers → leere Notizen-Ansicht.
+Im Sitzplan führt das Antippen eines Schülers direkt zu Schüler + Fach der Stunde.
 
-## Sitzplan
+Ziel: Pro Schüler und Fach schnell festhalten, was im Unterricht auffällt, als Grundlage für mündliche Noten,
+Zeugnisbemerkungen und Elterngespräche.
 
-- [ ] Platzhalter `SeatingPlanView` durch die echte Ansicht ersetzen: Klasse + Raum → Schüler aus der Seitenleiste
-      (mit Suchfilter) per Drag & Drop auf Tische ziehen; zugeordnete Schüler verschwinden aus der Seitenleiste;
-      zwei Finger zum Verschieben und Zoomen; keine Platznummern
-- [ ] Zuordnungen als `SeatAssignment` speichern (Modell, Löschregeln und Verlust-Hinweis im Editor gibt es schon)
-- [ ] Schülernamen auf den Tischen im Privatsphäre-Modus ausblenden (Grundlage vorhanden)
+## Offene Fragen (vor dem Bauen klären)
 
-## Optional: KI-Unterstützung (niedrige Priorität / highly optional)
+- [ ] Welche Notiz-Arten gibt es fest, welche sind frei? (Vorschläge unten)
+- [ ] Bewertungsskala für Mitarbeit: + / o / −, 1–6, Punkte (Oberstufe) oder frei wählbar je Klasse?
+- [ ] Was passiert mit dem bisherigen Freitext `Student.notes` (Schüler-Editor)? Bleibt „Allgemein“ oder wird übernommen
+- [ ] Icons: Fächer-Zeilen (Fächerliste), Notiz-Arten, Schnell-Buttons
+- [ ] Gehört eine Notiz zu einer Stunde (Datum + Stunde) oder nur zu einem Datum?
 
-- [ ] comic realistische bildgenerierung von der raumskizze ( teppichboden, fenster mit lichtschein, tisch textur füllung, ...)
-- [ ] Nur Apple Intelligence lokal auf dem Gerät (Foundation Models, ggf. Vision), keine Dienste Dritter
-- [ ] Erst prüfen, ob das Modell die Aufgabe überhaupt zuverlässig lösen kann; sonst Punkt streichen
-- [ ] Verfügbarkeit prüfen (`SystemLanguageModel.default.availability`):
-      Gerät nicht unterstützt, Apple Intelligence deaktiviert, Modell noch nicht geladen
-      → Funktion ausblenden bzw. passenden Hinweis zeigen
+## Modell
+
+- [ ] `StudentNote` (SwiftData): Schüler, Fach, Datum, Art, Bewertung (optional), Text (optional), Stunde (optional)
+- [ ] Löschregeln: mit dem Schüler löschen; entfernte Fächer der Klasse → Notizen bleiben unter „Frühere Fächer“
+- [ ] Alles gilt als sensibel (`.sensitive()`), im Privatsphäre-Modus geschwärzt und nur lesend
+
+## Notizen-Ansicht (Schüler + Fach)
+
+- [ ] Zeitleiste der Notizen, neueste oben, nach Datum gruppiert; Wischen zum Bearbeiten und Löschen
+- [ ] Filter nach Art (z. B. nur Mitarbeit)
+- [ ] Kopf mit Zusammenfassung: Anzahl je Art, Mitarbeit-Tendenz der letzten Wochen (kleines Diagramm)
+- [ ] Neue Notiz: Art wählen, optional Bewertung und Text; Datum/Stunde vorausgefüllt
+
+## Schnell erfassen (Unterricht)
+
+- [ ] Im Sitzplan: Schüler antippen → kompakte Schnell-Leiste statt ganzer Ansicht
+      (Mitarbeit +/−, Hausaufgaben fehlen, Material fehlt, Notiz …), ein Tipp speichert, Toast mit „Rückgängig“
+- [ ] Mehrere Schüler nacheinander erfassen, ohne die Ansicht zu verlassen
+- [ ] Stunde und Fach automatisch aus dem Kalender (laufende Stunde)
+
+## Vorschläge für Notiz-Arten
+
+- Mitarbeit (Bewertung)
+- Hausaufgaben vergessen
+- Material vergessen
+- Verhalten (positiv / negativ)
+- Mündliche Leistung / Abfrage (Bewertung)
+- Förderbedarf / Beobachtung
+- Freitext
+
+## Auswertung und Weitergabe
+
+- [ ] Übersicht je Klasse und Fach: Tabelle Schüler × Arten (z. B. „HA vergessen: 3“)
+- [ ] Zusammenfassung je Schüler als PDF (Quick Look wie beim Sitzplan) für Elterngespräche
+- [ ] Übersichtskarte „Heute notiert“ bzw. „Notizen dieser Woche“
+
+## Daten
+
+- [ ] Excel-Export und -Import: Blatt „Notizen“ (ID, Schüler-ID, Fach, Datum, Art, Bewertung, Text)
+- [ ] Tests: Modell und Löschregeln, Zusammenfassung, Excel hin und zurück
+
+## Optional
+
+- [ ] Suche über alle Notizen einer Klasse
+- [ ] Textbausteine für häufige Bemerkungen
+- [ ] Erinnerung: Schüler ohne Notiz seit X Wochen
 
 ## Bewusst nicht geplant
 
-- Suche/Filter nach Fach (Räume werden für die Lehrkräfte vorab geplant)
-- Gebäude und Etagen ( pläne / verbindungen / flure )
-- Bereiche im Raum (auch nicht im Sitzplan) und Sitzplatznummern
-- Vorlagen (stattdessen ein Demo-Klassenzimmer beim ersten start)
-- Drehen, Skalieren, Verschieben, Griffe, Lasso und Mehrfachauswahl, rasterloses Freihandzeichnen
-- Tische zusammenführen (stattdessen radieren und neu zeichnen)
-- Dreiecks- oder Sechseckraster (freie Linien decken Schrägen ab)
-- Barrierefreiheit (VoiceOver, Rollstuhlplatz)
+- Notenberechnung bzw. Notenbuch (eigenes Thema)
+- Teilen mit anderen Lehrkräften oder Cloud-Sync
+- Anhänge (Fotos von Arbeiten)
 
 ## Qualität
 
-- [ ] Auf iPhone und iPad testen (Zeichnen, Teilen, Radierer, Pencil, Toolbox-Breite auf dem iPhone, PDF)
+- [ ] Auf iPhone und iPad testen (Sitzplan: Antippen, Ziehen, Seitenleiste, PDF in Quick Look; Notizen-Tab)
 - [ ] SwiftLint 0/0, Semgrep 0, alle Tests grün

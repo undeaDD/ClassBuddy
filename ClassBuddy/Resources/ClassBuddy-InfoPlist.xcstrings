@@ -54,6 +54,24 @@
           }
         }
       }
+    },
+    "NSMicrophoneUsageDescription" : {
+      "comment" : "Privacy - Microphone Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Das Mikrofon misst nur die Lautstärke im Raum für die Lautstärke-Ampel. Es wird nichts aufgenommen oder gespeichert."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The microphone only measures the noise level in the room for the noise traffic light. Nothing is recorded or stored."
+          }
+        }
+      }
     }
   },
   "version" : "1.3"

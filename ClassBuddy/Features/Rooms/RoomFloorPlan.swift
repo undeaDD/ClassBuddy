@@ -37,18 +37,18 @@ enum RoomDrawing {
     /// - Parameters:
     ///   - map: Rasterpunkt → Position in der Zeichenfläche.
     ///   - invalid: Elemente, die rot markiert werden (Editor).
-    ///   - labels: Text mittig auf Tischen (Sitzplan).
+    ///   - fillsOutline: Raumfläche einfärben (im PDF aus, spart Druckertinte).
     static func draw(
         _ shapes: [RoomShape],
         in context: GraphicsContext,
         lineWidth: CGFloat,
         invalid: Set<UUID> = [],
-        labels: [UUID: String] = [:],
+        fillsOutline: Bool = true,
         map: (GridPoint) -> CGPoint
     ) {
         for shape in shapes.sorted(by: { $0.kind.layer < $1.kind.layer }) {
             let path = path(for: shape, map: map)
-            if shape.kind.isArea, shape.isClosed {
+            if shape.kind.isArea, shape.isClosed, fillsOutline || shape.kind != .outline {
                 context.fill(path, with: .color(shape.kind.color.opacity(shape.kind.fillOpacity)))
             }
             let width = shape.kind.isThickLine ? lineWidth * 2.2 : lineWidth
@@ -60,17 +60,6 @@ enum RoomDrawing {
                     style: StrokeStyle(lineWidth: width, lineCap: .round, lineJoin: .round, dash: [width * 2, width * 2])
                 )
             }
-        }
-        guard !labels.isEmpty else { return }
-        // Lineare Abbildung → Bruchteile über die Einheitsvektoren umrechnen.
-        let origin = map(.zero), unitX = map(GridPoint(1, 0)), unitY = map(GridPoint(0, 1))
-        for shape in shapes where shape.kind == .table {
-            guard let label = labels[shape.id], let center = RoomGeometry.centroid(of: shape.points) else { continue }
-            let position = CGPoint(
-                x: origin.x + (unitX.x - origin.x) * center.x + (unitY.x - origin.x) * center.y,
-                y: origin.y + (unitX.y - origin.y) * center.x + (unitY.y - origin.y) * center.y
-            )
-            context.draw(Text(label).font(.caption2.weight(.medium)).foregroundStyle(.primary), at: position, anchor: .center)
         }
     }
 
@@ -97,17 +86,16 @@ enum RoomDrawing {
     }
 }
 
-/// Grundriss, eingepasst in den verfügbaren Platz (Karten, Sitzplan, PDF).
+/// Grundriss, eingepasst in den verfügbaren Platz (Karten).
 struct RoomFloorPlanView: View {
     let shapes: [RoomShape]
     var padding: CGFloat = 8
     var lineWidth: CGFloat = 1.5
-    var labels: [UUID: String] = [:]
 
     var body: some View {
         Canvas { context, size in
             guard let fit = RoomDrawing.fitting(shapes, in: size, padding: padding) else { return }
-            RoomDrawing.draw(shapes, in: context, lineWidth: lineWidth, labels: labels, map: fit.map)
+            RoomDrawing.draw(shapes, in: context, lineWidth: lineWidth, map: fit.map)
         }
         .accessibilityHidden(true)
     }

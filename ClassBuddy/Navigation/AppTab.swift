@@ -6,6 +6,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     case calendar
     case students
     case rooms
+    case notes
     /// Kein echter Tab: öffnet eine Feedback-Mail, die Auswahl bleibt unverändert.
     case feedback
     case settings
@@ -21,6 +22,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         case .calendar: "Kalender"
         case .students: loc("Schüler")
         case .rooms: loc("Räume")
+        case .notes: loc("Notizen")
         case .settings: loc("Einstellungen")
         case .feedback: "Feedback"
         }
@@ -32,6 +34,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         case .calendar: .custom(.calendar)
         case .students: .custom(.community)
         case .rooms: .custom(.floorLayout)
+        case .notes: .custom(.notes)
         case .settings: .custom(.settings)
         case .feedback: .custom(.sendMail)
         }
@@ -41,7 +44,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     /// Neue Seiten ohne Klassenbezug (Einstellungen, Hilfe …) hier ausnehmen.
     var usesClassSelection: Bool {
         switch self {
-        case .dashboard, .calendar, .students, .rooms: true
+        case .dashboard, .calendar, .students, .rooms, .notes: true
         case .settings, .feedback: false
         }
     }
@@ -59,7 +62,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     var section: AppTabSection {
         switch self {
         case .dashboard, .calendar, .students: .main
-        case .rooms: .schoolClass
+        case .rooms, .notes: .schoolClass
         case .feedback, .settings: .other
         }
     }

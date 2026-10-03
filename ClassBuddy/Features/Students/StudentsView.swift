@@ -1,3 +1,4 @@
+import CoreText
 import SwiftData
 import SwiftUI
 
@@ -71,7 +72,7 @@ struct StudentsView: View {
             )
             .background(Color(.systemGroupedBackground))
         } else {
-            let sections = sections(for: filtered(schoolClass.students))
+            let sections = StudentLetterSection.sections(for: filtered(schoolClass.students))
             List {
                 ForEach(sections, id: \.letter) { section in
                     Section(section.letter) {
@@ -92,36 +93,12 @@ struct StudentsView: View {
         }
     }
 
-    /// Kein Antippen zum Bearbeiten – der Tap bleibt frei für spätere Verknüpfungen (z. B. Notizen).
-    /// Bearbeiten und Löschen über Wischen oder langes Drücken.
+    /// Antippen → Fächer des Schülers (Notizen). Bearbeiten und Löschen über Wischen oder langes Drücken.
     private func row(for student: Student) -> some View {
-        HStack(spacing: 12) {
-            StudentAvatar(student: student, size: 40)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(student.fullName)
-                    .font(.body.weight(.medium))
-                    .sensitive()
-                if let age = student.age {
-                    Text("\(age) Jahre")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .sensitive()
-                }
-            }
-            Spacer()
-            // Notizen-Hinweis (im Privatsphäre-Modus verborgen), dann Pfeil wie bei anderen Zeilen.
-            if !student.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                Image(icon: .notes)
-                    .iconSize(18)
-                    .foregroundStyle(.secondary)
-                    .padding(.trailing, 4)
-                    .sensitive()
-                    .accessibilityLabel("Hat Notizen")
-            }
-            Image(icon: .navArrowRight)
-                .iconSize(18)
-                .foregroundStyle(.tertiary)
-                .accessibilityHidden(true)
+        NavigationLink {
+            StudentSubjectsView(student: student)
+        } label: {
+            rowLabel(for: student)
         }
         .contentShape(.rect)
         // Nach rechts wischen: bearbeiten
@@ -145,22 +122,31 @@ struct StudentsView: View {
         }
     }
 
-    private struct LetterSection {
-        let letter: String
-        let students: [Student]
-    }
-
-    private func sections(for students: [Student]) -> [LetterSection] {
-        let sorted = students.sorted {
-            let byFirst = $0.firstName.localizedStandardCompare($1.firstName)
-            return byFirst == .orderedSame
-                ? $0.lastName.localizedStandardCompare($1.lastName) == .orderedAscending
-                : byFirst == .orderedAscending
+    private func rowLabel(for student: Student) -> some View {
+        HStack(spacing: 12) {
+            StudentAvatar(student: student, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(student.fullName)
+                    .font(.body.weight(.medium))
+                    .sensitive()
+                if let age = student.age {
+                    Text("\(age) Jahre")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .sensitive()
+                }
+            }
+            Spacer()
+            // Notizen-Hinweis (im Privatsphäre-Modus verborgen); den Pfeil zeichnet der NavigationLink.
+            if !student.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Image(icon: .notes)
+                    .iconSize(18)
+                    .foregroundStyle(.secondary)
+                    .padding(.trailing, 4)
+                    .sensitive()
+                    .accessibilityLabel("Hat Notizen")
+            }
         }
-        let grouped = Dictionary(grouping: sorted, by: \.sectionLetter)
-        return grouped.keys
-            .sorted { $0 == "#" ? false : $1 == "#" ? true : $0 < $1 }
-            .map { LetterSection(letter: $0, students: grouped[$0] ?? []) }
     }
 
     private func filtered(_ students: [Student]) -> [Student] {
@@ -225,18 +211,53 @@ struct StudentAvatar: View {
     }
 }
 
+/// Geschlechts-Symbol in der Ecke des Avatars. Der Hintergrund hat die Farbe der Umgebung
+/// (`avatarCutout`), dadurch wirkt es wie aus dem Bild ausgeschnitten.
 struct GenderBadge: View {
+    @Environment(\.avatarCutout) private var cutout
     let gender: Gender
     var size: CGFloat = 16
 
     var body: some View {
+        let fontSize = size * 0.78
         Text(gender.symbol)
-            .font(.system(size: size * 0.72, weight: .bold))
-            .foregroundStyle(.white)
+            .font(.system(size: fontSize, weight: .bold))
+            .foregroundStyle(gender.color)
+            .fixedSize()
+            .offset(GlyphCentering.offset(of: gender.symbol, size: fontSize, weight: .bold))
             .frame(width: size, height: size)
-            .background(gender.color, in: .circle)
-            .overlay(Circle().stroke(Color(.systemBackground), lineWidth: 1.5))
+            .background {
+                ZStack {
+                    ForEach(cutout.indices, id: \.self) { Circle().fill(cutout[$0]) }
+                }
+            }
             .accessibilityLabel(gender.displayTitle)
+    }
+}
+
+extension EnvironmentValues {
+    /// Farbschichten hinter dem Geschlechts-Symbol = Hintergrund, auf dem der Avatar liegt
+    /// (Standard: Zeile einer gruppierten Liste; Sitzplan: Fläche plus Tischfarbe).
+    @Entry var avatarCutout: [Color] = [Color(.secondarySystemGroupedBackground)]
+}
+
+/// Symbole wie ♀ ♂ ⚧ sitzen nicht mittig in ihrer Laufweite; SwiftUI zentriert aber die Laufweite.
+/// Der Versatz verschiebt die sichtbare Glyphe (Umriss laut CoreText) in die Mitte.
+enum GlyphCentering {
+    @MainActor private static var cache: [String: CGSize] = [:]
+
+    @MainActor
+    static func offset(of text: String, size: CGFloat, weight: UIFont.Weight) -> CGSize {
+        let key = "\(text)|\(size)|\(weight.rawValue)"
+        if let cached = cache[key] { return cached }
+        let font = UIFont.systemFont(ofSize: size, weight: weight)
+        let line = CTLineCreateWithAttributedString(NSAttributedString(string: text, attributes: [.font: font]))
+        let ink = CTLineGetBoundsWithOptions(line, .useGlyphPathBounds)
+        let box = CTLineGetBoundsWithOptions(line, [])
+        // CoreText zählt y nach oben, SwiftUI nach unten.
+        let offset = ink.isEmpty ? .zero : CGSize(width: box.midX - ink.midX, height: ink.midY - box.midY)
+        cache[key] = offset
+        return offset
     }
 }
 
@@ -247,5 +268,25 @@ extension Gender {
         case .male: .blue
         case .diverse: .purple
         }
+    }
+}
+
+/// Alphabetischer Abschnitt einer Schülerliste (nach Vornamen), mit Schnell-Index rechts.
+struct StudentLetterSection {
+    let letter: String
+    let students: [Student]
+
+    /// Nach Vor- und Nachnamen sortiert, „#“ (kein Buchstabe) zuletzt.
+    static func sections(for students: [Student]) -> [StudentLetterSection] {
+        let sorted = students.sorted {
+            let byFirst = $0.firstName.localizedStandardCompare($1.firstName)
+            return byFirst == .orderedSame
+                ? $0.lastName.localizedStandardCompare($1.lastName) == .orderedAscending
+                : byFirst == .orderedAscending
+        }
+        let grouped = Dictionary(grouping: sorted, by: \.sectionLetter)
+        return grouped.keys
+            .sorted { $0 == "#" ? false : $1 == "#" ? true : $0 < $1 }
+            .map { StudentLetterSection(letter: $0, students: grouped[$0] ?? []) }
     }
 }

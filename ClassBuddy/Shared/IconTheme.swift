@@ -94,6 +94,7 @@ nonisolated enum IconTheme: Identifiable, Hashable, Sendable {
         .settings: "gearshape",
         .shareIos: "square.and.arrow.up",
         .shortcuts: "bolt.fill",
+        .shuffle: "shuffle",
         .sineWave: "waveform.path",
         .swipeLeftGesture: "arrow.down.left.topright.rectangle.fill",
         .temperature: "thermometer.medium",
@@ -108,6 +109,7 @@ nonisolated enum IconTheme: Identifiable, Hashable, Sendable {
         .userCircle: "person.crop.circle",
         .userXmark: "person.crop.circle.badge.xmark",
         .version: "info.circle",
+        .volume: "speaker.wave.2",
         .www: "network",
         .xmark: "xmark",
     ]

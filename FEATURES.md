@@ -20,8 +20,6 @@ Bereits vorhanden: Übersicht, Kalender, Schüler, Räume (in Arbeit), Einstellu
 
 ## Klasse & Organisation
 
-- **Sitzplan** – Klasse + Raum → Schüler auf Plätze ziehen, Varianten speichern, zufällig mischen,
-  Drucken/PDF (baut auf den Räumen auf).
 - **Aufgaben** – eigene To-dos und Fristen (Korrekturen, Elterngespräche, Konferenzen), optional an
   Klasse oder Schüler gebunden, fällige Aufgaben auf der Übersicht.
 - **Beobachtungen** – kurze, datierte Notizen zu Schülern (Verhalten, Förderbedarf, Gesprächsnotizen),

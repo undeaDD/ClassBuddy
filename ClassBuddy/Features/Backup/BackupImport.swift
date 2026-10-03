@@ -35,7 +35,7 @@ extension Backup {
             .reduce(into: [UUID: Data]()) { photos, student in photos[student.id] = student.photo }
 
         // Räume nur ersetzen, wenn die Datei sie enthält (ältere Exporte haben keine Raum-Blätter).
-        // Sitzplan-Zuordnungen stehen nicht in der Datei und entfallen mit den Schülern.
+        // Sitzplan-Zuordnungen kommen aus dem Blatt „Sitzplätze“ (ältere Exporte: entfallen mit den Schülern).
         let replacesRooms = workbook[Sheet.rooms] != nil
         try context.delete(model: SeatAssignment.self)
         try context.delete(model: Student.self)
@@ -61,6 +61,7 @@ extension Backup {
         importer.importEntries(table(Sheet.entries))
         importer.importLinks(table(Sheet.links))
         importer.importHolidays(table(Sheet.holidays))
+        importer.importSeats(table(Sheet.seats))
 
         try context.save()
         removeUnreferencedFiles(keeping: importer.keptFileLocations)
@@ -76,6 +77,7 @@ extension Backup {
         var summary = ImportSummary()
         var classesByID: [UUID: SchoolClass] = [:]
         var roomsByID: [UUID: Room] = [:]
+        var studentsByID: [UUID: Student] = [:]
         var keptFileLocations: Set<String> = []
 
         private func schoolClass(for row: Table.Row) -> SchoolClass? {
@@ -110,7 +112,7 @@ extension Backup {
                       !(row["Vorname"].isEmpty && row["Nachname"].isEmpty)
                 else { continue }
                 let id = UUID(uuidString: row["ID"]) ?? UUID()
-                context.insert(Student(
+                let student = Student(
                     id: id,
                     firstName: row["Vorname"],
                     lastName: row["Nachname"],
@@ -123,7 +125,9 @@ extension Backup {
                     photo: existingPhotos[id],
                     createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now,
                     schoolClass: schoolClass
-                ))
+                )
+                context.insert(student)
+                studentsByID[id] = student
                 summary.students += 1
             }
         }
@@ -156,11 +160,13 @@ extension Backup {
             for row in rows {
                 guard let start = Cell.parseDateTime(row["Beginn"]) else { continue }
                 let end = Cell.parseDateTime(row["Ende"]).map { max($0, start) } ?? start.addingTimeInterval(3600)
-                context.insert(CalendarEntry(
+                let entry = CalendarEntry(
                     id: UUID(uuidString: row["ID"]) ?? UUID(),
                     title: row["Titel"], start: start, end: end, notes: row["Notizen"],
                     schoolClass: schoolClass(for: row)
-                ))
+                )
+                context.insert(entry)
+                entry.room = UUID(uuidString: row["Raum-ID"]).flatMap { roomsByID[$0] }
                 summary.entries += 1
             }
         }
@@ -172,7 +178,9 @@ extension Backup {
                 let kind = Cell.parseLinkKind(row["Typ"])
                 if kind.isStoredFile {
                     guard let location = existingFiles[id],
-                          FileManager.default.fileExists(atPath: LinkFileStore.directory.appending(path: location).path())
+                          FileManager.default.fileExists(
+                              atPath: LinkFileStore.directory.appending(path: location).path(percentEncoded: false)
+                          )
                     else {
                         summary.skippedDocuments += 1
                         continue
@@ -215,6 +223,18 @@ extension Backup {
                 room.replaceElements(with: shapes, in: context)
                 roomsByID[id] = room
                 summary.rooms += 1
+            }
+        }
+
+        /// Sitzplätze nach denselben Regeln wie im Sitzplan; Zeilen ohne passenden Tisch oder Schüler entfallen.
+        mutating func importSeats(_ rows: [Table.Row]) {
+            let tables = roomsByID.values.flatMap(SeatingPlan.tables(in:)).reduce(into: [UUID: RoomElement]()) { $0[$1.id] = $1 }
+            for row in rows {
+                guard let table = UUID(uuidString: row["Tisch-ID"]).flatMap({ tables[$0] }),
+                      let student = UUID(uuidString: row["Schüler-ID"]).flatMap({ studentsByID[$0] })
+                else { continue }
+                SeatingPlan.assign(student, to: table, in: context)
+                summary.seats += 1
             }
         }
 
@@ -286,7 +306,7 @@ extension Backup {
     /// Kopierte Dokumente, die nach dem Import keiner Kachel mehr gehören, entfernen.
     private static func removeUnreferencedFiles(keeping locations: Set<String>) {
         let keptFolders = Set(locations.map { ($0 as NSString).deletingLastPathComponent })
-        let folders = (try? FileManager.default.contentsOfDirectory(atPath: LinkFileStore.directory.path())) ?? []
+        let folders = (try? FileManager.default.contentsOfDirectory(atPath: LinkFileStore.directory.path(percentEncoded: false))) ?? []
         for folder in folders where !keptFolders.contains(folder) {
             try? FileManager.default.removeItem(at: LinkFileStore.directory.appending(path: folder))
         }

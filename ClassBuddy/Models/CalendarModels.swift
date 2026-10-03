@@ -50,6 +50,8 @@ final class CalendarEntry {
     var end: Date
     var notes: String
     var schoolClass: SchoolClass?
+    /// Optionaler Raum (z. B. Vertretung, AG): Antippen öffnet den Sitzplan, ohne Klasse leer zum Drucken.
+    var room: Room?
 
     init(id: UUID = UUID(), title: String, start: Date, end: Date, notes: String = "", schoolClass: SchoolClass? = nil) {
         self.id = id

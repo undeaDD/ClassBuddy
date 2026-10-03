@@ -12,12 +12,14 @@
 		041EDD8E52FC9A70B471C5CD /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6AB5A47C4368067847CE31 /* AppTabView.swift */; };
 		095105AB524AA19F029B3D69 /* ScriptCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */; };
 		10C81A0036E23C26C4576864 /* RoomEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9F1A24DC1A54F6781E2E94 /* RoomEditorTests.swift */; };
+		1BDA094B77C449EE9DE95476 /* SeatingPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9E84465E4C481F80E9F826 /* SeatingPlanTests.swift */; };
 		125D8EC22A8E701DD657483E /* collaborators.en.html in Resources */ = {isa = PBXBuildFile; fileRef = 00D91AF2928F4BA7AE559060 /* collaborators.en.html */; };
 		12C5344E306BEED40087F828 /* ClassBuddy.icon in Resources */ = {isa = PBXBuildFile; fileRef = 12C5344D306BEED40087F828 /* ClassBuddy.icon */; };
 		12CA6338306EF68700FA6331 /* ClassBuddy-InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 12CA6337306EF68700FA6331 /* ClassBuddy-InfoPlist.xcstrings */; };
 		1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1542A53C4CB6A27D96639 /* Backup.swift */; };
 		1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682EF27D860985CC8FFA663A /* AppSettingsView.swift */; };
 		1D917525E9E3F56EBDA35EDF /* CurrentRoomCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A77A63E2195405C5C02758 /* CurrentRoomCard.swift */; };
+		3BD1E7DD7CF8491388A73902 /* NoiseMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B209BB796FC4EF3AC5C2291 /* NoiseMeter.swift */; };
 		1F038FAF7CB75D5DFBAFBCE0 /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3788C18526F115CA2D3BA045 /* AppTab.swift */; };
 		200AF034F81588E18D3F1B96 /* BackupCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = D41DC12A563B629FA7ADBEAC /* BackupCells.swift */; };
 		21BE51325B78F5751A74C0E0 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 369460E9297D0350E5B4332F /* OnboardingView.swift */; };
@@ -95,7 +97,10 @@
 		D6BF5854A98453F1D23B796D /* CardScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC4CFBA75EED9BB490A0C24 /* CardScript.swift */; };
 		DA324E96A29BC0499AABBCBD /* AppearanceSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0F93DC3D59C0C412D7D676 /* AppearanceSettings.swift */; };
 		DBE6E730B1F16CE349CCB6A2 /* SpreadsheetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */; };
+		4297960A7A0343E78ACC0606 /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DD38C88C554AF092211F02 /* NotesView.swift */; };
 		DD205564D5FEAC8A45817066 /* SeatingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1F4A77508CF1E54EEA649C2 /* SeatingPlanView.swift */; };
+		1AAADB29F6F84B23B7A5A8C1 /* SeatingPlanLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE7B8189CC0450CBF0E8E23 /* SeatingPlanLogic.swift */; };
+		6B408FEA6BB24C56B7B7C062 /* SeatingPlanFloor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBCC92EC98264194BCC06D21 /* SeatingPlanFloor.swift */; };
 		DD257BFB6703F7B171842532 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */; };
 		DDDF2C0B0EF2C9546CB53FCC /* PhotoCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75AFEEA075C5FC27D985B89 /* PhotoCropView.swift */; };
 		DE6A9293BA353F078A5A3E9D /* CellParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F04E1C451C09A579F79EE9 /* CellParsingTests.swift */; };
@@ -193,6 +198,7 @@
 		964BD5DCFEB72AE4722C536B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		96E8CBF0639744A814DA07BD /* RoomFloorPlan.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomFloorPlan.swift; sourceTree = "<group>"; };
 		97A77A63E2195405C5C02758 /* CurrentRoomCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CurrentRoomCard.swift; sourceTree = "<group>"; };
+		6B209BB796FC4EF3AC5C2291 /* NoiseMeter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NoiseMeter.swift; sourceTree = "<group>"; };
 		9979637F19208E99A2D87326 /* HomeScreenActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenActions.swift; sourceTree = "<group>"; };
 		9B3B54810C7667A2C9742973 /* DashboardCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCards.swift; sourceTree = "<group>"; };
 		9C838201C48843117125D1F2 /* StudentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudentsView.swift; sourceTree = "<group>"; };
@@ -212,6 +218,9 @@
 		BEA3B5CD9197C415EA1E2EC1 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		C0EAD7BE6DF9D3E045D974BF /* LessonGridTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonGridTests.swift; sourceTree = "<group>"; };
 		C178880D75ED2AE4F6900431 /* privacy.en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = privacy.en.html; sourceTree = "<group>"; };
+		EBCC92EC98264194BCC06D21 /* SeatingPlanFloor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SeatingPlanFloor.swift; sourceTree = "<group>"; };
+		1FE7B8189CC0450CBF0E8E23 /* SeatingPlanLogic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SeatingPlanLogic.swift; sourceTree = "<group>"; };
+		42DD38C88C554AF092211F02 /* NotesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
 		C1F4A77508CF1E54EEA649C2 /* SeatingPlanView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SeatingPlanView.swift; sourceTree = "<group>"; };
 		C44C1138E7C38D4F949012B0 /* PencilQuickActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PencilQuickActions.swift; sourceTree = "<group>"; };
 		C45B842799400D6FDE2324EA /* IconPack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconPack.swift; sourceTree = "<group>"; };
@@ -227,6 +236,7 @@
 		D1B0057A9E3C4F21A8B6C004 /* WhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewView.swift; sourceTree = "<group>"; };
 		D41DC12A563B629FA7ADBEAC /* BackupCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCells.swift; sourceTree = "<group>"; };
 		DD9F1A24DC1A54F6781E2E94 /* RoomEditorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomEditorTests.swift; sourceTree = "<group>"; };
+		7C9E84465E4C481F80E9F826 /* SeatingPlanTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SeatingPlanTests.swift; sourceTree = "<group>"; };
 		DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetTests.swift; sourceTree = "<group>"; };
 		DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptCard.swift; sourceTree = "<group>"; };
 		E2F04E1C451C09A579F79EE9 /* CellParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellParsingTests.swift; sourceTree = "<group>"; };
@@ -267,6 +277,7 @@
 				A448871486BB258B47FBECBC /* Rooms */,
 				6276EFCCA61538A20161D1C9 /* Calendar */,
 				D4570BF9AFC7A772451C1FD8 /* Students */,
+				FA63DEF9E4664E95AF643465 /* Notes */,
 				D318CA121CD9FB8D64C14FB9 /* ClassPicker */,
 				ED866CB00345985B1E112F36 /* Dashboard */,
 				A1A4DAFDDF0D0B2BD02CD6E5 /* Settings */,
@@ -387,6 +398,8 @@
 				807AE0C51AB4262FB2FC990A /* RoomCanvas.swift */,
 				0CC94578C8B4E8A9F0879DBF /* RoomDetailsView.swift */,
 				508C3838A7AA08460341EA32 /* RoomEditorView.swift */,
+				EBCC92EC98264194BCC06D21 /* SeatingPlanFloor.swift */,
+				1FE7B8189CC0450CBF0E8E23 /* SeatingPlanLogic.swift */,
 				C1F4A77508CF1E54EEA649C2 /* SeatingPlanView.swift */,
 			);
 			path = Rooms;
@@ -433,6 +446,14 @@
 				52FF26FC3386B96682B298C6 /* ClassPickerView.swift */,
 			);
 			path = ClassPicker;
+			sourceTree = "<group>";
+		};
+		FA63DEF9E4664E95AF643465 /* Notes */ = {
+			isa = PBXGroup;
+			children = (
+				42DD38C88C554AF092211F02 /* NotesView.swift */,
+			);
+			path = Notes;
 			sourceTree = "<group>";
 		};
 		D4570BF9AFC7A772451C1FD8 /* Students */ = {
@@ -487,6 +508,7 @@
 				95865081AE46E5F455EFB23D /* DataTests.swift */,
 				3F347244F5F1137FDDF83669 /* RoomTests.swift */,
 				DD9F1A24DC1A54F6781E2E94 /* RoomEditorTests.swift */,
+				7C9E84465E4C481F80E9F826 /* SeatingPlanTests.swift */,
 			);
 			path = ClassBuddyTests;
 			sourceTree = "<group>";
@@ -515,6 +537,7 @@
 				FEC4CFBA75EED9BB490A0C24 /* CardScript.swift */,
 				A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */,
 				97A77A63E2195405C5C02758 /* CurrentRoomCard.swift */,
+				6B209BB796FC4EF3AC5C2291 /* NoiseMeter.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -698,7 +721,11 @@
 				9F882469ABDE923056A47C03 /* RoomDetailsView.swift in Sources */,
 				7194E4D1A2FB36786FEBC20C /* RoomEditorView.swift in Sources */,
 				DD205564D5FEAC8A45817066 /* SeatingPlanView.swift in Sources */,
+				4297960A7A0343E78ACC0606 /* NotesView.swift in Sources */,
+				1AAADB29F6F84B23B7A5A8C1 /* SeatingPlanLogic.swift in Sources */,
+				6B408FEA6BB24C56B7B7C062 /* SeatingPlanFloor.swift in Sources */,
 				1D917525E9E3F56EBDA35EDF /* CurrentRoomCard.swift in Sources */,
+				3BD1E7DD7CF8491388A73902 /* NoiseMeter.swift in Sources */,
 			);
 		};
 		3B903BDFD3F696EA3281D92D /* Sources */ = {
@@ -714,6 +741,7 @@
 				610FEA7D9D7C2852CAA19D99 /* DataTests.swift in Sources */,
 				40173E7489A62BA166C1223C /* RoomTests.swift in Sources */,
 				10C81A0036E23C26C4576864 /* RoomEditorTests.swift in Sources */,
+				1BDA094B77C449EE9DE95476 /* SeatingPlanTests.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
@@ -896,6 +924,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Face ID schützt die Schülerdaten und blendet sensible Informationen wieder ein.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Das Mikrofon misst nur die Lautstärke im Raum für die Lautstärke-Ampel. Es wird nichts aufgenommen oder gespeichert.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -926,6 +955,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Face ID schützt die Schülerdaten und blendet sensible Informationen wieder ein.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Das Mikrofon misst nur die Lautstärke im Raum für die Lautstärke-Ampel. Es wird nichts aufgenommen oder gespeichert.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

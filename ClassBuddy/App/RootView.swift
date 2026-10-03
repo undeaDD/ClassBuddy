@@ -43,9 +43,19 @@ struct RootView: View {
                     .presentationSizing(.form)
                     .interactiveDismissDisabled()
             }
+            // Vollbild-Cover und Sheets liegen außerhalb der Modifier oben → Geräteweiche und
+            // Privatsphäre-Modus dort erneut setzen.
             .fullScreenCover(item: Bindable(app).seatingPlan) { route in
                 SeatingPlanView(route: route)
                     .softScrollEdges()
+                    .environment(\.device, Device(horizontalSizeClass: horizontalSizeClass))
+                    .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
+            }
+            .sheet(isPresented: Bindable(app).isRoomsSheetPresented) {
+                NavigationStack { RoomsView(isModal: true) }
+                    .softScrollEdges()
+                    .environment(\.device, Device(horizontalSizeClass: horizontalSizeClass))
+                    .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
             }
             // Neuigkeiten einmal nach jedem Update (nicht nach der Einführung einer Neuinstallation).
             .sheet(isPresented: whatsNewBinding) {
