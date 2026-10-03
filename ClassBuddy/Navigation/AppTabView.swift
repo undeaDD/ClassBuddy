@@ -107,6 +107,7 @@ struct AppTabDestination: View {
         case .calendar: CalendarView()
         case .students: StudentsView()
         case .rooms: RoomsView()
+        case .notes: NotesView()
         case .settings: SettingsView()
         case .feedback: EmptyView()
         }

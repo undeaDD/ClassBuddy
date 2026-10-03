@@ -353,4 +353,20 @@ struct LogicTests {
         let output = await CardScript.run("while (true) {}", mode: .render, state: "{}", schoolClass: Self.scriptClass)
         #expect(output.error != nil)
     }
+
+    @Test("Lautstärke: dB aus dem Effektivwert, Ampelbereiche und Glättung")
+    func noiseLevel() {
+        #expect(NoiseLevel.decibels(rms: 0) == 0)
+        #expect(abs(NoiseLevel.decibels(rms: 0.01) - 60) < 0.001) // −40 dBFS + 100
+        #expect(NoiseLevel.decibels(rms: 10) == 120)
+        let samples: [Float] = [0.5, -0.5, 0.5, -0.5]
+        #expect(samples.withUnsafeBufferPointer(NoiseLevel.rms) == 0.5)
+        #expect(NoiseLevel.stage(for: 45) == .calm)
+        #expect(NoiseLevel.stage(for: 60) == .lively)
+        #expect(NoiseLevel.stage(for: 70) == .loud)
+        #expect(NoiseLevel.smoothed(previous: 50, new: 70) > NoiseLevel.smoothed(previous: 70, new: 50) - 50)
+        #expect(NoiseLevel.smoothed(previous: 70, new: 50) > 60) // fällt langsam
+        let shares = NoiseLevel.Stage.allCases.map { $0.share(of: NoiseLevel.displayRange) }
+        #expect(abs(shares.reduce(0, +) - 1) < 0.0001)
+    }
 }

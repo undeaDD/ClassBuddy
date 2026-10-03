@@ -10,6 +10,7 @@ import SwiftUI
 struct DayColumn: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppModel.self) private var app
+    @Environment(\.device) private var device
     @Environment(SchoolSettings.self) private var settings
     @Environment(AppSecurity.self) private var security
 
@@ -131,9 +132,9 @@ struct DayColumn: View {
             .padding(.horizontal, 3)
             .onTapGesture {
                 if let lesson, let room = lesson.room {
-                    app.openSeatingPlan(room: room, schoolClass: lesson.schoolClass)
+                    app.openSeatingPlan(room: room, schoolClass: lesson.schoolClass, subject: lesson.subject)
                 } else if lesson != nil {
-                    app.open(.rooms)
+                    app.openRooms(isPhone: device.isPhone)
                 } else if canEdit {
                     selectedSlot = slot
                 }
@@ -168,7 +169,12 @@ struct DayColumn: View {
             .frame(height: y(duration))
             .padding(.leading, 12)
             .padding(.trailing, 3)
-            // Antippen bewusst ohne Aktion (später eigene Ansicht); Bearbeiten per langem Drücken.
+            // Antippen: mit Raum → Sitzplan (ohne Klasse leer); Bearbeiten per langem Drücken.
+            .onTapGesture {
+                if let room = entry.room {
+                    app.openSeatingPlan(room: room, schoolClass: entry.schoolClass)
+                }
+            }
             .hoverEffect(.lift)
             .contextMenu {
                 if canEdit {

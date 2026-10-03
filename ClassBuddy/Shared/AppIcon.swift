@@ -59,6 +59,7 @@ nonisolated enum AppIcon: String, CaseIterable, Sendable {
     case settings = "settings"
     case shareIos = "share-ios"
     case shortcuts = "shortcuts"
+    case shuffle = "shuffle"
     case sineWave = "sine-wave"
     case swipeLeftGesture = "swipe-left-gesture"
     case temperature = "temperature"
@@ -73,6 +74,7 @@ nonisolated enum AppIcon: String, CaseIterable, Sendable {
     case userCircle = "user-circle"
     case userXmark = "user-xmark"
     case version = "version"
+    case volume = "volume"
     case www = "www"
     case xmark = "xmark"
 }

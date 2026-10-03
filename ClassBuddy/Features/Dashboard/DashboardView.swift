@@ -385,7 +385,7 @@ extension DashboardView {
             nextBirthdayCard(for: schoolClass)
         case .randomStudent:
             RandomStudentCard(students: schoolClass.students)
-        case .timer, .dateTime, .dailyBoost:
+        case .timer, .dateTime, .dailyBoost, .noiseMeter:
             standaloneCard(card)
         case .currentLesson:
             CurrentLessonCard(
@@ -419,6 +419,7 @@ extension DashboardView {
         switch card {
         case .timer: TimerCard()
         case .dateTime: DateTimeCard()
+        case .noiseMeter: NoiseMeterCard()
         default: DailyBoostCard()
         }
     }

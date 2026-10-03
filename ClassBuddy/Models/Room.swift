@@ -26,6 +26,10 @@ final class Room {
     @Relationship(deleteRule: .nullify, inverse: \Lesson.room)
     var lessons: [Lesson] = []
 
+    /// Termine in diesem Raum; beim Löschen des Raums bleiben sie ohne Raum erhalten.
+    @Relationship(deleteRule: .nullify, inverse: \CalendarEntry.room)
+    var calendarEntries: [CalendarEntry] = []
+
     init(
         id: UUID = UUID(),
         name: String,

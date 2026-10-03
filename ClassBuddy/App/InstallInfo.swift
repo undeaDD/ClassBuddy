@@ -54,7 +54,7 @@ enum InstallInfo {
 
     /// Erste Installation: Erstellungsdatum des App-Containers (bleibt bei Updates erhalten).
     static var installDate: Date? {
-        let attributes = try? FileManager.default.attributesOfItem(atPath: URL.documentsDirectory.path())
+        let attributes = try? FileManager.default.attributesOfItem(atPath: URL.documentsDirectory.path(percentEncoded: false))
         return attributes?[.creationDate] as? Date
     }
 

@@ -15,13 +15,14 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
     case weeklyHours = "stat.weeklyHours"
     case dailyBoost = "tool.dailyBoost"
     case room = "stat.room"
+    case noiseMeter = "tool.noiseMeter"
 
     var id: String { rawValue }
 
     var isHiddenByDefault: Bool {
         switch self {
         case .students, .nextLesson: false
-        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost, .room: true
+        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost, .room, .noiseMeter: true
         }
     }
 
@@ -43,6 +44,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .weeklyHours: loc("Wochenstunden")
         case .dailyBoost: loc("Tagesmotivation")
         case .room: loc("Aktueller Raum")
+        case .noiseMeter: loc("Lautstärke")
         }
     }
 
@@ -59,6 +61,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .weeklyHours: loc("Wie viel Ihres Unterrichts diese Woche schon geschafft ist.")
         case .dailyBoost: loc("Ein Glückskeks-Spruch für den Tag, lokal mit Apple Intelligence – antippen für einen neuen.")
         case .room: loc("Raum der laufenden bzw. nächsten Stunde – öffnet den Sitzplan.")
+        case .noiseMeter: loc("Lautstärke-Ampel über das Mikrofon – antippen zum Ein- und Ausschalten. Es wird nichts aufgenommen.")
         }
     }
 
@@ -75,6 +78,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .weeklyHours: .custom(.graphUp)
         case .dailyBoost: .custom(.quoteSolid)
         case .room: AppTab.rooms.symbol
+        case .noiseMeter: .custom(.volume)
         }
     }
 
@@ -92,6 +96,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .weeklyHours: ("58 %", loc("14 h erledigt · 24 h gesamt"))
         case .dailyBoost: (loc("Der weise Lehrer hat einen Ersatzmarker. Der weisere hat zwei."), "")
         case .room: ("R 204", loc("Jetzt · 3. Stunde · 7b"))
+        case .noiseMeter: (loc("58 dB"), loc("Angenehm ruhig"))
         }
     }
 }

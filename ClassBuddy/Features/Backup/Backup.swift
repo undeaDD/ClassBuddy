@@ -22,6 +22,7 @@ enum Backup {
         static let holidays = "Ferien"
         static let rooms = "Räume"
         static let roomElements = "Raumelemente"
+        static let seats = "Sitzplätze"
         static let school = "Schule"
         static let schoolDay = "Schultag"
         static let breaks = "Pausen"
@@ -37,6 +38,7 @@ enum Backup {
         var links = 0
         var holidays = 0
         var rooms = 0
+        var seats = 0
         var skippedDocuments = 0 // Dokument- und Bild-Kacheln ohne Datei
         var invalidRooms: [String] = [] // Räume mit ungültigem Grundriss
 
@@ -44,6 +46,7 @@ enum Backup {
             var parts = [
                 "\(classes) Klassen", "\(students) Schüler", "\(lessons) Stunden",
                 "\(entries) Termine", "\(links) Kacheln", "\(holidays) Ferien/Feiertage", "\(rooms) Räume",
+                "\(seats) Sitzplätze",
             ]
             if skippedDocuments > 0 {
                 parts.append("\(skippedDocuments) Dokument-/Bild-Kacheln übersprungen (Datei nicht auf diesem Gerät)")
@@ -81,6 +84,7 @@ enum Backup {
             holidaysSheet(holidays),
             roomsSheet(rooms),
             roomElementsSheet(rooms),
+            seatsSheet(rooms),
         ] + settingsSheets(settings, appearance: appearance))
     }
 
@@ -138,10 +142,11 @@ enum Backup {
 
     private static func entriesSheet(_ entries: [CalendarEntry]) -> XLSXSheet {
         XLSXSheet(name: Sheet.entries, rows: [
-            ["ID", "Klassen-ID", "Klasse", "Titel", "Beginn", "Ende", "Notizen"],
+            ["ID", "Klassen-ID", "Klasse", "Titel", "Beginn", "Ende", "Notizen", "Raum-ID", "Raum"],
         ] + entries.map {
             [$0.id.uuidString, $0.schoolClass?.id.uuidString ?? "", $0.schoolClass?.shortName ?? "",
-             $0.title, Cell.dateTime($0.start), Cell.dateTime($0.end), $0.notes]
+             $0.title, Cell.dateTime($0.start), Cell.dateTime($0.end), $0.notes,
+             $0.room?.id.uuidString ?? "", $0.room?.name ?? ""]
         })
     }
 
@@ -179,6 +184,22 @@ enum Backup {
             ["ID", "Raum-ID", "Raum", "Art", "Punkte"],
         ] + rooms.flatMap { room in
             room.shapes.map { [$0.id.uuidString, room.id.uuidString, room.name, $0.kind.title, Cell.points($0.points)] }
+        })
+    }
+
+    /// Sitzplan: Schüler je Tisch (eine Zeile je Zuordnung).
+    private static func seatsSheet(_ rooms: [Room]) -> XLSXSheet {
+        XLSXSheet(name: Sheet.seats, rows: [
+            ["ID", "Tisch-ID", "Raum", "Schüler-ID", "Schüler", "Klasse"],
+        ] + rooms.flatMap { room in
+            SeatingPlan.tables(in: room).flatMap { table in
+                table.seatAssignments.sorted { $0.createdAt < $1.createdAt }.compactMap { assignment in
+                    assignment.student.map {
+                        [assignment.id.uuidString, table.id.uuidString, room.name, $0.id.uuidString, $0.fullName,
+                         $0.schoolClass?.shortName ?? ""]
+                    }
+                }
+            }
         })
     }
 

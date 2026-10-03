@@ -28,6 +28,8 @@ final class AppModel {
 
     /// Offener Sitzplan (Vollbild über allem), z. B. nach Antippen einer Stunde mit Raum.
     var seatingPlan: SeatingPlanRoute?
+    /// Raumliste als Sheet (iPhone): „Räume“ liegt dort unter „Mehr“, ein Tab-Wechsel führte beim Zurück dorthin.
+    var isRoomsSheetPresented = false
 
     var selectedClassID: UUID? {
         didSet { UserDefaults.standard.set(selectedClassID?.uuidString, forKey: Self.selectedClassKey) }
@@ -57,10 +59,20 @@ final class AppModel {
         }
     }
 
-    /// Sitzplan einer Klasse in einem Raum öffnen.
-    func openSeatingPlan(room: Room, schoolClass: SchoolClass?) {
+    /// Sitzplan einer Klasse in einem Raum öffnen; mit Fach (aus der Stunde) führt ein Schüler direkt zu seinen Notizen.
+    func openSeatingPlan(room: Room, schoolClass: SchoolClass?, subject: String? = nil) {
         isClassPickerPresented = false
-        seatingPlan = SeatingPlanRoute(room: room, schoolClass: schoolClass)
+        seatingPlan = SeatingPlanRoute(room: room, schoolClass: schoolClass, subject: subject?.nonEmpty)
+    }
+
+    /// Räume aus Kalender oder Übersicht öffnen: iPhone als Sheet (Schließen führt zurück), iPad über den Tab.
+    func openRooms(isPhone: Bool) {
+        if isPhone {
+            isClassPickerPresented = false
+            isRoomsSheetPresented = true
+        } else {
+            open(.rooms)
+        }
     }
 
     /// Kalender öffnen, gefiltert auf eine Klasse, an einem bestimmten Datum.

@@ -67,6 +67,7 @@ struct StudentEditorView: View {
             Form {
                 Section {
                     StudentAvatar(initials: initials, photo: photo, gender: gender, size: 88)
+                        .environment(\.avatarCutout, [Color(.systemGroupedBackground)])
                         .frame(maxWidth: .infinity)
                         .listRowBackground(Color.clear)
                 }
