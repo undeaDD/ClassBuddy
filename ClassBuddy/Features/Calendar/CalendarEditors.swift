@@ -9,6 +9,7 @@ struct LessonEditorView: View {
     @Environment(\.device) private var device
     @Query(sort: [SortDescriptor(\SchoolClass.schoolYear, order: .reverse), SortDescriptor(\SchoolClass.shortName)])
     private var classes: [SchoolClass]
+    @Query(sort: [SortDescriptor(\Room.sortIndex), SortDescriptor(\Room.name)]) private var rooms: [Room]
 
     let date: Date
     let weekday: Int
@@ -18,6 +19,7 @@ struct LessonEditorView: View {
     @State private var classID: UUID?
     @State private var subject: String
     @State private var isRecurring: Bool
+    @State private var roomID: UUID?
 
     init(date: Date, weekday: Int, slot: LessonSlot, lesson: Lesson?) {
         self.date = date
@@ -27,10 +29,15 @@ struct LessonEditorView: View {
         _classID = State(initialValue: lesson?.schoolClass?.id)
         _subject = State(initialValue: lesson?.subject ?? "")
         _isRecurring = State(initialValue: lesson?.isRecurring ?? true)
+        _roomID = State(initialValue: lesson?.room?.id)
     }
 
     private var selectedClass: SchoolClass? {
         classes.first { $0.id == classID }
+    }
+
+    private var selectedRoom: Room? {
+        rooms.first { $0.id == roomID }
     }
 
     var body: some View {
@@ -59,6 +66,22 @@ struct LessonEditorView: View {
                         Text("Legen Sie zuerst oben links eine Klasse an.")
                     } else if selectedClass?.subjects.isEmpty == true {
                         Text("Für diese Klasse sind noch keine Fächer hinterlegt.")
+                    }
+                }
+
+                Section {
+                    Picker(selection: $roomID) {
+                        Text("Kein Raum").tag(UUID?.none)
+                        ForEach(rooms) { room in
+                            Text(room.name).tag(Optional(room.id))
+                        }
+                    } label: {
+                        Label("Raum", symbol: AppTab.rooms.symbol)
+                    }
+                } footer: {
+                    if let selectedRoom, !selectedRoom.allows(subject: subject) {
+                        Text("\(SchoolClass.displayName(ofSubject: subject)) wird laut Raumplanung nicht in \(selectedRoom.name) unterrichtet.")
+                            .foregroundStyle(.orange)
                     }
                 }
 
@@ -98,7 +121,7 @@ struct LessonEditorView: View {
                 }
             }
         }
-        .editorPresentation(device, width: 380, height: lesson == nil ? 330 : 400)
+        .editorPresentation(device, width: 380, height: lesson == nil ? 400 : 470)
     }
 
     private func save() {
@@ -114,6 +137,7 @@ struct LessonEditorView: View {
         target.weekday = weekday
         target.slotIndex = slot.index
         target.date = isRecurring ? nil : Calendar.school.startOfDay(for: date)
+        target.room = selectedRoom
         try? modelContext.save()
         dismiss()
     }

@@ -294,23 +294,21 @@ struct WeeklyHoursCard: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {
-                    // Prozentwert und Stunden in einer Zeile, darunter der Balken: gleiche Höhe wie alle Kacheln.
-                    HStack(alignment: .firstTextBaseline) {
-                        Text(result.fraction.formatted(.percent.precision(.fractionLength(0))))
-                            .font(.system(size: 44, weight: .bold, design: .rounded))
-                            .monospacedDigit()
-                            .contentTransition(.numericText())
-                            .cardPrivacy()
-                        Spacer(minLength: 8)
-                        Text("\(WeeklyWorkload.hours(result.doneMinutes)) von \(WeeklyWorkload.hours(result.totalMinutes))")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-                            .lineLimit(1)
-                            .cardPrivacy()
-                    }
-                    // Im Privatsphäre-Modus leerer Balken (verrät nichts über den Stundenplan).
-                    CapsuleProgressBar(value: redactionReasons.contains(.privacy) ? 0 : result.fraction)
+                    // Prozentwert, darunter der Balken mit den Stunden mittig darin: gleiche Höhe wie alle Kacheln.
+                    Text(result.fraction.formatted(.percent.precision(.fractionLength(0))))
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .contentTransition(.numericText())
+                        .cardPrivacy()
+                        .leadingAligned()
+                    // Im Privatsphäre-Modus leerer Balken ohne Text (verrät nichts über den Stundenplan).
+                    let isPrivate = redactionReasons.contains(.privacy)
+                    CapsuleProgressBar(
+                        value: isPrivate ? 0 : result.fraction,
+                        label: isPrivate ? "" : loc("\(WeeklyWorkload.hours(result.doneMinutes)) von \(WeeklyWorkload.hours(result.totalMinutes))")
+                    )
                 }
             }
             .cardStyle()
@@ -382,24 +380,42 @@ struct CardHeader: View {
 private struct CapsuleProgressBar: View {
     @Environment(\.appAccent) private var accent
     let value: Double
+    /// Text mittig im Balken: über dem gefüllten Teil weiß, sonst in der Textfarbe.
+    var label = ""
 
     var body: some View {
         GeometryReader { proxy in
+            // Mindestens so breit wie hoch, damit das Ende immer rund bleibt.
+            let fillWidth = value > 0 ? max(proxy.size.height, proxy.size.width * min(value, 1)) : 0
             ZStack(alignment: .leading) {
                 Capsule().fill(.fill.tertiary)
                 if value > 0 {
                     Capsule()
                         .fill(accent.gradient)
-                        // Mindestens so breit wie hoch, damit das Ende immer rund bleibt.
-                        .frame(width: max(proxy.size.height, proxy.size.width * min(value, 1)))
+                        .frame(width: fillWidth)
+                }
+                if !label.isEmpty {
+                    labelText.foregroundStyle(.primary)
+                    labelText.foregroundStyle(.white)
+                        .mask(alignment: .leading) { Rectangle().frame(width: fillWidth) }
                 }
             }
         }
-        .frame(height: 16)
+        .frame(height: label.isEmpty ? 16 : 24)
         .animation(.smooth, value: value)
         .accessibilityElement()
         .accessibilityLabel("Fortschritt")
         .accessibilityValue(value.formatted(.percent.precision(.fractionLength(0))))
+    }
+
+    private var labelText: some View {
+        Text(label)
+            .font(.caption.weight(.semibold))
+            .monospacedDigit()
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .padding(.horizontal, 10)
+            .frame(maxWidth: .infinity)
     }
 }
 

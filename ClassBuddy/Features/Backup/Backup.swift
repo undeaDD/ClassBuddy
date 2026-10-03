@@ -20,6 +20,8 @@ enum Backup {
         static let entries = "Termine"
         static let links = "Kacheln"
         static let holidays = "Ferien"
+        static let rooms = "Räume"
+        static let roomElements = "Raumelemente"
         static let school = "Schule"
         static let schoolDay = "Schultag"
         static let breaks = "Pausen"
@@ -34,15 +36,20 @@ enum Backup {
         var entries = 0
         var links = 0
         var holidays = 0
+        var rooms = 0
         var skippedDocuments = 0 // Dokument- und Bild-Kacheln ohne Datei
+        var invalidRooms: [String] = [] // Räume mit ungültigem Grundriss
 
         var text: String {
             var parts = [
                 "\(classes) Klassen", "\(students) Schüler", "\(lessons) Stunden",
-                "\(entries) Termine", "\(links) Kacheln", "\(holidays) Ferien/Feiertage",
+                "\(entries) Termine", "\(links) Kacheln", "\(holidays) Ferien/Feiertage", "\(rooms) Räume",
             ]
             if skippedDocuments > 0 {
                 parts.append("\(skippedDocuments) Dokument-/Bild-Kacheln übersprungen (Datei nicht auf diesem Gerät)")
+            }
+            if !invalidRooms.isEmpty {
+                parts.append("\(invalidRooms.count) Räume mit ungültigem Grundriss übersprungen (\(invalidRooms.joined(separator: ", ")))")
             }
             return "Importiert: " + parts.joined(separator: ", ") + "."
         }
@@ -62,6 +69,7 @@ enum Backup {
         let classes = try context.fetch(FetchDescriptor<SchoolClass>(sortBy: [SortDescriptor(\.shortName)]))
         let entries = try context.fetch(FetchDescriptor<CalendarEntry>(sortBy: [SortDescriptor(\.start)]))
         let holidays = try context.fetch(FetchDescriptor<Holiday>(sortBy: [SortDescriptor(\.startDate)]))
+        let rooms = try context.fetch(FetchDescriptor<Room>(sortBy: [SortDescriptor(\.sortIndex), SortDescriptor(\.name)]))
 
         return XLSX.write([
             infoSheet(),
@@ -71,6 +79,8 @@ enum Backup {
             entriesSheet(entries),
             linksSheet(classes),
             holidaysSheet(holidays),
+            roomsSheet(rooms),
+            roomElementsSheet(rooms),
         ] + settingsSheets(settings, appearance: appearance))
     }
 
@@ -114,13 +124,14 @@ enum Backup {
 
     private static func lessonsSheet(_ classes: [SchoolClass]) -> XLSXSheet {
         XLSXSheet(name: Sheet.lessons, rows: [
-            ["ID", "Klassen-ID", "Klasse", "Wochentag", "Stunde", "Fach", "Wöchentlich", "Datum"],
+            ["ID", "Klassen-ID", "Klasse", "Wochentag", "Stunde", "Fach", "Wöchentlich", "Datum", "Raum-ID", "Raum"],
         ] + classes.flatMap { schoolClass in
             schoolClass.lessons
                 .sorted { ($0.weekday, $0.slotIndex) < ($1.weekday, $1.slotIndex) }
                 .map {
                     [$0.id.uuidString, schoolClass.id.uuidString, schoolClass.shortName, Cell.weekday($0.weekday),
-                     "\($0.slotIndex + 1)", $0.subject, Cell.bool($0.isRecurring), Cell.date($0.date)]
+                     "\($0.slotIndex + 1)", $0.subject, Cell.bool($0.isRecurring), Cell.date($0.date),
+                     $0.room?.id.uuidString ?? "", $0.room?.name ?? ""]
                 }
         })
     }
@@ -151,6 +162,23 @@ enum Backup {
             ["ID", "Name", "Beginn", "Ende", "Schulferien"],
         ] + holidays.map {
             [$0.id, $0.name, Cell.date($0.startDate), Cell.date($0.endDate), Cell.bool($0.isSchoolHoliday)]
+        })
+    }
+
+    private static func roomsSheet(_ rooms: [Room]) -> XLSXSheet {
+        XLSXSheet(name: Sheet.rooms, rows: [
+            ["ID", "Name", "Untertitel", "Kategorie", "Fächer", "Ausstattung", "Reihenfolge", "Erstellt"],
+        ] + rooms.map {
+            [$0.id.uuidString, $0.name, $0.subtitle, $0.category.title, Cell.list($0.assignments), Cell.list($0.equipment),
+             "\($0.sortIndex)", Cell.dateTime($0.createdAt)]
+        })
+    }
+
+    private static func roomElementsSheet(_ rooms: [Room]) -> XLSXSheet {
+        XLSXSheet(name: Sheet.roomElements, rows: [
+            ["ID", "Raum-ID", "Raum", "Art", "Punkte"],
+        ] + rooms.flatMap { room in
+            room.shapes.map { [$0.id.uuidString, room.id.uuidString, room.name, $0.kind.title, Cell.points($0.points)] }
         })
     }
 

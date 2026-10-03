@@ -34,14 +34,27 @@ extension Backup {
         let existingPhotos = try context.fetch(FetchDescriptor<Student>())
             .reduce(into: [UUID: Data]()) { photos, student in photos[student.id] = student.photo }
 
+        // Räume nur ersetzen, wenn die Datei sie enthält (ältere Exporte haben keine Raum-Blätter).
+        // Sitzplan-Zuordnungen stehen nicht in der Datei und entfallen mit den Schülern.
+        let replacesRooms = workbook[Sheet.rooms] != nil
+        try context.delete(model: SeatAssignment.self)
         try context.delete(model: Student.self)
         try context.delete(model: Lesson.self)
         try context.delete(model: DashboardLink.self)
         try context.delete(model: CalendarEntry.self)
         try context.delete(model: Holiday.self)
         try context.delete(model: SchoolClass.self)
+        if replacesRooms {
+            try context.delete(model: RoomElement.self)
+            try context.delete(model: Room.self)
+        }
 
         var importer = Importer(context: context, existingFiles: existingFiles, existingPhotos: existingPhotos)
+        if replacesRooms {
+            importer.importRooms(table(Sheet.rooms), elements: table(Sheet.roomElements))
+        } else {
+            importer.roomsByID = try context.fetch(FetchDescriptor<Room>()).reduce(into: [:]) { $0[$1.id] = $1 }
+        }
         importer.importClasses(table(Sheet.classes))
         importer.importStudents(table(Sheet.students))
         importer.importLessons(table(Sheet.lessons))
@@ -62,6 +75,7 @@ extension Backup {
         let existingPhotos: [UUID: Data]
         var summary = ImportSummary()
         var classesByID: [UUID: SchoolClass] = [:]
+        var roomsByID: [UUID: Room] = [:]
         var keptFileLocations: Set<String> = []
 
         private func schoolClass(for row: Table.Row) -> SchoolClass? {
@@ -123,7 +137,7 @@ extension Backup {
                 let isRecurring = Cell.parseBool(row["Wöchentlich"]) ?? true
                 let date = Cell.parseDate(row["Datum"])
                 guard isRecurring || date != nil else { continue }
-                context.insert(Lesson(
+                let lesson = Lesson(
                     id: UUID(uuidString: row["ID"]) ?? UUID(),
                     weekday: weekday,
                     slotIndex: number - 1,
@@ -131,7 +145,9 @@ extension Backup {
                     isRecurring: isRecurring,
                     date: isRecurring ? nil : date,
                     schoolClass: schoolClass
-                ))
+                )
+                context.insert(lesson)
+                lesson.room = UUID(uuidString: row["Raum-ID"]).flatMap { roomsByID[$0] }
                 summary.lessons += 1
             }
         }
@@ -173,6 +189,46 @@ extension Backup {
                 }
                 summary.links += 1
             }
+        }
+
+        /// Räume mit Grundriss; dieselbe Gültigkeitsprüfung wie im Editor, ungültige Räume werden übersprungen.
+        mutating func importRooms(_ rows: [Table.Row], elements elementRows: [Table.Row]) {
+            let elementsByRoom = Dictionary(grouping: elementRows) { $0["Raum-ID"] }
+            for row in rows {
+                guard let name = row["Name"].nonEmpty else { continue }
+                let id = UUID(uuidString: row["ID"]) ?? UUID()
+                guard let shapes = Self.shapes(from: elementsByRoom[row["ID"]] ?? []), RoomValidation.isValid(shapes) else {
+                    summary.invalidRooms.append(name)
+                    continue
+                }
+                let room = Room(
+                    id: id,
+                    name: name,
+                    subtitle: row["Untertitel"],
+                    category: Cell.parseRoomCategory(row["Kategorie"]),
+                    assignments: Cell.parseList(row["Fächer"]),
+                    sortIndex: Int(row["Reihenfolge"]) ?? roomsByID.count,
+                    createdAt: Cell.parseDateTime(row["Erstellt"]) ?? .now
+                )
+                room.equipment = Cell.parseList(row["Ausstattung"])
+                context.insert(room)
+                room.replaceElements(with: shapes, in: context)
+                roomsByID[id] = room
+                summary.rooms += 1
+            }
+        }
+
+        /// Raumelemente aus den Zeilen; `nil`, wenn eine Art oder ein Punkt nicht lesbar ist.
+        private static func shapes(from rows: [Table.Row]) -> [RoomShape]? {
+            var usedIDs: Set<UUID> = []
+            var shapes: [RoomShape] = []
+            for row in rows {
+                guard let kind = Cell.parseRoomElementKind(row["Art"]), let points = Cell.parsePoints(row["Punkte"]) else { return nil }
+                let id = UUID(uuidString: row["ID"]).flatMap { usedIDs.contains($0) ? nil : $0 } ?? UUID()
+                usedIDs.insert(id)
+                shapes.append(RoomShape(id: id, kind: kind, points: points))
+            }
+            return shapes
         }
 
         mutating func importHolidays(_ rows: [Table.Row]) {

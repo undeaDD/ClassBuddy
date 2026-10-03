@@ -385,8 +385,8 @@ extension DashboardView {
             nextBirthdayCard(for: schoolClass)
         case .randomStudent:
             RandomStudentCard(students: schoolClass.students)
-        case .timer:
-            TimerCard()
+        case .timer, .dateTime, .dailyBoost:
+            standaloneCard(card)
         case .currentLesson:
             CurrentLessonCard(
                 schedule: LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots),
@@ -394,8 +394,6 @@ extension DashboardView {
             ) {
                 app.openCalendar(focusing: nil, at: .now)
             }
-        case .dateTime:
-            DateTimeCard()
         case .weeklyHours:
             TimelineView(.periodic(from: .now, by: 60)) { context in
                 WeeklyHoursCard(result: WeeklyWorkload.compute(
@@ -410,8 +408,18 @@ extension DashboardView {
                 school: settings.values.school,
                 federalStateName: HolidayImporter.federalStates.first { $0.code == settings.values.federalState }?.name
             )
-        case .dailyBoost:
-            DailyBoostCard()
+        case .room:
+            CurrentRoomCard(schedule: LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots), classID: schoolClass.id)
+        }
+    }
+
+    /// Kacheln ohne Bezug zur Klasse und ohne Daten aus der Übersicht.
+    @ViewBuilder
+    private func standaloneCard(_ card: DashboardBuiltInCard) -> some View {
+        switch card {
+        case .timer: TimerCard()
+        case .dateTime: DateTimeCard()
+        default: DailyBoostCard()
         }
     }
 
