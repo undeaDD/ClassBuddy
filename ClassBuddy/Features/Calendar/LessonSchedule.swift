@@ -24,14 +24,16 @@ struct LessonSchedule {
         return lessons.first { $0.isRecurring && $0.weekday == weekday && $0.slotIndex == slotIndex }
     }
 
-    /// Nächste (noch nicht beendete) Stunde einer Klasse ab `now`, max. 8 Wochen voraus.
-    func nextLesson(forClass classID: UUID, after now: Date = .now) -> NextLesson? {
+    /// Nächste (noch nicht beendete) Stunde einer Klasse ab `now`, max. 8 Wochen voraus;
+    /// optional nur Stunden, die `matching` erfüllen (z. B. mit Raum).
+    func nextLesson(forClass classID: UUID, after now: Date = .now, matching: (Lesson) -> Bool = { _ in true }) -> NextLesson? {
         let today = calendar.startOfDay(for: now)
         for offset in 0..<56 {
             guard let day = calendar.date(byAdding: .day, value: offset, to: today) else { continue }
             for slot in slots {
                 guard let lesson = lesson(on: day, slotIndex: slot.index),
                       lesson.schoolClass?.id == classID,
+                      matching(lesson),
                       let end = calendar.date(byAdding: .minute, value: slot.end, to: day),
                       end > now,
                       let start = calendar.date(byAdding: .minute, value: slot.start, to: day)
@@ -40,6 +42,32 @@ struct LessonSchedule {
             }
         }
         return nil
+    }
+}
+
+/// Raum für die Kachel „Aktueller Raum“: Raum der laufenden Stunde (egal welche Klasse),
+/// sonst der Raum der nächsten Stunde der Klasse, der ein Raum zugeordnet ist.
+enum RoomLocator {
+    struct Result {
+        let room: Room
+        let next: NextLesson
+        let isCurrent: Bool
+    }
+
+    static func locate(schedule: LessonSchedule, classID: UUID, now: Date = .now) -> Result? {
+        let calendar = Calendar.school
+        let day = calendar.startOfDay(for: now)
+        let minute = calendar.component(.hour, from: now) * 60 + calendar.component(.minute, from: now)
+        if let slot = schedule.slots.first(where: { $0.start <= minute && minute < $0.end }),
+           let lesson = schedule.lesson(on: now, slotIndex: slot.index),
+           let room = lesson.room,
+           let start = calendar.date(byAdding: .minute, value: slot.start, to: day) {
+            return Result(room: room, next: NextLesson(start: start, slot: slot, lesson: lesson), isCurrent: true)
+        }
+        guard let next = schedule.nextLesson(forClass: classID, after: now, matching: { $0.room != nil }),
+              let room = next.lesson.room
+        else { return nil }
+        return Result(room: room, next: next, isCurrent: next.start <= now)
     }
 }
 

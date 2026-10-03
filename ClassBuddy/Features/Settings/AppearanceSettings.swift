@@ -78,10 +78,7 @@ struct IconThemeSection: View {
                         }
                     }
                 } icon: {
-                    manager.preview(.settings, in: theme)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
+                    IconThemePreview(theme: theme)
                 }
                 Spacer()
                 if isSelected {
@@ -162,5 +159,31 @@ struct IconThemeSection: View {
         withAnimation(.smooth) { manager.theme = .pack(pack) }
         HomeScreenAction.register()
         toasts.success(loc("„\(pack.name)“ installiert"))
+    }
+}
+
+/// Vorschau eines Icon-Sets: wechselt alle zwei Sekunden zwischen den Tab-Icons
+/// (bei „Bewegung reduzieren“ nur das Einstellungen-Icon).
+private struct IconThemePreview: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let theme: IconTheme
+
+    private static let icons: [AppIcon] = AppTab.allCases.compactMap {
+        if case .custom(let icon) = $0.symbol { icon } else { nil }
+    }
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 2)) { context in
+            let index = reduceMotion ? nil : Int(context.date.timeIntervalSinceReferenceDate / 2) % Self.icons.count
+            let icon = index.map { Self.icons[$0] } ?? .settings
+            IconManager.shared.preview(icon, in: theme)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 24, height: 24)
+                .id(icon)
+                .transition(.blurReplace)
+                .animation(.smooth, value: icon)
+        }
+        .frame(width: 24, height: 24)
     }
 }

@@ -13,9 +13,9 @@ struct RootView: View {
     @Environment(\.openURL) private var openURL
     private let homeScreenActions = HomeScreenActionCenter.shared
     @Environment(AppModel.self) private var app
+    @Environment(\.modelContext) private var modelContext
     #if DEBUG
     @Environment(SchoolSettings.self) private var settings
-    @Environment(\.modelContext) private var modelContext
     #endif
 
     var body: some View {
@@ -43,6 +43,10 @@ struct RootView: View {
                     .presentationSizing(.form)
                     .interactiveDismissDisabled()
             }
+            .fullScreenCover(item: Bindable(app).seatingPlan) { route in
+                SeatingPlanView(route: route)
+                    .softScrollEdges()
+            }
             // Neuigkeiten einmal nach jedem Update (nicht nach der Einführung einer Neuinstallation).
             .sheet(isPresented: whatsNewBinding) {
                 if let release = WhatsNew.current {
@@ -61,6 +65,7 @@ struct RootView: View {
             .animation(.smooth(duration: 0.25), value: security.isLocked)
             // Toasts über allem, auch über der Sperre (z. B. Fehlermeldungen beim Entsperren).
             .overlay(alignment: .top) { ToastOverlay() }
+            .task { RoomDemo.createIfNeeded(in: modelContext) }
             #if DEBUG
             .task { ScreenshotMode.prepare(app: app, context: modelContext, settings: settings) }
             #endif

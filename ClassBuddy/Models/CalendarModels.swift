@@ -17,6 +17,8 @@ final class Lesson {
     var date: Date?
     var createdAt: Date
     var schoolClass: SchoolClass?
+    /// Optionaler Raum (öffnet beim Antippen den Sitzplan der Klasse in diesem Raum).
+    var room: Room?
 
     init(
         id: UUID = UUID(),

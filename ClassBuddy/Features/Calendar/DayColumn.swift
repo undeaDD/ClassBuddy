@@ -130,7 +130,9 @@ struct DayColumn: View {
             .frame(height: y(slot.end - slot.start))
             .padding(.horizontal, 3)
             .onTapGesture {
-                if lesson != nil {
+                if let lesson, let room = lesson.room {
+                    app.openSeatingPlan(room: room, schoolClass: lesson.schoolClass)
+                } else if lesson != nil {
                     app.open(.rooms)
                 } else if canEdit {
                     selectedSlot = slot

@@ -54,6 +54,15 @@ struct LogicTests {
         #expect(next.turningAge == 15)
     }
 
+    // MARK: Tagesmotivation
+
+    @Test("Tagesmotivation: höchstens 20 Wörter, nicht leer")
+    func dailyBoostLength() {
+        #expect(DailyBoost.isAcceptable("Heute ist ein guter Tag für eine richtig gute Tasse Kaffee."))
+        #expect(!DailyBoost.isAcceptable("   "))
+        #expect(!DailyBoost.isAcceptable(Array(repeating: "Wort", count: 21).joined(separator: " ")))
+    }
+
     // MARK: Aktuelle Stunde
 
     private static func schedule(withLesson: Bool) throws -> LessonSchedule {

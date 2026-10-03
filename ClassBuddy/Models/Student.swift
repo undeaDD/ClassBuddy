@@ -23,6 +23,10 @@ final class Student {
     var createdAt: Date
     var schoolClass: SchoolClass?
 
+    /// Sitzplätze des Schülers (je Raum höchstens einer).
+    @Relationship(deleteRule: .cascade, inverse: \SeatAssignment.student)
+    var seatAssignments: [SeatAssignment] = []
+
     init(
         id: UUID = UUID(),
         firstName: String,

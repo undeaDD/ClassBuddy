@@ -26,6 +26,9 @@ final class AppModel {
     /// Hier statt in `CalendarView`, damit auch das Blättern in der Tab-Leiste (iPhone) darauf zugreift.
     var calendarDate = Calendar.school.startOfDay(for: .now)
 
+    /// Offener Sitzplan (Vollbild über allem), z. B. nach Antippen einer Stunde mit Raum.
+    var seatingPlan: SeatingPlanRoute?
+
     var selectedClassID: UUID? {
         didSet { UserDefaults.standard.set(selectedClassID?.uuidString, forKey: Self.selectedClassKey) }
     }
@@ -52,6 +55,12 @@ final class AppModel {
             try? await Task.sleep(for: .milliseconds(350))
             selectedTab = tab
         }
+    }
+
+    /// Sitzplan einer Klasse in einem Raum öffnen.
+    func openSeatingPlan(room: Room, schoolClass: SchoolClass?) {
+        isClassPickerPresented = false
+        seatingPlan = SeatingPlanRoute(room: room, schoolClass: schoolClass)
     }
 
     /// Kalender öffnen, gefiltert auf eine Klasse, an einem bestimmten Datum.

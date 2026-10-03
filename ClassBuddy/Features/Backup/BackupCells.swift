@@ -85,6 +85,30 @@ extension Backup {
             return .website
         }
         static func list(_ values: [String]) -> String { values.joined(separator: "; ") }
+
+        /// Rasterpunkte als „x,y; x,y; …“.
+        static func points(_ points: [GridPoint]) -> String {
+            points.map { "\($0.x),\($0.y)" }.joined(separator: "; ")
+        }
+
+        /// Liest „x,y; x,y“ (auch mit Leerzeichen); `nil`, wenn ein Punkt ungültig ist.
+        static func parsePoints(_ text: String) -> [GridPoint]? {
+            let parts = parseList(text)
+            let points = parts.compactMap { part -> GridPoint? in
+                let numbers = part.split(separator: ",").map { Int($0.trimmingCharacters(in: .whitespaces)) }
+                guard numbers.count == 2, let x = numbers[0], let y = numbers[1] else { return nil }
+                return GridPoint(x, y)
+            }
+            return points.count == parts.count ? points : nil
+        }
+
+        static func parseRoomCategory(_ text: String) -> RoomCategory {
+            RoomCategory.allCases.first { $0.title.caseInsensitiveCompare(text) == .orderedSame } ?? .other
+        }
+
+        static func parseRoomElementKind(_ text: String) -> RoomElementKind? {
+            RoomElementKind.allCases.first { $0.title.caseInsensitiveCompare(text) == .orderedSame }
+        }
         static func weekday(_ index: Int) -> String { weekdays.indices.contains(index) ? weekdays[index] : "" }
 
         static func parseList(_ text: String) -> [String] {

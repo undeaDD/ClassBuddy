@@ -18,6 +18,16 @@
         }
       }
     },
+    "%@ (Kopie)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (copy)"
+          }
+        }
+      }
+    },
     "%@ gelöscht" : {
       "localizations" : {
         "en" : {
@@ -60,6 +70,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ of %2$@"
+          }
+        }
+      }
+    },
+    "%@ wird laut Raumplanung nicht in %@ unterrichtet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ wird laut Raumplanung nicht in %2$@ unterrichtet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "According to the room plan, %1$@ is not taught in %2$@."
           }
         }
       }
@@ -188,12 +214,42 @@
         }
       }
     },
+    "%lld Plätze" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld seats"
+          }
+        }
+      }
+    },
+    "%lld Räume" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld rooms"
+          }
+        }
+      }
+    },
     "%lld Schüler" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld students"
+          }
+        }
+      }
+    },
+    "%lld Zuordnungen hängen an geänderten oder entfernten Tischen und gehen verloren." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld assignments belong to changed or removed tables and will be lost."
           }
         }
       }
@@ -250,6 +306,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "+5 minutes"
+          }
+        }
+      }
+    },
+    "1 Platz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 seat"
+          }
+        }
+      }
+    },
+    "1 Raum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 room"
           }
         }
       }
@@ -325,6 +401,16 @@
         }
       }
     },
+    "Abzug" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fume hood"
+          }
+        }
+      }
+    },
     "Adresse (z. B. schule.de/vertretungsplan)" : {
       "localizations" : {
         "en" : {
@@ -365,6 +451,16 @@
         }
       }
     },
+    "Aktueller Raum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current room"
+          }
+        }
+      }
+    },
     "Aktuelles Wetter am Schulort (Ort aus den Schuleinstellungen)." : {
       "localizations" : {
         "en" : {
@@ -381,6 +477,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Accent color"
+          }
+        }
+      }
+    },
+    "Alle Fächer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All subjects"
           }
         }
       }
@@ -415,12 +521,12 @@
         }
       }
     },
-    "Alle vorhandenen Klassen, Schüler, Stunden, Termine, Kacheln und Ferien werden durch den Inhalt der Datei ersetzt." : {
+    "Alle Klassen, Schüler, Stunden, Termine, Kacheln, Ferien und Räume werden durch den Inhalt der Datei ersetzt." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All existing classes, students, lessons, appointments, cards and holidays will be replaced by the contents of the file."
+            "value" : "All existing classes, students, lessons, appointments, cards, holidays and rooms will be replaced by the contents of the file."
           }
         }
       }
@@ -617,6 +723,16 @@
         }
       }
     },
+    "Aula" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assembly hall"
+          }
+        }
+      }
+    },
     "Aus „Dateien“" : {
       "localizations" : {
         "en" : {
@@ -663,6 +779,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Choose crop"
+          }
+        }
+      }
+    },
+    "Ausstattung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equipment"
+          }
+        }
+      }
+    },
+    "Ausstattung hinzufügen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add equipment"
           }
         }
       }
@@ -718,6 +854,16 @@
         }
       }
     },
+    "Beamer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Projector"
+          }
+        }
+      }
+    },
     "Bearbeiten" : {
       "localizations" : {
         "en" : {
@@ -764,6 +910,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restore example"
+          }
+        }
+      }
+    },
+    "Beispielraum, frei bearbeitbar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sample room, freely editable"
           }
         }
       }
@@ -978,6 +1134,16 @@
         }
       }
     },
+    "Computer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Computers"
+          }
+        }
+      }
+    },
     "Countdown für Arbeitsphasen, mit Ton und Mitteilung am Ende." : {
       "localizations" : {
         "en" : {
@@ -1119,12 +1285,32 @@
         }
       }
     },
+    "Demo-Klassenzimmer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo classroom"
+          }
+        }
+      }
+    },
     "Derzeit nur für deutsche Bundesländer. Quelle: OpenHolidays API (openholidaysapi.org). Es werden nur öffentliche Ferientermine abgerufen." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Currently only for German federal states. Source: OpenHolidays API (openholidaysapi.org). Only public holiday dates are fetched."
+          }
+        }
+      }
+    },
+    "Details" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details"
           }
         }
       }
@@ -1199,6 +1385,16 @@
         }
       }
     },
+    "Dokumentenkamera" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Document camera"
+          }
+        }
+      }
+    },
     "Download fehlgeschlagen: %@" : {
       "localizations" : {
         "en" : {
@@ -1209,12 +1405,32 @@
         }
       }
     },
+    "Drucken oder als PDF teilen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Print or share as PDF"
+          }
+        }
+      }
+    },
     "Dunkel" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dark"
+          }
+        }
+      }
+    },
+    "Duplizieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicate"
           }
         }
       }
@@ -1235,6 +1451,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Email (school office)"
+          }
+        }
+      }
+    },
+    "Eigene Ausstattung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom equipment"
+          }
+        }
+      }
+    },
+    "Eigene Einträge" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom entries"
           }
         }
       }
@@ -1309,12 +1545,22 @@
         }
       }
     },
-    "Ein fröhlicher Satz für den Tag, lokal mit Apple Intelligence – antippen für einen neuen." : {
+    "Ein Glückskeks-Spruch für den Tag, lokal mit Apple Intelligence – antippen für einen neuen." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A cheerful line for your day, made on-device with Apple Intelligence. Tap for a new one."
+            "value" : "A fortune cookie saying for the day, on device with Apple Intelligence – tap for a new one."
+          }
+        }
+      }
+    },
+    "Ein Raum hat genau einen Raumumriss." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A room has exactly one outline."
           }
         }
       }
@@ -1339,6 +1585,16 @@
         }
       }
     },
+    "Eine Fläche überschneidet sich selbst." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An area intersects itself."
+          }
+        }
+      }
+    },
     "Einführung erneut anzeigen" : {
       "localizations" : {
         "en" : {
@@ -1349,12 +1605,42 @@
         }
       }
     },
+    "Einpassen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fit to screen"
+          }
+        }
+      }
+    },
     "Einstellungen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
+          }
+        }
+      }
+    },
+    "Elemente dürfen sich nicht überschneiden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elements must not overlap."
+          }
+        }
+      }
+    },
+    "Elemente müssen innerhalb des Raumumrisses liegen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elements must lie within the room outline."
           }
         }
       }
@@ -1520,6 +1806,16 @@
         }
       }
     },
+    "Fachraum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Specialist room"
+          }
+        }
+      }
+    },
     "Farbe" : {
       "localizations" : {
         "en" : {
@@ -1586,6 +1882,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Missing something? Write to me via “Send feedback” in the settings. If you like the app, I would appreciate a recommendation or a coffee."
+          }
+        }
+      }
+    },
+    "Fenster" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Window"
           }
         }
       }
@@ -1676,6 +1982,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "fetch: no response"
+          }
+        }
+      }
+    },
+    "Flächen müssen geschlossen sein." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Areas must be closed."
           }
         }
       }
@@ -1841,6 +2157,16 @@
         }
       }
     },
+    "Geben Sie dem Raum unter „Details“ einen Namen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give the room a name under “Details”."
+          }
+        }
+      }
+    },
     "Geburtstag" : {
       "localizations" : {
         "en" : {
@@ -1937,6 +2263,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Graphite"
+          }
+        }
+      }
+    },
+    "Grundriss und Sitzpläne des Raums werden gelöscht. Stunden im Kalender bleiben ohne Raum erhalten." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The room's floor plan and seating plans will be deleted. Lessons in the calendar are kept without a room."
           }
         }
       }
@@ -2047,6 +2383,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No more lessons today"
+          }
+        }
+      }
+    },
+    "Hier ordnen Sie bald die Schülerinnen und Schüler per Drag & Drop den Tischen zu." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soon you'll assign students to tables here using drag and drop."
           }
         }
       }
@@ -2263,6 +2609,16 @@
         }
       }
     },
+    "Interaktive Tafel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interactive whiteboard"
+          }
+        }
+      }
+    },
     "Internet nur per fetch in tap(ctx): eine https-Anfrage, höchstens 5 s, nur Text. Keine Dateien, kein Zugriff auf Schülerdaten." : {
       "localizations" : {
         "en" : {
@@ -2273,12 +2629,12 @@
         }
       }
     },
-    "Irgendwo in Ihrer Klasse wartet heute ein Aha-Moment." : {
+    "Der weise Lehrer hat einen Ersatzmarker. Der weisere hat zwei." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Somewhere in your class, an aha moment is waiting today."
+            "value" : "The wise teacher keeps a spare marker. The wiser one keeps two."
           }
         }
       }
@@ -2335,6 +2691,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Every %1$@, period %2$lld (%3$@)"
+          }
+        }
+      }
+    },
+    "Jetzt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now"
+          }
+        }
+      }
+    },
+    "Jetzt · 3. Stunde · 7b" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now · Period 3 · 7b"
           }
         }
       }
@@ -2439,6 +2815,16 @@
         }
       }
     },
+    "Kategorie" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        }
+      }
+    },
     "Kategorien" : {
       "localizations" : {
         "en" : {
@@ -2475,6 +2861,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No account, no cloud: everything stays offline on this device, protected with Face ID. Back up your data with an Excel export and import it again at any time."
+          }
+        }
+      }
+    },
+    "Kein Raum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No room"
           }
         }
       }
@@ -2720,6 +3116,16 @@
         }
       }
     },
+    "Klassenraum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classroom"
+          }
+        }
+      }
+    },
     "Kontakt" : {
       "localizations" : {
         "en" : {
@@ -2736,6 +3142,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Copies the version details"
+          }
+        }
+      }
+    },
+    "Kreidetafel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chalkboard"
           }
         }
       }
@@ -2820,6 +3236,16 @@
         }
       }
     },
+    "Lautsprecher" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speakers"
+          }
+        }
+      }
+    },
     "Leerzustände" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2857,6 +3283,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "First create a class at the top left."
+          }
+        }
+      }
+    },
+    "Lehrerpult" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teacher's desk"
           }
         }
       }
@@ -2967,6 +3403,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mathematics"
+          }
+        }
+      }
+    },
+    "Maus" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pointer"
           }
         }
       }
@@ -3111,6 +3557,16 @@
         }
       }
     },
+    "Name (z. B. R 204)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name (e.g. R 204)"
+          }
+        }
+      }
+    },
     "Name der Schule" : {
       "localizations" : {
         "en" : {
@@ -3167,6 +3623,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "New class"
+          }
+        }
+      }
+    },
+    "Neuer Raum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New room"
           }
         }
       }
@@ -3257,6 +3723,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No lesson in the calendar yet"
+          }
+        }
+      }
+    },
+    "Noch keiner Stunde ist ein Raum zugeordnet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No lesson has a room yet"
           }
         }
       }
@@ -3389,6 +3865,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Next birthday"
+          }
+        }
+      }
+    },
+    "Nächster Raum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next room"
+          }
+        }
+      }
+    },
+    "Ohne Auswahl können hier alle Fächer unterrichtet werden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without a selection, all subjects can be taught here."
           }
         }
       }
@@ -3594,6 +4090,16 @@
         }
       }
     },
+    "Pult" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desk"
+          }
+        }
+      }
+    },
     "Quelle: OpenHolidays API (openholidaysapi.org). Es werden nur öffentliche Ferientermine abgerufen." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3601,6 +4107,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Source: OpenHolidays API (openholidaysapi.org). Only public holiday dates are fetched."
+          }
+        }
+      }
+    },
+    "Radierer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eraser"
+          }
+        }
+      }
+    },
+    "Raum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room"
+          }
+        }
+      }
+    },
+    "Raum der laufenden bzw. nächsten Stunde – öffnet den Sitzplan." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room of the current or next lesson – opens the seating plan."
+          }
+        }
+      }
+    },
+    "Raum dupliziert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room duplicated"
+          }
+        }
+      }
+    },
+    "Raum entfernen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove room?"
+          }
+        }
+      }
+    },
+    "Raum entfernt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room removed"
+          }
+        }
+      }
+    },
+    "Raum hinzufügen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add room"
+          }
+        }
+      }
+    },
+    "Raumumriss" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Room outline"
           }
         }
       }
@@ -3706,12 +4292,32 @@
         }
       }
     },
+    "Räume suchen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search rooms"
+          }
+        }
+      }
+    },
     "Räume, Sitzpläne und vieles mehr sind schon in Arbeit." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rooms, seating plans and much more are already in the works."
+          }
+        }
+      }
+    },
+    "Rückgängig" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undo"
           }
         }
       }
@@ -3992,6 +4598,36 @@
         }
       }
     },
+    "Sitzplan" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seating plan"
+          }
+        }
+      }
+    },
+    "Sitzplan %@.pdf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seating plan %@.pdf"
+          }
+        }
+      }
+    },
+    "Sitzplan-Zuordnungen gehen verloren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seating assignments will be lost"
+          }
+        }
+      }
+    },
     "Skript" : {
       "localizations" : {
         "en" : {
@@ -4062,6 +4698,16 @@
         }
       }
     },
+    "Speichern" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
     "Sperrbildschirm mit Fehlermeldung" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4090,6 +4736,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Physical Education"
+          }
+        }
+      }
+    },
+    "Sporthalle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gym"
           }
         }
       }
@@ -4140,6 +4796,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Runs a shortcut from the Shortcuts app, e.g. “Lesson starts”."
+          }
+        }
+      }
+    },
+    "Steckdosen an den Tischen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Power sockets at the tables"
           }
         }
       }
@@ -4261,6 +4927,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tab titles exist on iPhone only. Minimize UI shrinks the bars while scrolling."
+          }
+        }
+      }
+    },
+    "Tafel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board"
           }
         }
       }
@@ -4451,6 +5127,16 @@
         }
       }
     },
+    "Tisch" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Table"
+          }
+        }
+      }
+    },
     "Titel" : {
       "localizations" : {
         "en" : {
@@ -4478,6 +5164,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Toasts"
+          }
+        }
+      }
+    },
+    "Trotzdem speichern" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save anyway"
+          }
+        }
+      }
+    },
+    "Tür" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Door"
+          }
+        }
+      }
+    },
+    "Türen und Fenster liegen auf dem Raumumriss." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doors and windows lie on the room outline."
           }
         }
       }
@@ -4542,12 +5258,42 @@
         }
       }
     },
+    "Untertitel (z. B. Physikraum, 2. OG)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtitle (e.g. physics lab, 2nd floor)"
+          }
+        }
+      }
+    },
     "Verbergen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hide"
+          }
+        }
+      }
+    },
+    "Verdunkelung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blackout blinds"
+          }
+        }
+      }
+    },
+    "Verschieben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move"
           }
         }
       }
@@ -4588,6 +5334,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Manage classes with subjects and colors, keep your student list up to date and keep track of your timetable and appointments."
+          }
+        }
+      }
+    },
+    "Verwerfen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard"
           }
         }
       }
@@ -4658,6 +5414,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "What would you like to do next?"
+          }
+        }
+      }
+    },
+    "Waschbecken" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sink"
           }
         }
       }
@@ -4752,12 +5518,32 @@
         }
       }
     },
+    "Whiteboard" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Whiteboard"
+          }
+        }
+      }
+    },
     "Wie viel Ihres Unterrichts diese Woche schon geschafft ist." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "How much of this week's teaching is already done."
+          }
+        }
+      }
+    },
+    "Wiederholen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redo"
           }
         }
       }
@@ -4852,6 +5638,36 @@
         }
       }
     },
+    "Zeichenfläche" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drawing area"
+          }
+        }
+      }
+    },
+    "Zeichnen Sie den Grundriss eines Raums mit Tischen, Tafel, Tür und Fenstern." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Draw a room's floor plan with tables, board, door and windows."
+          }
+        }
+      }
+    },
+    "Zeichnen Sie einen geschlossenen Raumumriss." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Draw a closed room outline."
+          }
+        }
+      }
+    },
     "Zeitüberschreitung – läuft das Skript endlos?" : {
       "localizations" : {
         "en" : {
@@ -4908,6 +5724,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Counter"
+          }
+        }
+      }
+    },
+    "Änderungen verwerfen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discard changes?"
           }
         }
       }

@@ -14,13 +14,14 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
     case weather = "tool.weather"
     case weeklyHours = "stat.weeklyHours"
     case dailyBoost = "tool.dailyBoost"
+    case room = "stat.room"
 
     var id: String { rawValue }
 
     var isHiddenByDefault: Bool {
         switch self {
         case .students, .nextLesson: false
-        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost: true
+        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost, .room: true
         }
     }
 
@@ -41,6 +42,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .weather: loc("Wetter")
         case .weeklyHours: loc("Wochenstunden")
         case .dailyBoost: loc("Tagesmotivation")
+        case .room: loc("Aktueller Raum")
         }
     }
 
@@ -55,7 +57,8 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dateTime: loc("Uhrzeit, Wochentag, Datum und Kalenderwoche.")
         case .weather: loc("Aktuelles Wetter am Schulort (Ort aus den Schuleinstellungen).")
         case .weeklyHours: loc("Wie viel Ihres Unterrichts diese Woche schon geschafft ist.")
-        case .dailyBoost: loc("Ein fröhlicher Satz für den Tag, lokal mit Apple Intelligence – antippen für einen neuen.")
+        case .dailyBoost: loc("Ein Glückskeks-Spruch für den Tag, lokal mit Apple Intelligence – antippen für einen neuen.")
+        case .room: loc("Raum der laufenden bzw. nächsten Stunde – öffnet den Sitzplan.")
         }
     }
 
@@ -71,6 +74,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .weather: .custom(.temperature)
         case .weeklyHours: .custom(.graphUp)
         case .dailyBoost: .custom(.quoteSolid)
+        case .room: AppTab.rooms.symbol
         }
     }
 
@@ -86,7 +90,8 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dateTime: ("08:15", loc("Dienstag, 29. September · KW 40"))
         case .weather: ("17°", loc("Teilweise bewölkt · ↑ 19° ↓ 9°"))
         case .weeklyHours: ("58 %", loc("14 h erledigt · 24 h gesamt"))
-        case .dailyBoost: (loc("Irgendwo in Ihrer Klasse wartet heute ein Aha-Moment."), "")
+        case .dailyBoost: (loc("Der weise Lehrer hat einen Ersatzmarker. Der weisere hat zwei."), "")
+        case .room: ("R 204", loc("Jetzt · 3. Stunde · 7b"))
         }
     }
 }

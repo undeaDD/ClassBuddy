@@ -1,65 +1,93 @@
 import FoundationModels
 import SwiftUI
 
-/// Tagesmotivation: ein kurzer, fröhlicher Satz vom Sprachmodell auf dem Gerät (Apple Intelligence).
+/// Tagesmotivation: ein kurzer Glückskeks-Spruch (Vorhersage, Weisheit oder Witz) vom Sprachmodell auf dem Gerät (Apple Intelligence).
 /// Ohne bereites Modell (Gerät nicht unterstützt, Apple Intelligence aus, Modell lädt noch) gibt es
 /// die Kachel weder in der Übersicht noch in der Galerie.
 enum DailyBoost {
     static var isAvailable: Bool { SystemLanguageModel.default.isAvailable }
 
     /// Anweisungen auf Englisch (zuverlässiger), Antwort in der App-Sprache.
-    private static func instructions(german: Bool) -> String {
+    private static func instructions(german: Bool, style: String) -> String {
         """
-        You write one short, cheerful, light-hearted sentence for a teacher's day. \
-        Warm, playful and a little funny. Small everyday joys are perfect: coffee, sunshine, \
-        a laughing class, a good idea, the weekend getting closer. \
-        Never sad, never pressuring, no grand promises, no clichés about changing the world, \
-        nothing unrealistic. At most 18 words. No quotation marks, no hashtags, no emojis. \
-        Reply with the sentence only, \
-        \(german ? "in German. If you address the reader, use the formal \"Sie\"." : "in English.")
+        You write the slip of paper inside a fortune cookie for a teacher. \
+        Style for this one: \(style) \
+        It should make a teacher smile or smirk: witty, surprising, a little mysterious, \
+        with a playful twist at the end. Speak to the reader, never about yourself. \
+        Never write gratitude statements or plain affirmations like "I am grateful for this wonderful day". \
+        Never sad, mean or pressuring, no clichés about changing the world. \
+        Between 8 and 15 words, never more. One or two short sentences. \
+        No quotation marks, no hashtags, no emojis. \
+        Reply with the text only, \
+        \(german ? "in German. Address the reader with the formal \"Sie\"." : "in English.")
         """
     }
 
-    /// Wechselnde Themen, damit sich die Sätze nicht wiederholen.
-    private static let topics = [
-        "coffee or tea", "sunshine", "a small win", "laughter in class", "curiosity", "the weekend",
-        "a fresh idea", "chalk and whiteboards", "a good book", "fresh air", "a kind word", "music",
-        "a tidy desk", "a lunch break", "creativity", "a student's aha moment", "a smile", "the morning",
-        "plants on the windowsill", "a well-earned break",
+    /// Glückskeks-Arten: Vorhersage, Weisheit, Witz oder Omen (mit Beispiel als Richtschnur).
+    private static let styles = [
+        "a prophecy about something small and oddly specific that will happen today, e.g. "
+            + "\"Before noon, a lost pencil will return to its rightful owner.\"",
+        "a playful piece of fortune-cookie wisdom with a twist, e.g. "
+            + "\"Who grades in silence hears the coffee calling.\"",
+        "a short teacher joke that sounds like an ancient proverb, e.g. "
+            + "\"The wise teacher keeps a spare marker. The wiser one keeps two.\"",
+        "a lucky omen with an unexpected ending, e.g. "
+            + "\"A great discovery awaits you in the staff room fridge.\"",
     ]
 
-    /// Ein neuer Satz; bei Fehlern (z. B. Schutzfilter) ein eingebauter Satz.
+    /// Wechselnde Themen, damit sich die Sprüche nicht wiederholen.
+    private static let topics = [
+        "coffee", "the staff room", "a whiteboard marker", "the school bell", "homework", "the photocopier",
+        "a forgotten lunch box", "the projector", "chalk", "a field trip", "the weekend", "a pop quiz",
+        "recess", "a student's question", "the class plant", "report cards", "a rainy day", "the timetable",
+        "a lost pencil case", "the last lesson of the day",
+    ]
+
+    /// Ein neuer Spruch (bis zu drei Versuche, falls das Modell zu lang wird);
+    /// bei Fehlern (z. B. Schutzfilter) ein eingebauter Spruch.
     static func generate() async -> String {
         let german = AppLanguage.current.resolved == .german
-        let session = LanguageModelSession(instructions: instructions(german: german))
-        let topic = topics.randomElement() ?? "a smile"
-        do {
-            let response = try await session.respond(
-                to: "Today's theme: \(topic). Weekday: \(Date.now.appFormatted(.dateTime.weekday(.wide))).",
-                options: GenerationOptions(temperature: 1.0, maximumResponseTokens: 80)
-            )
-            let text = response.content
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-                .trimmingCharacters(in: CharacterSet(charactersIn: "\"„“”'«»"))
-            return text.isEmpty ? fallback(german: german) : text
-        } catch {
-            return fallback(german: german)
+        for _ in 0..<3 {
+            if let text = await attempt(german: german) { return text }
         }
+        return fallback(german: german)
+    }
+
+    private static func attempt(german: Bool) async -> String? {
+        let session = LanguageModelSession(instructions: instructions(german: german, style: styles.randomElement() ?? styles[0]))
+        let topic = topics.randomElement() ?? "coffee"
+        guard let response = try? await session.respond(
+            to: "Today's theme: \(topic). Weekday: \(Date.now.appFormatted(.dateTime.weekday(.wide))).",
+            options: GenerationOptions(temperature: 1.0, maximumResponseTokens: 60)
+        ) else { return nil }
+        let text = response.content
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .trimmingCharacters(in: CharacterSet(charactersIn: "\"„“”'«»"))
+        return isAcceptable(text) ? text : nil
+    }
+
+    /// Längster Satz, der noch in die Kachel passt; längere Antworten werden verworfen.
+    static let maximumWords = 20
+
+    /// Nicht leer und höchstens `maximumWords` Wörter.
+    static func isAcceptable(_ text: String) -> Bool {
+        let words = text.split(whereSeparator: \.isWhitespace).count
+        return words > 0 && words <= maximumWords
     }
 
     private static func fallback(german: Bool) -> String {
         let lines = german
             ? [
-                "Heute ist ein guter Tag für eine richtig gute Tasse Kaffee.",
-                "Irgendwo in Ihrer Klasse wartet heute ein Aha-Moment.",
-                "Ein Lächeln am Morgen macht jede Stunde ein bisschen leichter.",
-                "Kleine Fortschritte sind auch Fortschritte – und die zählen heute doppelt.",
+                "Noch vor der großen Pause kehrt ein verlorener Stift zu Ihnen zurück.",
+                "Wer in Ruhe korrigiert, hört den Kaffee rufen.",
+                "Der weise Lehrer hat einen Ersatzmarker. Der weisere hat zwei.",
+                "Im Kühlschrank des Lehrerzimmers wartet heute eine große Entdeckung auf Sie.",
             ]
             : [
-                "Today is a great day for a really good cup of coffee.",
-                "Somewhere in your class, an aha moment is waiting today.",
-                "A morning smile makes every lesson a little lighter.",
-                "Small steps are still steps, and today they count double.",
+                "Before the big break, a lost pencil will return to you.",
+                "Who grades in silence hears the coffee calling.",
+                "The wise teacher keeps a spare marker. The wiser one keeps two.",
+                "A great discovery awaits you in the staff room fridge today.",
             ]
         return lines.randomElement() ?? lines[0]
     }

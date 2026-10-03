@@ -272,7 +272,7 @@ struct AppSettingsView: View {
                 Task { await importData(data) }
             }
         } message: {
-            Text("Alle vorhandenen Klassen, Schüler, Stunden, Termine, Kacheln und Ferien werden durch den Inhalt der Datei ersetzt.")
+            Text("Alle Klassen, Schüler, Stunden, Termine, Kacheln, Ferien und Räume werden durch den Inhalt der Datei ersetzt.")
         }
     }
 
@@ -350,12 +350,15 @@ enum LocalDataStore {
 
     /// Löscht alle Datensätze und kopierten Dokumente.
     static func deleteAll(in context: ModelContext) throws {
+        try context.delete(model: SeatAssignment.self)
         try context.delete(model: Student.self)
         try context.delete(model: Lesson.self)
         try context.delete(model: DashboardLink.self)
         try context.delete(model: CalendarEntry.self)
         try context.delete(model: Holiday.self)
         try context.delete(model: SchoolClass.self)
+        try context.delete(model: RoomElement.self)
+        try context.delete(model: Room.self)
         try context.save()
         try? FileManager.default.removeItem(at: LinkFileStore.directory)
         FaviconStore.removeAll()
