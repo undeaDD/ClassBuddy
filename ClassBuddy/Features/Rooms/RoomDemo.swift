@@ -18,9 +18,43 @@ enum RoomDemo {
         try? context.save()
     }
 
-    /// 18 × 19 Raster: Tafel vorne, Pult links vorne, Tür rechts auf Höhe des Pults, Fenster links,
-    /// 12 Tische in Zweiergruppen mit Abstand zwischen den Reihen und Platz bis zur Rückwand.
+    /// 18 × 19 Raster aus Sicht der Lehrkraft: Tafel unten, Pult links davor, Tür rechts auf Höhe des Pults,
+    /// Fenster links, 12 Tische in Zweiergruppen mit Abstand zwischen den Reihen und Platz bis zur Rückwand (oben).
     static var shapes: [RoomShape] {
+        var shapes = [
+            RoomShape(kind: .outline, points: rect(0, 0, 18, 19)),
+            RoomShape(kind: .board, points: [GridPoint(5, 19), GridPoint(13, 19)]),
+            RoomShape(kind: .desk, points: rect(2, 15, 4, 2)),
+            RoomShape(kind: .window, points: [GridPoint(0, 4), GridPoint(0, 8)]),
+            RoomShape(kind: .window, points: [GridPoint(0, 10), GridPoint(0, 14)]),
+            RoomShape(kind: .door, points: [GridPoint(18, 15), GridPoint(18, 17)]),
+        ]
+        for row in [3, 7, 11] {
+            for column in [2, 5, 10, 13] {
+                shapes.append(RoomShape(kind: .table, points: rect(column, row, 3, 2)))
+            }
+        }
+        return shapes
+    }
+
+    // MARK: Frühere Versionen
+
+    private static let upgradeKey = "rooms.demoUpgraded.v3"
+
+    /// Ein unverändertes Demo-Klassenzimmer einer früheren Version bekommt den neuen Grundriss.
+    private static func upgradeUnchangedDemo(in context: ModelContext, defaults: UserDefaults) {
+        guard !defaults.bool(forKey: upgradeKey) else { return }
+        defaults.set(true, forKey: upgradeKey)
+        let old = [geometry(of: firstVersionShapes), geometry(of: secondVersionShapes)]
+        guard let rooms = try? context.fetch(FetchDescriptor<Room>()),
+              let demo = rooms.first(where: { old.contains(geometry(of: $0.shapes)) })
+        else { return }
+        demo.replaceElements(with: shapes, in: context)
+        try? context.save()
+    }
+
+    /// Zweite Version: Tafel oben (Sicht der Schüler).
+    private static var secondVersionShapes: [RoomShape] {
         var shapes = [
             RoomShape(kind: .outline, points: rect(0, 0, 18, 19)),
             RoomShape(kind: .board, points: [GridPoint(5, 0), GridPoint(13, 0)]),
@@ -35,22 +69,6 @@ enum RoomDemo {
             }
         }
         return shapes
-    }
-
-    // MARK: Erste Version
-
-    private static let upgradeKey = "rooms.demoUpgraded.v2"
-
-    /// Ein unverändertes Demo-Klassenzimmer der ersten Version bekommt den neuen Grundriss.
-    private static func upgradeUnchangedDemo(in context: ModelContext, defaults: UserDefaults) {
-        guard !defaults.bool(forKey: upgradeKey) else { return }
-        defaults.set(true, forKey: upgradeKey)
-        let old = geometry(of: firstVersionShapes)
-        guard let rooms = try? context.fetch(FetchDescriptor<Room>()),
-              let demo = rooms.first(where: { geometry(of: $0.shapes) == old })
-        else { return }
-        demo.replaceElements(with: shapes, in: context)
-        try? context.save()
     }
 
     /// Art und Punkte ohne IDs, unabhängig von der Reihenfolge.

@@ -243,6 +243,7 @@ struct RandomStudentCard: View {
         // Nicht zweimal hintereinander dieselbe Person.
         let candidates = students.count > 1 ? students.filter { $0.id != picked?.id } : students
         withAnimation(.bouncy) { picked = candidates.randomElement() }
+        FunStat.randomPicks.increment()
     }
 
     static func shortName(_ student: Student) -> String {

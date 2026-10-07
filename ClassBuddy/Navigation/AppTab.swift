@@ -6,6 +6,8 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     case calendar
     case students
     case rooms
+    case board
+    case checklists
     case notes
     /// Kein echter Tab: öffnet eine Feedback-Mail, die Auswahl bleibt unverändert.
     case feedback
@@ -22,7 +24,9 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         case .calendar: "Kalender"
         case .students: loc("Schüler")
         case .rooms: loc("Räume")
-        case .notes: loc("Notizen")
+        case .board: loc("Tafelbild")
+        case .checklists: loc("Checklisten")
+        case .notes: loc("Bewertungen")
         case .settings: loc("Einstellungen")
         case .feedback: "Feedback"
         }
@@ -34,6 +38,9 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         case .calendar: .custom(.calendar)
         case .students: .custom(.community)
         case .rooms: .custom(.floorLayout)
+        case .board: .custom(.board)
+        // Platzhalter, bis das eigene Icon in Icons/ liegt.
+        case .checklists: .custom(.check)
         case .notes: .custom(.notes)
         case .settings: .custom(.settings)
         case .feedback: .custom(.sendMail)
@@ -44,7 +51,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     /// Neue Seiten ohne Klassenbezug (Einstellungen, Hilfe …) hier ausnehmen.
     var usesClassSelection: Bool {
         switch self {
-        case .dashboard, .calendar, .students, .rooms, .notes: true
+        case .dashboard, .calendar, .students, .rooms, .board, .checklists, .notes: true
         case .settings, .feedback: false
         }
     }
@@ -62,7 +69,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     var section: AppTabSection {
         switch self {
         case .dashboard, .calendar, .students: .main
-        case .rooms, .notes: .schoolClass
+        case .rooms, .board, .checklists, .notes: .schoolClass
         case .feedback, .settings: .other
         }
     }

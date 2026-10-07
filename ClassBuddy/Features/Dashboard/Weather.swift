@@ -54,6 +54,24 @@ nonisolated enum WeatherService {
         return snapshot
     }
 
+    /// Bundesland der Schule aus PLZ und Ort (Open-Meteo-Ortssuche, keine weitere API).
+    /// Nur bei eindeutigem Treffer: passende PLZ oder ein einziger Ort dieses Namens.
+    static func federalStateCode(for school: SchoolInfo) async -> String? {
+        let postalCode = school.postalCode.trimmingCharacters(in: .whitespaces)
+        guard let query = placeQuery(for: school), postalCode.count == 5, postalCode.allSatisfy(\.isNumber) else { return nil }
+        var components = URLComponents(string: "https://geocoding-api.open-meteo.com/v1/search")!
+        components.queryItems = [
+            URLQueryItem(name: "name", value: query),
+            URLQueryItem(name: "count", value: "10"),
+            URLQueryItem(name: "language", value: "de"),
+            URLQueryItem(name: "countryCode", value: "DE"),
+        ]
+        guard let response: GeocodingResponse = try? await fetch(components.url!) else { return nil }
+        let places = response.results ?? []
+        let place = places.first { $0.postcodes?.contains(postalCode) == true } ?? (places.count == 1 ? places.first : nil)
+        return place?.admin1.flatMap { name in HolidayImporter.federalStates.first { $0.name == name }?.code }
+    }
+
     // MARK: Open-Meteo
 
     private struct GeocodingResponse: Decodable {
@@ -226,8 +244,8 @@ struct DateTimeCard: View {
             let week = Calendar.school.component(.weekOfYear, from: date)
             StatCard(
                 title: DashboardBuiltInCard.dateTime.title,
-                value: date.appFormatted(date: .omitted, time: .shortened),
-                detail: loc("\(date.appFormatted(.dateTime.weekday(.wide).day().month(.wide))) · KW \(week)"),
+                value: date.appTime,
+                detail: loc("\(date.appFormatted(.dateTime.weekday(.wide))), \(date.appDate) · KW \(week)"),
                 symbol: DashboardBuiltInCard.dateTime.symbol,
                 isSensitive: false
             )

@@ -92,7 +92,7 @@ struct LessonEditorView: View {
                 } footer: {
                     Text(isRecurring
                         ? loc("Jeden \(date.appFormatted(.dateTime.weekday(.wide))), \(slot.number). Stunde (\(slot.timeRange))")
-                        : loc("Nur am \(date.appFormatted(.dateTime.weekday(.wide).day().month(.wide))), \(slot.number). Stunde"))
+                        : loc("Nur am \(date.appFormatted(.dateTime.weekday(.wide))), \(date.appDate), \(slot.number). Stunde"))
                 }
 
                 if lesson != nil {

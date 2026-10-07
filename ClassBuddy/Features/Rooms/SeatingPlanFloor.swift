@@ -40,6 +40,10 @@ struct SeatingPlanFloor: View {
     /// Lehrkraft am ersten Lehrerpult (nicht verschieb- oder bearbeitbar); `nil` = keine.
     var teacher: TeacherProfile?
     var selected: UUID?
+    /// Gestrichelt umrandete Tische (lange ohne Beobachtung).
+    var dashed: Set<UUID> = []
+    /// Abgeblendete Schüler (abwesend).
+    var dimmed: Set<UUID> = []
     var zoom: CGFloat = 1
     var pan: CGSize = .zero
     var padding: CGFloat = 24
@@ -85,6 +89,14 @@ struct SeatingPlanFloor: View {
     private func draw(in context: GraphicsContext, transform: SeatingPlanTransform) {
         let lineWidth = min(max(transform.scale * 0.08, 1.5), 4)
         RoomDrawing.draw(shapes, in: context, lineWidth: lineWidth, fillsOutline: fillsOutline, map: transform.point)
+        // Gestrichelt: durchgehende Linie mit dem Hintergrund überdecken, dann orange Striche darüber.
+        for shape in shapes where dashed.contains(shape.id) {
+            let path = RoomDrawing.path(for: shape, map: transform.point)
+            let width = lineWidth * 1.4
+            context.stroke(path, with: .color(background), style: StrokeStyle(lineWidth: width + 1, lineJoin: .round))
+            let dash = StrokeStyle(lineWidth: width, lineCap: .round, lineJoin: .round, dash: [width * 2.5, width * 2])
+            context.stroke(path, with: .color(.orange), style: dash)
+        }
         guard let selected, let shape = shapes.first(where: { $0.id == selected }) else { return }
         let path = RoomDrawing.path(for: shape, map: transform.point)
         context.fill(path, with: .color(accent.opacity(0.3)))
@@ -123,6 +135,7 @@ struct SeatingPlanFloor: View {
     @ViewBuilder
     private func seatView(_ seat: Seat) -> some View {
         let label = SeatLabel(student: seat.student, tableSize: seat.size)
+            .opacity(dimmed.contains(seat.table) ? 0.35 : 1)
         if let actions {
             label
                 .contentShape(.rect)
@@ -143,7 +156,7 @@ struct SeatingPlanFloor: View {
 
 /// Aktionen auf besetzten Tischen.
 struct SeatActions {
-    /// Antippen → Notizen des Schülers.
+    /// Antippen → Schnell-Leiste bzw. Akte des Schülers.
     let open: (Student) -> Void
     /// Langes Drücken → „Schüler bearbeiten“.
     let edit: (Student) -> Void
@@ -200,6 +213,8 @@ struct SeatingPlanCanvas: View {
     let occupants: [UUID: Student]
     var teacher: TeacherProfile?
     var selected: UUID?
+    var dashed: Set<UUID> = []
+    var dimmed: Set<UUID> = []
     var isEditable: Bool
     /// Antippen eines freien Tisches bzw. daneben (`nil`).
     let onTap: (UUID?) -> Void
@@ -226,6 +241,8 @@ struct SeatingPlanCanvas: View {
             occupants: occupants,
             teacher: teacher,
             selected: selected,
+            dashed: dashed,
+            dimmed: dimmed,
             zoom: zoom,
             pan: effectivePan,
             padding: Self.padding,

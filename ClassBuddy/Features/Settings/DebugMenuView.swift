@@ -134,12 +134,13 @@ struct DebugMenuView: View {
     }
 
     private func removeDummyData() {
+        // Erst abwählen, dann löschen: sonst liest die Übersicht noch Werte der gelöschten Klasse (Absturz).
+        if let selected = app.selectedClassID, DummyData.classIDs.contains(selected) {
+            app.selectedClassID = classes.first { !DummyData.classIDs.contains($0.id) }?.id
+        }
         DummyData.remove(from: modelContext, classes: classes)
         do {
             try modelContext.save()
-            if let selected = app.selectedClassID, DummyData.classIDs.contains(selected) {
-                app.selectedClassID = nil
-            }
             toasts.success(loc("Testdaten entfernt"))
         } catch {
             toasts.error(loc("Entfernen fehlgeschlagen: \(error.localizedDescription)"))
@@ -204,6 +205,8 @@ enum DummyData {
 
     static let classIDs: [UUID] = (1...specs.count).map { fixedID(prefix: "DDDD0000", $0) }
     private static let entryIDs: [UUID] = (1...5).map { fixedID(prefix: "DDDD1111", $0) }
+    /// Eigener Testraum, nur wenn es kein Demo-Klassenzimmer gibt (wird mit den Testdaten entfernt).
+    private static let roomID = fixedID(prefix: "DDDD2222", 1)
 
     private static func fixedID(prefix: String, _ number: Int) -> UUID {
         UUID(uuidString: String(format: "%@-0000-0000-0000-%012d", prefix, number)) ?? UUID()
@@ -225,16 +228,45 @@ enum DummyData {
         }
         classes.forEach(context.insert)
 
-        for (index, (spec, schoolClass)) in zip(specs, classes).enumerated() {
-            insertStudents(spec: spec, classIndex: index, into: schoolClass, context: context)
+        let students = zip(specs, classes).enumerated().map { index, pair in
+            insertStudents(spec: pair.0, classIndex: index, into: pair.1, context: context)
         }
-        insertLessons(for: classes, slotCount: slotCount, calendar: calendar, context: context)
+        let lessons = insertLessons(for: classes, slotCount: slotCount, calendar: calendar, context: context)
         insertEntries(calendar: calendar, classes: classes, context: context)
+        insertSeatingPlans(students: students, lessons: lessons, context: context)
         return classes[0]
     }
 
-    private static func insertStudents(spec: ClassSpec, classIndex: Int, into schoolClass: SchoolClass, context: ModelContext) {
+    /// Alle Testklassen sitzen im Demo-Klassenzimmer (sonst in einem eigenen Testraum mit demselben Grundriss);
+    /// die meisten Stunden finden dort statt, damit Kalender und Sitzplan gefüllt sind.
+    private static func insertSeatingPlans(students: [[Student]], lessons: [Lesson], context: ModelContext) {
+        let demoName = loc("Demo-Klassenzimmer")
+        let needed = students.map(\.count).max() ?? 0
+        let rooms = (try? context.fetch(FetchDescriptor<Room>())) ?? []
+        let room = rooms.first { $0.name == demoName && SeatingPlan.tables(in: $0).count >= needed } ?? {
+            let room = Room(id: roomID, name: loc("Testraum 101"), subtitle: loc("Testdaten"), category: .classroom)
+            context.insert(room)
+            room.replaceElements(with: RoomDemo.shapes, in: context)
+            return room
+        }()
+        let tables = SeatingPlan.tables(in: room)
+        for classStudents in students {
+            for (student, table) in zip(classStudents, tables) {
+                SeatingPlan.assign(student, to: table, in: context)
+            }
+        }
+        // Jede fünfte Stunde ohne Raum (zum Vergleich).
+        for (index, lesson) in lessons.enumerated() where index % 5 != 4 {
+            lesson.room = room
+        }
+    }
+
+    @discardableResult
+    private static func insertStudents(
+        spec: ClassSpec, classIndex: Int, into schoolClass: SchoolClass, context: ModelContext
+    ) -> [Student] {
         let calendar = Calendar.school
+        var students: [Student] = []
         for number in 0..<spec.studentCount {
             let isFemale = number.isMultiple(of: 2)
             let names = isFemale ? femaleNames : maleNames
@@ -255,10 +287,23 @@ enum DummyData {
                 email: number % 2 == 0 ? Self.email(firstName: firstName, lastName: lastName) : "",
                 otherContact: number % 5 == 2 ? "Mutter: 0234 \(5550 + number), nachmittags erreichbar" : "",
                 photo: number % 4 == 0 ? Self.dummyPhoto(seed: number + classIndex * 13) : nil,
+                // Vor einem Monat angelegt: so zählen vergangene Stunden für „seit X Stunden ohne Beobachtung“.
+                createdAt: calendar.date(byAdding: .day, value: -30, to: .now) ?? .now,
                 schoolClass: schoolClass
             )
             context.insert(student)
+            students.append(student)
+            // Jeder dritte Schüler wurde gestern beobachtet, die übrigen erscheinen im Sitzplan gestrichelt.
+            if number.isMultiple(of: 3), let yesterday = calendar.date(byAdding: .day, value: -1, to: .now) {
+                for subject in spec.subjects {
+                    context.insert(StudentObservation(
+                        subject: subject, date: yesterday, kind: .rating, scale: .sevenStep,
+                        value: number % 4 == 0 ? 2 : 1, student: student
+                    ))
+                }
+            }
         }
+        return students
     }
 
     /// vorname.nachname@example.org (Umlaute ersetzt, Domain für Beispiele reserviert).
@@ -298,9 +343,11 @@ enum DummyData {
     }
 
     /// Wöchentlicher Stundenplan Mo–Fr plus drei einmalige Stunden in freien Slots dieser Woche.
-    private static func insertLessons(for classes: [SchoolClass], slotCount: Int, calendar: Calendar, context: ModelContext) {
+    @discardableResult
+    private static func insertLessons(for classes: [SchoolClass], slotCount: Int, calendar: Calendar, context: ModelContext) -> [Lesson] {
         let slots = min(slotCount, 6)
-        guard slots > 0 else { return }
+        guard slots > 0 else { return [] }
+        var inserted: [Lesson] = []
         var free: [(weekday: Int, slot: Int)] = []
 
         for weekday in 0..<5 {
@@ -322,6 +369,7 @@ enum DummyData {
                     schoolClass: schoolClass
                 )
                 context.insert(lesson)
+                inserted.append(lesson)
             }
         }
 
@@ -338,7 +386,9 @@ enum DummyData {
                 schoolClass: schoolClass
             )
             context.insert(lesson)
+            inserted.append(lesson)
         }
+        return inserted
     }
 
     private struct EntrySpec {
@@ -380,6 +430,10 @@ enum DummyData {
         }
         let ids = entryIDs
         try? context.delete(model: CalendarEntry.self, where: #Predicate { ids.contains($0.id) })
+        let roomID = roomID
+        if let room = try? context.fetch(FetchDescriptor<Room>(predicate: #Predicate { $0.id == roomID })).first {
+            context.delete(room)
+        }
     }
 }
 #endif

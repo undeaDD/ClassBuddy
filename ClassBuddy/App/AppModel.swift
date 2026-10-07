@@ -28,6 +28,8 @@ final class AppModel {
 
     /// Offener Sitzplan (Vollbild über allem), z. B. nach Antippen einer Stunde mit Raum.
     var seatingPlan: SeatingPlanRoute?
+    /// Fach, das der Tafelbild-Tab beim nächsten Öffnen zeigen soll (Kachel „Letztes Tafelbild“).
+    var boardSubject: String?
     /// Raumliste als Sheet (iPhone): „Räume“ liegt dort unter „Mehr“, ein Tab-Wechsel führte beim Zurück dorthin.
     var isRoomsSheetPresented = false
 
@@ -73,6 +75,20 @@ final class AppModel {
         } else {
             open(.rooms)
         }
+    }
+
+    /// Checkliste, die der Checklisten-Tab beim nächsten Öffnen zeigen soll (Kachel „Checklisten“).
+    var checklistToOpen: UUID?
+
+    func openChecklist(_ id: UUID) {
+        checklistToOpen = id
+        open(.checklists)
+    }
+
+    /// Tafelbild-Tab mit einem bestimmten Fach öffnen.
+    func openBoard(subject: String) {
+        boardSubject = subject
+        open(.board)
     }
 
     /// Kalender öffnen, gefiltert auf eine Klasse, an einem bestimmten Datum.

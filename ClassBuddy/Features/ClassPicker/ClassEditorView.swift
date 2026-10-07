@@ -157,6 +157,8 @@ struct ClassEditorView: View {
         target.subjects = subjects
         target.schoolYear = schoolYear.trimmingCharacters(in: .whitespaces)
         target.colorRaw = colorRaw
+        target.removeBoardPhotosOfRemovedSubjects(in: modelContext)
+        target.removeChecklistsOfRemovedSubjects(in: modelContext)
         try? modelContext.save()
         onSave(target)
         dismiss()

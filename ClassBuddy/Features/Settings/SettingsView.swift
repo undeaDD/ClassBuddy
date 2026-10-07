@@ -40,6 +40,11 @@ struct SettingsView: View {
             }
 
             Section("Aktionen") {
+                NavigationLink {
+                    StatsView()
+                } label: {
+                    Label("Globale Statistiken", icon: .graphUp)
+                }
                 Button {
                     hasCompletedOnboarding = false
                 } label: {
@@ -178,7 +183,7 @@ private struct SettingsHero: View {
                 .scaledToFit()
                 .frame(width: 76, height: 76)
                 .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
-                .modifier(SlowPulse())
+                // Kein endloses „Atmen“ mehr: die Animation in der Listenzelle ließ die App beim Scrollen einfrieren.
                 .accessibilityHidden(true)
 
             // Titel, Beschreibung und darunter linksbündig die Infos zur Installation.
@@ -191,11 +196,10 @@ private struct SettingsHero: View {
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                // Chips nie umbrechen: nebeneinander, wenn es passt, sonst untereinander.
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) { chips }
-                    VStack(alignment: .leading, spacing: 6) { chips }
-                }
+                // Chips nebeneinander, bei zu wenig Platz in die nächste Zeile. Festes Umbruch-Layout statt
+                // `ViewThatFits`: dessen Wechsel zwischen zwei Varianten ließ die Listenzelle beim Scrollen
+                // endlos neu vermessen (App fror ein).
+                ChipFlowLayout(spacing: 8, lineSpacing: 6) { chips }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -206,7 +210,7 @@ private struct SettingsHero: View {
     @ViewBuilder
     private var chips: some View {
         if let installDate = InstallInfo.installDate {
-            HeroChip(text: loc("Installiert am \(installDate.appFormatted(date: .abbreviated, time: .omitted))"))
+            HeroChip(text: loc("Installiert am \(installDate.appDate)"))
         }
         if let installMethod {
             HeroChip(text: loc("über \(installMethod.displayName)"))
@@ -214,20 +218,47 @@ private struct SettingsHero: View {
     }
 }
 
-/// Langsames, endloses „Atmen“ des App-Icons im Hero.
-private struct SlowPulse: ViewModifier {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+/// Ordnet Elemente zeilenweise an und bricht um, sobald die Breite nicht reicht (Ergebnis hängt nur von der Breite ab).
+private struct ChipFlowLayout: Layout {
+    var spacing: CGFloat
+    var lineSpacing: CGFloat
 
-    func body(content: Content) -> some View {
-        if reduceMotion {
-            content
-        } else {
-            content.phaseAnimator([false, true]) { view, isExpanded in
-                view.scaleEffect(isExpanded ? 1.04 : 1)
-            } animation: { _ in
-                .easeInOut(duration: 2.2)
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) -> CGSize {
+        let rows = rows(for: subviews, width: proposal.width ?? .infinity)
+        let width = rows.map { row in row.reduce(0) { $0 + $1.width } + spacing * CGFloat(max(row.count - 1, 0)) }.max() ?? 0
+        let height = rows.map { $0.map(\.height).max() ?? 0 }.reduce(0, +) + lineSpacing * CGFloat(max(rows.count - 1, 0))
+        return CGSize(width: min(width, proposal.width ?? width), height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout Void) {
+        var y = bounds.minY
+        var index = 0
+        for row in rows(for: subviews, width: bounds.width) {
+            var x = bounds.minX
+            let rowHeight = row.map(\.height).max() ?? 0
+            for size in row {
+                subviews[index].place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
+                x += size.width + spacing
+                index += 1
             }
+            y += rowHeight + lineSpacing
         }
+    }
+
+    /// Größen je Zeile (jedes Element in seiner Idealgröße).
+    private func rows(for subviews: Subviews, width: CGFloat) -> [[CGSize]] {
+        var rows: [[CGSize]] = [[]]
+        var lineWidth: CGFloat = 0
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if !rows[rows.count - 1].isEmpty, lineWidth + spacing + size.width > width {
+                rows.append([])
+                lineWidth = 0
+            }
+            lineWidth += (rows[rows.count - 1].isEmpty ? 0 : spacing) + size.width
+            rows[rows.count - 1].append(size)
+        }
+        return rows.filter { !$0.isEmpty }
     }
 }
 

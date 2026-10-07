@@ -159,7 +159,7 @@ struct SeatingPlanTests {
 
     @Test("Notizen-Tab steht nach den Räumen und nutzt die Klassenauswahl")
     func notesTab() {
-        #expect(AppTabSection.schoolClass.tabs == [.rooms, .notes])
+        #expect(AppTabSection.schoolClass.tabs == [.rooms, .board, .checklists, .notes])
         #expect(AppTab.notes.usesClassSelection)
         #expect(AppTab.notes.symbol == .custom(.notes))
     }

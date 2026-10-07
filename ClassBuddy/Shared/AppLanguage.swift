@@ -85,4 +85,23 @@ extension Date {
     nonisolated func appFormatted(date: Date.FormatStyle.DateStyle, time: Date.FormatStyle.TimeStyle) -> String {
         formatted(Date.FormatStyle(date: date, time: time, locale: AppLanguage.current.locale))
     }
+
+    // Einheitliches Format in der ganzen App: Datum „06.10.26“, mit Uhrzeit „06.10.26 09:12“, nur Uhrzeit „09:12“.
+
+    nonisolated var appDate: String { formatted(Self.appDateStyle) }
+    nonisolated var appDateTime: String { "\(appDate) \(appTime)" }
+    nonisolated var appTime: String { formatted(Self.appTimeStyle) }
+
+    private nonisolated static var appDateStyle: Date.VerbatimFormatStyle {
+        Date.VerbatimFormatStyle(
+            format: "\(day: .twoDigits).\(month: .twoDigits).\(year: .twoDigits)", timeZone: .current, calendar: .current
+        )
+    }
+
+    private nonisolated static var appTimeStyle: Date.VerbatimFormatStyle {
+        Date.VerbatimFormatStyle(
+            format: "\(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits)",
+            timeZone: .current, calendar: .current
+        )
+    }
 }

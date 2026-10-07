@@ -101,3 +101,20 @@ private struct TabBarMinimizationReader: UIViewControllerRepresentable {
         }
     }
 }
+
+/// Segmentierte Auswahl als schwebende Leiste unten (mit `floatingBottomBar`), mit dem Daumen gut erreichbar.
+struct FloatingSegmentedPicker<Value: Hashable, Content: View>: View {
+    let title: String
+    @Binding var selection: Value
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        Picker(title, selection: $selection) { content }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            // Nur so breit wie die Segmente – sonst reicht die Leiste über den minimierten Tab-Knopf.
+            .fixedSize()
+            .padding(6)
+            .glassEffect(.regular.interactive(), in: .capsule)
+    }
+}

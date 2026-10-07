@@ -52,6 +52,11 @@ final class ClassTimer {
     }
 
     func stop() {
+        // Bis zum Abbrechen gelaufene Minuten für die Stats.
+        if let endDate, isRunning {
+            let remaining = endDate.timeIntervalSinceNow / 60
+            FunStat.timerMinutes.increment(by: Int((Double(durationMinutes) - remaining).rounded(.down)))
+        }
         finishTask?.cancel()
         endDate = nil
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.notificationID])
@@ -83,6 +88,7 @@ final class ClassTimer {
 
     private func finish() {
         endDate = nil
+        FunStat.timerMinutes.increment(by: durationMinutes)
         // Im Vordergrund: Ton + Rückmeldung; die Mitteilung ist dann überflüssig.
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.notificationID])
         AudioServicesPlaySystemSound(Self.vibratesOnly ? kSystemSoundID_Vibrate : 1005)
@@ -141,7 +147,7 @@ struct TimerCard: View {
                         .monospacedDigit()
                         .foregroundStyle(.tint)
                         .contentTransition(.numericText(countsDown: true))
-                    Text("\(timer.durationMinutes) min · endet um \(end.appFormatted(date: .omitted, time: .shortened))")
+                    Text("\(timer.durationMinutes) min · endet um \(end.appTime)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {

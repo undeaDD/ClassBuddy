@@ -186,6 +186,9 @@ final class NoiseMeter {
     var stage: NoiseLevel.Stage { NoiseLevel.stage(for: level) }
 
     private let engine = AVAudioEngine()
+    /// Für die Stats: Zeit mit roter Ampel, gesammelt und in Schritten gespeichert.
+    private var lastSample: Date?
+    private var pendingLoudSeconds: TimeInterval = 0
 
     func start() async {
         guard state != .running else { return }
@@ -218,13 +221,26 @@ final class NoiseMeter {
         engine.inputNode.removeTap(onBus: 0)
         engine.stop()
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        flushLoudSeconds(force: true)
+        lastSample = nil
         state = .off
         level = 0
     }
 
     private func receive(_ decibels: Double) {
         guard state == .running else { return }
+        let now = Date.now
+        if let lastSample, stage == .loud { pendingLoudSeconds += now.timeIntervalSince(lastSample) }
+        lastSample = now
+        flushLoudSeconds(force: false)
         level = level == 0 ? decibels : NoiseLevel.smoothed(previous: level, new: decibels)
+    }
+
+    private func flushLoudSeconds(force: Bool) {
+        guard pendingLoudSeconds >= (force ? 1 : 5) else { return }
+        let whole = Int(pendingLoudSeconds)
+        FunStat.loudSeconds.increment(by: whole)
+        pendingLoudSeconds -= Double(whole)
     }
 
     /// Läuft auf dem Audio-Thread → nicht an den MainActor gebunden.

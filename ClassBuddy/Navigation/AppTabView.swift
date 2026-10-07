@@ -12,6 +12,8 @@ struct AppTabView: View {
     /// Versioniert: bei Strukturänderungen hochzählen. v6: feste Gruppen, kein Anordnen.
     static let customizationKey = "navigation.tabCustomization.v6"
     @AppStorage(AppTabView.customizationKey) private var customization = TabViewCustomization()
+    /// iPad: auf Wunsch die Tab-Leiste des iPhones (App-Einstellungen → Darstellung).
+    @AppStorage(AppPreference.padUsesPhoneTabBar) private var padUsesPhoneTabBar = false
 
     /// Aktions-Tabs (Feedback) lösen ihre Aktion aus, ohne die Auswahl zu ändern.
     private var selection: Binding<AppTab> {
@@ -28,7 +30,7 @@ struct AppTabView: View {
     }
 
     var body: some View {
-        if device.isPhone {
+        if device.isPhone || (padUsesPhoneTabBar && UIDevice.current.userInterfaceIdiom == .pad) {
             PhoneTabView()
         } else {
             padTabView
@@ -107,6 +109,8 @@ struct AppTabDestination: View {
         case .calendar: CalendarView()
         case .students: StudentsView()
         case .rooms: RoomsView()
+        case .board: BoardView()
+        case .checklists: ChecklistsView()
         case .notes: NotesView()
         case .settings: SettingsView()
         case .feedback: EmptyView()

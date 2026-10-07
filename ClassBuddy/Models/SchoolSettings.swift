@@ -17,6 +17,11 @@ final class SchoolSettings {
         var showWeekends = false
         /// ISO-3166-2-Code des Bundeslands, z. B. „DE-NW“.
         var federalState: String?
+        /// Schulform (Vorgaben für Bewertungs-Skalen); `nil` = aus der Klassenbezeichnung.
+        var schoolType: SchoolType?
+        /// Leistungsarten (Vorgaben plus eigene) und umbenannte Bereiche (leer = Vorgabe des Bundeslands).
+        var assessmentTypes = AssessmentType.defaults
+        var areaNames: [String: String] = [:]
         var holidaysImportedAt: Date?
         var school = SchoolInfo()
         var teacher = TeacherProfile()
@@ -34,6 +39,9 @@ final class SchoolSettings {
             breaks = try container.decodeIfPresent([BreakTime].self, forKey: .breaks) ?? defaults.breaks
             showWeekends = try container.decodeIfPresent(Bool.self, forKey: .showWeekends) ?? defaults.showWeekends
             federalState = try container.decodeIfPresent(String.self, forKey: .federalState)
+            schoolType = try container.decodeIfPresent(SchoolType.self, forKey: .schoolType)
+            assessmentTypes = try container.decodeIfPresent([AssessmentType].self, forKey: .assessmentTypes) ?? defaults.assessmentTypes
+            areaNames = try container.decodeIfPresent([String: String].self, forKey: .areaNames) ?? [:]
             holidaysImportedAt = try container.decodeIfPresent(Date.self, forKey: .holidaysImportedAt)
             school = try container.decodeIfPresent(SchoolInfo.self, forKey: .school) ?? defaults.school
             teacher = try container.decodeIfPresent(TeacherProfile.self, forKey: .teacher) ?? defaults.teacher
@@ -105,6 +113,18 @@ extension SchoolSettings.Values {
 }
 
 /// Stammdaten der Schule.
+extension SchoolSettings.Values {
+    /// Name eines Bereichs: umbenannt oder Vorgabe des Bundeslands.
+    func areaName(_ area: AssessmentArea) -> String {
+        areaNames[area.rawValue].flatMap { $0.isEmpty ? nil : $0 } ?? area.defaultName(federalState: federalState)
+    }
+
+    /// Leistungsarten zur Auswahl (ohne ausgeblendete); ohne schriftliche Arbeiten nur „sonstige“.
+    func selectableTypes(hasWrittenWork: Bool) -> [AssessmentType] {
+        assessmentTypes.filter { !$0.isHidden && (hasWrittenWork || $0.area == .other) }
+    }
+}
+
 struct SchoolInfo: Codable, Equatable {
     var name = ""
     var website = ""

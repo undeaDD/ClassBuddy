@@ -31,7 +31,7 @@ struct CurrentRoomCard: View {
         let when = result.isCurrent ? loc("Jetzt")
             : calendar.isDateInToday(result.next.start) ? "Heute"
             : calendar.isDateInTomorrow(result.next.start) ? loc("Morgen")
-            : result.next.start.appFormatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated))
+            : result.next.start.appDate
         return [when, loc("\(result.next.slot.number). Stunde"), result.next.lesson.schoolClass?.shortName ?? ""]
             .filter { !$0.isEmpty }
             .joined(separator: " · ")

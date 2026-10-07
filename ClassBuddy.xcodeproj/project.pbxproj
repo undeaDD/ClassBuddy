@@ -7,6 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E4B9E8D974A4358ABE6FFC3 /* RecordExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B56ADD01C0472D9635EA81 /* RecordExportTests.swift */; };
+		9F3C9E60C02B46709C73608B /* RecordExports.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBED09FDCA34E3F8AE55F15 /* RecordExports.swift */; };
+		84781B1CA8634D0488897E0F /* BackupRecordSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F829F3D64AF44D38F0D09E0 /* BackupRecordSheets.swift */; };
+		6BE71DEDD6104800ACBD6DFF /* AssessmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB5BABFC5E649338AA8496E /* AssessmentTests.swift */; };
+		92CA245123794BDBBED3C540 /* AssessmentTypesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A822325F87A549E4B231323D /* AssessmentTypesView.swift */; };
+		B9C0773CE8A74FACA84AEC38 /* AssessmentEditors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B928960DA6D4933B954AFA1 /* AssessmentEditors.swift */; };
+		F46CFFCDE4604971AE9C70B9 /* AssessmentViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48F186EF7D56450A90B59860 /* AssessmentViews.swift */; };
+		389CCFC818FF4EB3AF02F8BF /* Assessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D37F79758442C69929DEF7 /* Assessment.swift */; };
+		E5D6AF340321447ABF5F33E6 /* StudentRecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24A73B331E0A4CFCBCF925ED /* StudentRecordTests.swift */; };
+		D887E4C24BC9472DBC2CFD88 /* QuickRatingBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5649B8BA7040AE8671F2ED /* QuickRatingBar.swift */; };
+		045B0720D84C42F583AD45AA /* StudentRecordEditors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94BEADABDE994CA094A940B5 /* StudentRecordEditors.swift */; };
+		613D6E00BB0E47B9860ABE8F /* StudentRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E0C83AEA4744C43AA07F20B /* StudentRecordView.swift */; };
+		D9ED2350D196474D86046ADC /* StudentRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8D223D3D9C4324A4A5D83E /* StudentRecord.swift */; };
+		B09A8EA517F947948285C56F /* ChecklistTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6203DC422D24348AFBCC0A3 /* ChecklistTests.swift */; };
+		C61F8C1DDBA3437CAE66A5C0 /* ChecklistCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1889581B6454E11A4615727 /* ChecklistCard.swift */; };
+		B64EF759B05843DF9E9AA861 /* Checklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB85DBA3DA24F6DBAA1C943 /* Checklist.swift */; };
+		528AF811E466439A99F4D952 /* ChecklistEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13EAE9C344848639BCB6771 /* ChecklistEditorView.swift */; };
+		7E48EADC7A204B65B879F345 /* ChecklistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0460026AC0E46E8BE62AAD2 /* ChecklistDetailView.swift */; };
+		98D32DD2EFBC4298959C987E /* ChecklistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F686E9D5054900A3AFF766 /* ChecklistsView.swift */; };
+		D6CFEB07F517472099CA2E86 /* SecretariatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7ADCDAE59940B0BF03F442 /* SecretariatCard.swift */; };
+		20CA42B8CAED4A84A8FE2745 /* BoardPhotoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10776E2B9A9F45B6923AA74B /* BoardPhotoTests.swift */; };
+		73002C1B751E4E219F53C134 /* BoardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C5307FC5B44E028AAA016A /* BoardCard.swift */; };
+		A5BD44FFFB3D43569EE79F83 /* BoardPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B37FAA8B2E54702A353EB61 /* BoardPhoto.swift */; };
+		925A58A72BF141BFA8980E97 /* BoardScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 143A287C3DE84C4084C99BCD /* BoardScanner.swift */; };
+		3F77A30B54FE4C0F9B4102A8 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC8E539A428440E83854379 /* BoardView.swift */; };
+		995A9BA93ECE41DE82E3AD27 /* StatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC380103EAE34F99A4D2F116 /* StatsTests.swift */; };
+		86F3332D77714CF28AE68B8B /* StatsLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612A2100A01D44DF99E41ABE /* StatsLogic.swift */; };
+		612E1F4688A84D188A3D0556 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D66AC7D6C5A45B792474864 /* StatsView.swift */; };
+		8A4CC0C87B3940BCB7AB4F13 /* RandomGroupsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F315AE80104270B55F3A91 /* RandomGroupsTests.swift */; };
+		10F213227F4347ECBD6D665C /* RandomGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00038BB8AA848E7920A3FD1 /* RandomGroups.swift */; };
 		0016BF948735B154AC48FB94 /* XLSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520560E0BF66558DE32A34D /* XLSX.swift */; };
 		01CE987455CBFB4360537259 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7B56D4973387936A0E06B /* Weather.swift */; };
 		041EDD8E52FC9A70B471C5CD /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6AB5A47C4368067847CE31 /* AppTabView.swift */; };
@@ -131,6 +161,36 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		58B56ADD01C0472D9635EA81 /* RecordExportTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordExportTests.swift; sourceTree = "<group>"; };
+		BEBED09FDCA34E3F8AE55F15 /* RecordExports.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordExports.swift; sourceTree = "<group>"; };
+		4F829F3D64AF44D38F0D09E0 /* BackupRecordSheets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackupRecordSheets.swift; sourceTree = "<group>"; };
+		6BB5BABFC5E649338AA8496E /* AssessmentTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssessmentTests.swift; sourceTree = "<group>"; };
+		A822325F87A549E4B231323D /* AssessmentTypesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssessmentTypesView.swift; sourceTree = "<group>"; };
+		5B928960DA6D4933B954AFA1 /* AssessmentEditors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssessmentEditors.swift; sourceTree = "<group>"; };
+		48F186EF7D56450A90B59860 /* AssessmentViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssessmentViews.swift; sourceTree = "<group>"; };
+		B6D37F79758442C69929DEF7 /* Assessment.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Assessment.swift; sourceTree = "<group>"; };
+		24A73B331E0A4CFCBCF925ED /* StudentRecordTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudentRecordTests.swift; sourceTree = "<group>"; };
+		8D5649B8BA7040AE8671F2ED /* QuickRatingBar.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuickRatingBar.swift; sourceTree = "<group>"; };
+		94BEADABDE994CA094A940B5 /* StudentRecordEditors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudentRecordEditors.swift; sourceTree = "<group>"; };
+		0E0C83AEA4744C43AA07F20B /* StudentRecordView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudentRecordView.swift; sourceTree = "<group>"; };
+		EE8D223D3D9C4324A4A5D83E /* StudentRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudentRecord.swift; sourceTree = "<group>"; };
+		D6203DC422D24348AFBCC0A3 /* ChecklistTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChecklistTests.swift; sourceTree = "<group>"; };
+		D1889581B6454E11A4615727 /* ChecklistCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChecklistCard.swift; sourceTree = "<group>"; };
+		BDB85DBA3DA24F6DBAA1C943 /* Checklist.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Checklist.swift; sourceTree = "<group>"; };
+		F13EAE9C344848639BCB6771 /* ChecklistEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChecklistEditorView.swift; sourceTree = "<group>"; };
+		F0460026AC0E46E8BE62AAD2 /* ChecklistDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChecklistDetailView.swift; sourceTree = "<group>"; };
+		C9F686E9D5054900A3AFF766 /* ChecklistsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChecklistsView.swift; sourceTree = "<group>"; };
+		5E7ADCDAE59940B0BF03F442 /* SecretariatCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SecretariatCard.swift; sourceTree = "<group>"; };
+		10776E2B9A9F45B6923AA74B /* BoardPhotoTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardPhotoTests.swift; sourceTree = "<group>"; };
+		F9C5307FC5B44E028AAA016A /* BoardCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardCard.swift; sourceTree = "<group>"; };
+		1B37FAA8B2E54702A353EB61 /* BoardPhoto.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardPhoto.swift; sourceTree = "<group>"; };
+		143A287C3DE84C4084C99BCD /* BoardScanner.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardScanner.swift; sourceTree = "<group>"; };
+		5FC8E539A428440E83854379 /* BoardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
+		CC380103EAE34F99A4D2F116 /* StatsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StatsTests.swift; sourceTree = "<group>"; };
+		612A2100A01D44DF99E41ABE /* StatsLogic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StatsLogic.swift; sourceTree = "<group>"; };
+		3D66AC7D6C5A45B792474864 /* StatsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		E0F315AE80104270B55F3A91 /* RandomGroupsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RandomGroupsTests.swift; sourceTree = "<group>"; };
+		F00038BB8AA848E7920A3FD1 /* RandomGroups.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RandomGroups.swift; sourceTree = "<group>"; };
 		00D91AF2928F4BA7AE559060 /* collaborators.en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = collaborators.en.html; sourceTree = "<group>"; };
 		01177F72296400A8CB8AE65D /* CalendarModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarModels.swift; sourceTree = "<group>"; };
 		07C05AB7B27E1663EC562840 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -277,6 +337,8 @@
 				A448871486BB258B47FBECBC /* Rooms */,
 				6276EFCCA61538A20161D1C9 /* Calendar */,
 				D4570BF9AFC7A772451C1FD8 /* Students */,
+				00997B4519FB4EA4BFE3C4FE /* Board */,
+				1CA952236D59464990FDAF9F /* Checklists */,
 				FA63DEF9E4664E95AF643465 /* Notes */,
 				D318CA121CD9FB8D64C14FB9 /* ClassPicker */,
 				ED866CB00345985B1E112F36 /* Dashboard */,
@@ -291,6 +353,7 @@
 				D41DC12A563B629FA7ADBEAC /* BackupCells.swift */,
 				5CAFCF358CAD39F2E3388BA0 /* BackupImport.swift */,
 				F3D1542A53C4CB6A27D96639 /* Backup.swift */,
+				4F829F3D64AF44D38F0D09E0 /* BackupRecordSheets.swift */,
 				B520560E0BF66558DE32A34D /* XLSX.swift */,
 				5F5E83768A3055F73116717F /* ZipArchive.swift */,
 			);
@@ -322,6 +385,10 @@
 				4A00941CE162C824F95B7E8F /* Student.swift */,
 				25255560972480F461747B91 /* SchoolClass.swift */,
 				4450ACB39C614C506C434D15 /* Room.swift */,
+				1B37FAA8B2E54702A353EB61 /* BoardPhoto.swift */,
+				BDB85DBA3DA24F6DBAA1C943 /* Checklist.swift */,
+				EE8D223D3D9C4324A4A5D83E /* StudentRecord.swift */,
+				B6D37F79758442C69929DEF7 /* Assessment.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -381,7 +448,10 @@
 				575AD37B4A16A6434F248CD5 /* DebugMenuView.swift */,
 				7C5CD4359567CD63F8B1DCED /* TeacherProfileView.swift */,
 				BA5B1F6CF676098DEB914826 /* SchoolSettingsView.swift */,
+				A822325F87A549E4B231323D /* AssessmentTypesView.swift */,
 				EF8BCB401BDC99B8BC24C824 /* SettingsView.swift */,
+				3D66AC7D6C5A45B792474864 /* StatsView.swift */,
+				612A2100A01D44DF99E41ABE /* StatsLogic.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -401,6 +471,7 @@
 				EBCC92EC98264194BCC06D21 /* SeatingPlanFloor.swift */,
 				1FE7B8189CC0450CBF0E8E23 /* SeatingPlanLogic.swift */,
 				C1F4A77508CF1E54EEA649C2 /* SeatingPlanView.swift */,
+				8D5649B8BA7040AE8671F2ED /* QuickRatingBar.swift */,
 			);
 			path = Rooms;
 			sourceTree = "<group>";
@@ -448,10 +519,34 @@
 			path = ClassPicker;
 			sourceTree = "<group>";
 		};
+		00997B4519FB4EA4BFE3C4FE /* Board */ = {
+			isa = PBXGroup;
+			children = (
+				5FC8E539A428440E83854379 /* BoardView.swift */,
+				143A287C3DE84C4084C99BCD /* BoardScanner.swift */,
+			);
+			path = Board;
+			sourceTree = "<group>";
+		};
+		1CA952236D59464990FDAF9F /* Checklists */ = {
+			isa = PBXGroup;
+			children = (
+				C9F686E9D5054900A3AFF766 /* ChecklistsView.swift */,
+				F0460026AC0E46E8BE62AAD2 /* ChecklistDetailView.swift */,
+				F13EAE9C344848639BCB6771 /* ChecklistEditorView.swift */,
+			);
+			path = Checklists;
+			sourceTree = "<group>";
+		};
 		FA63DEF9E4664E95AF643465 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
 				42DD38C88C554AF092211F02 /* NotesView.swift */,
+				0E0C83AEA4744C43AA07F20B /* StudentRecordView.swift */,
+				94BEADABDE994CA094A940B5 /* StudentRecordEditors.swift */,
+				48F186EF7D56450A90B59860 /* AssessmentViews.swift */,
+				5B928960DA6D4933B954AFA1 /* AssessmentEditors.swift */,
+				BEBED09FDCA34E3F8AE55F15 /* RecordExports.swift */,
 			);
 			path = Notes;
 			sourceTree = "<group>";
@@ -509,6 +604,13 @@
 				3F347244F5F1137FDDF83669 /* RoomTests.swift */,
 				DD9F1A24DC1A54F6781E2E94 /* RoomEditorTests.swift */,
 				7C9E84465E4C481F80E9F826 /* SeatingPlanTests.swift */,
+				E0F315AE80104270B55F3A91 /* RandomGroupsTests.swift */,
+				CC380103EAE34F99A4D2F116 /* StatsTests.swift */,
+				10776E2B9A9F45B6923AA74B /* BoardPhotoTests.swift */,
+				D6203DC422D24348AFBCC0A3 /* ChecklistTests.swift */,
+				24A73B331E0A4CFCBCF925ED /* StudentRecordTests.swift */,
+				6BB5BABFC5E649338AA8496E /* AssessmentTests.swift */,
+				58B56ADD01C0472D9635EA81 /* RecordExportTests.swift */,
 			);
 			path = ClassBuddyTests;
 			sourceTree = "<group>";
@@ -538,6 +640,10 @@
 				A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */,
 				97A77A63E2195405C5C02758 /* CurrentRoomCard.swift */,
 				6B209BB796FC4EF3AC5C2291 /* NoiseMeter.swift */,
+				F00038BB8AA848E7920A3FD1 /* RandomGroups.swift */,
+				F9C5307FC5B44E028AAA016A /* BoardCard.swift */,
+				5E7ADCDAE59940B0BF03F442 /* SecretariatCard.swift */,
+				D1889581B6454E11A4615727 /* ChecklistCard.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -662,6 +768,7 @@
 				BFBB39A661B0D1D3505753CD /* CardGallery.swift in Sources */,
 				37B9BF52A683F670A912BACD /* DashboardCards.swift in Sources */,
 				1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */,
+				84781B1CA8634D0488897E0F /* BackupRecordSheets.swift in Sources */,
 				0016BF948735B154AC48FB94 /* XLSX.swift in Sources */,
 				81857B0F656429C9B2E5E457 /* ZipArchive.swift in Sources */,
 				31629008272B53902CD89947 /* Favicon.swift in Sources */,
@@ -677,6 +784,7 @@
 				D2EBE6B61F920589CCE59268 /* LessonSchedule.swift in Sources */,
 				7A8ABC4DE5A6D3898E546400 /* AppInfo.swift in Sources */,
 				5A35355150442C64BDE3E3BD /* SchoolSettingsView.swift in Sources */,
+				92CA245123794BDBBED3C540 /* AssessmentTypesView.swift in Sources */,
 				F38598CCD1F03D704FFF50E1 /* CalendarEditors.swift in Sources */,
 				9723E68D949103A132720147 /* DayColumn.swift in Sources */,
 				8B2E5F754335372E147F8AB4 /* CalendarView.swift in Sources */,
@@ -705,6 +813,8 @@
 				7D30CD550BE8FF322743D8C7 /* LockScreenView.swift in Sources */,
 				52CA7612B1589A1A39DEF882 /* PencilQuickActions.swift in Sources */,
 				A5FD8E517C799BD4DAC748B9 /* SettingsView.swift in Sources */,
+				612E1F4688A84D188A3D0556 /* StatsView.swift in Sources */,
+				86F3332D77714CF28AE68B8B /* StatsLogic.swift in Sources */,
 				9207713D3C3A17C047A6AEFF /* RootView.swift in Sources */,
 				7D025A24A23F4D2CBB5CF926 /* HomeScreenActions.swift in Sources */,
 				21BE51325B78F5751A74C0E0 /* OnboardingView.swift in Sources */,
@@ -712,6 +822,10 @@
 				FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */,
 				9CFB32BA7C1FF3D07DAE9AD2 /* Sensitive.swift in Sources */,
 				68D7DCDC539506352813CF13 /* Room.swift in Sources */,
+				A5BD44FFFB3D43569EE79F83 /* BoardPhoto.swift in Sources */,
+				B64EF759B05843DF9E9AA861 /* Checklist.swift in Sources */,
+				D9ED2350D196474D86046ADC /* StudentRecord.swift in Sources */,
+				389CCFC818FF4EB3AF02F8BF /* Assessment.swift in Sources */,
 				8E20E8AC5A0D7BB639348F4B /* RoomGeometry.swift in Sources */,
 				B1CF3953FA5B4C8671FBAFCD /* RoomValidation.swift in Sources */,
 				8EEEB3931CD8705E177961BB /* RoomFloorPlan.swift in Sources */,
@@ -721,11 +835,26 @@
 				9F882469ABDE923056A47C03 /* RoomDetailsView.swift in Sources */,
 				7194E4D1A2FB36786FEBC20C /* RoomEditorView.swift in Sources */,
 				DD205564D5FEAC8A45817066 /* SeatingPlanView.swift in Sources */,
+				D887E4C24BC9472DBC2CFD88 /* QuickRatingBar.swift in Sources */,
 				4297960A7A0343E78ACC0606 /* NotesView.swift in Sources */,
+				613D6E00BB0E47B9860ABE8F /* StudentRecordView.swift in Sources */,
+				045B0720D84C42F583AD45AA /* StudentRecordEditors.swift in Sources */,
+				F46CFFCDE4604971AE9C70B9 /* AssessmentViews.swift in Sources */,
+				B9C0773CE8A74FACA84AEC38 /* AssessmentEditors.swift in Sources */,
+				9F3C9E60C02B46709C73608B /* RecordExports.swift in Sources */,
+				98D32DD2EFBC4298959C987E /* ChecklistsView.swift in Sources */,
+				7E48EADC7A204B65B879F345 /* ChecklistDetailView.swift in Sources */,
+				528AF811E466439A99F4D952 /* ChecklistEditorView.swift in Sources */,
+				3F77A30B54FE4C0F9B4102A8 /* BoardView.swift in Sources */,
+				925A58A72BF141BFA8980E97 /* BoardScanner.swift in Sources */,
 				1AAADB29F6F84B23B7A5A8C1 /* SeatingPlanLogic.swift in Sources */,
 				6B408FEA6BB24C56B7B7C062 /* SeatingPlanFloor.swift in Sources */,
 				1D917525E9E3F56EBDA35EDF /* CurrentRoomCard.swift in Sources */,
 				3BD1E7DD7CF8491388A73902 /* NoiseMeter.swift in Sources */,
+				10F213227F4347ECBD6D665C /* RandomGroups.swift in Sources */,
+				73002C1B751E4E219F53C134 /* BoardCard.swift in Sources */,
+				D6CFEB07F517472099CA2E86 /* SecretariatCard.swift in Sources */,
+				C61F8C1DDBA3437CAE66A5C0 /* ChecklistCard.swift in Sources */,
 			);
 		};
 		3B903BDFD3F696EA3281D92D /* Sources */ = {
@@ -742,6 +871,13 @@
 				40173E7489A62BA166C1223C /* RoomTests.swift in Sources */,
 				10C81A0036E23C26C4576864 /* RoomEditorTests.swift in Sources */,
 				1BDA094B77C449EE9DE95476 /* SeatingPlanTests.swift in Sources */,
+				8A4CC0C87B3940BCB7AB4F13 /* RandomGroupsTests.swift in Sources */,
+				995A9BA93ECE41DE82E3AD27 /* StatsTests.swift in Sources */,
+				20CA42B8CAED4A84A8FE2745 /* BoardPhotoTests.swift in Sources */,
+				B09A8EA517F947948285C56F /* ChecklistTests.swift in Sources */,
+				E5D6AF340321447ABF5F33E6 /* StudentRecordTests.swift in Sources */,
+				6BE71DEDD6104800ACBD6DFF /* AssessmentTests.swift in Sources */,
+				6E4B9E8D974A4358ABE6FFC3 /* RecordExportTests.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
@@ -924,6 +1060,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Face ID schützt die Schülerdaten und blendet sensible Informationen wieder ein.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Die Kamera scannt das Tafelbild am Ende der Stunde. Das Foto bleibt auf diesem Gerät.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Das Mikrofon misst nur die Lautstärke im Raum für die Lautstärke-Ampel. Es wird nichts aufgenommen oder gespeichert.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -955,6 +1092,7 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Face ID schützt die Schülerdaten und blendet sensible Informationen wieder ein.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Die Kamera scannt das Tafelbild am Ende der Stunde. Das Foto bleibt auf diesem Gerät.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Das Mikrofon misst nur die Lautstärke im Raum für die Lautstärke-Ampel. Es wird nichts aufgenommen oder gespeichert.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -383,9 +383,9 @@ extension DashboardView {
             nextLessonCard(for: schoolClass)
         case .nextBirthday:
             nextBirthdayCard(for: schoolClass)
-        case .randomStudent:
-            RandomStudentCard(students: schoolClass.students)
-        case .timer, .dateTime, .dailyBoost, .noiseMeter:
+        case .randomStudent, .groups, .lastBoard, .checklists:
+            classToolCard(card, in: schoolClass)
+        case .timer, .dateTime, .dailyBoost, .noiseMeter, .secretariat:
             standaloneCard(card)
         case .currentLesson:
             CurrentLessonCard(
@@ -420,6 +420,7 @@ extension DashboardView {
         case .timer: TimerCard()
         case .dateTime: DateTimeCard()
         case .noiseMeter: NoiseMeterCard()
+        case .secretariat: SecretariatCard()
         default: DailyBoostCard()
         }
     }
@@ -493,6 +494,6 @@ extension DashboardView {
         let calendar = Calendar.school
         if calendar.isDateInToday(date) { return "Heute" }
         if calendar.isDateInTomorrow(date) { return loc("Morgen") }
-        return date.appFormatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated))
+        return date.appDate
     }
 }

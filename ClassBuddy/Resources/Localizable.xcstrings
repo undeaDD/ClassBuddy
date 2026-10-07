@@ -74,6 +74,22 @@
         }
       }
     },
+    "%@ von %@ Punkten" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ von %2$@ Punkten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ of %2$@ points"
+          }
+        }
+      }
+    },
     "%@ wird laut Raumplanung nicht in %@ unterrichtet." : {
       "localizations" : {
         "de" : {
@@ -102,6 +118,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@ · %lld. Std" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$lld. Std"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · period %2$lld"
           }
         }
       }
@@ -148,6 +180,26 @@
         }
       }
     },
+    "%lld %% geschafft · Ferien grau" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %% done · holidays in gray"
+          }
+        }
+      }
+    },
+    "%lld Beobachtungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld observations"
+          }
+        }
+      }
+    },
     "%lld dB" : {
       "localizations" : {
         "en" : {
@@ -158,12 +210,60 @@
         }
       }
     },
+    "%lld Einträge · Bewertungen: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld Einträge · Bewertungen: %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld entries · ratings: %2$@"
+          }
+        }
+      }
+    },
     "%lld Ferien und Feiertage importiert" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld school and public holidays imported"
+          }
+        }
+      }
+    },
+    "%lld h %lld min" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld h %2$lld min"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "%lld h %lld min Unterricht" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld h %2$lld min Unterricht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld h %2$lld min of teaching"
           }
         }
       }
@@ -184,6 +284,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld min"
+          }
+        }
+      }
+    },
+    "%lld min %lld s" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld min %2$lld s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld min %2$lld s"
           }
         }
       }
@@ -224,6 +340,16 @@
         }
       }
     },
+    "%lld mit Geburtstag" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld with birthday"
+          }
+        }
+      }
+    },
     "%lld Notizen" : {
       "localizations" : {
         "en" : {
@@ -244,12 +370,38 @@
         }
       }
     },
+    "%lld Plätze · %lld belegt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld Plätze · %2$lld belegt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld seats · %2$lld taken"
+          }
+        }
+      }
+    },
     "%lld Räume" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld rooms"
+          }
+        }
+      }
+    },
+    "%lld s" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld s"
           }
         }
       }
@@ -280,6 +432,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld seats"
+          }
+        }
+      }
+    },
+    "%lld Stunden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld lessons"
+          }
+        }
+      }
+    },
+    "%lld Stunden abwesend · %lld× verspätet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld Stunden abwesend · %2$lld× verspätet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld lessons absent · %2$lld× late"
+          }
+        }
+      }
+    },
+    "%lld Tage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld days"
+          }
+        }
+      }
+    },
+    "%lld von %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld von %2$lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "%lld von %lld erledigt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld von %2$lld erledigt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld of %2$lld done"
           }
         }
       }
@@ -350,6 +570,16 @@
         }
       }
     },
+    "1 Beobachtung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 observation"
+          }
+        }
+      }
+    },
     "1 Notiz" : {
       "localizations" : {
         "en" : {
@@ -380,12 +610,52 @@
         }
       }
     },
+    "1 Stunde" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 lesson"
+          }
+        }
+      }
+    },
+    "1. Halbjahr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1st half-year"
+          }
+        }
+      }
+    },
+    "1. Quartal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1st quarter"
+          }
+        }
+      }
+    },
     "14 h erledigt · 24 h gesamt" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "14 h done · 24 h total"
+          }
+        }
+      }
+    },
+    "2. Halbjahr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2nd half-year"
           }
         }
       }
@@ -406,6 +676,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "23 min"
+          }
+        }
+      }
+    },
+    "3. Quartal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3rd quarter"
           }
         }
       }
@@ -461,6 +741,42 @@
         }
       }
     },
+    "Abgehakt am %@ um %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Abgehakt am %1$@ um %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checked on %1$@ at %2$@"
+          }
+        }
+      }
+    },
+    "abw. / versp." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "abs. / late"
+          }
+        }
+      }
+    },
+    "Abwesend" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absent"
+          }
+        }
+      }
+    },
     "Abzug" : {
       "localizations" : {
         "en" : {
@@ -477,6 +793,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Address (e.g. school.com/schedule)"
+          }
+        }
+      }
+    },
+    "Akte öffnen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open record"
           }
         }
       }
@@ -541,6 +867,16 @@
         }
       }
     },
+    "Alle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        }
+      }
+    },
     "Alle Fächer" : {
       "localizations" : {
         "en" : {
@@ -557,6 +893,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Everyone has a seat"
+          }
+        }
+      }
+    },
+    "Alle Haken dieser Checkliste werden entfernt. Das kann nicht rückgängig gemacht werden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All checks of this checklist will be removed. This cannot be undone."
           }
         }
       }
@@ -601,6 +947,16 @@
         }
       }
     },
+    "Alle Noten dieser Leistung werden entfernt. Das kann nicht rückgängig gemacht werden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All grades of this assessment will be removed. This cannot be undone."
+          }
+        }
+      }
+    },
     "Alle Plätze freigeben" : {
       "localizations" : {
         "en" : {
@@ -631,6 +987,26 @@
         }
       }
     },
+    "Alle Scans, auch ersetzte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All scans, including replaced ones"
+          }
+        }
+      }
+    },
+    "Alle Schulbücher, bis Ende der Woche" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All textbooks, by the end of the week"
+          }
+        }
+      }
+    },
     "Alle Schüler der Klasse bekommen neue, zufällige Plätze." : {
       "localizations" : {
         "en" : {
@@ -651,12 +1027,42 @@
         }
       }
     },
+    "Alle Schüler mit Geburtstag" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All students with a birthday"
+          }
+        }
+      }
+    },
+    "Alle Schüler sind abgehakt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All students are checked."
+          }
+        }
+      }
+    },
     "Alles löschen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete everything"
+          }
+        }
+      }
+    },
+    "Alles wird lokal auf diesem Gerät berechnet. Es werden keine Daten gesendet." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Everything is calculated locally on this device. No data is sent."
           }
         }
       }
@@ -671,12 +1077,58 @@
         }
       }
     },
+    "Als Excel exportieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export as Excel"
+          }
+        }
+      }
+    },
     "Als PDF exportieren" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Export as PDF"
+          }
+        }
+      }
+    },
+    "Altersverteilung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Age distribution"
+          }
+        }
+      }
+    },
+    "Am %@ um %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Am %1$@ um %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On %1$@ at %2$@"
+          }
+        }
+      }
+    },
+    "Andere" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
           }
         }
       }
@@ -697,6 +1149,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create"
+          }
+        }
+      }
+    },
+    "Anrufen · E-Mail" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Call · Email"
+          }
+        }
+      }
+    },
+    "Ansicht" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View"
           }
         }
       }
@@ -741,6 +1213,16 @@
         }
       }
     },
+    "Antippen zum Einteilen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to split the class"
+          }
+        }
+      }
+    },
     "Antippen zum Messen" : {
       "localizations" : {
         "en" : {
@@ -761,6 +1243,26 @@
         }
       }
     },
+    "Anzahl" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Count"
+          }
+        }
+      }
+    },
+    "Anzahl Gruppen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Number of groups"
+          }
+        }
+      }
+    },
     "Anzahl und Geschlechterverteilung der Klasse." : {
       "localizations" : {
         "en" : {
@@ -777,6 +1279,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show"
+          }
+        }
+      }
+    },
+    "App gestartet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App launches"
+          }
+        }
+      }
+    },
+    "App in Benutzung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App in use"
           }
         }
       }
@@ -863,6 +1385,16 @@
         }
       }
     },
+    "Art" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Type"
+          }
+        }
+      }
+    },
     "Aufklappen" : {
       "localizations" : {
         "en" : {
@@ -889,6 +1421,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Off"
+          }
+        }
+      }
+    },
+    "Aus den Punkten wird die Note nach der Abitur-Tabelle vorgeschlagen (95 % = 15 Punkte bzw. 1+); sie lässt sich je Schüler ändern." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The grade is suggested from the points using the Abitur table (95 % = 15 points or 1+); you can change it per student."
           }
         }
       }
@@ -1034,6 +1576,26 @@
         }
       }
     },
+    "Bearbeitet am %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edited on %@"
+          }
+        }
+      }
+    },
+    "Bearbeitet heute um %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edited today at %@"
+          }
+        }
+      }
+    },
     "Bedeckt" : {
       "localizations" : {
         "en" : {
@@ -1084,6 +1646,16 @@
         }
       }
     },
+    "Beiträge zählen (+1)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Count contributions (+1)"
+          }
+        }
+      }
+    },
     "Belegter Speicher" : {
       "localizations" : {
         "en" : {
@@ -1104,6 +1676,66 @@
         }
       }
     },
+    "Beobachtung bearbeiten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit observation"
+          }
+        }
+      }
+    },
+    "Beobachtung hinzufügen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add observation"
+          }
+        }
+      }
+    },
+    "Beobachtungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observations"
+          }
+        }
+      }
+    },
+    "Beobachtungen im Unterricht" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observations in class"
+          }
+        }
+      }
+    },
+    "Bereich" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area"
+          }
+        }
+      }
+    },
+    "Bereiche" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Areas"
+          }
+        }
+      }
+    },
     "Berlin" : {
       "localizations" : {
         "en" : {
@@ -1120,6 +1752,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Amber"
+          }
+        }
+      }
+    },
+    "Berufskolleg" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vocational college"
+          }
+        }
+      }
+    },
+    "Bewertung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assessment"
+          }
+        }
+      }
+    },
+    "Bewertung einstellen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assessment settings"
+          }
+        }
+      }
+    },
+    "Bewertungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assessments"
           }
         }
       }
@@ -1184,6 +1856,46 @@
         }
       }
     },
+    "Bis" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Until"
+          }
+        }
+      }
+    },
+    "Bis %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Until %@"
+          }
+        }
+      }
+    },
+    "Bis zu den Ferien" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Until the holidays"
+          }
+        }
+      }
+    },
+    "Bisherige Beobachtungen behalten ihre Skala." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Existing observations keep their scale."
+          }
+        }
+      }
+    },
     "Bitte nicht löschen" : {
       "localizations" : {
         "en" : {
@@ -1224,12 +1936,92 @@
         }
       }
     },
+    "Buch zurückgegeben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Book returned"
+          }
+        }
+      }
+    },
     "Bundesland" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Federal state"
+          }
+        }
+      }
+    },
+    "Bundesland erkannt: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "State detected: %@."
+          }
+        }
+      }
+    },
+    "Checkliste %@.pdf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checklist %@.pdf"
+          }
+        }
+      }
+    },
+    "Checkliste bearbeiten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit checklist"
+          }
+        }
+      }
+    },
+    "Checkliste dupliziert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checklist duplicated"
+          }
+        }
+      }
+    },
+    "Checkliste gelöscht" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checklist deleted"
+          }
+        }
+      }
+    },
+    "Checkliste löschen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete checklist?"
+          }
+        }
+      }
+    },
+    "Checklisten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checklists"
           }
         }
       }
@@ -1334,6 +2126,36 @@
         }
       }
     },
+    "Das Datum (%@) wird entfernt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The date (%@) will be removed."
+          }
+        }
+      }
+    },
+    "Das Foto konnte nicht geöffnet werden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The photo couldn’t be opened."
+          }
+        }
+      }
+    },
+    "Das Foto konnte nicht übernommen werden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The photo could not be used."
+          }
+        }
+      }
+    },
     "Das kann nicht rückgängig gemacht werden." : {
       "localizations" : {
         "en" : {
@@ -1414,12 +2236,32 @@
         }
       }
     },
+    "Datenbank, Dokumente und Fotos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Database, documents and photos"
+          }
+        }
+      }
+    },
     "Datenschutz" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Privacy"
+          }
+        }
+      }
+    },
+    "Datum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
           }
         }
       }
@@ -1444,6 +2286,36 @@
         }
       }
     },
+    "Daumen hoch" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thumbs up"
+          }
+        }
+      }
+    },
+    "Daumen hoch / runter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thumbs up / down"
+          }
+        }
+      }
+    },
+    "Daumen runter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thumbs down"
+          }
+        }
+      }
+    },
     "Debug-Menü" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1461,6 +2333,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Demo classroom"
+          }
+        }
+      }
+    },
+    "Der aktuelle Monat ist hervorgehoben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The current month is highlighted"
+          }
+        }
+      }
+    },
+    "Der Dokumentenscanner ist auf diesem Gerät nicht verfügbar." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The document scanner is not available on this device."
           }
         }
       }
@@ -1495,6 +2387,36 @@
         }
       }
     },
+    "Diagramme" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charts"
+          }
+        }
+      }
+    },
+    "Die Checkliste erscheint in jedem Fach der Klasse, mit denselben Haken." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The checklist appears in every subject of the class, with the same checks."
+          }
+        }
+      }
+    },
+    "Die Checkliste gehört nur zu diesem Fach." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The checklist belongs to this subject only."
+          }
+        }
+      }
+    },
     "Die Datei ist kein gültiges zip-Archiv." : {
       "localizations" : {
         "en" : {
@@ -1505,12 +2427,32 @@
         }
       }
     },
+    "Die Klasse hat noch keine Schüler." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The class has no students yet."
+          }
+        }
+      }
+    },
     "Die Klasse und alle %lld Schüler werden entfernt. Das kann nicht rückgängig gemacht werden." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The class and all %lld students will be removed. This cannot be undone."
+          }
+        }
+      }
+    },
+    "Die Note tragen Sie je Schüler direkt ein." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the grade for each student directly."
           }
         }
       }
@@ -1615,6 +2557,16 @@
         }
       }
     },
+    "Durchschnitt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Average"
+          }
+        }
+      }
+    },
     "E-Mail" : {
       "localizations" : {
         "en" : {
@@ -1631,6 +2583,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Email (school office)"
+          }
+        }
+      }
+    },
+    "E-Mail an das Sekretariat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email the office"
           }
         }
       }
@@ -1735,12 +2697,32 @@
         }
       }
     },
+    "Ein neues Foto ersetzt das bisherige Tafelbild des Fachs." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A new photo replaces the subject’s current board photo."
+          }
+        }
+      }
+    },
     "Ein Raum hat genau einen Raumumriss." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "A room has exactly one outline."
+          }
+        }
+      }
+    },
+    "Ein Tipp speichert sofort." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One tap saves right away."
           }
         }
       }
@@ -1785,6 +2767,26 @@
         }
       }
     },
+    "Eingetragen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entered"
+          }
+        }
+      }
+    },
+    "Eingetroffen um" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrived at"
+          }
+        }
+      }
+    },
     "Einpassen" : {
       "localizations" : {
         "en" : {
@@ -1795,12 +2797,52 @@
         }
       }
     },
+    "Eins je Klasse und Fach" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One per class and subject"
+          }
+        }
+      }
+    },
     "Einstellungen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
+          }
+        }
+      }
+    },
+    "Einteilen nach" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Split by"
+          }
+        }
+      }
+    },
+    "eintragen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enter"
+          }
+        }
+      }
+    },
+    "Einverständniserklärung abgegeben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consent form handed in"
           }
         }
       }
@@ -1821,6 +2863,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Elements must lie within the room outline."
+          }
+        }
+      }
+    },
+    "Elternbrief zurückgegeben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parent letter returned"
+          }
+        }
+      }
+    },
+    "Enddatum" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Due date"
           }
         }
       }
@@ -1896,12 +2958,74 @@
         }
       }
     },
+    "Erledigt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        }
+      }
+    },
     "Erscheinungsbild" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appearance"
+          }
+        }
+      }
+    },
+    "Erstellt am %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Created on %@"
+          }
+        }
+      }
+    },
+    "Es entstehen %lld Gruppen mit %lld bis %lld Schülern." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Es entstehen %1$lld Gruppen mit %2$lld bis %3$lld Schülern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This makes %1$lld groups of %2$lld to %3$lld students."
+          }
+        }
+      }
+    },
+    "Es entstehen %lld Gruppen mit je %lld Schülern." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Es entstehen %1$lld Gruppen mit je %2$lld Schülern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This makes %1$lld groups of %2$lld students each."
+          }
+        }
+      }
+    },
+    "Es entsteht eine Gruppe mit allen %lld Schülern." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This makes one group with all %lld students."
           }
         }
       }
@@ -1962,6 +3086,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Export"
+          }
+        }
+      }
+    },
+    "Exportiert am %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exported on %@"
           }
         }
       }
@@ -2036,6 +3170,46 @@
         }
       }
     },
+    "Fehlst." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absences"
+          }
+        }
+      }
+    },
+    "Fehlt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing"
+          }
+        }
+      }
+    },
+    "fehlt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "missing"
+          }
+        }
+      }
+    },
+    "Fehlt aufheben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unmark missing"
+          }
+        }
+      }
+    },
     "Fehlt etwas oder hakt es irgendwo? Schreiben Sie mir über „Feedback senden“." : {
       "localizations" : {
         "en" : {
@@ -2066,6 +3240,46 @@
         }
       }
     },
+    "Fehlt – nachschreiben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing – retake"
+          }
+        }
+      }
+    },
+    "Fehlzeit bearbeiten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit absence"
+          }
+        }
+      }
+    },
+    "Fehlzeit hinzufügen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add absence"
+          }
+        }
+      }
+    },
+    "Fehlzeiten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absences"
+          }
+        }
+      }
+    },
     "Fenster" : {
       "localizations" : {
         "en" : {
@@ -2092,6 +3306,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import school & public holidays"
+          }
+        }
+      }
+    },
+    "Ferien in den Schuleinstellungen importieren, damit das Schuljahr genau stimmt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import holidays in the school settings to make the school year exact."
           }
         }
       }
@@ -2196,12 +3420,32 @@
         }
       }
     },
+    "Fortschritt der zuletzt bearbeiteten Checkliste – öffnet sie direkt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progress of the most recently edited checklist – opens it directly."
+          }
+        }
+      }
+    },
     "Foto" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Photo"
+          }
+        }
+      }
+    },
+    "Foto aufnehmen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take photo"
           }
         }
       }
@@ -2266,6 +3510,16 @@
         }
       }
     },
+    "Fotos für die Schulhomepage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos for the school website"
+          }
+        }
+      }
+    },
     "Französisch" : {
       "localizations" : {
         "en" : {
@@ -2282,6 +3536,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Subjects"
+          }
+        }
+      }
+    },
+    "Förderschule" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Special needs school"
           }
         }
       }
@@ -2303,6 +3567,32 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Use + at the top right to add the students of class 7b."
+          }
+        }
+      }
+    },
+    "Für %@ gibt es schon ein Tafelbild vom %@. Es wird durch das neue ersetzt." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Für %1$@ gibt es schon ein Tafelbild vom %2$@. Es wird durch das neue ersetzt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There’s already a board photo for %1$@ from %2$@. It will be replaced by the new one."
+          }
+        }
+      }
+    },
+    "Für alle Fächer der Klasse" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For all subjects of the class"
           }
         }
       }
@@ -2367,6 +3657,16 @@
         }
       }
     },
+    "Geburtstage je Monat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birthdays per month"
+          }
+        }
+      }
+    },
     "Gefrierender Regen" : {
       "localizations" : {
         "en" : {
@@ -2377,12 +3677,32 @@
         }
       }
     },
+    "Gelaufene Zeit aller Timer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time run by all timers"
+          }
+        }
+      }
+    },
     "Genau so schreiben wie in der Kurzbefehle-App. Antippen der Kachel startet den Kurzbefehl." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Write it exactly as in the Shortcuts app. Tapping the card runs the shortcut."
+          }
+        }
+      }
+    },
+    "Gesamtschule" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comprehensive school"
           }
         }
       }
@@ -2407,12 +3727,32 @@
         }
       }
     },
+    "Gespeichert: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved: %@"
+          }
+        }
+      }
+    },
     "Gespeicherten Zustand zurücksetzen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset saved state"
+          }
+        }
+      }
+    },
+    "Gestrichelt: seit %lld Stunden ohne Beobachtung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dashed: no observation for %lld lessons"
           }
         }
       }
@@ -2437,12 +3777,48 @@
         }
       }
     },
+    "Geändert am %@ (vorher %@)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Geändert am %1$@ (vorher %2$@)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changed on %1$@ (was %2$@)"
+          }
+        }
+      }
+    },
+    "Globale Statistiken" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global statistics"
+          }
+        }
+      }
+    },
     "Graphit" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Graphite"
+          }
+        }
+      }
+    },
+    "Große Leistungsnachweise" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Major assessments"
           }
         }
       }
@@ -2457,6 +3833,76 @@
         }
       }
     },
+    "Grundschule" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primary school"
+          }
+        }
+      }
+    },
+    "Gruppe %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group %lld"
+          }
+        }
+      }
+    },
+    "Gruppen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groups"
+          }
+        }
+      }
+    },
+    "Gruppen %@.pdf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groups %@.pdf"
+          }
+        }
+      }
+    },
+    "Gruppen bilden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create groups"
+          }
+        }
+      }
+    },
+    "Gruppen gemischt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groups shuffled"
+          }
+        }
+      }
+    },
+    "Gruppen konnten nicht gesichert werden: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groups could not be saved: %@"
+          }
+        }
+      }
+    },
     "Gruppenfoto" : {
       "localizations" : {
         "en" : {
@@ -2467,12 +3913,82 @@
         }
       }
     },
+    "Gruppengröße" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group size"
+          }
+        }
+      }
+    },
     "Grün" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Green"
+          }
+        }
+      }
+    },
+    "Gymnasium" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grammar school"
+          }
+        }
+      }
+    },
+    "Gymnasium am See" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lakeside High School"
+          }
+        }
+      }
+    },
+    "HA fehlt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No homework"
+          }
+        }
+      }
+    },
+    "Haken entfernen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove check"
+          }
+        }
+      }
+    },
+    "Haken entfernen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove check?"
+          }
+        }
+      }
+    },
+    "Haken gesetzt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checks set"
           }
         }
       }
@@ -2517,6 +4033,46 @@
         }
       }
     },
+    "Hauptschule" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptschule"
+          }
+        }
+      }
+    },
+    "Hausaufgabe fehlt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homework missing"
+          }
+        }
+      }
+    },
+    "Hausaufgabenheft unterschrieben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Homework diary signed"
+          }
+        }
+      }
+    },
+    "Heft" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exercise book"
+          }
+        }
+      }
+    },
     "Helfen Sie mit, ClassBuddy besser zu machen" : {
       "localizations" : {
         "en" : {
@@ -2557,12 +4113,48 @@
         }
       }
     },
+    "Heute %lld · %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Heute %1$lld · %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today %1$lld · %2$@"
+          }
+        }
+      }
+    },
     "Heute kein Unterricht mehr" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "No more lessons today"
+          }
+        }
+      }
+    },
+    "Heute um %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today at %@"
+          }
+        }
+      }
+    },
+    "Heute um 09:35" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today at 9:35 AM"
           }
         }
       }
@@ -2638,6 +4230,36 @@
         }
       }
     },
+    "Häufigste" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most frequent"
+          }
+        }
+      }
+    },
+    "Höchstpunktzahl %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum points %@"
+          }
+        }
+      }
+    },
+    "Höchstpunktzahl (z. B. 50)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum points (e.g. 50)"
+          }
+        }
+      }
+    },
     "Icons" : {
       "localizations" : {
         "en" : {
@@ -2674,6 +4296,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your opinion matters"
+          }
+        }
+      }
+    },
+    "Im Sitzplan und in der Schülerakte eingetragen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entered in the seating plan and student record"
           }
         }
       }
@@ -2749,6 +4381,26 @@
         }
       }
     },
+    "In allen Checklisten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Across all checklists"
+          }
+        }
+      }
+    },
+    "In allen Klassen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Across all classes"
+          }
+        }
+      }
+    },
     "Indigo" : {
       "localizations" : {
         "en" : {
@@ -2815,6 +4467,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The wise teacher keeps a spare marker. The wiser one keeps two."
+          }
+        }
+      }
+    },
+    "iPhone-Tab-Leiste" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone tab bar"
           }
         }
       }
@@ -3095,6 +4757,26 @@
         }
       }
     },
+    "Keine Fehlzeiten in diesem Fach." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No absences in this subject."
+          }
+        }
+      }
+    },
+    "Keine Ferien importiert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No holidays imported"
+          }
+        }
+      }
+    },
     "Keine Fächer" : {
       "localizations" : {
         "en" : {
@@ -3131,6 +4813,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No class selected"
+          }
+        }
+      }
+    },
+    "Keine Note" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No grade"
+          }
+        }
+      }
+    },
+    "Keine Noten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No grades"
+          }
+        }
+      }
+    },
+    "Keine Schüler in dieser Auswahl" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No students in this selection"
+          }
+        }
+      }
+    },
+    "Keine Schüler in dieser Auswahl." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No students in this selection."
           }
         }
       }
@@ -3326,12 +5048,42 @@
         }
       }
     },
+    "Klassenarbeit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Class test"
+          }
+        }
+      }
+    },
     "Klassenraum" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Classroom"
+          }
+        }
+      }
+    },
+    "Klausur" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exam"
+          }
+        }
+      }
+    },
+    "Kleine Leistungsnachweise" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minor assessments"
           }
         }
       }
@@ -3402,6 +5154,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open Shortcuts app"
+          }
+        }
+      }
+    },
+    "Kurzvortrag, etwa 5 Minuten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Short talk, about 5 minutes"
           }
         }
       }
@@ -3486,6 +5248,16 @@
         }
       }
     },
+    "Leer lassen für die Vorgabe des Bundeslands." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leave empty for the state’s default."
+          }
+        }
+      }
+    },
     "Leerzustände" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3537,6 +5309,26 @@
         }
       }
     },
+    "Legen Sie über + oben rechts eine Checkliste an, z. B. „Name in die Bücher eingetragen“." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a checklist with + at the top right, e.g. “Name written in the books”."
+          }
+        }
+      }
+    },
+    "Legen Sie über + oben rechts eine Klassenarbeit, einen Test oder ein Referat an." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a class test, quiz or presentation with + at the top right."
+          }
+        }
+      }
+    },
     "Lehrerpult" : {
       "localizations" : {
         "en" : {
@@ -3553,6 +5345,116 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Teacher"
+          }
+        }
+      }
+    },
+    "Leistung bearbeiten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit assessment"
+          }
+        }
+      }
+    },
+    "Leistung löschen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete assessment?"
+          }
+        }
+      }
+    },
+    "Leistungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assessments"
+          }
+        }
+      }
+    },
+    "Leistungsart hinzufügen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add assessment type"
+          }
+        }
+      }
+    },
+    "Leistungsarten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assessment types"
+          }
+        }
+      }
+    },
+    "Leistungsarten und Bereiche" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assessment types and areas"
+          }
+        }
+      }
+    },
+    "Lektüre aus der Bibliothek" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading book from the library"
+          }
+        }
+      }
+    },
+    "Letzte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest"
+          }
+        }
+      }
+    },
+    "Letzte Gruppen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last groups"
+          }
+        }
+      }
+    },
+    "Letzte Gruppen öffnen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open last groups"
+          }
+        }
+      }
+    },
+    "Letztes Tafelbild" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest board photo"
           }
         }
       }
@@ -3653,6 +5555,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "manifest.json is invalid (id and name required, id only a–z, 0–9 and -)."
+          }
+        }
+      }
+    },
+    "Material fehlt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Materials missing"
           }
         }
       }
@@ -3767,6 +5679,36 @@
         }
       }
     },
+    "Mit der Kachel „Gruppen“" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With the “Groups” card"
+          }
+        }
+      }
+    },
+    "Mit der Kachel „Zufallsauswahl“" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With the “Random pick” card"
+          }
+        }
+      }
+    },
+    "Mit Rohpunkten bewerten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade with raw points"
+          }
+        }
+      }
+    },
     "Mit zwei Fingern zoomen, mit einem Finger verschieben." : {
       "localizations" : {
         "en" : {
@@ -3783,6 +5725,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Made with ❤️ by Devsforge.de"
+          }
+        }
+      }
+    },
+    "Mitarbeitsliste" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participation list"
+          }
+        }
+      }
+    },
+    "Mitarbeitsliste %@.pdf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participation list %@.pdf"
+          }
+        }
+      }
+    },
+    "Mitarbeitsliste (PDF)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Participation list (PDF)"
           }
         }
       }
@@ -3827,12 +5799,78 @@
         }
       }
     },
+    "Mündlich" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oral"
+          }
+        }
+      }
+    },
+    "Mündlich-praktische Leistungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oral and practical work"
+          }
+        }
+      }
+    },
+    "Nach Geschlecht" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By gender"
+          }
+        }
+      }
+    },
+    "Nach links wischen: „fehlt“ (nachschreiben) bzw. Note entfernen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe left: mark as missing (retake) or remove the grade."
+          }
+        }
+      }
+    },
+    "Nach rechts wischen zum Aus- bzw. Einblenden, nach links zum Löschen. Bestehende Leistungen behalten ihre Art." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe right to hide or show, left to delete. Existing assessments keep their type."
+          }
+        }
+      }
+    },
     "Nachname" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last name"
+          }
+        }
+      }
+    },
+    "Nachträglich geändert am %@ (vorher „%@“)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Nachträglich geändert am %1$@ (vorher „%2$@“)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changed later on %1$@ (was “%2$@”)"
           }
         }
       }
@@ -3887,6 +5925,16 @@
         }
       }
     },
+    "Name in die Bücher eingetragen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name written in the books"
+          }
+        }
+      }
+    },
     "Nebel" : {
       "localizations" : {
         "en" : {
@@ -3907,6 +5955,46 @@
         }
       }
     },
+    "Neu mischen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shuffle again"
+          }
+        }
+      }
+    },
+    "Neue Beobachtung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New observation"
+          }
+        }
+      }
+    },
+    "Neue Checkliste" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New checklist"
+          }
+        }
+      }
+    },
+    "Neue Fehlzeit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New absence"
+          }
+        }
+      }
+    },
     "Neue Kachel" : {
       "localizations" : {
         "en" : {
@@ -3923,6 +6011,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "New class"
+          }
+        }
+      }
+    },
+    "Neue Leistung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New assessment"
+          }
+        }
+      }
+    },
+    "Neue Leistungsart" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New assessment type"
           }
         }
       }
@@ -3957,12 +6065,32 @@
         }
       }
     },
+    "neueste zuerst" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "newest first"
+          }
+        }
+      }
+    },
     "Neuigkeiten erneut anzeigen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Show what's new again"
+          }
+        }
+      }
+    },
+    "Nicht festgelegt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not set"
           }
         }
       }
@@ -3987,6 +6115,66 @@
         }
       }
     },
+    "Noch kein Tafelbild" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No board photo yet"
+          }
+        }
+      }
+    },
+    "Noch keine Beobachtung in diesem Fach" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No observation in this subject yet"
+          }
+        }
+      }
+    },
+    "Noch keine Beobachtungen. Im Sitzplan den Schüler antippen oder oben + verwenden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No observations yet. Tap the student in the seating plan or use + above."
+          }
+        }
+      }
+    },
+    "Noch keine Checklisten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No checklists yet"
+          }
+        }
+      }
+    },
+    "Noch keine Fächer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No subjects yet"
+          }
+        }
+      }
+    },
+    "Noch keine Geburtstage eingetragen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No birthdays entered yet"
+          }
+        }
+      }
+    },
     "Noch keine Klassen" : {
       "localizations" : {
         "en" : {
@@ -3997,12 +6185,42 @@
         }
       }
     },
+    "Noch keine Leistungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No assessments yet"
+          }
+        }
+      }
+    },
+    "Noch keine Leistungen in diesem Fach. Anlegen im Tab „Bewertungen“ unter „Leistungen“." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No assessments in this subject yet. Create them in the “Assessments” tab under “Assessments”."
+          }
+        }
+      }
+    },
     "Noch keine Notizen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "No notes yet"
+          }
+        }
+      }
+    },
+    "Noch keine regelmäßigen Stunden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No weekly lessons yet"
           }
         }
       }
@@ -4047,12 +6265,142 @@
         }
       }
     },
+    "Noch niemand ist abgehakt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nobody is checked yet."
+          }
+        }
+      }
+    },
     "Nordrhein-Westfalen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "North Rhine-Westphalia"
+          }
+        }
+      }
+    },
+    "Note entfernen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove grade"
+          }
+        }
+      }
+    },
+    "Noten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grades"
+          }
+        }
+      }
+    },
+    "Noten %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grades %@"
+          }
+        }
+      }
+    },
+    "Noten 1–6 mit Tendenz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grades 1–6 with tendency"
+          }
+        }
+      }
+    },
+    "Notensystem" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grading system"
+          }
+        }
+      }
+    },
+    "Notenübersicht" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade overview"
+          }
+        }
+      }
+    },
+    "Notenübersicht %@.pdf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade overview %@.pdf"
+          }
+        }
+      }
+    },
+    "Notenübersicht %@.xlsx" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade overview %@.xlsx"
+          }
+        }
+      }
+    },
+    "Notenübersicht (Excel)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade overview (Excel)"
+          }
+        }
+      }
+    },
+    "Notenübersicht (PDF)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade overview (PDF)"
+          }
+        }
+      }
+    },
+    "Notiz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note"
+          }
+        }
+      }
+    },
+    "Notiz …" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Note …"
           }
         }
       }
@@ -4189,6 +6537,26 @@
         }
       }
     },
+    "Oberstufe" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upper secondary"
+          }
+        }
+      }
+    },
+    "Offen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open"
+          }
+        }
+      }
+    },
     "Ohne Auswahl können hier alle Fächer unterrichtet werden." : {
       "localizations" : {
         "en" : {
@@ -4199,12 +6567,42 @@
         }
       }
     },
+    "Ohne Fach" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No subject"
+          }
+        }
+      }
+    },
+    "Ohne Stunde" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No period"
+          }
+        }
+      }
+    },
     "Optional" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Optional"
+          }
+        }
+      }
+    },
+    "Optional: Nach dem Enddatum wird die Checkliste rot markiert, solange noch Schüler offen sind." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional: after the due date the checklist is marked red while students are still open."
           }
         }
       }
@@ -4329,6 +6727,16 @@
         }
       }
     },
+    "Pkt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pts."
+          }
+        }
+      }
+    },
     "Platz freigeben" : {
       "localizations" : {
         "en" : {
@@ -4345,6 +6753,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Postal code"
+          }
+        }
+      }
+    },
+    "PLZ und Ort bestimmen das Wetter auf der Übersicht und das Bundesland für die Ferien. Telefon und E-Mail nutzt die Kachel „Sekretariat“." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Postal code and city determine the weather on the overview and the state for the holidays. Phone and email are used by the “Office” card."
           }
         }
       }
@@ -4375,6 +6793,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Politics"
+          }
+        }
+      }
+    },
+    "Poster" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poster"
           }
         }
       }
@@ -4436,6 +6864,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desk"
+          }
+        }
+      }
+    },
+    "Punkte 0–15" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Points 0–15"
+          }
+        }
+      }
+    },
+    "Punkte von %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Points out of %@"
           }
         }
       }
@@ -4541,12 +6989,52 @@
         }
       }
     },
+    "Realschule" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Realschule"
+          }
+        }
+      }
+    },
     "Rechtliches" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Legal"
+          }
+        }
+      }
+    },
+    "Referat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presentation"
+          }
+        }
+      }
+    },
+    "Regelmäßige Stunden je Wochentag und Stunde" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly lessons per weekday and period"
+          }
+        }
+      }
+    },
+    "Regelmäßige Stunden pro Woche" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly lessons"
           }
         }
       }
@@ -4617,6 +7105,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Red"
+          }
+        }
+      }
+    },
+    "Rote Ampel der Lautstärke-Kachel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red light on the noise level card"
           }
         }
       }
@@ -4712,6 +7210,26 @@
         }
       }
     },
+    "Scannen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan"
+          }
+        }
+      }
+    },
+    "Scannen Sie die Tafel am Ende der Stunde über + oben rechts. Ein neues Foto ersetzt immer das letzte des Fachs." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan the board at the end of the lesson with + at the top right. A new photo always replaces the last one for that subject."
+          }
+        }
+      }
+    },
     "Schleswig-Holstein" : {
       "localizations" : {
         "en" : {
@@ -4762,6 +7280,26 @@
         }
       }
     },
+    "Schriftliche Arbeiten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Written work"
+          }
+        }
+      }
+    },
+    "Schriftliche Leistungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Written assessments"
+          }
+        }
+      }
+    },
     "Schule" : {
       "localizations" : {
         "en" : {
@@ -4778,6 +7316,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "School Settings"
+          }
+        }
+      }
+    },
+    "Schulform" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "School type"
           }
         }
       }
@@ -4822,6 +7370,16 @@
         }
       }
     },
+    "Schultage bis %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "School days until %@"
+          }
+        }
+      }
+    },
     "Schüler" : {
       "localizations" : {
         "en" : {
@@ -4862,6 +7420,16 @@
         }
       }
     },
+    "Schüler je Klasse" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Students per class"
+          }
+        }
+      }
+    },
     "Schüler löschen?" : {
       "localizations" : {
         "en" : {
@@ -4892,12 +7460,32 @@
         }
       }
     },
+    "Schülerakte %@.pdf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Student record %@.pdf"
+          }
+        }
+      }
+    },
     "Schülerdaten sind geschützt." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Student data is protected."
+          }
+        }
+      }
+    },
+    "Seit %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Since %@"
           }
         }
       }
@@ -4914,6 +7502,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Page %1$lld of %2$lld"
+          }
+        }
+      }
+    },
+    "Sek. I" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lower secondary"
+          }
+        }
+      }
+    },
+    "Sekretariat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Office"
+          }
+        }
+      }
+    },
+    "Sekretariat anrufen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Call the office"
+          }
+        }
+      }
+    },
+    "Sekretariat anrufen oder anschreiben – Nummer und Adresse aus den Schuleinstellungen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Call or email the school office – number and address from the school settings."
           }
         }
       }
@@ -4988,6 +7616,46 @@
         }
       }
     },
+    "Skala" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scale"
+          }
+        }
+      }
+    },
+    "Skala und Notensystem stellen Sie je Klasse und Fach in der Schülerakte ein." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scale and grading system are set per class and subject in the student record."
+          }
+        }
+      }
+    },
+    "Skala: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scale: %@"
+          }
+        }
+      }
+    },
+    "Skala: %@. Die App rechnet keine Noten aus." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scale: %@. The app doesn’t calculate grades."
+          }
+        }
+      }
+    },
     "Skript" : {
       "localizations" : {
         "en" : {
@@ -5018,12 +7686,52 @@
         }
       }
     },
+    "Smileys" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smileys"
+          }
+        }
+      }
+    },
+    "So oft wurde die App geöffnet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How often the app was opened"
+          }
+        }
+      }
+    },
     "Sonstige" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Other"
+          }
+        }
+      }
+    },
+    "Sonstige Leistungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other assessments"
+          }
+        }
+      }
+    },
+    "Sonstige Mitarbeit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other participation"
           }
         }
       }
@@ -5048,12 +7756,42 @@
         }
       }
     },
+    "Sortieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort"
+          }
+        }
+      }
+    },
+    "Spalten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Columns"
+          }
+        }
+      }
+    },
     "Spanisch" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spanish"
+          }
+        }
+      }
+    },
+    "Speicher" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storage"
           }
         }
       }
@@ -5190,6 +7928,16 @@
         }
       }
     },
+    "Steht im Sitzplan am Lehrerpult und im Sitzplan-PDF." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shown at the teacher’s desk in the seating plan and in the seating plan PDF."
+          }
+        }
+      }
+    },
     "Stoppen" : {
       "localizations" : {
         "en" : {
@@ -5210,6 +7958,16 @@
         }
       }
     },
+    "Stunde" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Period"
+          }
+        }
+      }
+    },
     "Stunde entfernen" : {
       "localizations" : {
         "en" : {
@@ -5220,12 +7978,42 @@
         }
       }
     },
+    "Stunden je Fach" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lessons per subject"
+          }
+        }
+      }
+    },
+    "Stunden pro Woche" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lessons per week"
+          }
+        }
+      }
+    },
     "Stundenlänge: %lld min" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Period length: %lld min"
+          }
+        }
+      }
+    },
+    "Stundenplan" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timetable"
           }
         }
       }
@@ -5301,12 +8089,122 @@
         }
       }
     },
+    "Tab-Titel gibt es nur in der iPhone-Tab-Leiste. UI Minimieren verkleinert die Leisten beim Scrollen. Die iPhone-Tab-Leiste ersetzt die Leiste oben und die Seitenleiste." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tab titles only appear in the iPhone tab bar. Minimize UI shrinks the bars while scrolling. The iPhone tab bar replaces the top bar and the sidebar."
+          }
+        }
+      }
+    },
     "Tafel" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Board"
+          }
+        }
+      }
+    },
+    "Tafelbild" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board"
+          }
+        }
+      }
+    },
+    "Tafelbild %@.jpg" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board %@.jpg"
+          }
+        }
+      }
+    },
+    "Tafelbild aufnehmen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take board photo"
+          }
+        }
+      }
+    },
+    "Tafelbild entfernen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove board photo"
+          }
+        }
+      }
+    },
+    "Tafelbild entfernt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board photo removed"
+          }
+        }
+      }
+    },
+    "Tafelbild gesichert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board photo saved"
+          }
+        }
+      }
+    },
+    "Tafelbild konnte nicht gesichert werden: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board photo could not be saved: %@"
+          }
+        }
+      }
+    },
+    "Tafelbilder" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board photos"
+          }
+        }
+      }
+    },
+    "Tafelbilder aufgenommen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Board photos taken"
+          }
+        }
+      }
+    },
+    "Tag" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Day"
           }
         }
       }
@@ -5327,6 +8225,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "tap never finishes"
+          }
+        }
+      }
+    },
+    "Teilt die Klasse zufällig in Gruppen ein – nach Gruppengröße oder Anzahl, mit PDF zum Drucken." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Splits the class into random groups – by group size or number of groups, with a PDF for printing."
           }
         }
       }
@@ -5371,6 +8279,16 @@
         }
       }
     },
+    "Telefon und E-Mail in den Schuleinstellungen eintragen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add phone and email in the school settings"
+          }
+        }
+      }
+    },
     "Termin" : {
       "localizations" : {
         "en" : {
@@ -5387,6 +8305,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Delete appointment"
+          }
+        }
+      }
+    },
+    "Test" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiz"
           }
         }
       }
@@ -5457,6 +8385,16 @@
         }
       }
     },
+    "Testraum 101" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test room 101"
+          }
+        }
+      }
+    },
     "Thüringen" : {
       "localizations" : {
         "en" : {
@@ -5497,6 +8435,16 @@
         }
       }
     },
+    "Timer-Minuten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer minutes"
+          }
+        }
+      }
+    },
     "Tippen Sie auf einen freien Tisch und dann auf einen Schüler – oder ziehen Sie einen Schüler auf einen Tisch." : {
       "localizations" : {
         "en" : {
@@ -5523,6 +8471,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Title"
+          }
+        }
+      }
+    },
+    "Titel (z. B. Klassenarbeit 2)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title (e.g. Class test 2)"
           }
         }
       }
@@ -5554,6 +8512,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Add the subjects you teach to the class."
+          }
+        }
+      }
+    },
+    "Tragen Sie die Noten selbst ein – die App rechnet nichts aus." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the grades yourself – the app doesn’t calculate anything."
+          }
+        }
+      }
+    },
+    "Tragen Sie für die %@ Fächer ein, um Tafelbilder zu speichern." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add subjects for %@ to save board photos."
           }
         }
       }
@@ -5648,6 +8626,26 @@
         }
       }
     },
+    "Unterschrieben, für den Wandertag" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed, for the school trip"
+          }
+        }
+      }
+    },
+    "Untertitel (optional)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtitle (optional)"
+          }
+        }
+      }
+    },
     "Untertitel (z. B. Physikraum, 2. OG)" : {
       "localizations" : {
         "en" : {
@@ -5708,6 +8706,42 @@
         }
       }
     },
+    "Verspätet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Late"
+          }
+        }
+      }
+    },
+    "Verspätet · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Late · %@"
+          }
+        }
+      }
+    },
+    "Verspätet · %@ (%lld min)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Verspätet · %1$@ (%2$lld min)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Late · %1$@ (%2$lld min)"
+          }
+        }
+      }
+    },
     "Vertretungsplan" : {
       "localizations" : {
         "en" : {
@@ -5738,6 +8772,52 @@
         }
       }
     },
+    "Von einem Elternteil, wöchentlich" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "By a parent, weekly"
+          }
+        }
+      }
+    },
+    "Vor der Klasse präsentiert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presented to the class"
+          }
+        }
+      }
+    },
+    "Vorgaben für %@ (aus „%@“ und der Schulform in den Schuleinstellungen). Gilt nur für %@ in %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Vorgaben für %1$@ (aus „%2$@“ und der Schulform in den Schuleinstellungen). Gilt nur für %3$@ in %4$@."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defaults for %1$@ (from “%2$@” and the school type in the school settings). Applies only to %3$@ in %4$@."
+          }
+        }
+      }
+    },
+    "Vorgaben wiederherstellen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore defaults"
+          }
+        }
+      }
+    },
     "Vorherige Tage" : {
       "localizations" : {
         "en" : {
@@ -5754,6 +8834,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Previous week"
+          }
+        }
+      }
+    },
+    "Vorlagen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Templates"
           }
         }
       }
@@ -5778,6 +8868,26 @@
         }
       }
     },
+    "Vorschau des neuesten Tafelbilds der Klasse – öffnet den Tab „Tafelbild“ mit dem Fach." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preview of the class’s latest board photo – opens the “Board” tab with its subject."
+          }
+        }
+      }
+    },
+    "Vortrag" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Talk"
+          }
+        }
+      }
+    },
     "Wach halten gilt, solange die App geöffnet ist." : {
       "localizations" : {
         "en" : {
@@ -5794,6 +8904,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "When you next teach the class – opens the calendar."
+          }
+        }
+      }
+    },
+    "War an dem Tag abwesend" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was absent that day"
+          }
+        }
+      }
+    },
+    "Was ist aufgefallen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What did you notice?"
           }
         }
       }
@@ -5874,6 +9004,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Which card would you like and what should it show?\n\n"
+          }
+        }
+      }
+    },
+    "Wenigste Beobachtungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fewest observations"
           }
         }
       }
@@ -6108,6 +9248,16 @@
         }
       }
     },
+    "Zufallsauswahlen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Random picks"
+          }
+        }
+      }
+    },
     "Zufällig verteilen" : {
       "localizations" : {
         "en" : {
@@ -6138,12 +9288,90 @@
         }
       }
     },
+    "Zuletzt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latest"
+          }
+        }
+      }
+    },
+    "Zuletzt am %@ um %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Zuletzt am %1$@ um %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last on %1$@ at %2$@"
+          }
+        }
+      }
+    },
+    "Zuletzt heute um %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last today at %@"
+          }
+        }
+      }
+    },
+    "Zuletzt heute um 09:12" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last today at 9:12 AM"
+          }
+        }
+      }
+    },
     "Zuletzt importiert: %@." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Last imported: %@."
+          }
+        }
+      }
+    },
+    "zuletzt „%@“ am %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "zuletzt „%1$@“ am %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "last “%1$@” on %2$@"
+          }
+        }
+      }
+    },
+    "zuletzt „%@“ um %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "zuletzt „%1$@“ um %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "last “%1$@” at %2$@"
           }
         }
       }
@@ -6218,6 +9446,16 @@
         }
       }
     },
+    "Ø %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ø %@"
+          }
+        }
+      }
+    },
     "über %@" : {
       "localizations" : {
         "en" : {
@@ -6234,6 +9472,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Long-press a student to clear their seat."
+          }
+        }
+      }
+    },
+    "Überblick" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overview"
           }
         }
       }
@@ -6294,6 +9542,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "“%@” installed"
+          }
+        }
+      }
+    },
+    "− o +" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "− o +"
+          }
+        }
+      }
+    },
+    "− − − bis + + + (7 Stufen)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "− − − to + + + (7 levels)"
           }
         }
       }

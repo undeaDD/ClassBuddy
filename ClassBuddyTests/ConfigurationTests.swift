@@ -77,7 +77,7 @@ struct ConfigurationTests {
         let grouped = AppTabSection.allCases.flatMap(\.tabs)
         #expect(Set(grouped) == Set(AppTab.allCases))
         #expect(grouped.count == AppTab.allCases.count)
-        #expect(AppTabSection.schoolClass.tabs == [.rooms, .notes])
+        #expect(AppTabSection.schoolClass.tabs == [.rooms, .board, .checklists, .notes])
         #expect(AppTabSection.other.tabs == [.feedback, .settings])
         #expect(AppTabSection.titled == [.schoolClass, .other])
     }

@@ -61,6 +61,8 @@ enum AppPreference {
     static let startTab = "app.startTab"
     /// Timer-Ende nur mit Vibration statt Ton (nur iPhone, Standard: aus).
     static let timerVibratesOnly = "app.timerVibratesOnly"
+    /// iPad: Tab-Leiste wie auf dem iPhone statt oben zentrierter Leiste mit Sidebar (Standard: aus).
+    static let padUsesPhoneTabBar = "app.padUsesPhoneTabBar"
 }
 
 /// Einstellungen → App-Einstellungen: Darstellung, App-Sperre, lokale Daten.
@@ -77,6 +79,7 @@ struct AppSettingsView: View {
     @AppStorage(AppPreference.hapticFeedback) private var hapticFeedback = false
     @AppStorage(AppPreference.startTab) private var startTab: AppTab = .dashboard
     @AppStorage(AppPreference.timerVibratesOnly) private var timerVibratesOnly = false
+    @AppStorage(AppPreference.padUsesPhoneTabBar) private var padUsesPhoneTabBar = false
     @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
     @AppStorage(AppAccent.storageKey) private var accent = AppAccent.defaultValue
 
@@ -170,10 +173,21 @@ struct AppSettingsView: View {
                 Toggle(isOn: $minimizesBarsOnScroll) {
                     Label("UI Minimieren", icon: .swipeLeftGesture)
                 }
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    // Platzhalter-Icon, bis das eigene da ist.
+                    Toggle(isOn: $padUsesPhoneTabBar) {
+                        Label("iPhone-Tab-Leiste", icon: .homeTable)
+                    }
+                }
             } header: {
                 Text("Darstellung")
             } footer: {
-                Text("Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Leisten beim Scrollen.")
+                Text(UIDevice.current.userInterfaceIdiom == .pad
+                    ? loc("""
+                        Tab-Titel gibt es nur in der iPhone-Tab-Leiste. UI Minimieren verkleinert die Leisten beim Scrollen. \
+                        Die iPhone-Tab-Leiste ersetzt die Leiste oben und die Seitenleiste.
+                        """)
+                    : loc("Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Leisten beim Scrollen."))
             }
 
             IconThemeSection()
@@ -295,6 +309,7 @@ struct AppSettingsView: View {
             if let imported = result.settings.appearance { appearance = imported }
             if let imported = result.settings.accent { accent = imported }
             if let imported = result.settings.iconTheme { IconManager.shared.theme = imported }
+            for (stat, value) in result.settings.funStats ?? [:] { stat.set(value) }
             if let imported = result.settings.language, imported != language {
                 AppLanguage.current = imported
                 language = imported
@@ -350,15 +365,12 @@ enum LocalDataStore {
 
     /// Löscht alle Datensätze und kopierten Dokumente.
     static func deleteAll(in context: ModelContext) throws {
-        try context.delete(model: SeatAssignment.self)
-        try context.delete(model: Student.self)
-        try context.delete(model: Lesson.self)
-        try context.delete(model: DashboardLink.self)
-        try context.delete(model: CalendarEntry.self)
-        try context.delete(model: Holiday.self)
-        try context.delete(model: SchoolClass.self)
-        try context.delete(model: RoomElement.self)
-        try context.delete(model: Room.self)
+        // Einzeln: Sammel-Löschen scheitert, sobald Schüler mit Beziehungen existieren.
+        try context.deleteEach(
+            SeatAssignment.self, BoardPhoto.self, ChecklistCheck.self, Checklist.self, StudentObservation.self, Absence.self,
+            SubjectSettings.self, AssessmentResult.self, Assessment.self, PeriodGrade.self, Student.self, Lesson.self,
+            DashboardLink.self, CalendarEntry.self, Holiday.self, SchoolClass.self, RoomElement.self, Room.self
+        )
         try context.save()
         try? FileManager.default.removeItem(at: LinkFileStore.directory)
         FaviconStore.removeAll()
@@ -367,6 +379,19 @@ enum LocalDataStore {
 
 nonisolated extension UTType {
     static let xlsx = UTType("org.openxmlformats.spreadsheetml.sheet") ?? .data
+}
+
+extension ModelContext {
+    /// Alle Datensätze der Typen einzeln löschen (Löschregeln greifen, anders als beim Sammel-Löschen).
+    func deleteEach(_ types: any PersistentModel.Type...) throws {
+        for type in types {
+            try deleteAll(of: type)
+        }
+    }
+
+    private func deleteAll<T: PersistentModel>(of type: T.Type) throws {
+        try fetch(FetchDescriptor<T>()).forEach(delete)
+    }
 }
 
 /// .xlsx-Datei für den Export-Dialog („Sichern in Dateien“).

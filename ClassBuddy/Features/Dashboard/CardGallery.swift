@@ -16,13 +16,18 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
     case dailyBoost = "tool.dailyBoost"
     case room = "stat.room"
     case noiseMeter = "tool.noiseMeter"
+    case groups = "tool.groups"
+    case lastBoard = "stat.lastBoard"
+    case secretariat = "tool.secretariat"
+    case checklists = "tool.checklists"
 
     var id: String { rawValue }
 
     var isHiddenByDefault: Bool {
         switch self {
         case .students, .nextLesson: false
-        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost, .room, .noiseMeter: true
+        case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost, .room,
+             .noiseMeter, .groups, .lastBoard, .secretariat, .checklists: true
         }
     }
 
@@ -45,6 +50,10 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dailyBoost: loc("Tagesmotivation")
         case .room: loc("Aktueller Raum")
         case .noiseMeter: loc("Lautstärke")
+        case .groups: loc("Gruppen")
+        case .lastBoard: loc("Letztes Tafelbild")
+        case .secretariat: loc("Sekretariat")
+        case .checklists: loc("Checklisten")
         }
     }
 
@@ -62,6 +71,10 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dailyBoost: loc("Ein Glückskeks-Spruch für den Tag, lokal mit Apple Intelligence – antippen für einen neuen.")
         case .room: loc("Raum der laufenden bzw. nächsten Stunde – öffnet den Sitzplan.")
         case .noiseMeter: loc("Lautstärke-Ampel über das Mikrofon – antippen zum Ein- und Ausschalten. Es wird nichts aufgenommen.")
+        case .groups: loc("Teilt die Klasse zufällig in Gruppen ein – nach Gruppengröße oder Anzahl, mit PDF zum Drucken.")
+        case .lastBoard: loc("Vorschau des neuesten Tafelbilds der Klasse – öffnet den Tab „Tafelbild“ mit dem Fach.")
+        case .secretariat: loc("Sekretariat anrufen oder anschreiben – Nummer und Adresse aus den Schuleinstellungen.")
+        case .checklists: loc("Fortschritt der zuletzt bearbeiteten Checkliste – öffnet sie direkt.")
         }
     }
 
@@ -79,6 +92,10 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dailyBoost: .custom(.quoteSolid)
         case .room: AppTab.rooms.symbol
         case .noiseMeter: .custom(.volume)
+        case .groups: AppTab.students.symbol
+        case .lastBoard: AppTab.board.symbol
+        case .secretariat: .custom(.bank)
+        case .checklists: AppTab.checklists.symbol
         }
     }
 
@@ -97,6 +114,10 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .dailyBoost: (loc("Der weise Lehrer hat einen Ersatzmarker. Der weisere hat zwei."), "")
         case .room: ("R 204", loc("Jetzt · 3. Stunde · 7b"))
         case .noiseMeter: (loc("58 dB"), loc("Angenehm ruhig"))
+        case .groups: ("6 × 4", loc("Zuletzt heute um 09:12"))
+        case .lastBoard: (loc("Mathematik"), loc("Heute um 09:35"))
+        case .secretariat: (loc("Anrufen · E-Mail"), loc("Gymnasium am See"))
+        case .checklists: ("18/24", loc("Name in die Bücher eingetragen"))
         }
     }
 }

@@ -10,14 +10,20 @@ struct SchoolSettingsView: View {
     @Query(sort: \Holiday.startDate) private var holidays: [Holiday]
 
     @State private var isImporting = false
+    /// Aus PLZ und Ort erkanntes Bundesland (Hinweis im Footer).
+    @State private var detectedState: String?
 
     var body: some View {
         @Bindable var settings = settings
         let school = $settings.values.school
         Form {
-            Section("Schule") {
+            Section {
                 TextField("Name der Schule", text: school.name)
                     .textContentType(.organizationName)
+                Picker("Schulform", selection: $settings.values.schoolType) {
+                    Text("Nicht festgelegt").tag(SchoolType?.none)
+                    ForEach(SchoolType.allCases) { Text($0.title).tag(Optional($0)) }
+                }
                 HStack {
                     TextField("Website", text: school.website)
                         .textContentType(.URL)
@@ -47,6 +53,10 @@ struct SchoolSettingsView: View {
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+            } header: {
+                Text("Schule")
+            } footer: {
+                Text(schoolFooter)
             }
 
             Section {
@@ -92,6 +102,18 @@ struct SchoolSettingsView: View {
                 }
             }
 
+            Section {
+                NavigationLink {
+                    AssessmentTypesView()
+                } label: {
+                    Label("Leistungsarten und Bereiche", icon: .graduationCap)
+                }
+            } header: {
+                Text("Bewertungen")
+            } footer: {
+                Text("Skala und Notensystem stellen Sie je Klasse und Fach in der Schülerakte ein.")
+            }
+
             Section("Kalender") {
                 Toggle(isOn: $settings.values.showWeekends) {
                     Label("Wochenende anzeigen", icon: .calendar)
@@ -128,6 +150,24 @@ struct SchoolSettingsView: View {
             }
         }
         .navigationTitle("Schuleinstellungen")
+        // Bundesland aus PLZ und Ort (über dieselbe Ortssuche wie das Wetter, kurz nach der letzten Eingabe).
+        .task(id: "\(settings.values.school.postalCode)|\(settings.values.school.city)") {
+            try? await Task.sleep(for: .seconds(1))
+            guard !Task.isCancelled, let code = await WeatherService.federalStateCode(for: settings.values.school) else { return }
+            detectedState = code
+            settings.values.federalState = code
+        }
+    }
+
+    private var schoolFooter: String {
+        var text = loc("""
+            PLZ und Ort bestimmen das Wetter auf der Übersicht und das Bundesland für die Ferien. \
+            Telefon und E-Mail nutzt die Kachel „Sekretariat“.
+            """)
+        if let detected = detectedState {
+            text += " " + loc("Bundesland erkannt: \(HolidayImporter.displayName(ofState: detected)).")
+        }
+        return text
     }
 
     private var upcomingHolidays: [Holiday] {
@@ -141,16 +181,15 @@ struct SchoolSettingsView: View {
             Es werden nur öffentliche Ferientermine abgerufen.
             """)]
         if let date = settings.values.holidaysImportedAt {
-            parts.append(loc("Zuletzt importiert: \(date.appFormatted(date: .abbreviated, time: .shortened))."))
+            parts.append(loc("Zuletzt importiert: \(date.appDateTime)."))
         }
         return parts.joined(separator: " ")
     }
 
     private func dateRange(_ holiday: Holiday) -> String {
-        let style = Date.FormatStyle.dateTime.day().month(.abbreviated)
         return Calendar.school.isDate(holiday.startDate, inSameDayAs: holiday.endDate)
-            ? holiday.startDate.appFormatted(style)
-            : "\(holiday.startDate.appFormatted(style)) – \(holiday.endDate.appFormatted(style))"
+            ? holiday.startDate.appDate
+            : "\(holiday.startDate.appDate) – \(holiday.endDate.appDate)"
     }
 
     private func importHolidays() async {

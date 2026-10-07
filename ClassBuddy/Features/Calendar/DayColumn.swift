@@ -359,7 +359,7 @@ private struct EntryCard: View {
     }
 
     private var time: some View {
-        Text(entry.start.appFormatted(date: .omitted, time: .shortened))
+        Text(entry.start.appTime)
             .font(.caption2)
     }
 

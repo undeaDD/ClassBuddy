@@ -11,6 +11,8 @@ extension Backup {
         var language: AppLanguage?
         var accent: String?
         var iconTheme: IconTheme?
+        /// Zähler der Statistiken, nur wenn die Datei das Blatt enthält.
+        var funStats: [FunStat: Int]?
     }
 
     /// Ersetzt die App-Daten durch den Inhalt der Datei.
@@ -34,20 +36,26 @@ extension Backup {
         let existingPhotos = try context.fetch(FetchDescriptor<Student>())
             .reduce(into: [UUID: Data]()) { photos, student in photos[student.id] = student.photo }
 
+        // Tafelbilder stehen nicht in der Datei: die von Klassen mit gleicher ID (und weiterhin vorhandenem Fach) behalten.
+        let boardPhotos = try context.fetch(FetchDescriptor<BoardPhoto>())
+        let existingBoardPhotos = boardPhotos.compactMap { photo in
+            photo.schoolClass.map { (classID: $0.id, subject: photo.subject, takenAt: photo.takenAt, data: photo.imageData) }
+        }
+
         // Räume nur ersetzen, wenn die Datei sie enthält (ältere Exporte haben keine Raum-Blätter).
         // Sitzplan-Zuordnungen kommen aus dem Blatt „Sitzplätze“ (ältere Exporte: entfallen mit den Schülern).
         let replacesRooms = workbook[Sheet.rooms] != nil
-        try context.delete(model: SeatAssignment.self)
-        try context.delete(model: Student.self)
-        try context.delete(model: Lesson.self)
-        try context.delete(model: DashboardLink.self)
-        try context.delete(model: CalendarEntry.self)
-        try context.delete(model: Holiday.self)
-        try context.delete(model: SchoolClass.self)
+        // Einzeln löschen und speichern, bevor neu angelegt wird: Sammel-Löschen scheitert, sobald Schüler mit
+        // Beziehungen existieren, und gleiche IDs dürfen erst nach dem Löschen wieder eingefügt werden.
+        boardPhotos.forEach(context.delete)
+        try context.deleteEach(SeatAssignment.self, ChecklistCheck.self, Checklist.self, StudentObservation.self, Absence.self,
+                               SubjectSettings.self, AssessmentResult.self, Assessment.self, PeriodGrade.self,
+                               Student.self, Lesson.self, DashboardLink.self, CalendarEntry.self,
+                               Holiday.self, SchoolClass.self)
         if replacesRooms {
-            try context.delete(model: RoomElement.self)
-            try context.delete(model: Room.self)
+            try context.deleteEach(RoomElement.self, Room.self)
         }
+        try context.save()
 
         var importer = Importer(context: context, existingFiles: existingFiles, existingPhotos: existingPhotos)
         if replacesRooms {
@@ -62,6 +70,17 @@ extension Backup {
         importer.importLinks(table(Sheet.links))
         importer.importHolidays(table(Sheet.holidays))
         importer.importSeats(table(Sheet.seats))
+        importer.importChecklists(table(Sheet.checklists), checks: table(Sheet.checklistChecks))
+        importer.importAssessments(
+            table(Sheet.assessments), results: table(Sheet.assessmentResults), periodGrades: table(Sheet.periodGrades)
+        )
+        importer.importRecords(
+            observations: table(Sheet.observations), absences: table(Sheet.absences), settings: table(Sheet.subjectSettings)
+        )
+        for photo in existingBoardPhotos {
+            guard let schoolClass = importer.classesByID[photo.classID], schoolClass.subjects.contains(photo.subject) else { continue }
+            context.insert(BoardPhoto(subject: photo.subject, takenAt: photo.takenAt, imageData: photo.data, schoolClass: schoolClass))
+        }
 
         try context.save()
         removeUnreferencedFiles(keeping: importer.keptFileLocations)
@@ -251,6 +270,121 @@ extension Backup {
             return shapes
         }
 
+        mutating func importChecklists(_ rows: [Table.Row], checks: [Table.Row]) {
+            var checklistsByID: [UUID: Checklist] = [:]
+            for row in rows {
+                guard let schoolClass = UUID(uuidString: row["Klassen-ID"]).flatMap({ classesByID[$0] }) else { continue }
+                let created = Cell.parseDateTime(row["Erstellt"]) ?? .now
+                let checklist = Checklist(
+                    id: UUID(uuidString: row["ID"]).flatMap { checklistsByID[$0] == nil ? $0 : nil } ?? UUID(),
+                    title: row["Titel"],
+                    subtitle: row["Untertitel"],
+                    subject: row["Fach"],
+                    createdAt: created,
+                    updatedAt: Cell.parseDateTime(row["Bearbeitet"]) ?? created,
+                    schoolClass: schoolClass
+                )
+                checklist.dueDate = Cell.parseDate(row["Enddatum"])
+                context.insert(checklist)
+                checklistsByID[checklist.id] = checklist
+                summary.checklists += 1
+            }
+            for row in checks {
+                guard let checklist = UUID(uuidString: row["Checklisten-ID"]).flatMap({ checklistsByID[$0] }),
+                      let student = UUID(uuidString: row["Schüler-ID"]).flatMap({ studentsByID[$0] }),
+                      checklist.check(for: student) == nil
+                else { continue }
+                context.insert(ChecklistCheck(
+                    checkedAt: Cell.parseDateTime(row["Abgehakt am"]) ?? .now, checklist: checklist, student: student
+                ))
+            }
+        }
+
+        /// Leistungen mit Ergebnissen und die selbst eingetragenen Noten.
+        mutating func importAssessments(_ rows: [Table.Row], results: [Table.Row], periodGrades: [Table.Row]) {
+            var assessmentsByID: [UUID: Assessment] = [:]
+            for row in rows {
+                guard let schoolClass = UUID(uuidString: row["Klassen-ID"]).flatMap({ classesByID[$0] }) else { continue }
+                let date = Cell.parseDate(row["Datum"]) ?? .now
+                let assessment = Assessment(
+                    id: UUID(uuidString: row["ID"]).flatMap { assessmentsByID[$0] == nil ? $0 : nil } ?? UUID(),
+                    subject: row["Fach"], title: row["Titel"], typeName: row["Art"],
+                    area: AssessmentArea(rawValue: row["Bereich"]) ?? .other, date: date,
+                    maxPoints: Double(row["Höchstpunktzahl"].replacingOccurrences(of: ",", with: ".")),
+                    createdAt: Cell.parseDateTime(row["Erstellt"]) ?? date, schoolClass: schoolClass
+                )
+                context.insert(assessment)
+                assessmentsByID[assessment.id] = assessment
+                summary.assessments += 1
+            }
+            for row in results {
+                guard let assessment = UUID(uuidString: row["Leistungs-ID"]).flatMap({ assessmentsByID[$0] }),
+                      let student = UUID(uuidString: row["Schüler-ID"]).flatMap({ studentsByID[$0] }),
+                      assessment.result(for: student) == nil
+                else { continue }
+                let result = AssessmentResult(
+                    grade: row["Note"], rawPoints: Double(row["Rohpunkte"].replacingOccurrences(of: ",", with: ".")),
+                    isMissing: Cell.parseBool(row["Fehlt"]) ?? false, assessment: assessment, student: student
+                )
+                result.note = row["Notiz"]
+                result.editedAt = Cell.parseDateTime(row["Geändert"])
+                result.previousGrade = row["Vorher"]
+                context.insert(result)
+            }
+            for row in periodGrades {
+                guard let student = UUID(uuidString: row["Schüler-ID"]).flatMap({ studentsByID[$0] }),
+                      let period = GradePeriod(rawValue: row["Abschnitt"]), let scope = GradeScope(rawValue: row["Bereich"]),
+                      !row["Note"].isEmpty
+                else { continue }
+                let grade = PeriodGrade(
+                    subject: row["Fach"], schoolYear: row["Schuljahr"], period: period, scope: scope, grade: row["Note"], student: student
+                )
+                grade.editedAt = Cell.parseDateTime(row["Geändert"])
+                grade.previousGrade = row["Vorher"]
+                context.insert(grade)
+            }
+        }
+
+        /// Schülerakte: Beobachtungen, Fehlzeiten und Bewertungs-Einstellungen.
+        mutating func importRecords(observations: [Table.Row], absences: [Table.Row], settings: [Table.Row]) {
+            for row in observations {
+                guard let student = UUID(uuidString: row["Schüler-ID"]).flatMap({ studentsByID[$0] }),
+                      let date = Cell.parseDateTime(row["Datum"])
+                else { continue }
+                let observation = StudentObservation(
+                    subject: row["Fach"], date: date, slotIndex: (Int(row["Stunde"]) ?? 0) - 1,
+                    kind: StudentObservation.Kind(rawValue: row["Art"]) ?? .note,
+                    scale: ObservationScale(rawValue: row["Skala"]) ?? .sevenStep,
+                    value: Int(row["Wert"]) ?? 0, note: row["Notiz"], createdAt: Cell.parseDateTime(row["Erstellt"]) ?? date,
+                    student: student
+                )
+                observation.editedAt = Cell.parseDateTime(row["Geändert"])
+                observation.previousLabel = row["Vorher"]
+                context.insert(observation)
+                summary.observations += 1
+            }
+            for row in absences {
+                guard let student = UUID(uuidString: row["Schüler-ID"]).flatMap({ studentsByID[$0] }),
+                      let day = Cell.parseDate(row["Tag"])
+                else { continue }
+                context.insert(Absence(
+                    subject: row["Fach"], day: day, slotIndex: (Int(row["Stunde"]) ?? 0) - 1,
+                    kind: Absence.Kind(rawValue: row["Art"]) ?? .absent, arrivedAt: Cell.parseDateTime(row["Eingetroffen"]),
+                    createdAt: Cell.parseDateTime(row["Erstellt"]) ?? day, student: student
+                ))
+            }
+            for row in settings {
+                guard let schoolClass = UUID(uuidString: row["Klassen-ID"]).flatMap({ classesByID[$0] }),
+                      !schoolClass.subjectSettings.contains(where: { $0.subject == row["Fach"] })
+                else { continue }
+                context.insert(SubjectSettings(
+                    subject: row["Fach"], scale: ObservationScale(rawValue: row["Skala"]) ?? .sevenStep,
+                    gradeSystem: GradeSystem(rawValue: row["Notensystem"]) ?? .grades,
+                    hasWrittenWork: Cell.parseBool(row["Schriftliche Arbeiten"]) ?? true, schoolClass: schoolClass
+                ))
+            }
+        }
+
         mutating func importHolidays(_ rows: [Table.Row]) {
             for row in rows {
                 guard let start = Cell.parseDate(row["Beginn"]) else { continue }
@@ -300,7 +434,29 @@ extension Backup {
         let language = app.flatMap { app in AppLanguage(backupTitle: app["Sprache"]) }
         let accent = app.map { $0["Akzentfarbe"].trimmingCharacters(in: .whitespaces) }.flatMap { AppAccent.isValid($0) ? $0 : nil }
         let iconTheme = app.flatMap { app in IconManager.shared.themes.first { $0.title == app["Icons"] } }
-        return ImportedSettings(values: values, appearance: appearance, language: language, accent: accent, iconTheme: iconTheme)
+        let funStats = workbook[Sheet.funStats].map(KeyValues.init).map { sheet in
+            FunStat.allCases.reduce(into: [FunStat: Int]()) { result, stat in
+                if let value = Int(sheet[stat.backupKey]) { result[stat] = value }
+            }
+        }
+        if let type = app.flatMap({ SchoolType(rawValue: $0["Schulform"]) }) { values.schoolType = type }
+        if let app {
+            values.areaNames = [
+                AssessmentArea.written.rawValue: app["Bereich schriftlich"], AssessmentArea.other.rawValue: app["Bereich sonstige"],
+            ].filter { !$0.value.isEmpty }
+        }
+        if let types = workbook[Sheet.assessmentTypes].map(Table.init), !types.rows.isEmpty {
+            values.assessmentTypes = types.rows.compactMap { row in
+                guard !row["Name"].isEmpty else { return nil }
+                return AssessmentType(
+                    id: UUID(uuidString: row["ID"]) ?? UUID(), name: row["Name"],
+                    area: AssessmentArea(rawValue: row["Bereich"]) ?? .other, isHidden: Cell.parseBool(row["Ausgeblendet"]) ?? false
+                )
+            }
+        }
+        return ImportedSettings(
+            values: values, appearance: appearance, language: language, accent: accent, iconTheme: iconTheme, funStats: funStats
+        )
     }
 
     /// Kopierte Dokumente, die nach dem Import keiner Kachel mehr gehören, entfernen.

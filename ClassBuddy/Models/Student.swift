@@ -27,6 +27,21 @@ final class Student {
     @Relationship(deleteRule: .cascade, inverse: \SeatAssignment.student)
     var seatAssignments: [SeatAssignment] = []
 
+    /// Haken in Checklisten; verschwinden mit dem Schüler.
+    @Relationship(deleteRule: .cascade, inverse: \ChecklistCheck.student)
+    var checklistChecks: [ChecklistCheck] = []
+
+    /// Schülerakte: Beobachtungen und Fehlzeiten (verschwinden mit dem Schüler).
+    @Relationship(deleteRule: .cascade, inverse: \StudentObservation.student)
+    var observations: [StudentObservation] = []
+    @Relationship(deleteRule: .cascade, inverse: \Absence.student)
+    var absences: [Absence] = []
+    /// Ergebnisse in Leistungen und selbst eingetragene Noten.
+    @Relationship(deleteRule: .cascade, inverse: \AssessmentResult.student)
+    var assessmentResults: [AssessmentResult] = []
+    @Relationship(deleteRule: .cascade, inverse: \PeriodGrade.student)
+    var periodGrades: [PeriodGrade] = []
+
     init(
         id: UUID = UUID(),
         firstName: String,

@@ -71,10 +71,6 @@ struct RoomEditorView: View {
                 .navigationTitle(details.trimmedName.isEmpty ? (room == nil ? loc("Neuer Raum") : loc("Raum")) : details.trimmedName)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar { toolbar }
-                .sheet(isPresented: $isDetailsPresented) {
-                    RoomDetailsView(details: $details)
-                        .softScrollEdges()
-                }
                 .confirmationDialog("Änderungen verwerfen?", isPresented: $isDiscardConfirmationPresented) {
                     Button("Verwerfen", role: .destructive) { dismiss() }
                 }
@@ -90,6 +86,11 @@ struct RoomEditorView: View {
                     // Neuer Raum: zuerst einen Namen vergeben.
                     if room == nil { isDetailsPresented = true }
                 }
+        }
+        // Am NavigationStack statt am Inhalt: sonst übernimmt das Sheet das xmark „Verwerfen“ des Editors.
+        .sheet(isPresented: $isDetailsPresented) {
+            RoomDetailsView(details: $details)
+                .softScrollEdges()
         }
         .interactiveDismissDisabled(hasChanges)
     }

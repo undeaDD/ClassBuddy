@@ -29,6 +29,22 @@ final class SchoolClass {
     @Relationship(deleteRule: .cascade, inverse: \DashboardLink.schoolClass)
     var dashboardLinks: [DashboardLink] = []
 
+    /// Tafelbilder, eins je Fach (siehe `BoardPhoto`).
+    @Relationship(deleteRule: .cascade, inverse: \BoardPhoto.schoolClass)
+    var boardPhotos: [BoardPhoto] = []
+
+    /// Checklisten der Klasse (je Fach oder für alle Fächer).
+    @Relationship(deleteRule: .cascade, inverse: \Checklist.schoolClass)
+    var checklists: [Checklist] = []
+
+    /// Bewertungs-Einstellungen je Fach (ohne Eintrag gelten die Vorgaben der Stufe).
+    @Relationship(deleteRule: .cascade, inverse: \SubjectSettings.schoolClass)
+    var subjectSettings: [SubjectSettings] = []
+
+    /// Leistungen (Klassenarbeiten, Tests, Referate …) je Fach.
+    @Relationship(deleteRule: .cascade, inverse: \Assessment.schoolClass)
+    var assessments: [Assessment] = []
+
     /// Reihenfolge der Übersichts-Kacheln (Kachel-IDs, siehe `DashboardView`).
     var dashboardOrder: [String] = []
     /// Ausgeblendete Übersichts-Kacheln (nur im Anordnen-Modus sichtbar).
@@ -38,6 +54,8 @@ final class SchoolClass {
     var dashboardKnownCards: [String] = []
     /// Entfernte eingebaute Kacheln (weder sichtbar noch unter „Ausgeblendet“, über die Galerie wieder hinzufügbar).
     var dashboardRemoved: [String] = []
+    /// Letzte Zufallsgruppen (JSON, siehe `SchoolClass.lastGroups`).
+    var lastGroupsData: Data?
 
     init(
         id: UUID = UUID(),

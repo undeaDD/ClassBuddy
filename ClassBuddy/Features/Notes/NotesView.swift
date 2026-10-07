@@ -1,15 +1,94 @@
+import QuickLook
+import SwiftData
 import SwiftUI
 
-/// Notizen-Tab: Schüler der ausgewählten Klasse (alphabetisch mit Schnell-Index, durchsuchbar) → Fächer → Notizen.
+/// Bewertungen-Tab: „Schüler“ (alphabetisch mit Schnell-Index, durchsuchbar → Fächer → Schülerakte;
+/// Export der Notenübersicht bzw. Mitarbeitsliste je Fach) oder „Leistungen“ der Klasse
+/// (Klassenarbeiten, Tests, Referate … mit Noten je Schüler).
 struct NotesView: View {
+    @Environment(AppModel.self) private var app
+    @Environment(AppSecurity.self) private var security
+    @Query private var classes: [SchoolClass]
     @State private var searchText = ""
+    @State private var mode: Mode = .students
+    @State private var assessmentRoute: AssessmentEditorRoute?
+    /// Export (PDF / Excel) für Quick Look.
+    @State private var exportPreview: URL?
+
+    enum Mode: String, CaseIterable, Identifiable {
+        case students, assessments
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .students: loc("Schüler")
+            case .assessments: loc("Leistungen")
+            }
+        }
+    }
+
+    private var selectedClass: SchoolClass? {
+        classes.first { $0.id == app.selectedClassID }
+    }
 
     var body: some View {
         ClassScopedView { schoolClass in
-            content(for: schoolClass)
+            Group {
+                switch mode {
+                case .students: content(for: schoolClass)
+                case .assessments: AssessmentListView(schoolClass: schoolClass, editorRoute: $assessmentRoute)
+                }
+            }
+            // Platz für die schwebende Leiste unten (mit dem Daumen erreichbar).
+            .contentMargins(.bottom, 72, for: .scrollContent)
+            .floatingBottomBar {
+                FloatingSegmentedPicker(title: loc("Ansicht"), selection: $mode) {
+                    ForEach(Mode.allCases) { Text($0.title).tag($0) }
+                }
+            }
         }
         .navigationTitle(AppTab.notes.title)
-        .appChrome(tab: .notes)
+        .appChrome(tab: .notes) {
+            if let selectedClass, !selectedClass.subjects.isEmpty {
+                switch mode {
+                case .students:
+                    exportMenu(for: selectedClass)
+                case .assessments:
+                    Button("Neue Leistung", icon: .plus) { assessmentRoute = .new(selectedClass, subject: nil) }
+                        .disabled(security.isPrivacyModeOn)
+                }
+            }
+        }
+        .quickLookPreview($exportPreview)
+        .sheet(item: $assessmentRoute) { AssessmentEditorView(route: $0) }
+        .onChange(of: security.isPrivacyModeOn) { _, isOn in
+            if isOn {
+                assessmentRoute = nil
+                exportPreview = nil
+            }
+        }
+    }
+
+    /// Export je Fach: Notenübersicht (PDF / Excel) und Mitarbeitsliste (PDF), Vorschau in Quick Look.
+    private func exportMenu(for schoolClass: SchoolClass) -> some View {
+        Menu {
+            ForEach(schoolClass.subjects, id: \.self) { subject in
+                Section(SchoolClass.displayName(ofSubject: subject)) {
+                    Button("Notenübersicht (PDF)", icon: .page) {
+                        exportPreview = GradeOverviewTable(schoolClass: schoolClass, subject: subject).pdfFile()
+                    }
+                    Button("Notenübersicht (Excel)", icon: .shareIos) {
+                        exportPreview = GradeOverviewTable(schoolClass: schoolClass, subject: subject).excelFile()
+                    }
+                    Button("Mitarbeitsliste (PDF)", icon: .page) {
+                        exportPreview = GradeOverviewTable(schoolClass: schoolClass, subject: subject).participationPDF()
+                    }
+                }
+            }
+        } label: {
+            Label("Exportieren", icon: .shareIos)
+        }
+        .disabled(security.isPrivacyModeOn)
     }
 
     @ViewBuilder
@@ -52,7 +131,7 @@ struct NotesView: View {
 
     /// „3 Notizen“ unter dem Namen.
     private static func noteCountText(for student: Student) -> String {
-        student.noteCount == 1 ? loc("1 Notiz") : loc("\(student.noteCount) Notizen")
+        StudentRecordFormat.count(student.noteCount)
     }
 }
 
@@ -69,8 +148,12 @@ struct StudentSubjectsView: View {
             }
             Section("Fächer") {
                 ForEach(subjects, id: \.self) { subject in
-                    NavigationLink(SchoolClass.displayName(ofSubject: subject)) {
-                        StudentNotesView(student: student, subject: subject)
+                    NavigationLink {
+                        StudentRecordView(student: student, subject: subject)
+                    } label: {
+                        LabeledContent(SchoolClass.displayName(ofSubject: subject)) {
+                            Text(StudentRecordFormat.count(student.observations(in: subject).count))
+                        }
                     }
                 }
             }
@@ -85,30 +168,6 @@ struct StudentSubjectsView: View {
             }
         }
         .navigationTitle(AppTab.notes.title)
-        .navigationBarTitleDisplayMode(.inline)
-        .privacyModeToolbar()
-    }
-}
-
-/// Notizen zu einem Schüler in einem Fach – vorerst Platzhalter (Planung in der Aufgabenliste im Projektordner).
-struct StudentNotesView: View {
-    let student: Student
-    let subject: String
-
-    var body: some View {
-        VStack(spacing: 0) {
-            StudentNameRow(student: student, size: 56)
-                .environment(\.avatarCutout, [Color(.systemGroupedBackground)])
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-            EmptyStateView(
-                title: loc("Noch keine Notizen"),
-                message: loc("Hier entstehen bald die Notizen für dieses Fach."),
-                symbol: AppTab.notes.symbol
-            )
-        }
-        .background(Color(.systemGroupedBackground))
-        .navigationTitle(SchoolClass.displayName(ofSubject: subject))
         .navigationBarTitleDisplayMode(.inline)
         .privacyModeToolbar()
     }
@@ -139,8 +198,8 @@ struct StudentNameRow: View {
 }
 
 extension Student {
-    /// Anzahl Notizen über alle Fächer – bis zum Notizen-Modell immer 0.
-    var noteCount: Int { 0 }
+    /// Anzahl Beobachtungen über alle Fächer.
+    var noteCount: Int { observations.count }
 }
 
 extension View {

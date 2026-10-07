@@ -28,6 +28,16 @@ enum Backup {
         static let breaks = "Pausen"
         static let profile = "Profil"
         static let app = "App"
+        static let funStats = "Statistiken"
+        static let checklists = "Checklisten"
+        static let checklistChecks = "Checklisten-Haken"
+        static let observations = "Beobachtungen"
+        static let absences = "Fehlzeiten"
+        static let subjectSettings = "Bewertung"
+        static let assessments = "Leistungen"
+        static let assessmentResults = "Leistungsergebnisse"
+        static let periodGrades = "Zeugnisnoten"
+        static let assessmentTypes = "Leistungsarten"
     }
 
     struct ImportSummary {
@@ -39,6 +49,9 @@ enum Backup {
         var holidays = 0
         var rooms = 0
         var seats = 0
+        var checklists = 0
+        var observations = 0
+        var assessments = 0
         var skippedDocuments = 0 // Dokument- und Bild-Kacheln ohne Datei
         var invalidRooms: [String] = [] // Räume mit ungültigem Grundriss
 
@@ -46,7 +59,7 @@ enum Backup {
             var parts = [
                 "\(classes) Klassen", "\(students) Schüler", "\(lessons) Stunden",
                 "\(entries) Termine", "\(links) Kacheln", "\(holidays) Ferien/Feiertage", "\(rooms) Räume",
-                "\(seats) Sitzplätze",
+                "\(seats) Sitzplätze", "\(checklists) Checklisten", "\(observations) Beobachtungen", "\(assessments) Leistungen",
             ]
             if skippedDocuments > 0 {
                 parts.append("\(skippedDocuments) Dokument-/Bild-Kacheln übersprungen (Datei nicht auf diesem Gerät)")
@@ -68,7 +81,12 @@ enum Backup {
 
     // MARK: Export
 
-    static func export(context: ModelContext, settings: SchoolSettings.Values, appearance: AppAppearance) throws -> Data {
+    static func export(
+        context: ModelContext,
+        settings: SchoolSettings.Values,
+        appearance: AppAppearance,
+        funStats: [FunStat: Int] = FunStat.currentValues()
+    ) throws -> Data {
         let classes = try context.fetch(FetchDescriptor<SchoolClass>(sortBy: [SortDescriptor(\.shortName)]))
         let entries = try context.fetch(FetchDescriptor<CalendarEntry>(sortBy: [SortDescriptor(\.start)]))
         let holidays = try context.fetch(FetchDescriptor<Holiday>(sortBy: [SortDescriptor(\.startDate)]))
@@ -85,7 +103,15 @@ enum Backup {
             roomsSheet(rooms),
             roomElementsSheet(rooms),
             seatsSheet(rooms),
-        ] + settingsSheets(settings, appearance: appearance))
+            checklistsSheet(classes),
+            checklistChecksSheet(classes),
+            observationsSheet(classes),
+            absencesSheet(classes),
+            subjectSettingsSheet(classes),
+            assessmentsSheet(classes),
+            assessmentResultsSheet(classes),
+            periodGradesSheet(classes),
+        ] + settingsSheets(settings, appearance: appearance) + [funStatsSheet(funStats)])
     }
 
     private static func infoSheet() -> XLSXSheet {
@@ -203,6 +229,10 @@ enum Backup {
         })
     }
 
+    private static func funStatsSheet(_ values: [FunStat: Int]) -> XLSXSheet {
+        XLSXSheet(name: Sheet.funStats, rows: [["Schlüssel", "Wert"]] + FunStat.allCases.map { [$0.backupKey, "\(values[$0] ?? 0)"] })
+    }
+
     private static func settingsSheets(_ settings: SchoolSettings.Values, appearance: AppAppearance) -> [XLSXSheet] {
         let school = settings.school
         let teacher = settings.teacher
@@ -229,8 +259,14 @@ enum Backup {
                 ["Geburtstag", Cell.date(teacher.birthday)], ["Geschlecht", teacher.gender?.title ?? ""],
                 ["Hauptfächer", Cell.list(teacher.subjects)],
             ]),
+            XLSXSheet(name: Sheet.assessmentTypes, rows: [
+                ["ID", "Name", "Bereich", "Ausgeblendet"],
+            ] + settings.assessmentTypes.map { [$0.id.uuidString, $0.name, $0.area.rawValue, Cell.bool($0.isHidden)] }),
             XLSXSheet(name: Sheet.app, rows: [
                 ["Schlüssel", "Wert"],
+                ["Schulform", settings.schoolType?.rawValue ?? ""],
+                ["Bereich schriftlich", settings.areaNames[AssessmentArea.written.rawValue] ?? ""],
+                ["Bereich sonstige", settings.areaNames[AssessmentArea.other.rawValue] ?? ""],
                 ["Erscheinungsbild", appearance.title],
                 ["Sprache", AppLanguage.stored.backupTitle],
                 ["Akzentfarbe", UserDefaults.standard.string(forKey: AppAccent.storageKey) ?? AppAccent.defaultValue],

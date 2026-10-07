@@ -12,7 +12,9 @@ struct SeatingPlanRoute: Identifiable {
 
 /// Sitzplan: freien Tisch antippen → Schüler wählen (iPhone: Sheet, iPad: Seitenleiste wie in Mail).
 /// Auf dem iPad lassen sich Schüler auch aus der Seitenleiste auf einen Tisch ziehen.
-/// Schüler auf einem Tisch: Antippen → Notizen, langes Drücken → Bearbeiten / Platz freigeben, gedrückt ziehen → anderer Tisch.
+/// Schüler auf einem Tisch: Antippen → Schnell-Leiste (Bewertung, Fehlzeit, Notiz; ohne Fächer: Akte),
+/// langes Drücken → Bearbeiten / Platz freigeben, gedrückt ziehen → anderer Tisch.
+/// Gestrichelte Tische: seit mindestens drei Stunden des Fachs ohne Beobachtung; abwesende Schüler sind abgeblendet.
 /// Die Lehrkraft sitzt (nur zur Anzeige) am Lehrerpult.
 struct SeatingPlanView: View {
     @Environment(\.dismiss) private var dismiss
@@ -21,6 +23,8 @@ struct SeatingPlanView: View {
     @Environment(AppSecurity.self) private var security
     @Environment(ToastCenter.self) private var toasts
     @Environment(SchoolSettings.self) private var settings
+    @Query private var lessons: [Lesson]
+    @Query private var holidays: [Holiday]
     let route: SeatingPlanRoute
 
     /// `nil` (Termin ohne Klasse): leerer Sitzplan nur mit Grundriss, z. B. zum Drucken.
@@ -30,6 +34,8 @@ struct SeatingPlanView: View {
     @State private var pendingAction: BulkAction?
     @State private var pdfPreview: URL?
     @State private var notesStudent: Student?
+    /// Schüler in der Schnell-Leiste.
+    @State private var quickStudent: Student?
     @State private var studentEditorRoute: StudentEditorRoute?
     @State private var roomEditorRoute: RoomEditorRoute?
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
@@ -69,6 +75,23 @@ struct SeatingPlanView: View {
 
     private var occupants: [UUID: Student] {
         schoolClass.map { SeatingPlan.occupants(in: room, schoolClass: $0) } ?? [:]
+    }
+
+    private var schedule: LessonSchedule {
+        LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots)
+    }
+
+    private var lessonContext: LessonContext? {
+        schoolClass.flatMap { SeatingPlanRecords.lessonContext(for: $0, schedule: schedule, preferred: [route.subject]) }
+    }
+
+    private var unobservedTables: Set<UUID> {
+        guard let schoolClass, let lessonContext else { return [] }
+        return SeatingPlanRecords.unobservedTables(occupants: occupants, classID: schoolClass.id, lesson: lessonContext, schedule: schedule)
+    }
+
+    private var absentTables: Set<UUID> {
+        lessonContext.map { SeatingPlanRecords.absentTables(occupants: occupants, lesson: $0) } ?? []
     }
 
     /// Schüler ohne Platz in diesem Raum, nach Vornamen sortiert und gefiltert.
@@ -127,6 +150,7 @@ struct SeatingPlanView: View {
         }
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
             if isOn {
+                quickStudent = nil
                 selectedTable = nil
                 pendingAction = nil
                 studentEditorRoute = nil
@@ -158,8 +182,8 @@ struct SeatingPlanView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbar }
             .navigationDestination(item: $notesStudent) { student in
-                if let subject = route.subject, student.schoolClass?.subjects.contains(subject) ?? false {
-                    StudentNotesView(student: student, subject: subject)
+                if let subject = lessonContext?.subject, student.schoolClass?.subjects.contains(subject) ?? false {
+                    StudentRecordView(student: student, subject: subject)
                 } else {
                     StudentSubjectsView(student: student)
                 }
@@ -172,10 +196,12 @@ struct SeatingPlanView: View {
             occupants: occupants,
             teacher: teacher,
             selected: selectedTable,
+            dashed: unobservedTables,
+            dimmed: absentTables,
             isEditable: isEditable,
             onTap: { tap($0) },
             actions: SeatActions(
-                open: { notesStudent = $0 },
+                open: { open($0) },
                 edit: { studentEditorRoute = .edit($0) },
                 clear: { clear($0) }
             ),
@@ -184,8 +210,25 @@ struct SeatingPlanView: View {
         .overlay(alignment: .bottom) {
             if hasNoTables {
                 hint("Dieser Raum hat noch keine Tische. Zeichnen Sie sie im Raum-Editor.")
+            } else if let quickStudent, let lessonContext {
+                QuickRatingBar(
+                    student: quickStudent,
+                    lesson: lessonContext,
+                    onOpenRecord: {
+                        notesStudent = quickStudent
+                        self.quickStudent = nil
+                    },
+                    onClose: { withAnimation(.smooth) { self.quickStudent = nil } }
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
+        .overlay(alignment: .topLeading) {
+            if !unobservedTables.isEmpty {
+                UnobservedLegend()
+            }
+        }
+        .animation(.smooth, value: quickStudent?.id)
     }
 
     private func hint(_ text: LocalizedStringKey) -> some View {
@@ -305,8 +348,20 @@ struct SeatingPlanView: View {
 
 extension SeatingPlanView {
 
+    /// Schüler antippen: mit Fächern die Schnell-Leiste, sonst die Fächer bzw. Akte.
+    private func open(_ student: Student) {
+        guard lessonContext != nil else {
+            notesStudent = student
+            return
+        }
+        Haptics.selection()
+        quickStudent = student
+    }
+
     /// Freier Tisch → markieren (iPhone: Liste öffnet sich); besetzter Tisch oder daneben → Markierung weg.
     private func tap(_ table: UUID?) {
+        // Freier Tisch oder daneben: Schnell-Leiste zuerst schließen (sonst liegt die Schülerliste darüber).
+        quickStudent = nil
         guard let table, occupants[table] == nil, table != selectedTable, !everyoneSeated else {
             selectedTable = nil
             return
@@ -404,7 +459,7 @@ enum SeatingPlanPDF {
         return FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) ? url : nil
     }
 
-    private static var footer: some View {
+    static var footer: some View {
         HStack(spacing: 8) {
             Image(.appIconPreview)
                 .resizable()

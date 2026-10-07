@@ -10,8 +10,12 @@ struct TeacherProfileView: View {
         @Bindable var settings = settings
         let teacher = $settings.values.teacher
         Form {
-            Section("Name") {
+            Section {
                 NameFields(firstName: teacher.firstName, lastName: teacher.lastName)
+            } header: {
+                Text("Name")
+            } footer: {
+                Text("Steht im Sitzplan am Lehrerpult und im Sitzplan-PDF.")
             }
 
             Section {

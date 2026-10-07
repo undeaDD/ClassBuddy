@@ -5,7 +5,7 @@ import SwiftData
 /// von der OpenHolidays API (openholidaysapi.org, frei, ohne Schlüssel).
 /// Nur öffentliche Daten werden abgerufen – es werden keine App-Daten gesendet.
 enum HolidayImporter {
-    static let federalStates: [(code: String, name: String)] = [
+    nonisolated static let federalStates: [(code: String, name: String)] = [
         ("DE-BW", "Baden-Württemberg"), ("DE-BY", "Bayern"), ("DE-BE", "Berlin"),
         ("DE-BB", "Brandenburg"), ("DE-HB", "Bremen"), ("DE-HH", "Hamburg"),
         ("DE-HE", "Hessen"), ("DE-MV", "Mecklenburg-Vorpommern"), ("DE-NI", "Niedersachsen"),
