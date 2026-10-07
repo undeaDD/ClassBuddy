@@ -56,13 +56,7 @@ struct SchoolSettingsView: View {
             } header: {
                 Text("Schule")
             } footer: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(schoolFooter)
-                    // Pflichtangabe für WeatherKit: Marke und Link zu den Datenquellen.
-                    Link(destination: WeatherService.appleLegalURL) {
-                        Text(loc("Wetterdaten: \(WeatherService.appleAttributionMark) – Datenquellen"))
-                    }
-                }
+                Text(schoolFooter)
             }
 
             Section {
@@ -166,10 +160,7 @@ struct SchoolSettingsView: View {
     }
 
     private var schoolFooter: String {
-        var text = loc("""
-            PLZ und Ort bestimmen das Wetter auf der Übersicht und das Bundesland für die Ferien. \
-            Telefon und E-Mail nutzt die Kachel „Sekretariat“.
-            """)
+        var text = loc("Die Adresse bestimmt Wetter und Ferien, Telefon und E-Mail die Kachel „Sekretariat“.")
         if let detected = detectedState {
             text += " " + loc("Bundesland erkannt: \(HolidayImporter.displayName(ofState: detected)).")
         }

@@ -20,6 +20,14 @@ nonisolated enum WeatherService {
         let fetchedAt: Date
         /// Herkunft der Wetterdaten (Apple verlangt dann die Attribution auf der Kachel).
         let source: Source
+        /// Nur bei Apple: offizielles Logo (hell/dunkel) und Link zu den Datenquellen.
+        var attribution: Attribution?
+    }
+
+    struct Attribution: Equatable, Sendable {
+        let lightMarkURL: URL
+        let darkMarkURL: URL
+        let legalPageURL: URL
     }
 
     enum Source: Sendable {
@@ -33,9 +41,22 @@ nonisolated enum WeatherService {
         let longitude: Double
     }
 
-    /// Pflichtangaben für WeatherKit: Marke „ Weather“ und Link zu den Datenquellen.
-    static let appleAttributionMark = "\u{F8FF} Weather"
+    /// Ersatz, solange das Apple-Logo lädt (oder nicht geladen werden konnte).
+    static let appleMarkText = "\u{F8FF} Weather"
     static let appleLegalURL = URL(string: "https://weatherkit.apple.com/legal-attribution.html")!
+
+    /// Letzter WeatherKit-Fehler (Debug-Menü): warum die Kachel Open-Meteo statt Apple zeigt.
+    static let diagnostics = Diagnostics()
+
+    actor Diagnostics {
+        private(set) var lastAppleError: String?
+        private(set) var lastSource: Source?
+
+        func record(source: Source, appleError: String?) {
+            lastSource = source
+            lastAppleError = appleError
+        }
+    }
 
     private static let log = Logger(subsystem: "de.devsforge.ClassBuddy", category: "weather")
 
@@ -82,8 +103,10 @@ nonisolated enum WeatherService {
         let snapshot: Snapshot
         do {
             snapshot = try await appleForecast(for: place)
+            await diagnostics.record(source: .apple, appleError: nil)
         } catch {
-            log.info("WeatherKit nicht verfügbar, Open-Meteo: \(error.localizedDescription, privacy: .public)")
+            log.info("WeatherKit nicht verfügbar, Open-Meteo: \(String(describing: error), privacy: .public)")
+            await diagnostics.record(source: .openMeteo, appleError: String(describing: error))
             snapshot = try await forecast(for: place)
         }
         await cache.store(snapshot, for: cacheKey)
@@ -135,6 +158,7 @@ nonisolated enum WeatherService {
         let (current, daily) = try await WeatherKit.WeatherService.shared.weather(for: location, including: .current, .daily)
         let today = daily.first
         let temperature = current.temperature.converted(to: .celsius).value
+        let attribution = try? await WeatherKit.WeatherService.shared.attribution
         return Snapshot(
             place: place.name,
             temperature: temperature,
@@ -142,7 +166,10 @@ nonisolated enum WeatherService {
             low: today?.lowTemperature.converted(to: .celsius).value ?? temperature,
             condition: WeatherCondition(apple: current.condition),
             fetchedAt: .now,
-            source: .apple
+            source: .apple,
+            attribution: attribution.map {
+                Attribution(lightMarkURL: $0.combinedMarkLightURL, darkMarkURL: $0.combinedMarkDarkURL, legalPageURL: $0.legalPageURL)
+            }
         )
     }
 
@@ -321,7 +348,6 @@ struct WeatherCard: View {
 
     @State private var snapshot: WeatherService.Snapshot?
     @State private var errorText: String?
-    @State private var reloadToken = 0
 
     var body: some View {
         StatCard(
@@ -330,15 +356,22 @@ struct WeatherCard: View {
             detail: detail,
             symbol: DashboardBuiltInCard.weather.symbol,
             isSensitive: false,
-            // Quelle am Kopf erkennbar: Apple-Marke (Pflicht bei WeatherKit, Link zu den Datenquellen
-            // in den Schuleinstellungen), sonst das eigene Symbol mit „Wetter“.
-            brandMark: snapshot?.source == .apple ? WeatherService.appleAttributionMark : nil
-        ) {
-            reloadToken += 1
-        }
-        .task(id: "\(school.street)|\(school.postalCode)|\(WeatherService.placeQuery(for: school) ?? "")-\(reloadToken)") {
+            // Quelle am Kopf erkennbar: Apple-Logo als Link zu den Datenquellen (Pflicht bei WeatherKit),
+            // sonst das eigene Symbol mit „Wetter“. Kein Antippen der Kachel (lädt beim Erscheinen, max. alle 30 min).
+            brand: snapshot?.source == .apple ? brand : nil
+        )
+        .task(id: "\(school.street)|\(school.postalCode)|\(WeatherService.placeQuery(for: school) ?? "")") {
             await load()
         }
+    }
+
+    private var brand: CardBrand {
+        CardBrand(
+            lightImageURL: snapshot?.attribution?.lightMarkURL,
+            darkImageURL: snapshot?.attribution?.darkMarkURL,
+            text: WeatherService.appleMarkText,
+            link: snapshot?.attribution?.legalPageURL ?? WeatherService.appleLegalURL
+        )
     }
 
     private var detail: String {

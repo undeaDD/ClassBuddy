@@ -83,7 +83,7 @@
 </head>
 <body>
 <main>
-  <p class="intro">Datenschutzerklärung für die App ClassBuddy (iPad und iPhone) nach der Datenschutz-Grundverordnung (DSGVO). Stand: 30. September 2026.</p>
+  <p class="intro">Datenschutzerklärung für die App ClassBuddy (iPad und iPhone) nach der Datenschutz-Grundverordnung (DSGVO). Stand: 7. Oktober 2026.</p>
 
   <h2>Auf einen Blick</h2>
   <div class="card">
@@ -115,13 +115,15 @@
         <li>Klassen (Kürzel, Fächer, Schuljahr, Farbe)</li>
         <li>Schülerinnen und Schüler (Vor- und Nachname, Geschlecht, Geburtstag, Notizen, Kontaktangaben wie Telefon und E-Mail, optional ein Foto)</li>
         <li>Stundenplan, Termine, importierte Ferien und Feiertage</li>
-        <li>Übersichts-Kacheln einschließlich der von Ihnen hinzugefügten Dokumente, Bilder, Website-Adressen, Kurzbefehl-Namen und Skripte</li>
+        <li>Bewertungen (Beobachtungen, Leistungen, Noten), Fehlzeiten, Checklisten, Tafelbilder, Räume und Sitzpläne</li>
+        <li>Übersichts-Kacheln einschließlich der von Ihnen hinzugefügten Dokumente, Bilder, Website-Adressen, Kurzbefehl-Namen, Skripte und Schnellnotizen</li>
         <li>Ihr Profil (Name, Geschlecht, Geburtstag, Hauptfächer) und die Schuleinstellungen (u. a. Name und Adresse der Schule)</li>
       </ul>
     </div>
     <div class="row">
       <div class="name">Speicherort und Schutz</div>
-      <p class="muted">Die Daten liegen im geschützten App-Container des Geräts und werden von iOS bzw. iPadOS verschlüsselt, sobald ein Gerätecode eingerichtet ist. Es gibt keine Synchronisation und keine Cloud von ClassBuddy.</p>
+      <p class="muted">Die Daten liegen im geschützten App-Container des Geräts und werden von iOS bzw. iPadOS verschlüsselt, sobald ein Gerätecode eingerichtet ist. ClassBuddy nutzt dabei die höchste Schutzklasse („vollständiger Schutz“): Solange das Gerät gesperrt ist, sind die Daten auch für die App selbst nicht lesbar. Es gibt keine Synchronisation und keine Cloud von ClassBuddy.</p>
+      <p class="muted">Für das Widget „Jetzt &amp; Als Nächstes“ legt die App die Stunden der nächsten 14 Tage (Uhrzeit, Klasse, Fach, Raum, Klassenfarbe) in einem Bereich ab, den nur ClassBuddy und sein Widget lesen können. Damit das Widget auch bei gesperrtem Gerät angezeigt werden kann, ist diese Datei nach dem ersten Entsperren lesbar. Sie enthält keine Schülerdaten; auf dem Sperrbildschirm blendet iOS den Inhalt bis zum Entsperren aus.</p>
       <p class="muted">Hinweis: Wenn Sie Geräte-Backups nutzen (iCloud-Backup oder Backup über den Mac bzw. PC), können diese auch die Daten von ClassBuddy enthalten. Bitte prüfen Sie Ihre Backup-Einstellungen, falls Ihre Schule dies nicht erlaubt.</p>
     </div>
     <div class="row">
@@ -145,8 +147,16 @@
       <p class="muted">Nur wenn Sie in den Schuleinstellungen auf „importieren“ tippen. Übertragen werden das gewählte Bundesland und der Zeitraum.</p>
     </div>
     <div class="row">
-      <div class="name">Wetter: open-meteo.com</div>
-      <p class="muted">Nur wenn die Kachel „Wetter“ auf der Übersicht sichtbar ist, höchstens alle 30 Minuten. Übertragen wird der Ort der Schule aus den Schuleinstellungen (kein Standort des Geräts).</p>
+      <div class="name">Wetter: Apple Wetter (WeatherKit) und Apple Karten</div>
+      <p class="muted">Nur wenn die Kachel „Wetter“ auf der Übersicht sichtbar ist, höchstens alle 30 Minuten. Die Adresse der Schule aus den Schuleinstellungen (Straße, PLZ, Ort) wird über Apple Karten in Koordinaten umgewandelt; für diese Koordinaten liefert Apple Wetter das aktuelle Wetter. Es wird kein Standort des Geräts verwendet. Laut Apple werden diese Anfragen nicht mit Ihrer Apple-ID verknüpft. Es gelten die <a href="https://www.apple.com/de/legal/privacy/">Datenschutzbestimmungen von Apple</a>.</p>
+    </div>
+    <div class="row">
+      <div class="name">Wetter (Ersatz): open-meteo.com</div>
+      <p class="muted">Nur wenn Apple Wetter oder Apple Karten nicht erreichbar sind. Übertragen wird der Ort der Schule (ohne Straße) bzw. dessen Koordinaten.</p>
+    </div>
+    <div class="row">
+      <div class="name">Bundesland erkennen: Apple Karten, ersatzweise open-meteo.com</div>
+      <p class="muted">Nur beim Bearbeiten von PLZ und Ort in den Schuleinstellungen, um das Bundesland für den Ferien-Import vorzuschlagen. Übertragen werden PLZ und Ort der Schule.</p>
     </div>
     <div class="row">
       <div class="name">Website-Kacheln</div>
@@ -178,11 +188,23 @@
     </div>
     <div class="row">
       <div class="name">Mitteilungen</div>
-      <p class="muted">Nur für die Timer-Kachel: Beim ersten Start eines Timers fragt die App, ob sie Sie per Mitteilung an das Ende erinnern darf. Die Mitteilung wird lokal auf dem Gerät geplant; es wird nichts übertragen.</p>
+      <p class="muted">Nur für die Timer-Kachel: Beim ersten Start eines Timers fragt die App, ob sie Sie per Mitteilung an das Ende erinnern darf. Die Mitteilung wird lokal auf dem Gerät geplant und ist als „dringlich“ markiert, damit sie auch im Fokus (z. B. „Unterricht“) erscheint; es wird nichts übertragen.</p>
+    </div>
+    <div class="row">
+      <div class="name">Kamera</div>
+      <p class="muted">Nur zum Scannen des Tafelbilds. Das Foto wird lokal in der App gespeichert und nicht übertragen.</p>
+    </div>
+    <div class="row">
+      <div class="name">Mikrofon</div>
+      <p class="muted">Nur für die Kachel „Lautstärke“, solange sie eingeschaltet ist. Es wird nur der Pegel berechnet; nichts wird aufgenommen, gespeichert oder übertragen.</p>
+    </div>
+    <div class="row">
+      <div class="name">Apple Intelligence</div>
+      <p class="muted">Die Kachel „Tagesmotivation“ erzeugt ihren Spruch mit dem Sprachmodell auf dem Gerät. Dabei werden keine Daten übertragen und keine Schülerdaten verwendet.</p>
     </div>
     <div class="row">
       <div class="name">Nicht verwendet</div>
-      <p class="muted">Standort, Kontakte, Kalender des Geräts, Kamera, Mikrofon und Bluetooth werden nicht verwendet.</p>
+      <p class="muted">Standort, Kontakte, Kalender des Geräts und Bluetooth werden nicht verwendet.</p>
     </div>
   </div>
 

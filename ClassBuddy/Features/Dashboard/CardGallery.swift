@@ -201,6 +201,10 @@ enum CardTemplate: Identifiable, Hashable {
         }
     }
 
+    var builtInCard: DashboardBuiltInCard? {
+        if case .builtIn(let card) = self { card } else { nil }
+    }
+
     static let reusable: [CardTemplate] = [.image, .document, .website, .shortcut, .script]
 }
 
@@ -340,9 +344,9 @@ private struct TemplatePreview: View {
         case .builtIn(.quickNote):
             let card = DashboardBuiltInCard.quickNote
             QuickNoteCardContent(text: card.previewValue.value, detail: card.previewValue.detail)
-        case .builtIn(.dateTime):
-            // Ohne Aktion (wie die echte Kachel): kein Pfeil.
-            let card = DashboardBuiltInCard.dateTime
+        case .builtIn(.dateTime), .builtIn(.weather):
+            // Ohne Aktion (wie die echten Kacheln): kein Pfeil.
+            let card = template.builtInCard ?? .dateTime
             StatCard(title: card.title, value: card.previewValue.value, detail: card.previewValue.detail, symbol: card.symbol)
         case .builtIn(let card):
             StatCard(title: card.title, value: card.previewValue.value, detail: card.previewValue.detail, symbol: card.symbol) {}

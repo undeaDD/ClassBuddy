@@ -1,0 +1,51 @@
+name: Pages
+
+# Website (GitHub Pages) for App Store Connect: privacy policy, legal notice, licenses and support.
+# The legal pages come unchanged from the app (ClassBuddy/Resources/Legal) – one source for app and web.
+# Start and support pages live in site/.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ClassBuddy/Resources/Legal/**"
+      - "site/**"
+      - "docs/app-icon.png"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp ClassBuddy/Resources/Legal/*.html _site/
+          cp site/*.html _site/
+          cp docs/app-icon.png _site/app-icon.png
+          ls -la _site
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClassBuddy</title>
+<link rel="icon" href="app-icon.png">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #000000;
+    --secondary: #6d6d72;
+    --separator: rgba(60, 60, 67, 0.18);
+    --accent: #9c6830;
+    --pill: rgba(156, 104, 48, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --text: #ffffff;
+      --secondary: #98989f;
+      --separator: rgba(84, 84, 88, 0.6);
+      --accent: #cd9c5e;
+      --pill: rgba(205, 156, 94, 0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px 20px 40px;
+    background: var(--bg);
+    color: var(--text);
+    font: -apple-system-body;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  .intro { color: var(--secondary); font: -apple-system-subheadline; margin: 4px 16px 24px; line-height: 1.4; }
+  h2 {
+    font: -apple-system-footnote;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--secondary);
+    margin: 28px 16px 8px;
+    font-weight: 400;
+  }
+  .card { background: var(--card); border-radius: 12px; overflow: hidden; }
+  .row { padding: 12px 16px; position: relative; }
+  .row + .row::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0;
+    border-top: 0.5px solid var(--separator);
+  }
+  .row-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .name { font: -apple-system-headline; }
+  .pill {
+    font: -apple-system-caption1; font-weight: 600;
+    color: var(--accent); background: var(--pill);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .desc { color: var(--secondary); font: -apple-system-subheadline; margin-top: 4px; line-height: 1.4; }
+  a { color: var(--accent); text-decoration: none; }
+  details { margin-top: 8px; }
+  summary { color: var(--accent); font: -apple-system-subheadline; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: " ›"; }
+  details[open] summary::after { content: " ⌄"; }
+  pre {
+    white-space: pre-wrap; font: -apple-system-caption2; font-family: ui-monospace, Menlo, monospace;
+    color: var(--secondary); margin: 8px 0 0; line-height: 1.45;
+  }
+  .footnote { color: var(--secondary); font: -apple-system-footnote; margin: 8px 16px 0; line-height: 1.4; }
+  html, body { overflow-x: hidden; }
+  body { overflow-wrap: anywhere; word-break: normal; }
+  pre { max-width: 100%; overflow-x: hidden; overflow-wrap: anywhere; }
+  ul { margin: 6px 0 0; padding-left: 20px; }
+  li { margin: 4px 0; line-height: 1.4; }
+  .row p { margin: 6px 0 0; line-height: 1.45; }
+  .muted { color: var(--secondary); }
+  .ok { color: #34c759; font-weight: 600; }
+  .todo { color: #ff3b30; font-weight: 600; }
+  .hero { display: flex; align-items: center; gap: 16px; margin: 8px 16px 24px; }
+  .hero img { width: 76px; height: 76px; border-radius: 17px; box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
+  .hero h1 { margin: 0; font: -apple-system-title1; font-weight: 700; font-size: 28px; }
+  .hero p { margin: 4px 0 0; color: var(--secondary); line-height: 1.4; }
+  .lang { margin: 0 16px 16px; color: var(--secondary); font-size: 15px; }
+  a.rowlink { display: block; color: var(--text); text-decoration: none; }
+  a.rowlink .name::after { content: "›"; float: right; color: var(--secondary); }
+</style>
+</head>
+<body>
+<main>
+  <div class="hero">
+    <img src="app-icon.png" alt="">
+    <div><h1>ClassBuddy</h1><p>Klassen, Schüler und Stundenplan – lokal auf dem Gerät und mit Face ID geschützt. Für iPad und iPhone.</p></div>
+  </div>
+  <p class="lang">Deutsch · <a href="index.en.html">English</a></p>
+  <div class="card">
+    <div class="row"><a class="rowlink" href="support.html"><div class="name">Support</div></a></div>
+    <div class="row"><a class="rowlink" href="privacy.html"><div class="name">Datenschutz</div></a></div>
+    <div class="row"><a class="rowlink" href="imprint.html"><div class="name">Impressum</div></a></div>
+    <div class="row"><a class="rowlink" href="licenses.html"><div class="name">Lizenzen</div></a></div>
+    <div class="row"><a class="rowlink" href="collaborators.html"><div class="name">Mitwirkende</div></a></div>
+    <div class="row"><a class="rowlink" href="https://github.com/undeaDD/ClassBuddy"><div class="name">Quellcode auf GitHub</div></a></div>
+  </div>
+</main>
+</body>
+</html>

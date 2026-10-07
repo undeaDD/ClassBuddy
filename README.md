@@ -126,7 +126,9 @@ ClassBuddy is built for GDPR-compliant use in German schools. The full privacy n
 | When | Service | Data sent |
 |---|---|---|
 | Tap *Ferien & Feiertage importieren* | [openholidaysapi.org](https://www.openholidaysapi.org) | federal state, date range |
-| Weather card is visible (max. every 30 min) | [open-meteo.com](https://open-meteo.com) | the school's town from the settings |
+| Weather card is visible (max. every 30 min) | Apple Weather (WeatherKit) + Apple Maps | the school's address from the settings, then its coordinates |
+| … only if Apple is unreachable | [open-meteo.com](https://open-meteo.com) | the school's town |
+| Postal code / town edited in the school settings | Apple Maps, otherwise open-meteo.com | postal code and town (to suggest the federal state) |
 | Website card is shown | the website itself | favicon request |
 | You send feedback | your mail app | only what you send (plus app and iOS/iPadOS version) |
 

@@ -16,8 +16,8 @@ struct StatCard: View {
     let symbol: AppSymbol
     /// Wert/Detail im Privatsphäre-Modus ausblenden (nicht bei Uhrzeit, Wetter …).
     var isSensitive = true
-    /// Marke statt Symbol und Titel im Kopf, z. B. „ Weather“ (Pflicht-Quellenangabe von WeatherKit).
-    var brandMark: String?
+    /// Logo statt Symbol und Titel im Kopf, z. B. Apple Wetter (Pflicht-Quellenangabe von WeatherKit).
+    var brand: CardBrand?
     var action: (() -> Void)?
 
     var body: some View {
@@ -33,7 +33,7 @@ struct StatCard: View {
 
     private var content: some View {
         VStack(alignment: .leading, spacing: 12) {
-            CardHeader(title: title, symbol: symbol, showsChevron: action != nil, brandMark: brandMark)
+            CardHeader(title: title, symbol: symbol, showsChevron: action != nil, brand: brand)
             Spacer(minLength: 0)
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
@@ -323,16 +323,13 @@ struct CardHeader: View {
     let showsChevron: Bool
     /// Bei Websites: Favicon statt Symbol.
     var faviconURL: URL?
-    /// Ersetzt Symbol und Titel (siehe `StatCard.brandMark`).
-    var brandMark: String?
+    /// Ersetzt Symbol und Titel (siehe `StatCard.brand`).
+    var brand: CardBrand?
 
     var body: some View {
         HStack {
-            if let brandMark {
-                Text(verbatim: brandMark)
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-                    .accessibilityLabel(title)
+            if let brand {
+                CardBrandMark(brand: brand)
             } else if let faviconURL {
                 Label {
                     Text(title)
@@ -355,6 +352,34 @@ struct CardHeader: View {
                     .foregroundStyle(.tertiary)
             }
         }
+    }
+}
+
+/// Fremdes Logo im Kachelkopf (hell/dunkel), zugleich Link (z. B. zu den Datenquellen); bis es geladen ist, Text.
+struct CardBrand: Equatable {
+    var lightImageURL: URL?
+    var darkImageURL: URL?
+    let text: String
+    let link: URL
+}
+
+private struct CardBrandMark: View {
+    @Environment(\.colorScheme) private var colorScheme
+    let brand: CardBrand
+
+    var body: some View {
+        Link(destination: brand.link) {
+            AsyncImage(url: colorScheme == .dark ? brand.darkImageURL : brand.lightImageURL) { image in
+                image.resizable().scaledToFit()
+            } placeholder: {
+                Text(verbatim: brand.text)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+            }
+            // Schrifthöhe wie die übrigen Kachel-Titel (`.headline`).
+            .frame(height: 15)
+        }
+        .accessibilityLabel(brand.text)
     }
 }
 

@@ -59,6 +59,8 @@ struct DebugMenuView: View {
                 }
             }
 
+            WeatherDiagnosticsSection()
+
             Section("Leerzustände") {
                 NavigationLink {
                     EmptyStateView(
@@ -441,3 +443,29 @@ enum DummyData {
     }
 }
 #endif
+
+/// Woher das Wetter auf der Übersicht zuletzt kam – und warum nicht von Apple (WeatherKit-Fehler).
+private struct WeatherDiagnosticsSection: View {
+    @State private var source: WeatherService.Source?
+    @State private var appleError: String?
+
+    var body: some View {
+        Section {
+            LabeledContent("Letzte Quelle", value: source.map { $0 == .apple ? "Apple (WeatherKit)" : "Open-Meteo" } ?? "–")
+            if let appleError {
+                Text(verbatim: appleError)
+                    .font(.caption.monospaced())
+                    .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
+            }
+        } header: {
+            Text("Wetter")
+        } footer: {
+            Text("Wird beim nächsten Laden der Wetter-Kachel aktualisiert (höchstens alle 30 Minuten).")
+        }
+        .task {
+            source = await WeatherService.diagnostics.lastSource
+            appleError = await WeatherService.diagnostics.lastAppleError
+        }
+    }
+}

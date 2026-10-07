@@ -56,7 +56,7 @@ struct SecretariatCard: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .buttonStyle(.glass)
-        .buttonBorderShape(.roundedRectangle(radius: 12))
+        .buttonBorderShape(.roundedRectangle(radius: 20))
         .help(help)
         .accessibilityLabel(help)
         .accessibilityHint(url == nil ? loc("Noch nicht eingetragen") : "")

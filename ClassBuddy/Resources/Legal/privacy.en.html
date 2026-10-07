@@ -83,7 +83,7 @@
 </head>
 <body>
 <main>
-  <p class="intro">Privacy policy for the ClassBuddy app (iPad and iPhone) under the General Data Protection Regulation (GDPR). As of September 30, 2026.</p>
+  <p class="intro">Privacy policy for the ClassBuddy app (iPad and iPhone) under the General Data Protection Regulation (GDPR). As of October 7, 2026.</p>
 
   <h2>At a glance</h2>
   <div class="card">
@@ -115,13 +115,15 @@
         <li>Classes (short name, subjects, school year, color)</li>
         <li>Students (first and last name, gender, birthday, notes, contact details such as phone and email, optionally a photo)</li>
         <li>Timetable, appointments, imported school and public holidays</li>
-        <li>Dashboard cards including the documents, images, website addresses, shortcut names and scripts you add</li>
+        <li>Assessments (observations, assessments, grades), absences, checklists, board photos, rooms and seating plans</li>
+        <li>Dashboard cards including the documents, images, website addresses, shortcut names, scripts and quick notes you add</li>
         <li>Your profile (name, gender, birthday, main subjects) and the school settings (including the name and address of the school)</li>
       </ul>
     </div>
     <div class="row">
       <div class="name">Storage location and protection</div>
-      <p class="muted">The data is stored in the protected app container of the device and is encrypted by iOS or iPadOS as soon as a device passcode is set. There is no synchronization and no ClassBuddy cloud.</p>
+      <p class="muted">The data is stored in the protected app container of the device and is encrypted by iOS or iPadOS as soon as a device passcode is set. ClassBuddy uses the highest protection class (“complete protection”): while the device is locked, the data cannot be read, not even by the app itself. There is no synchronization and no ClassBuddy cloud.</p>
+      <p class="muted">For the “Now &amp; Next” widget, the app stores the lessons of the next 14 days (time, class, subject, room, class color) in an area that only ClassBuddy and its widget can read. So that the widget can be shown while the device is locked, this file is readable after the first unlock. It contains no student data; on the lock screen, iOS hides its content until the device is unlocked.</p>
       <p class="muted">Note: If you use device backups (iCloud Backup or a backup via Mac or PC), these may also contain ClassBuddy data. Please check your backup settings if your school does not permit this.</p>
     </div>
     <div class="row">
@@ -145,8 +147,16 @@
       <p class="muted">Only when you tap “import” in the school settings. The selected federal state and the time period are transmitted.</p>
     </div>
     <div class="row">
-      <div class="name">Weather: open-meteo.com</div>
-      <p class="muted">Only when the “Weather” card is visible on the dashboard, at most every 30 minutes. The location of the school from the school settings is transmitted (not the location of the device).</p>
+      <div class="name">Weather: Apple Weather (WeatherKit) and Apple Maps</div>
+      <p class="muted">Only when the “Weather” card is visible on the dashboard, at most every 30 minutes. The school address from the school settings (street, postal code, town) is converted into coordinates via Apple Maps; Apple Weather then provides the current weather for these coordinates. The location of the device is not used. According to Apple, these requests are not linked to your Apple Account. <a href="https://www.apple.com/legal/privacy/">Apple’s privacy policy</a> applies.</p>
+    </div>
+    <div class="row">
+      <div class="name">Weather (fallback): open-meteo.com</div>
+      <p class="muted">Only if Apple Weather or Apple Maps cannot be reached. The school’s town (without street) or its coordinates are transmitted.</p>
+    </div>
+    <div class="row">
+      <div class="name">Detecting the federal state: Apple Maps, otherwise open-meteo.com</div>
+      <p class="muted">Only when you edit the postal code and town in the school settings, to suggest the federal state for the holiday import. The school’s postal code and town are transmitted.</p>
     </div>
     <div class="row">
       <div class="name">Website cards</div>
@@ -178,11 +188,23 @@
     </div>
     <div class="row">
       <div class="name">Notifications</div>
-      <p class="muted">Only for the timer card: the first time you start a timer, the app asks whether it may notify you when it ends. The notification is scheduled locally on the device; nothing is transmitted.</p>
+      <p class="muted">Only for the timer card: the first time you start a timer, the app asks whether it may notify you when it ends. The notification is scheduled locally on the device and marked as “time sensitive” so that it also appears during a Focus (e.g. “Teaching”); nothing is transmitted.</p>
+    </div>
+    <div class="row">
+      <div class="name">Camera</div>
+      <p class="muted">Only for scanning the board. The photo is stored locally in the app and is not transmitted.</p>
+    </div>
+    <div class="row">
+      <div class="name">Microphone</div>
+      <p class="muted">Only for the “Noise level” card while it is switched on. Only the level is calculated; nothing is recorded, stored or transmitted.</p>
+    </div>
+    <div class="row">
+      <div class="name">Apple Intelligence</div>
+      <p class="muted">The “Daily boost” card creates its quote with the on-device language model. No data is transmitted and no student data is used.</p>
     </div>
     <div class="row">
       <div class="name">Not used</div>
-      <p class="muted">Location, contacts, the device calendar, camera, microphone and Bluetooth are not used.</p>
+      <p class="muted">Location, contacts, the device calendar and Bluetooth are not used.</p>
     </div>
   </div>
 
