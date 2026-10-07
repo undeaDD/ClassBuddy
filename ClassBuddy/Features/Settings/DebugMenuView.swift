@@ -442,7 +442,6 @@ enum DummyData {
         }
     }
 }
-#endif
 
 /// Woher das Wetter auf der Übersicht zuletzt kam – und warum nicht von Apple (WeatherKit-Fehler).
 private struct WeatherDiagnosticsSection: View {
@@ -469,3 +468,4 @@ private struct WeatherDiagnosticsSection: View {
         }
     }
 }
+#endif
