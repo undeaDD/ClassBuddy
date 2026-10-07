@@ -22,6 +22,23 @@ nonisolated enum WeatherService {
         let source: Source
         /// Nur bei Apple: offizielles Logo (hell/dunkel) und Link zu den Datenquellen.
         var attribution: Attribution?
+        /// Tendenz der nächsten Stunden (`nil` ohne Stundenvorhersage).
+        var trend: Trend?
+    }
+
+    enum Trend: Equatable, Sendable {
+        case rising, falling, steady
+    }
+
+    /// Vergleicht die aktuelle Temperatur mit der Vorhersage in etwa zwei Stunden (bzw. dem letzten Wert davor):
+    /// ab 1° Unterschied steigend bzw. fallend, sonst gleichbleibend.
+    static func trend(current: Double, hourly: [(date: Date, temperature: Double)], now: Date) -> Trend? {
+        let upcoming = hourly.filter { $0.date > now }.sorted { $0.date < $1.date }
+        guard let target = upcoming.first(where: { $0.date >= now.addingTimeInterval(2 * 3600) }) ?? upcoming.last else { return nil }
+        let delta = target.temperature - current
+        if delta >= 1 { return .rising }
+        if delta <= -1 { return .falling }
+        return .steady
     }
 
     struct Attribution: Equatable, Sendable {
@@ -155,7 +172,9 @@ nonisolated enum WeatherService {
     /// Wirft ohne WeatherKit-Berechtigung (Entitlement fehlt, z. B. selbst signiert) oder bei Netzfehlern.
     private static func appleForecast(for place: Place) async throws -> Snapshot {
         let location = CLLocation(latitude: place.latitude, longitude: place.longitude)
-        let (current, daily) = try await WeatherKit.WeatherService.shared.weather(for: location, including: .current, .daily)
+        let (current, daily, hourly) = try await WeatherKit.WeatherService.shared.weather(
+            for: location, including: .current, .daily, .hourly
+        )
         let today = daily.first
         let temperature = current.temperature.converted(to: .celsius).value
         let attribution = try? await WeatherKit.WeatherService.shared.attribution
@@ -169,7 +188,12 @@ nonisolated enum WeatherService {
             source: .apple,
             attribution: attribution.map {
                 Attribution(lightMarkURL: $0.combinedMarkLightURL, darkMarkURL: $0.combinedMarkDarkURL, legalPageURL: $0.legalPageURL)
-            }
+            },
+            trend: trend(
+                current: temperature,
+                hourly: hourly.prefix(6).map { ($0.date, $0.temperature.converted(to: .celsius).value) },
+                now: .now
+            )
         )
     }
 
@@ -210,6 +234,18 @@ nonisolated enum WeatherService {
     private struct ForecastResponse: Decodable {
         let current: ForecastCurrent
         let daily: ForecastDaily
+        let hourly: ForecastHourly?
+    }
+
+    private struct ForecastHourly: Decodable {
+        /// Unix-Zeit (`timeformat=unixtime`).
+        let time: [Double]
+        let temperature2m: [Double]
+
+        enum CodingKeys: String, CodingKey {
+            case time
+            case temperature2m = "temperature_2m"
+        }
     }
 
     private struct ForecastCurrent: Decodable {
@@ -258,10 +294,16 @@ nonisolated enum WeatherService {
             URLQueryItem(name: "longitude", value: String(place.longitude)),
             URLQueryItem(name: "current", value: "temperature_2m,weather_code"),
             URLQueryItem(name: "daily", value: "temperature_2m_max,temperature_2m_min"),
+            URLQueryItem(name: "hourly", value: "temperature_2m"),
+            URLQueryItem(name: "forecast_hours", value: "4"),
+            URLQueryItem(name: "timeformat", value: "unixtime"),
             URLQueryItem(name: "timezone", value: "auto"),
             URLQueryItem(name: "forecast_days", value: "1"),
         ]
         let response: ForecastResponse = try await fetch(components.url!)
+        let hourly = response.hourly.map { hourly in
+            zip(hourly.time, hourly.temperature2m).map { (Date(timeIntervalSince1970: $0), $1) }
+        } ?? []
         return Snapshot(
             place: place.name,
             temperature: response.current.temperature2m,
@@ -269,7 +311,8 @@ nonisolated enum WeatherService {
             low: response.daily.minimum.first ?? response.current.temperature2m,
             condition: WeatherCondition(code: response.current.weatherCode),
             fetchedAt: .now,
-            source: .openMeteo
+            source: .openMeteo,
+            trend: trend(current: response.current.temperature2m, hourly: hourly, now: .now)
         )
     }
 
@@ -358,14 +401,24 @@ struct WeatherCard: View {
             isSensitive: false,
             // Quelle am Kopf erkennbar: Apple-Logo als Link zu den Datenquellen (Pflicht bei WeatherKit),
             // sonst das eigene Symbol mit „Wetter“. Kein Antippen der Kachel (lädt beim Erscheinen, max. alle 30 min).
-            brand: snapshot?.source == .apple ? brand : nil
+            brand: snapshot?.source == .apple ? brand : nil,
+            valueSuffix: snapshot?.trend.map(Self.trendSuffix)
         )
         .task(id: "\(school.street)|\(school.postalCode)|\(WeatherService.placeQuery(for: school) ?? "")") {
             await load()
         }
     }
 
-    private var brand: CardBrand {
+    /// Platzhalter-Pfeile, bis die Icons festgelegt sind.
+    static func trendSuffix(_ trend: WeatherService.Trend) -> (text: String, accessibilityLabel: String) {
+        switch trend {
+        case .rising: ("↗", loc("steigend"))
+        case .falling: ("↘", loc("fallend"))
+        case .steady: ("→", loc("gleichbleibend"))
+        }
+    }
+
+        private var brand: CardBrand {
         CardBrand(
             lightImageURL: snapshot?.attribution?.lightMarkURL,
             darkImageURL: snapshot?.attribution?.darkMarkURL,

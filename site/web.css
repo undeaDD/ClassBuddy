@@ -1,0 +1,15 @@
+/* Nur Website (GitHub Pages): Die Seiten nutzen die WebKit-Kurzformen der App (`font: -apple-system-body` …),
+   die andere Browser nicht kennen (→ Serifenschrift). Hier dieselben Größen mit der Systemschrift,
+   auf Apple-Geräten SF Pro Rounded. Der Workflow bindet die Datei in jede Seite ein. */
+body {
+  font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
+}
+.intro, .desc, summary { font-family: inherit; font-size: 15px; }
+h2, .footnote { font-family: inherit; font-size: 13px; }
+.name { font-family: inherit; font-size: 17px; font-weight: 600; }
+.pill { font-family: inherit; font-size: 12px; font-weight: 600; }
+.hero h1 { font-family: inherit; }
+pre { font-family: ui-monospace, Menlo, monospace; font-size: 11px; }

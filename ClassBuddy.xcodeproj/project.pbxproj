@@ -19,6 +19,7 @@
 		12CA6338306EF68700FA6331 /* ClassBuddy-InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 12CA6337306EF68700FA6331 /* ClassBuddy-InfoPlist.xcstrings */; };
 		141C1539DBBE13FC658F4DD1 /* WidgetSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427BECADB5D7AB2BB37D98DE /* WidgetSchedule.swift */; };
 		1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1542A53C4CB6A27D96639 /* Backup.swift */; };
+		16638C44F6B727ED78C1F7A6 /* DashboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E296BAD4169DA265B4FA41F4 /* DashboardTests.swift */; };
 		170150303C03D2DB165292B1 /* WidgetSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427BECADB5D7AB2BB37D98DE /* WidgetSchedule.swift */; };
 		1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682EF27D860985CC8FFA663A /* AppSettingsView.swift */; };
 		1AAADB29F6F84B23B7A5A8C1 /* SeatingPlanLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE7B8189CC0450CBF0E8E23 /* SeatingPlanLogic.swift */; };
@@ -67,6 +68,7 @@
 		6B408FEA6BB24C56B7B7C062 /* SeatingPlanFloor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBCC92EC98264194BCC06D21 /* SeatingPlanFloor.swift */; };
 		6BE71DEDD6104800ACBD6DFF /* AssessmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB5BABFC5E649338AA8496E /* AssessmentTests.swift */; };
 		6E4B9E8D974A4358ABE6FFC3 /* RecordExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B56ADD01C0472D9635EA81 /* RecordExportTests.swift */; };
+		6FAEEAA444AF29B740A4823C /* ContactURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA7FF749A6956887E02BCD0 /* ContactURL.swift */; };
 		7194E4D1A2FB36786FEBC20C /* RoomEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 508C3838A7AA08460341EA32 /* RoomEditorView.swift */; };
 		7201A085B254FD8346DA0CF2 /* WiggleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C3E8DDC5FB89B43A137AE8 /* WiggleModifier.swift */; };
 		7220A8AF426D472489561BAE /* HolidaysAttendanceCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BB83B6EB5B4256B130AD71 /* HolidaysAttendanceCards.swift */; };
@@ -127,6 +129,7 @@
 		D35D82087D1CABEF7F729F8D /* PhoneTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE36BC30A358BA23E476BCEC /* PhoneTabView.swift */; };
 		D54AEC746043791E0A6A6D9D /* ColorHex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897588662DA32E79AE83FDC1 /* ColorHex.swift */; };
 		D56E6F223610F9BBBCF9A4C0 /* imprint.html in Resources */ = {isa = PBXBuildFile; fileRef = 432AD3F8D6771586F8F77F14 /* imprint.html */; };
+		D57B7D13C67ACA616291DC3B /* HelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0ECB95185CCC01F8DC4C5 /* HelperTests.swift */; };
 		D681876EF0CC6C1120CCFC91 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 65A1E1B423E8FA3229BA5412 /* Localizable.xcstrings */; };
 		D6BF5854A98453F1D23B796D /* CardScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEC4CFBA75EED9BB490A0C24 /* CardScript.swift */; };
 		D6CFEB07F517472099CA2E86 /* SecretariatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7ADCDAE59940B0BF03F442 /* SecretariatCard.swift */; };
@@ -236,6 +239,7 @@
 		48F186EF7D56450A90B59860 /* AssessmentViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssessmentViews.swift; sourceTree = "<group>"; };
 		4A00941CE162C824F95B7E8F /* Student.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
 		4D119C259D095F06FBFC93CB /* ClassBuddyWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClassBuddyWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DF0ECB95185CCC01F8DC4C5 /* HelperTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HelperTests.swift; sourceTree = "<group>"; };
 		4F829F3D64AF44D38F0D09E0 /* BackupRecordSheets.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BackupRecordSheets.swift; sourceTree = "<group>"; };
 		508C3838A7AA08460341EA32 /* RoomEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomEditorView.swift; sourceTree = "<group>"; };
 		50C57EFAB9EB50135E311B95 /* HolidayImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HolidayImporter.swift; sourceTree = "<group>"; };
@@ -300,6 +304,7 @@
 		B6D37F79758442C69929DEF7 /* Assessment.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Assessment.swift; sourceTree = "<group>"; };
 		B75AFEEA075C5FC27D985B89 /* PhotoCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCropView.swift; sourceTree = "<group>"; };
 		BA5B1F6CF676098DEB914826 /* SchoolSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSettingsView.swift; sourceTree = "<group>"; };
+		BAA7FF749A6956887E02BCD0 /* ContactURL.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContactURL.swift; sourceTree = "<group>"; };
 		BDB85DBA3DA24F6DBAA1C943 /* Checklist.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Checklist.swift; sourceTree = "<group>"; };
 		BE36BC30A358BA23E476BCEC /* PhoneTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneTabView.swift; sourceTree = "<group>"; };
 		BEA3B5CD9197C415EA1E2EC1 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
@@ -331,6 +336,7 @@
 		DFD1AE1EBC246449AFDED60B /* SpreadsheetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpreadsheetTests.swift; sourceTree = "<group>"; };
 		DFDE0CE8C54A49DAA3E4A181 /* ScriptCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptCard.swift; sourceTree = "<group>"; };
 		E0F315AE80104270B55F3A91 /* RandomGroupsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RandomGroupsTests.swift; sourceTree = "<group>"; };
+		E296BAD4169DA265B4FA41F4 /* DashboardTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DashboardTests.swift; sourceTree = "<group>"; };
 		E2F04E1C451C09A579F79EE9 /* CellParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellParsingTests.swift; sourceTree = "<group>"; };
 		E35B3B7628591F7C2DCD3DD3 /* ClassEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassEditorView.swift; sourceTree = "<group>"; };
 		EBCC92EC98264194BCC06D21 /* SeatingPlanFloor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SeatingPlanFloor.swift; sourceTree = "<group>"; };
@@ -630,6 +636,7 @@
 				7B372F8814CE72C779B26265 /* Device.swift */,
 				2EEFF2B434D6D5F8A4CE0512 /* EmptyStateView.swift */,
 				427BECADB5D7AB2BB37D98DE /* WidgetSchedule.swift */,
+				BAA7FF749A6956887E02BCD0 /* ContactURL.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -666,6 +673,8 @@
 				24A73B331E0A4CFCBCF925ED /* StudentRecordTests.swift */,
 				6BB5BABFC5E649338AA8496E /* AssessmentTests.swift */,
 				58B56ADD01C0472D9635EA81 /* RecordExportTests.swift */,
+				4DF0ECB95185CCC01F8DC4C5 /* HelperTests.swift */,
+				E296BAD4169DA265B4FA41F4 /* DashboardTests.swift */,
 			);
 			path = ClassBuddyTests;
 			sourceTree = "<group>";
@@ -738,6 +747,8 @@
 				3F246207078FEA728E6CD0C0 /* Resources */,
 			);
 			buildRules = (
+			);
+			dependencies = (
 			);
 			name = ClassBuddyWidgets;
 			productName = ClassBuddyWidgets;
@@ -961,6 +972,7 @@
 				C61F8C1DDBA3437CAE66A5C0 /* ChecklistCard.swift in Sources */,
 				141C1539DBBE13FC658F4DD1 /* WidgetSchedule.swift in Sources */,
 				250DFBDD9736DEEE768C0D73 /* WidgetScheduleSync.swift in Sources */,
+				6FAEEAA444AF29B740A4823C /* ContactURL.swift in Sources */,
 			);
 		};
 		3B903BDFD3F696EA3281D92D /* Sources */ = {
@@ -984,6 +996,8 @@
 				E5D6AF340321447ABF5F33E6 /* StudentRecordTests.swift in Sources */,
 				6BE71DEDD6104800ACBD6DFF /* AssessmentTests.swift in Sources */,
 				6E4B9E8D974A4358ABE6FFC3 /* RecordExportTests.swift in Sources */,
+				D57B7D13C67ACA616291DC3B /* HelperTests.swift in Sources */,
+				16638C44F6B727ED78C1F7A6 /* DashboardTests.swift in Sources */,
 			);
 		};
 		98FAD1F372C5418948B5536D /* Sources */ = {
@@ -1010,14 +1024,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		08F4E2A60FD53C600442F587 /* Release configuration for PBXNativeTarget "ClassBuddyWidgets" */ = {
+		08F4E2A60FD53C600442F587 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = ClassBuddyWidgets/ClassBuddyWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClassBuddyWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ClassBuddy;
@@ -1041,7 +1055,7 @@
 			};
 			name = Release;
 		};
-		18361D33BC1965BBC9A80E7F /* Debug configuration for PBXNativeTarget "ClassBuddyTests" */ = {
+		18361D33BC1965BBC9A80E7F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1059,7 +1073,7 @@
 			};
 			name = Debug;
 		};
-		4E8CFAEB757EE7E0E80343BA /* Debug configuration for PBXProject "ClassBuddy" */ = {
+		4E8CFAEB757EE7E0E80343BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1094,7 +1108,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = AXLC3PQNC8;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1116,7 +1130,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1133,7 +1147,7 @@
 			};
 			name = Debug;
 		};
-		6E0D7CD15153F5DECF2A94DD /* Release configuration for PBXProject "ClassBuddy" */ = {
+		6E0D7CD15153F5DECF2A94DD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1168,7 +1182,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = AXLC3PQNC8;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1185,7 +1199,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1202,7 +1216,7 @@
 			};
 			name = Release;
 		};
-		71A69ED0CB444955D3CAED41 /* Debug configuration for PBXNativeTarget "ClassBuddy" */ = {
+		71A69ED0CB444955D3CAED41 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ClassBuddy;
@@ -1236,7 +1250,7 @@
 			};
 			name = Debug;
 		};
-		94FBFD73EB71B64867427343 /* Release configuration for PBXNativeTarget "ClassBuddy" */ = {
+		94FBFD73EB71B64867427343 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = ClassBuddy;
@@ -1270,7 +1284,7 @@
 			};
 			name = Release;
 		};
-		C631EA0183C888E3DAF9948A /* Release configuration for PBXNativeTarget "ClassBuddyTests" */ = {
+		C631EA0183C888E3DAF9948A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1288,14 +1302,14 @@
 			};
 			name = Release;
 		};
-		E659BA8AF93E249BA92C409A /* Debug configuration for PBXNativeTarget "ClassBuddyWidgets" */ = {
+		E659BA8AF93E249BA92C409A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = ClassBuddyWidgets/ClassBuddyWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClassBuddyWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ClassBuddy;
@@ -1324,32 +1338,32 @@
 		12685196A63FF13A11C66A16 /* Build configuration list for PBXNativeTarget "ClassBuddyTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				18361D33BC1965BBC9A80E7F /* Debug configuration for PBXNativeTarget "ClassBuddyTests" */,
-				C631EA0183C888E3DAF9948A /* Release configuration for PBXNativeTarget "ClassBuddyTests" */,
+				18361D33BC1965BBC9A80E7F /* Debug */,
+				C631EA0183C888E3DAF9948A /* Release */,
 			);
 			defaultConfigurationName = Debug;
 		};
 		4809B4B43BADC3AA53292CB9 /* Build configuration list for PBXProject "ClassBuddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4E8CFAEB757EE7E0E80343BA /* Debug configuration for PBXProject "ClassBuddy" */,
-				6E0D7CD15153F5DECF2A94DD /* Release configuration for PBXProject "ClassBuddy" */,
+				4E8CFAEB757EE7E0E80343BA /* Debug */,
+				6E0D7CD15153F5DECF2A94DD /* Release */,
 			);
 			defaultConfigurationName = Debug;
 		};
 		BA875D4D345FFFBF8AA39CDA /* Build configuration list for PBXNativeTarget "ClassBuddyWidgets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				08F4E2A60FD53C600442F587 /* Release configuration for PBXNativeTarget "ClassBuddyWidgets" */,
-				E659BA8AF93E249BA92C409A /* Debug configuration for PBXNativeTarget "ClassBuddyWidgets" */,
+				08F4E2A60FD53C600442F587 /* Release */,
+				E659BA8AF93E249BA92C409A /* Debug */,
 			);
 			defaultConfigurationName = Release;
 		};
 		CB9E3E1890B0AFCB4B871A57 /* Build configuration list for PBXNativeTarget "ClassBuddy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				71A69ED0CB444955D3CAED41 /* Debug configuration for PBXNativeTarget "ClassBuddy" */,
-				94FBFD73EB71B64867427343 /* Release configuration for PBXNativeTarget "ClassBuddy" */,
+				71A69ED0CB444955D3CAED41 /* Debug */,
+				94FBFD73EB71B64867427343 /* Release */,
 			);
 			defaultConfigurationName = Debug;
 		};

@@ -31,6 +31,8 @@ nonisolated enum WidgetSchedule {
     static func save(_ lessons: [Lesson]) throws {
         guard let fileURL else { return }
         let data = try JSONEncoder().encode(lessons)
+        // Bewusst ohne vollständigen Schutz (siehe oben): Widget rendert bei gesperrtem Gerät, Inhalt ohne Schülerdaten.
+        // nosemgrep: swift.lang.storage.storage-protections.swift-data-protection
         try data.write(to: fileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
     }
 

@@ -17,8 +17,8 @@ struct SecretariatCard: View {
     var body: some View {
         let card = DashboardBuiltInCard.secretariat
         let school = settings.values.school
-        let phoneURL = isPreview ? URL(string: "tel:0") : Self.phoneURL(school.phone)
-        let mailURL = isPreview ? URL(string: "mailto:a@b.de") : Self.mailURL(school.email)
+        let phoneURL = isPreview ? URL(string: "tel:0") : ContactURL.phone(school.phone)
+        let mailURL = isPreview ? URL(string: "mailto:a@b.de") : ContactURL.mail(school.email)
         VStack(alignment: .leading, spacing: 12) {
             CardHeader(title: card.title, symbol: card.symbol, showsChevron: false)
             // Knöpfe füllen den Rest der Kachel: unten bleibt so immer genau `spacing` Abstand.
@@ -60,21 +60,5 @@ struct SecretariatCard: View {
         .help(help)
         .accessibilityLabel(help)
         .accessibilityHint(url == nil ? loc("Noch nicht eingetragen") : "")
-    }
-
-    /// `tel:` nur mit Ziffern und führendem +.
-    static func phoneURL(_ phone: String) -> URL? {
-        let trimmed = phone.trimmingCharacters(in: .whitespaces)
-        let digits = trimmed.filter(\.isNumber)
-        guard digits.count >= 3 else { return nil }
-        return URL(string: "tel:\(trimmed.hasPrefix("+") ? "+" : "")\(digits)")
-    }
-
-    static func mailURL(_ email: String) -> URL? {
-        let trimmed = email.trimmingCharacters(in: .whitespaces)
-        guard trimmed.contains("@"), !trimmed.contains(" "),
-              let encoded = trimmed.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
-        else { return nil }
-        return URL(string: "mailto:\(encoded)")
     }
 }

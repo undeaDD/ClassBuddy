@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import WeatherKit
 @testable import ClassBuddy
 
 @Suite("Wetter")
@@ -27,5 +28,30 @@ struct WeatherTests {
 
         school.city = "  Köln "
         #expect(WeatherService.placeQuery(for: school) == "Köln")
+    }
+
+    @Test("WeatherKit-Wetterlagen → Beschreibung in der App-Sprache")
+    func appleCondition() {
+        #expect(WeatherCondition(apple: .clear).title == "Klar")
+        #expect(WeatherCondition(apple: .mostlyCloudy).title == "Überwiegend bewölkt")
+        #expect(WeatherCondition(apple: .wintryMix).title == "Schneeregen")
+        #expect(WeatherCondition(apple: .scatteredThunderstorms).title == "Gewitter")
+        #expect(WeatherCondition(apple: .windy).title == "Windig")
+    }
+
+    @Test("Tendenz: Vorhersage in etwa zwei Stunden, ab 1° Unterschied")
+    func trend() {
+        let now = Date(timeIntervalSince1970: 1_800_000_000)
+        func hours(_ temperatures: [Double]) -> [(date: Date, temperature: Double)] {
+            temperatures.enumerated().map { (now.addingTimeInterval(Double($0.offset + 1) * 3600), $0.element) }
+        }
+        #expect(WeatherService.trend(current: 15, hourly: hours([15.5, 16.4, 20]), now: now) == .rising)
+        #expect(WeatherService.trend(current: 15, hourly: hours([14, 13.9, 10]), now: now) == .falling)
+        #expect(WeatherService.trend(current: 15, hourly: hours([20, 15.4]), now: now) == .steady)
+        // Nur eine Stunde voraus: der letzte Wert zählt.
+        #expect(WeatherService.trend(current: 15, hourly: hours([17]), now: now) == .rising)
+        // Vergangene Stunden zählen nicht; ohne Vorhersage keine Tendenz.
+        #expect(WeatherService.trend(current: 15, hourly: [(now.addingTimeInterval(-3600), 30)], now: now) == nil)
+        #expect(WeatherService.trend(current: 15, hourly: [], now: now) == nil)
     }
 }

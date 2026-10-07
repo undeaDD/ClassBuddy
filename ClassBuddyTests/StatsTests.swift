@@ -97,15 +97,15 @@ struct StatsTests {
 struct SecretariatCardTests {
     @Test("Telefonnummer wird zu tel: mit Ziffern")
     func phone() {
-        #expect(SecretariatCard.phoneURL("+49 (0) 30 / 123-45")?.absoluteString == "tel:+4903012345")
-        #expect(SecretariatCard.phoneURL("030 12345")?.absoluteString == "tel:03012345")
-        #expect(SecretariatCard.phoneURL("") == nil)
+        #expect(ContactURL.phone("+49 (0) 30 / 123-45")?.absoluteString == "tel:+4903012345")
+        #expect(ContactURL.phone("030 12345")?.absoluteString == "tel:03012345")
+        #expect(ContactURL.phone("") == nil)
     }
 
     @Test("E-Mail nur mit @ und ohne Leerzeichen")
     func mail() {
-        #expect(SecretariatCard.mailURL(" sekretariat@schule.de ")?.absoluteString == "mailto:sekretariat@schule.de")
-        #expect(SecretariatCard.mailURL("keine adresse") == nil)
-        #expect(SecretariatCard.mailURL("") == nil)
+        #expect(ContactURL.mail(" sekretariat@schule.de ")?.absoluteString == "mailto:sekretariat@schule.de")
+        #expect(ContactURL.mail("keine adresse") == nil)
+        #expect(ContactURL.mail("") == nil)
     }
 }

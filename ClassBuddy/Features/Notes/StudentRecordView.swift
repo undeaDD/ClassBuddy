@@ -47,7 +47,12 @@ struct StudentRecordView: View {
     var body: some View {
         List {
             Section {
-                StudentNameRow(student: student, size: 56, detail: student.schoolClass.map { "\($0.title) · \(SchoolClass.displayName(ofSubject: subject))" })
+                StudentNameRow(
+                    student: student,
+                    size: 56,
+                    detail: student.schoolClass.map { "\($0.title) · \(SchoolClass.displayName(ofSubject: subject))" },
+                    showsContactButtons: true
+                )
             }
             switch segment {
             case .oral: oralSections

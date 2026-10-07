@@ -18,6 +18,8 @@ struct StatCard: View {
     var isSensitive = true
     /// Logo statt Symbol und Titel im Kopf, z. B. Apple Wetter (Pflicht-Quellenangabe von WeatherKit).
     var brand: CardBrand?
+    /// Kleiner Zusatz direkt hinter dem Wert (z. B. Temperatur-Tendenz) samt VoiceOver-Text.
+    var valueSuffix: (text: String, accessibilityLabel: String)?
     var action: (() -> Void)?
 
     var body: some View {
@@ -36,14 +38,22 @@ struct StatCard: View {
             CardHeader(title: title, symbol: symbol, showsChevron: action != nil, brand: brand)
             Spacer(minLength: 0)
             VStack(alignment: .leading, spacing: 2) {
-                Text(value)
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
-                    .monospacedDigit()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-                    .contentTransition(.numericText())
-                    .cardPrivacy(isSensitive)
-                    .leadingAligned()
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text(value)
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .contentTransition(.numericText())
+                        .cardPrivacy(isSensitive)
+                    if let valueSuffix {
+                        Text(verbatim: valueSuffix.text)
+                            .font(.system(size: 28, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.secondary)
+                            .accessibilityLabel(valueSuffix.accessibilityLabel)
+                    }
+                }
+                .leadingAligned()
                 if let detail {
                     Text(detail)
                         .font(.subheadline)
