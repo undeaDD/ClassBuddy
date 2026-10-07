@@ -15,12 +15,6 @@ extension View {
     func appChrome(tab: AppTab) -> some View {
         modifier(AppChromeModifier(tab: tab, hasActions: false, actions: EmptyView()))
     }
-
-    /// Navigationsleiste beim Runterscrollen verkleinern, beim Hochscrollen wieder zeigen (ab iOS 27).
-    /// Abschaltbar in den App-Einstellungen („Leisten beim Scrollen minimieren“).
-    func navigationBarMinimizesOnScroll() -> some View {
-        modifier(NavigationBarMinimization())
-    }
 }
 
 private struct AppChromeModifier<Actions: View>: ViewModifier {
@@ -60,19 +54,10 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
                 }
             }
         }
-        .navigationBarMinimizesOnScroll()
-    }
-}
-
-private struct NavigationBarMinimization: ViewModifier {
-    @AppStorage(AppPreference.minimizesBarsOnScroll) private var isEnabled = true
-
-    func body(content: Content) -> some View {
-        if #available(iOS 27, *) {
-            content.toolbarMinimizationBehavior(isEnabled ? .onScrollDown : .never, for: .navigationBar)
-        } else {
-            content
-        }
+        // Bewusst ohne `toolbarMinimizationBehavior(.onScrollDown, for: .navigationBar)` (iOS 27):
+        // Beim Push/Zurückwischen lief UIKit damit in eine Endlosschleife (Safe Area → Scroll-Beobachter
+        // → Höhe der Navigationsleiste → Safe Area …), die App fror ein – vor allem in den Einstellungen.
+        // Nur die Tab-Leiste minimiert beim Scrollen (`PhoneTabView`).
     }
 }
 

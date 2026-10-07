@@ -8,6 +8,7 @@ nonisolated enum AppIcon: String, CaseIterable, Sendable {
     case bank = "bank"
     case birthday = "birthday"
     case board = "board"
+    case bottomTabs = "bottom-tabs"
     case box = "box"
     case bug = "bug"
     case calendar = "calendar"

@@ -17,12 +17,18 @@ final class ClassTimer {
         didSet { UserDefaults.standard.set(durationMinutes, forKey: Self.durationKey) }
     }
 
+    /// Start der Stoppuhr (zählt hoch); läuft nie gleichzeitig mit dem Timer.
+    private(set) var stopwatchStart: Date? {
+        didSet { UserDefaults.standard.set(stopwatchStart, forKey: Self.stopwatchKey) }
+    }
+
     /// Wird beim Ablaufen im Vordergrund aufgerufen (z. B. Toast anzeigen).
     var onFinish: (() -> Void)?
 
     private var finishTask: Task<Void, Never>?
     private static let endKey = "timer.endDate"
     private static let durationKey = "timer.durationMinutes"
+    private static let stopwatchKey = "timer.stopwatchStart"
     private static let notificationID = "classbuddy.timer"
 
     init() {
@@ -32,11 +38,13 @@ final class ClassTimer {
             durationMinutes = defaults.integer(forKey: Self.durationKey)
             scheduleFinish()
         }
+        stopwatchStart = defaults.object(forKey: Self.stopwatchKey) as? Date
     }
 
     var isRunning: Bool { endDate.map { $0 > .now } ?? false }
 
     func start(minutes: Int) {
+        stopStopwatch()
         durationMinutes = minutes
         endDate = Date.now.addingTimeInterval(TimeInterval(minutes * 60))
         scheduleFinish()
@@ -62,9 +70,28 @@ final class ClassTimer {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.notificationID])
     }
 
+    func startStopwatch() {
+        if isRunning { stop() }
+        stopwatchStart = .now
+    }
+
+    func stopStopwatch() {
+        guard let stopwatchStart else { return }
+        FunStat.timerMinutes.increment(by: Int(Date.now.timeIntervalSince(stopwatchStart) / 60))
+        self.stopwatchStart = nil
+    }
+
     /// Restzeit als „mm:ss“ bzw. „h:mm:ss“.
     static func remainingText(until end: Date, now: Date) -> String {
-        let seconds = max(Int(end.timeIntervalSince(now).rounded(.up)), 0)
+        durationText(seconds: max(Int(end.timeIntervalSince(now).rounded(.up)), 0))
+    }
+
+    /// Laufzeit der Stoppuhr als „mm:ss“ bzw. „h:mm:ss“.
+    static func elapsedText(since start: Date, now: Date) -> String {
+        durationText(seconds: max(Int(now.timeIntervalSince(start).rounded(.down)), 0))
+    }
+
+    private static func durationText(seconds: Int) -> String {
         let (hours, minutes, rest) = (seconds / 3600, seconds % 3600 / 60, seconds % 60)
         return hours > 0
             ? String(format: "%d:%02d:%02d", hours, minutes, rest)
@@ -111,7 +138,7 @@ final class ClassTimer {
     }
 }
 
-/// Timer-Kachel: Dauer wählen, Countdown, verlängern oder stoppen (über ein Menü).
+/// Timer-Kachel: Dauer wählen, Countdown, verlängern oder stoppen – oder Stoppuhr (über ein Menü).
 struct TimerCard: View {
     @Environment(ClassTimer.self) private var timer
 
@@ -121,10 +148,16 @@ struct TimerCard: View {
                 Button("+1 Minute", icon: .plus) { timer.extend(byMinutes: 1) }
                 Button("+5 Minuten", icon: .plus) { timer.extend(byMinutes: 5) }
                 Button("Stoppen", destructiveIcon: .xmark) { timer.stop() }
+            } else if timer.stopwatchStart != nil {
+                Button("Stoppuhr stoppen", destructiveIcon: .xmark) { timer.stopStopwatch() }
+                Button("Neu starten", icon: .undo) { timer.startStopwatch() }
             } else {
-                ForEach(ClassTimer.presets, id: \.self) { minutes in
-                    Button("\(minutes) Minuten") { timer.start(minutes: minutes) }
+                Section("Timer") {
+                    ForEach(ClassTimer.presets, id: \.self) { minutes in
+                        Button("\(minutes) Minuten") { timer.start(minutes: minutes) }
+                    }
                 }
+                Button("Stoppuhr starten", icon: .time) { timer.startStopwatch() }
             }
         } label: {
             TimelineView(.periodic(from: .now, by: 1)) { context in
@@ -137,26 +170,45 @@ struct TimerCard: View {
     }
 
     private func content(now: Date) -> some View {
+        if let end = timer.endDate, end > now {
+            TimerCardContent(remaining: ClassTimer.remainingText(until: end, now: now), detail: loc("\(timer.durationMinutes) min · endet um \(end.appTime)"))
+        } else if let start = timer.stopwatchStart {
+            TimerCardContent(
+                remaining: ClassTimer.elapsedText(since: start, now: now),
+                detail: loc("Stoppuhr · seit \(start.appTime)"),
+                countsDown: false
+            )
+        } else {
+            TimerCardContent(remaining: nil, detail: loc("Antippen für Timer oder Stoppuhr"))
+        }
+    }
+}
+
+/// Inhalt der Timer-Kachel (auch Galerie-Vorschau); ohne `remaining` „Starten“.
+struct TimerCardContent: View {
+    let remaining: String?
+    let detail: String
+    /// Timer zählt herunter, Stoppuhr hoch (Richtung der Ziffern-Animation).
+    var countsDown = true
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             CardHeader(title: DashboardBuiltInCard.timer.title, symbol: DashboardBuiltInCard.timer.symbol, showsChevron: true)
             Spacer(minLength: 0)
             VStack(alignment: .leading, spacing: 2) {
-                if let end = timer.endDate, end > now {
-                    Text(ClassTimer.remainingText(until: end, now: now))
+                if let remaining {
+                    Text(remaining)
                         .font(.system(size: 44, weight: .bold, design: .rounded))
                         .monospacedDigit()
                         .foregroundStyle(.tint)
-                        .contentTransition(.numericText(countsDown: true))
-                    Text("\(timer.durationMinutes) min · endet um \(end.appTime)")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .contentTransition(.numericText(countsDown: countsDown))
                 } else {
                     Text("Starten")
                         .font(.system(size: 44, weight: .bold, design: .rounded))
-                    Text("Antippen, um eine Dauer zu wählen")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
                 }
+                Text(detail)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
             .lineLimit(1)
         }

@@ -37,9 +37,23 @@ enum RoomDemo {
         return shapes
     }
 
+    /// Debug-Menü: Demo-Klassenzimmer auf den aktuellen Grundriss zurücksetzen (bzw. neu anlegen).
+    /// Getauschte Tische verlieren ihre Sitzplätze.
+    static func reset(in context: ModelContext) {
+        let name = loc("Demo-Klassenzimmer")
+        let room = (try? context.fetch(FetchDescriptor<Room>()))?.first { $0.name == name } ?? {
+            let room = Room(name: name, subtitle: loc("Beispielraum, frei bearbeitbar"), category: .classroom)
+            context.insert(room)
+            return room
+        }()
+        room.replaceElements(with: shapes, in: context)
+        try? context.save()
+    }
+
     // MARK: Frühere Versionen
 
-    private static let upgradeKey = "rooms.demoUpgraded.v3"
+    /// v4: v3 war auf manchen Geräten schon gesetzt, bevor es den Grundriss aus Sicht der Lehrkraft gab.
+    private static let upgradeKey = "rooms.demoUpgraded.v4"
 
     /// Ein unverändertes Demo-Klassenzimmer einer früheren Version bekommt den neuen Grundriss.
     private static func upgradeUnchangedDemo(in context: ModelContext, defaults: UserDefaults) {

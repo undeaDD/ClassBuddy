@@ -20,6 +20,9 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
     case lastBoard = "stat.lastBoard"
     case secretariat = "tool.secretariat"
     case checklists = "tool.checklists"
+    case holidays = "stat.holidays"
+    case attendance = "stat.attendance"
+    case quickNote = "tool.quickNote"
 
     var id: String { rawValue }
 
@@ -27,7 +30,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         switch self {
         case .students, .nextLesson: false
         case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost, .room,
-             .noiseMeter, .groups, .lastBoard, .secretariat, .checklists: true
+             .noiseMeter, .groups, .lastBoard, .secretariat, .checklists, .holidays, .attendance, .quickNote: true
         }
     }
 
@@ -42,7 +45,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .nextLesson: loc("Nächste Stunde")
         case .nextBirthday: loc("Nächster Geburtstag")
         case .randomStudent: loc("Zufallsauswahl")
-        case .timer: loc("Timer")
+        case .timer: loc("Timer & Stoppuhr")
         case .currentLesson: loc("Aktuelle Stunde")
         case .dateTime: loc("Datum & Uhrzeit")
         case .weather: loc("Wetter")
@@ -54,6 +57,9 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .lastBoard: loc("Letztes Tafelbild")
         case .secretariat: loc("Sekretariat")
         case .checklists: loc("Checklisten")
+        case .holidays: loc("Ferien")
+        case .attendance: loc("Anwesenheit")
+        case .quickNote: loc("Schnellnotiz")
         }
     }
 
@@ -63,7 +69,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .nextLesson: loc("Wann Sie die Klasse als Nächstes haben – öffnet den Kalender.")
         case .nextBirthday: loc("Wer als Nächstes Geburtstag hat und wie alt er oder sie wird.")
         case .randomStudent: loc("Antippen wählt zufällig eine Schülerin oder einen Schüler aus.")
-        case .timer: loc("Countdown für Arbeitsphasen, mit Ton und Mitteilung am Ende.")
+        case .timer: loc("Countdown für Arbeitsphasen mit Ton und Mitteilung am Ende – oder Stoppuhr.")
         case .currentLesson: loc("Restzeit der laufenden Stunde in Stunden und Minuten.")
         case .dateTime: loc("Uhrzeit, Wochentag, Datum und Kalenderwoche.")
         case .weather: loc("Aktuelles Wetter am Schulort (Ort aus den Schuleinstellungen).")
@@ -75,6 +81,9 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .lastBoard: loc("Vorschau des neuesten Tafelbilds der Klasse – öffnet den Tab „Tafelbild“ mit dem Fach.")
         case .secretariat: loc("Sekretariat anrufen oder anschreiben – Nummer und Adresse aus den Schuleinstellungen.")
         case .checklists: loc("Fortschritt der zuletzt bearbeiteten Checkliste – öffnet sie direkt.")
+        case .holidays: loc("Wie viele Schultage es noch bis zu den nächsten Ferien sind.")
+        case .attendance: loc("Wer heute fehlt oder zu spät kam (aus dem Sitzplan) – öffnet den Sitzplan.")
+        case .quickNote: loc("Eine kurze Notiz zur Klasse, z. B. „Hefte einsammeln“ – antippen zum Bearbeiten.")
         }
     }
 
@@ -96,6 +105,9 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .lastBoard: AppTab.board.symbol
         case .secretariat: .custom(.bank)
         case .checklists: AppTab.checklists.symbol
+        case .holidays: .custom(.calendar)
+        case .attendance: .custom(.userXmark)
+        case .quickNote: .custom(.editPencil)
         }
     }
 
@@ -118,6 +130,9 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .lastBoard: (loc("Mathematik"), loc("Heute um 09:35"))
         case .secretariat: (loc("Anrufen · E-Mail"), loc("Gymnasium am See"))
         case .checklists: ("18/24", loc("Name in die Bücher eingetragen"))
+        case .holidays: (loc("12 Tage"), loc("Schultage bis Herbstferien"))
+        case .attendance: ("22/24", loc("2 abwesend · 1 verspätet"))
+        case .quickNote: (loc("Hefte einsammeln, Elternbrief zum Ausflug austeilen"), loc("Heute um 08:05"))
         }
     }
 }
@@ -310,6 +325,25 @@ private struct TemplatePreview: View {
             WeeklyHoursCard(result: WeeklyWorkload.Result(doneMinutes: 14 * 60, totalMinutes: 24 * 60)) {}
         case .builtIn(.dailyBoost):
             DailyBoostCard(previewText: DashboardBuiltInCard.dailyBoost.previewValue.value)
+        case .builtIn(.secretariat):
+            SecretariatCard(isPreview: true)
+        case .builtIn(.checklists):
+            ChecklistCardContent(title: loc("Name in die Bücher eingetragen"), done: 18, total: 24)
+        case .builtIn(.lastBoard):
+            BoardImageCard(subject: loc("Mathematik"), dateText: loc("Heute um 09:35")) {
+                ImagePlaceholderBackground()
+            }
+        case .builtIn(.noiseMeter):
+            NoiseMeterCardContent(value: loc("58 dB"), detail: NoiseLevel.Stage.calm.title, level: 58, stage: .calm)
+        case .builtIn(.timer):
+            TimerCardContent(remaining: "12:34", detail: loc("20 min · endet um 10:15"))
+        case .builtIn(.quickNote):
+            let card = DashboardBuiltInCard.quickNote
+            QuickNoteCardContent(text: card.previewValue.value, detail: card.previewValue.detail)
+        case .builtIn(.dateTime):
+            // Ohne Aktion (wie die echte Kachel): kein Pfeil.
+            let card = DashboardBuiltInCard.dateTime
+            StatCard(title: card.title, value: card.previewValue.value, detail: card.previewValue.detail, symbol: card.symbol)
         case .builtIn(let card):
             StatCard(title: card.title, value: card.previewValue.value, detail: card.previewValue.detail, symbol: card.symbol) {}
         case .image, .photo, .imageFile:

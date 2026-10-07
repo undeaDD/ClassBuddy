@@ -181,9 +181,6 @@ private struct ChecklistTile: View {
                 }
                 ChecklistProgressBar(done: progress.done, total: progress.total)
                 HStack {
-                    Text(loc("\(progress.done) von \(progress.total) erledigt"))
-                        .monospacedDigit()
-                    Spacer()
                     if let due = checklist.dueDate {
                         Text(loc("Bis \(due.appDate)"))
                             .foregroundStyle(checklist.isOverdue ? Color.red : Color.secondary)
@@ -208,28 +205,16 @@ private struct ChecklistTile: View {
     }
 }
 
-/// Fortschrittsbalken (höher als `ProgressView`) in der Akzentfarbe.
+/// Fortschritt einer Checkliste: Balken wie bei den Wochenstunden, „x von y erledigt“ darin.
 struct ChecklistProgressBar: View {
     let done: Int
     let total: Int
-    var height: CGFloat = 10
 
     var body: some View {
-        let fraction = total == 0 ? 0 : Double(done) / Double(total)
-        Capsule()
-            .fill(.quaternary)
-            .frame(height: height)
-            .overlay(alignment: .leading) {
-                GeometryReader { proxy in
-                    Capsule()
-                        .fill(.tint)
-                        .frame(width: max(proxy.size.width * fraction, fraction > 0 ? height : 0))
-                }
-            }
-            .clipShape(.capsule)
-            .animation(.smooth, value: fraction)
-            .accessibilityElement()
-            .accessibilityLabel(loc("\(done) von \(total) erledigt"))
+        CapsuleProgressBar(
+            value: total == 0 ? 0 : Double(done) / Double(total),
+            label: loc("\(done) von \(total) erledigt")
+        )
     }
 }
 

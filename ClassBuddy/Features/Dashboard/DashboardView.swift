@@ -383,9 +383,9 @@ extension DashboardView {
             nextLessonCard(for: schoolClass)
         case .nextBirthday:
             nextBirthdayCard(for: schoolClass)
-        case .randomStudent, .groups, .lastBoard, .checklists:
+        case .randomStudent, .groups, .lastBoard, .checklists, .quickNote, .attendance:
             classToolCard(card, in: schoolClass)
-        case .timer, .dateTime, .dailyBoost, .noiseMeter, .secretariat:
+        case .timer, .dateTime, .dailyBoost, .noiseMeter, .secretariat, .holidays:
             standaloneCard(card)
         case .currentLesson:
             CurrentLessonCard(
@@ -421,6 +421,7 @@ extension DashboardView {
         case .dateTime: DateTimeCard()
         case .noiseMeter: NoiseMeterCard()
         case .secretariat: SecretariatCard()
+        case .holidays: HolidaysCard()
         default: DailyBoostCard()
         }
     }

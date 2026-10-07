@@ -7,6 +7,7 @@ import SwiftUI
 /// in einen zweiten Navigation-Controller (→ doppelte Navigationsleiste) und sieht veraltet aus.
 struct PhoneTabView: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @AppStorage(AppPreference.hidesTabLabels) private var hidesTabLabels = false
     @AppStorage(AppPreference.minimizesBarsOnScroll) private var minimizesBarsOnScroll = true
     /// „Mehr“ ist ausgewählt (Übersicht oder eine darin geöffnete Seite).
@@ -46,6 +47,8 @@ struct PhoneTabView: View {
                         AppTabDestination(tab: tab)
                     }
                     .id(app.stackID(for: tab))
+                    .environment(\.horizontalSizeClass, horizontalSizeClass)
+                    .environment(\.usesPhoneTabBar, true)
                 } label: {
                     TabBarLabel(title: tab.title, image: tab.symbol.image, hidesTitle: hidesTabLabels)
                 }
@@ -53,10 +56,15 @@ struct PhoneTabView: View {
             Tab(value: Slot.more) {
                 MoreView(path: $morePath)
                     .id(moreStackID)
+                    .environment(\.horizontalSizeClass, horizontalSizeClass)
+                    .environment(\.usesPhoneTabBar, true)
             } label: {
                 TabBarLabel(title: "Mehr", image: Image(icon: .moreHoriz), hidesTitle: hidesTabLabels)
             }
         }
+        // iPad (App-Einstellung „iPhone-Tab-Leiste“): kompakt → echte Tab-Leiste unten statt oben.
+        // Die Seiten selbst behalten die tatsächliche Größenklasse (s. o.).
+        .environment(\.horizontalSizeClass, .compact)
         // Beim Runterscrollen auf den aktiven Tab schrumpfen, beim Hochscrollen wieder groß.
         .tabBarMinimizeBehavior(minimizesBarsOnScroll ? .onScrollDown : .never)
         // Seiten, die von außen geöffnet werden (z. B. Kachel auf der Übersicht),
@@ -103,7 +111,6 @@ private struct MoreView: View {
             }
             .navigationTitle("Mehr")
             .navigationSubtitle("Was möchten Sie als Nächstes tun?")
-            .navigationBarMinimizesOnScroll()
             .navigationDestination(for: AppTab.self) { tab in
                 AppTabDestination(tab: tab)
             }

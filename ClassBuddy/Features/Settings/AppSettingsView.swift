@@ -53,7 +53,7 @@ enum AppPreference {
     static let hidesTabLabels = "app.hidesTabLabels"
     /// Bildschirm bleibt an, solange die App im Vordergrund ist.
     static let keepsScreenAwake = "app.keepsScreenAwake"
-    /// Tab- und Navigationsleiste beim Runterscrollen verkleinern (Standard: an).
+    /// Tab-Leiste beim Runterscrollen verkleinern (Standard: an). Die Navigationsleiste nicht mehr, siehe `AppChromeModifier`.
     static let minimizesBarsOnScroll = "app.minimizesBarsOnScroll"
     /// Leichtes Vibrieren bei Taps, Klassenwechsel und Meldungen (Standard: aus).
     static let hapticFeedback = "app.hapticFeedback"
@@ -174,9 +174,8 @@ struct AppSettingsView: View {
                     Label("UI Minimieren", icon: .swipeLeftGesture)
                 }
                 if UIDevice.current.userInterfaceIdiom == .pad {
-                    // Platzhalter-Icon, bis das eigene da ist.
                     Toggle(isOn: $padUsesPhoneTabBar) {
-                        Label("iPhone-Tab-Leiste", icon: .homeTable)
+                        Label("iPhone-Tab-Leiste", icon: .bottomTabs)
                     }
                 }
             } header: {
@@ -184,10 +183,10 @@ struct AppSettingsView: View {
             } footer: {
                 Text(UIDevice.current.userInterfaceIdiom == .pad
                     ? loc("""
-                        Tab-Titel gibt es nur in der iPhone-Tab-Leiste. UI Minimieren verkleinert die Leisten beim Scrollen. \
+                        Tab-Titel gibt es nur in der iPhone-Tab-Leiste. UI Minimieren verkleinert sie beim Scrollen. \
                         Die iPhone-Tab-Leiste ersetzt die Leiste oben und die Seitenleiste.
                         """)
-                    : loc("Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Leisten beim Scrollen."))
+                    : loc("Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Tab-Leiste beim Scrollen."))
             }
 
             IconThemeSection()

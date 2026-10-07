@@ -130,12 +130,12 @@ enum Backup {
         XLSXSheet(name: Sheet.classes, rows: [
             [
                 "ID", "Kürzel", "Fächer", "Schuljahr", "Farbe", "Erstellt",
-                "Kachel-Reihenfolge", "Ausgeblendete Kacheln", "Entfernte Kacheln",
+                "Kachel-Reihenfolge", "Ausgeblendete Kacheln", "Entfernte Kacheln", "Schnellnotiz", "Schnellnotiz bearbeitet",
             ],
         ] + classes.map {
             [$0.id.uuidString, $0.shortName, Cell.list($0.subjects), $0.schoolYear, $0.colorRaw,
              Cell.dateTime($0.createdAt), Cell.list($0.dashboardOrder), Cell.list($0.dashboardHidden),
-             Cell.list($0.dashboardRemoved)]
+             Cell.list($0.dashboardRemoved), $0.quickNote, $0.quickNoteEditedAt.map(Cell.dateTime) ?? ""]
         })
     }
 

@@ -27,6 +27,8 @@
 		7E48EADC7A204B65B879F345 /* ChecklistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0460026AC0E46E8BE62AAD2 /* ChecklistDetailView.swift */; };
 		98D32DD2EFBC4298959C987E /* ChecklistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9F686E9D5054900A3AFF766 /* ChecklistsView.swift */; };
 		D6CFEB07F517472099CA2E86 /* SecretariatCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E7ADCDAE59940B0BF03F442 /* SecretariatCard.swift */; };
+		3E3E58D135BD4C4E868FAFB3 /* QuickNoteCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E32C7C95534B7A9A01E5DC /* QuickNoteCard.swift */; };
+		7220A8AF426D472489561BAE /* HolidaysAttendanceCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BB83B6EB5B4256B130AD71 /* HolidaysAttendanceCards.swift */; };
 		20CA42B8CAED4A84A8FE2745 /* BoardPhotoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10776E2B9A9F45B6923AA74B /* BoardPhotoTests.swift */; };
 		73002C1B751E4E219F53C134 /* BoardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9C5307FC5B44E028AAA016A /* BoardCard.swift */; };
 		A5BD44FFFB3D43569EE79F83 /* BoardPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B37FAA8B2E54702A353EB61 /* BoardPhoto.swift */; };
@@ -181,6 +183,8 @@
 		F0460026AC0E46E8BE62AAD2 /* ChecklistDetailView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChecklistDetailView.swift; sourceTree = "<group>"; };
 		C9F686E9D5054900A3AFF766 /* ChecklistsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChecklistsView.swift; sourceTree = "<group>"; };
 		5E7ADCDAE59940B0BF03F442 /* SecretariatCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SecretariatCard.swift; sourceTree = "<group>"; };
+		52E32C7C95534B7A9A01E5DC /* QuickNoteCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = QuickNoteCard.swift; sourceTree = "<group>"; };
+		90BB83B6EB5B4256B130AD71 /* HolidaysAttendanceCards.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HolidaysAttendanceCards.swift; sourceTree = "<group>"; };
 		10776E2B9A9F45B6923AA74B /* BoardPhotoTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardPhotoTests.swift; sourceTree = "<group>"; };
 		F9C5307FC5B44E028AAA016A /* BoardCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardCard.swift; sourceTree = "<group>"; };
 		1B37FAA8B2E54702A353EB61 /* BoardPhoto.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardPhoto.swift; sourceTree = "<group>"; };
@@ -643,6 +647,8 @@
 				F00038BB8AA848E7920A3FD1 /* RandomGroups.swift */,
 				F9C5307FC5B44E028AAA016A /* BoardCard.swift */,
 				5E7ADCDAE59940B0BF03F442 /* SecretariatCard.swift */,
+				52E32C7C95534B7A9A01E5DC /* QuickNoteCard.swift */,
+				90BB83B6EB5B4256B130AD71 /* HolidaysAttendanceCards.swift */,
 				D1889581B6454E11A4615727 /* ChecklistCard.swift */,
 			);
 			path = Dashboard;
@@ -854,6 +860,8 @@
 				10F213227F4347ECBD6D665C /* RandomGroups.swift in Sources */,
 				73002C1B751E4E219F53C134 /* BoardCard.swift in Sources */,
 				D6CFEB07F517472099CA2E86 /* SecretariatCard.swift in Sources */,
+				3E3E58D135BD4C4E868FAFB3 /* QuickNoteCard.swift in Sources */,
+				7220A8AF426D472489561BAE /* HolidaysAttendanceCards.swift in Sources */,
 				C61F8C1DDBA3437CAE66A5C0 /* ChecklistCard.swift in Sources */,
 			);
 		};

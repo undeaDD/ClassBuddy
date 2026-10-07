@@ -18,12 +18,38 @@
         }
       }
     },
+    "%@ (%@, %@)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@, %3$@)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$@, %3$@)"
+          }
+        }
+      }
+    },
     "%@ (Kopie)" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ (copy)"
+          }
+        }
+      }
+    },
+    "%@ fehlt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ missing"
           }
         }
       }
@@ -154,6 +180,22 @@
         }
       }
     },
+    "%@ · bis %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · bis %2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · until %2$@"
+          }
+        }
+      }
+    },
     "%@ · wird %lld" : {
       "localizations" : {
         "de" : {
@@ -166,6 +208,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ · turns %2$lld"
+          }
+        }
+      }
+    },
+    "%@, %@ · KW %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@ · KW %3$lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@ · CW %3$lld"
           }
         }
       }
@@ -196,6 +254,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld observations"
+          }
+        }
+      }
+    },
+    "%lld abwesend" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld absent"
           }
         }
       }
@@ -472,6 +540,16 @@
         }
       }
     },
+    "%lld verspätet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld late"
+          }
+        }
+      }
+    },
     "%lld von %lld" : {
       "localizations" : {
         "de" : {
@@ -570,6 +648,16 @@
         }
       }
     },
+    "/ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ %@"
+          }
+        }
+      }
+    },
     "1 Beobachtung" : {
       "localizations" : {
         "en" : {
@@ -640,12 +728,32 @@
         }
       }
     },
+    "12 Tage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 days"
+          }
+        }
+      }
+    },
     "14 h erledigt · 24 h gesamt" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "14 h done · 24 h total"
+          }
+        }
+      }
+    },
+    "2 abwesend · 1 verspätet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 absent · 1 late"
           }
         }
       }
@@ -741,6 +849,16 @@
         }
       }
     },
+    "Abgehakt am %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checked on %@"
+          }
+        }
+      }
+    },
     "Abgehakt am %@ um %@" : {
       "localizations" : {
         "de" : {
@@ -753,6 +871,412 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Checked on %1$@ at %2$@"
+          }
+        }
+      }
+    },
+    "Alter" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Age"
+          }
+        }
+      }
+    },
+    "Antippen für Timer oder Stoppuhr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap for timer or stopwatch"
+          }
+        }
+      }
+    },
+    "Antippen zum Schreiben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap to write"
+          }
+        }
+      }
+    },
+    "Anwesenheit" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attendance"
+          }
+        }
+      }
+    },
+    "Bitte in den Schuleinstellungen die Telefonnummer und E-Mail-Adresse des Sekretariats eintragen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please enter the school office’s phone number and email address in the school settings."
+          }
+        }
+      }
+    },
+    "Countdown für Arbeitsphasen mit Ton und Mitteilung am Ende – oder Stoppuhr." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Countdown for work phases with a sound and notification at the end – or a stopwatch."
+          }
+        }
+      }
+    },
+    "Demo-Klassenzimmer zurückgesetzt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo classroom reset"
+          }
+        }
+      }
+    },
+    "Demo-Klassenzimmer zurücksetzen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Demo Classroom"
+          }
+        }
+      }
+    },
+    "Eine kurze Notiz zur Klasse, z. B. „Hefte einsammeln“ – antippen zum Bearbeiten." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A short note for the class, e.g. “Collect notebooks” – tap to edit."
+          }
+        }
+      }
+    },
+    "Entwicklung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Development"
+          }
+        }
+      }
+    },
+    "Erscheint auf der Übersicht dieser Klasse." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appears on this class’s overview."
+          }
+        }
+      }
+    },
+    "Ferien" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Holidays"
+          }
+        }
+      }
+    },
+    "Ferien in den Schuleinstellungen importieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import holidays in the school settings"
+          }
+        }
+      }
+    },
+    "Fügen Sie Schülerinnen und Schüler hinzu, um loszulegen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add students to get started."
+          }
+        }
+      }
+    },
+    "Geburtstage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Birthdays"
+          }
+        }
+      }
+    },
+    "Hefte einsammeln, Elternbrief zum Ausflug austeilen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collect notebooks, hand out the parent letter for the trip"
+          }
+        }
+      }
+    },
+    "Heute keine Fehlzeiten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No absences today"
+          }
+        }
+      }
+    },
+    "Heute um 08:05" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today at 08:05"
+          }
+        }
+      }
+    },
+    "Im Privatsphäre-Modus ausgeblendet" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hidden in privacy mode"
+          }
+        }
+      }
+    },
+    "Jahr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Year"
+          }
+        }
+      }
+    },
+    "Keine Schüler" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Students"
+          }
+        }
+      }
+    },
+    "Keine weiteren Ferien importiert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No further holidays imported"
+          }
+        }
+      }
+    },
+    "Leerzustand" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empty State"
+          }
+        }
+      }
+    },
+    "Monat" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Month"
+          }
+        }
+      }
+    },
+    "Neu starten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart"
+          }
+        }
+      }
+    },
+    "Noch keine Notiz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No note yet"
+          }
+        }
+      }
+    },
+    "Noch nicht eingetragen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not entered yet"
+          }
+        }
+      }
+    },
+    "Note" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grade"
+          }
+        }
+      }
+    },
+    "Nur am %@, %@, %lld. Stunde" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Nur am %1$@, %2$@, %3$lld. Stunde"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only on %1$@, %2$@, period %3$lld"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Schnellnotiz" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick Note"
+          }
+        }
+      }
+    },
+    "Schnellnotiz · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick Note · %@"
+          }
+        }
+      }
+    },
+    "Schultage bis Herbstferien" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "School days until autumn break"
+          }
+        }
+      }
+    },
+    "Stoppuhr starten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Stopwatch"
+          }
+        }
+      }
+    },
+    "Stoppuhr stoppen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop Stopwatch"
+          }
+        }
+      }
+    },
+    "Stoppuhr · seit %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stopwatch · since %@"
+          }
+        }
+      }
+    },
+    "Stunden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hours"
+          }
+        }
+      }
+    },
+    "Timer & Stoppuhr" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer & Stopwatch"
+          }
+        }
+      }
+    },
+    "Wer heute fehlt oder zu spät kam (aus dem Sitzplan) – öffnet den Sitzplan." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Who is absent or was late today (from the seating plan) – opens the seating plan."
+          }
+        }
+      }
+    },
+    "Wie viele Schultage es noch bis zu den nächsten Ferien sind." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How many school days are left until the next holidays."
           }
         }
       }
@@ -8079,22 +8603,22 @@
         }
       }
     },
-    "Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Leisten beim Scrollen." : {
+    "Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Tab-Leiste beim Scrollen." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tab titles exist on iPhone only. Minimize UI shrinks the bars while scrolling."
+            "value" : "Tab titles exist on iPhone only. Minimize UI shrinks the tab bar while scrolling."
           }
         }
       }
     },
-    "Tab-Titel gibt es nur in der iPhone-Tab-Leiste. UI Minimieren verkleinert die Leisten beim Scrollen. Die iPhone-Tab-Leiste ersetzt die Leiste oben und die Seitenleiste." : {
+    "Tab-Titel gibt es nur in der iPhone-Tab-Leiste. UI Minimieren verkleinert sie beim Scrollen. Die iPhone-Tab-Leiste ersetzt die Leiste oben und die Seitenleiste." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tab titles only appear in the iPhone tab bar. Minimize UI shrinks the bars while scrolling. The iPhone tab bar replaces the top bar and the sidebar."
+            "value" : "Tab titles only appear in the iPhone tab bar. Minimize UI shrinks it while scrolling. The iPhone tab bar replaces the top bar and the sidebar."
           }
         }
       }

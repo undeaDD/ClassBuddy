@@ -40,7 +40,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
         case .rooms: .custom(.floorLayout)
         case .board: .custom(.board)
         // Platzhalter, bis das eigene Icon in Icons/ liegt.
-        case .checklists: .custom(.check)
+        case .checklists: .custom(.checkmarkOn)
         case .notes: .custom(.notes)
         case .settings: .custom(.settings)
         case .feedback: .custom(.sendMail)

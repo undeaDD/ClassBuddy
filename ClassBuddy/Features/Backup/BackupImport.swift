@@ -118,6 +118,8 @@ extension Backup {
                 schoolClass.dashboardOrder = Cell.parseList(row["Kachel-Reihenfolge"])
                 schoolClass.dashboardHidden = Cell.parseList(row["Ausgeblendete Kacheln"])
                 schoolClass.dashboardRemoved = Cell.parseList(row["Entfernte Kacheln"])
+                schoolClass.quickNote = row["Schnellnotiz"]
+                schoolClass.quickNoteEditedAt = Cell.parseDateTime(row["Schnellnotiz bearbeitet"])
                 schoolClass.dashboardKnownCards = schoolClass.dashboardOrder + schoolClass.dashboardHidden + schoolClass.dashboardRemoved
                 context.insert(schoolClass)
                 classesByID[schoolClass.id] = schoolClass

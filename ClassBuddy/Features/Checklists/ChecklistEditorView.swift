@@ -61,7 +61,7 @@ struct ChecklistEditorView: View {
 
                 Section {
                     Toggle(isOn: $isGlobal) {
-                        Label("Für alle Fächer der Klasse", icon: .globe)
+                        Label("Für alle Fächer der Klasse", icon: .graduationCap)
                     }
                     .disabled(subjects.isEmpty)
                     if !isGlobal {

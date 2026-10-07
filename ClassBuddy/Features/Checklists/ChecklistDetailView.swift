@@ -113,11 +113,8 @@ struct ChecklistDetailView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                ChecklistProgressBar(done: progress.done, total: progress.total, height: 14)
+                ChecklistProgressBar(done: progress.done, total: progress.total)
                 HStack {
-                    Text(loc("\(progress.done) von \(progress.total) erledigt"))
-                        .monospacedDigit()
-                    Spacer()
                     if let due = checklist.dueDate {
                         Text(loc("Bis \(due.appDate)"))
                             .foregroundStyle(checklist.isOverdue ? Color.red : Color.secondary)

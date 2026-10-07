@@ -56,6 +56,9 @@ final class SchoolClass {
     var dashboardRemoved: [String] = []
     /// Letzte Zufallsgruppen (JSON, siehe `SchoolClass.lastGroups`).
     var lastGroupsData: Data?
+    /// Kurze Notiz der Kachel „Schnellnotiz“ (leer = keine).
+    var quickNote: String = ""
+    var quickNoteEditedAt: Date?
 
     init(
         id: UUID = UUID(),

@@ -43,6 +43,7 @@ nonisolated enum IconTheme: Identifiable, Hashable, Sendable {
         .bank: "building.columns",
         .birthday: "birthday.cake",
         .board: "tv",
+        .bottomTabs: "inset.filled.bottomhalf.rectangle",
         .box: "shippingbox",
         .bug: "ladybug",
         .calendar: "calendar",

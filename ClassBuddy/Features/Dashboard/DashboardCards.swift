@@ -189,19 +189,11 @@ struct ContentCard: View {
 
 /// Bild-Kachel ohne echtes Bild (Galerie-Vorschau).
 struct ImagePlaceholderCard: View {
-    @Environment(\.appAccent) private var accent
     let title: String
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            LinearGradient(
-                colors: [accent.opacity(0.55), accent.opacity(0.2)],
-                startPoint: .topLeading, endPoint: .bottomTrailing
-            )
-            Image(icon: .image)
-                .iconSize(48)
-                .foregroundStyle(.white.opacity(0.8))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            ImagePlaceholderBackground()
             Text(title)
                 .font(.headline)
                 .padding(.horizontal, 12)
@@ -212,6 +204,23 @@ struct ImagePlaceholderCard: View {
         .frame(maxWidth: .infinity)
             .frame(height: cardHeight)
         .clipShape(cardShape)
+    }
+}
+
+/// Platzhalter statt eines echten Bilds (Galerie-Vorschau): Verlauf in der Akzentfarbe mit Bild-Symbol.
+struct ImagePlaceholderBackground: View {
+    @Environment(\.appAccent) private var accent
+
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                colors: [accent.opacity(0.55), accent.opacity(0.2)],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
+            Image(icon: .image)
+                .iconSize(48)
+                .foregroundStyle(.white.opacity(0.8))
+        }
     }
 }
 
@@ -378,7 +387,8 @@ struct CardHeader: View {
 }
 
 /// Fortschrittsbalken: hoch, voll abgerundet, auch am Ende des aktuellen Werts.
-private struct CapsuleProgressBar: View {
+/// Einheitlich für Kacheln mit Fortschritt (Wochenstunden, Checklisten).
+struct CapsuleProgressBar: View {
     @Environment(\.appAccent) private var accent
     let value: Double
     /// Text mittig im Balken: über dem gefüllten Teil weiß, sonst in der Textfarbe.
@@ -456,8 +466,9 @@ extension View {
         frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    func cardStyle() -> some View {
-        padding(18)
+    /// `padding`: Abstand zum Kartenrand.
+    func cardStyle(padding: CGFloat = 18) -> some View {
+        self.padding(padding)
             .frame(maxWidth: .infinity, alignment: .topLeading)
             .frame(height: cardHeight, alignment: .topLeading)
             // Weiß (hell) bzw. Dunkelgrau (dunkel) auf dem gruppierten Hintergrund.

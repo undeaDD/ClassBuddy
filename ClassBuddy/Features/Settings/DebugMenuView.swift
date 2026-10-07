@@ -30,6 +30,10 @@ struct DebugMenuView: View {
                     removeDummyData()
                 }
                 .disabled(!hasDummyData)
+                DebugActionRow(title: loc("Demo-Klassenzimmer zurücksetzen"), icon: .floorLayout) {
+                    RoomDemo.reset(in: modelContext)
+                    toasts.success(loc("Demo-Klassenzimmer zurückgesetzt"))
+                }
             } header: {
                 Text("Testdaten")
             } footer: {

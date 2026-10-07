@@ -3,16 +3,21 @@ import UIKit
 
 extension View {
     /// Schwebende Leiste unten über dem Inhalt (z. B. Blättern im Kalender, später Räume …).
-    /// Im iPhone-Layout (auch schmales iPad-Fenster) rutscht sie beim Minimieren der Tab-Leiste
-    /// animiert in deren Zeile, neben den kleinen Knopf, und beim Vergrößern wieder hoch.
-    /// Große iPad-Fenster (Sidebar): bleibt fest 10 pt über der Unterkante.
+    /// Mit iPhone-Tab-Leiste (iPhone, schmales iPad-Fenster, iPad mit Einstellung „iPhone-Tab-Leiste“)
+    /// rutscht sie beim Minimieren der Tab-Leiste animiert in deren Zeile, neben den kleinen Knopf,
+    /// und beim Vergrößern wieder hoch. iPad-Leiste oben mit Sidebar: bleibt fest 10 pt über der Unterkante.
     func floatingBottomBar<Bar: View>(@ViewBuilder _ bar: () -> Bar) -> some View {
         modifier(FloatingBottomBar(bar: bar()))
     }
 }
 
+extension EnvironmentValues {
+    /// Seite liegt in der `PhoneTabView` (Tab-Leiste unten) – auch auf dem iPad, siehe `AppTabView`.
+    @Entry var usesPhoneTabBar = false
+}
+
 private struct FloatingBottomBar<Bar: View>: ViewModifier {
-    @Environment(\.device) private var device
+    @Environment(\.usesPhoneTabBar) private var usesPhoneTabBar
     let bar: Bar
 
     /// Abstand der Mitte des kleinen Tab-Knopfs unter der Unterkante der Seite; `nil` = nicht minimiert.
@@ -29,16 +34,16 @@ private struct FloatingBottomBar<Bar: View>: ViewModifier {
                     .animation(.smooth, value: minimizedButtonDepth)
             }
             .background {
-                if device.isPhone {
+                if usesPhoneTabBar {
                     TabBarMinimizationReader { minimizedButtonDepth = $0 }
                 }
             }
-            .onChange(of: device) { minimizedButtonDepth = nil }
+            .onChange(of: usesPhoneTabBar) { minimizedButtonDepth = nil }
     }
 
     /// Minimiert: mittig auf Höhe des kleinen Knopfs (gemessen, da hochkant und quer verschieden).
     private var offset: CGFloat {
-        guard device.isPhone, let minimizedButtonDepth else { return 0 }
+        guard usesPhoneTabBar, let minimizedButtonDepth else { return 0 }
         return 10 + minimizedButtonDepth + barHeight / 2
     }
 }

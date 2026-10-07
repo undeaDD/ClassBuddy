@@ -9,39 +9,13 @@ struct NoiseMeterCard: View {
 
     var body: some View {
         Button(action: Haptics.tapping(toggle)) {
-            VStack(alignment: .leading, spacing: 12) {
-                let card = DashboardBuiltInCard.noiseMeter
-                CardHeader(title: card.title, symbol: card.symbol, showsChevron: false)
-                Spacer(minLength: 0)
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(valueText)
-                        .font(.system(size: 44, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.5)
-                        .foregroundStyle(meter.state == .running ? meter.stage.color : .primary)
-                        .contentTransition(.numericText())
-                        .leadingAligned()
-                    if meter.state == .running {
-                        NoiseLevelBar(level: meter.level)
-                    }
-                    Text(detailText)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .leadingAligned()
-                }
-            }
-            .cardStyle()
-            // Ampelfarbe als leichte Tönung über der Kachel.
-            .overlay {
-                if meter.state == .running {
-                    cardShape
-                        .fill(meter.stage.color.opacity(0.12))
-                        .allowsHitTesting(false)
-                        .animation(.smooth, value: meter.stage)
-                }
-            }
+            let isRunning = meter.state == .running
+            NoiseMeterCardContent(
+                value: valueText,
+                detail: detailText,
+                level: isRunning ? meter.level : nil,
+                stage: isRunning ? meter.stage : nil
+            )
         }
         .buttonStyle(.plain)
         .hoverEffect(.lift)
@@ -75,6 +49,51 @@ struct NoiseMeterCard: View {
             meter.stop()
         } else {
             Task { await meter.start() }
+        }
+    }
+}
+
+/// Inhalt der Lautstärke-Kachel (auch Galerie-Vorschau). Mit `stage` (Messung läuft):
+/// Wert in der Ampelfarbe, Pegelbalken und leichte Tönung der Kachel.
+struct NoiseMeterCardContent: View {
+    let value: String
+    let detail: String
+    var level: Double?
+    var stage: NoiseLevel.Stage?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            let card = DashboardBuiltInCard.noiseMeter
+            CardHeader(title: card.title, symbol: card.symbol, showsChevron: false)
+            Spacer(minLength: 0)
+            VStack(alignment: .leading, spacing: 6) {
+                Text(value)
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .foregroundStyle(stage?.color ?? .primary)
+                    .contentTransition(.numericText())
+                    .leadingAligned()
+                if let level {
+                    NoiseLevelBar(level: level)
+                }
+                Text(detail)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .leadingAligned()
+            }
+        }
+        .cardStyle()
+        // Ampelfarbe als leichte Tönung über der Kachel.
+        .overlay {
+            if let stage {
+                cardShape
+                    .fill(stage.color.opacity(0.12))
+                    .allowsHitTesting(false)
+                    .animation(.smooth, value: stage)
+            }
         }
     }
 }
