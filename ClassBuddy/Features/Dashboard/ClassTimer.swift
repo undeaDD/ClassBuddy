@@ -132,6 +132,8 @@ final class ClassTimer {
         content.title = loc("Timer abgelaufen")
         content.body = loc("\(durationMinutes) Minuten sind um.")
         content.sound = Self.vibratesOnly ? nil : .default
+        // Kommt auch im Fokus (z. B. „Unterricht“) durch – Entitlement „Time Sensitive Notifications“.
+        content.interruptionLevel = .timeSensitive
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(endDate.timeIntervalSinceNow, 1), repeats: false)
         center.removePendingNotificationRequests(withIdentifiers: [Self.notificationID])
         try? await center.add(UNNotificationRequest(identifier: Self.notificationID, content: content, trigger: trigger))

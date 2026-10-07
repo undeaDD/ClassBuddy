@@ -875,6 +875,16 @@
         }
       }
     },
+    "Als Nächstes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        }
+      }
+    },
     "Alter" : {
       "localizations" : {
         "en" : {
@@ -935,6 +945,16 @@
         }
       }
     },
+    "Danach" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After that"
+          }
+        }
+      }
+    },
     "Demo-Klassenzimmer zurückgesetzt" : {
       "localizations" : {
         "en" : {
@@ -951,6 +971,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reset Demo Classroom"
+          }
+        }
+      }
+    },
+    "Die laufende Stunde mit Restzeit, sonst die nächste Stunde – mit Klasse, Fach und Raum." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The current lesson with time remaining, otherwise the next one – with class, subject and room."
+          }
+        }
+      }
+    },
+    "Dunst" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haze"
           }
         }
       }
@@ -1025,6 +1065,16 @@
         }
       }
     },
+    "Hagel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hail"
+          }
+        }
+      }
+    },
     "Hefte einsammeln, Elternbrief zum Ausflug austeilen" : {
       "localizations" : {
         "en" : {
@@ -1055,12 +1105,32 @@
         }
       }
     },
+    "Heute, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today, %@"
+          }
+        }
+      }
+    },
     "Im Privatsphäre-Modus ausgeblendet" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hidden in privacy mode"
+          }
+        }
+      }
+    },
+    "In den nächsten zwei Wochen steht nichts im Kalender. Öffnen Sie ClassBuddy, um den Plan zu aktualisieren." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing in the calendar for the next two weeks. Open ClassBuddy to update the schedule."
           }
         }
       }
@@ -1075,12 +1145,32 @@
         }
       }
     },
+    "Jetzt & Als Nächstes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Now & Next"
+          }
+        }
+      }
+    },
     "Keine Schüler" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "No Students"
+          }
+        }
+      }
+    },
+    "Keine Stunden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Lessons"
           }
         }
       }
@@ -1111,6 +1201,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Month"
+          }
+        }
+      }
+    },
+    "Morgen, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tomorrow, %@"
           }
         }
       }
@@ -1177,6 +1277,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        }
+      }
+    },
+    "Schneeregen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleet"
           }
         }
       }
@@ -1251,6 +1361,16 @@
         }
       }
     },
+    "Sturm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storm"
+          }
+        }
+      }
+    },
     "Timer & Stoppuhr" : {
       "localizations" : {
         "en" : {
@@ -1271,12 +1391,32 @@
         }
       }
     },
+    "Wetterdaten: %@ – Datenquellen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weather data: %@ – data sources"
+          }
+        }
+      }
+    },
     "Wie viele Schultage es noch bis zu den nächsten Ferien sind." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "How many school days are left until the next holidays."
+          }
+        }
+      }
+    },
+    "Windig" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windy"
           }
         }
       }
@@ -9976,6 +10116,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ø %@"
+          }
+        }
+      }
+    },
+    "Überwiegend bewölkt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostly cloudy"
           }
         }
       }

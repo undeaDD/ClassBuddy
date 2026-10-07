@@ -56,7 +56,13 @@ struct SchoolSettingsView: View {
             } header: {
                 Text("Schule")
             } footer: {
-                Text(schoolFooter)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(schoolFooter)
+                    // Pflichtangabe für WeatherKit: Marke und Link zu den Datenquellen.
+                    Link(destination: WeatherService.appleLegalURL) {
+                        Text(loc("Wetterdaten: \(WeatherService.appleAttributionMark) – Datenquellen"))
+                    }
+                }
             }
 
             Section {

@@ -2,6 +2,7 @@
 included:
   - ClassBuddy
   - ClassBuddyTests
+  - ClassBuddyWidgets
 excluded:
   - build
   - ClassBuddy/Resources

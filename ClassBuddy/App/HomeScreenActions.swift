@@ -54,6 +54,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         FunStat.appLaunches.increment()
+        // Vor dem Öffnen der Datenbank (das passiert erst mit der ersten Szene).
+        DataProtectionMigration.runIfNeeded()
         return true
     }
 

@@ -1,10 +1,15 @@
+import CoreLocation
 import Foundation
+import MapKit
+import OSLog
 import SwiftUI
+import WeatherKit
 
-/// Wetter am Schulort über Open-Meteo (open-meteo.com, frei, ohne Schlüssel, CC BY 4.0).
+/// Wetter am Schulort. Bevorzugt Apple (Ortssuche über MapKit, Wetter über WeatherKit); fällt jeweils auf
+/// Open-Meteo zurück (open-meteo.com, frei, ohne Schlüssel, CC BY 4.0) – z. B. ohne WeatherKit-Berechtigung
+/// (selbst signierte Builds) oder wenn Apple nicht antwortet.
 /// Der Ort kommt aus der Schuladresse (Ort, PLZ zur Unterscheidung gleichnamiger Orte) –
-/// es wird kein Standort des Geräts
-/// verwendet und keine personenbezogenen Daten gesendet.
+/// es wird kein Standort des Geräts verwendet und keine personenbezogenen Daten gesendet.
 nonisolated enum WeatherService {
     struct Snapshot: Equatable, Sendable {
         let place: String
@@ -13,7 +18,26 @@ nonisolated enum WeatherService {
         let low: Double
         let condition: WeatherCondition
         let fetchedAt: Date
+        /// Herkunft der Wetterdaten (Apple verlangt dann die Attribution auf der Kachel).
+        let source: Source
     }
+
+    enum Source: Sendable {
+        case apple, openMeteo
+    }
+
+    /// Ort mit Koordinaten (aus MapKit oder der Open-Meteo-Ortssuche).
+    struct Place: Sendable {
+        let name: String
+        let latitude: Double
+        let longitude: Double
+    }
+
+    /// Pflichtangaben für WeatherKit: Marke „ Weather“ und Link zu den Datenquellen.
+    static let appleAttributionMark = "\u{F8FF} Weather"
+    static let appleLegalURL = URL(string: "https://weatherkit.apple.com/legal-attribution.html")!
+
+    private static let log = Logger(subsystem: "de.devsforge.ClassBuddy", category: "weather")
 
     enum WeatherError: LocalizedError {
         case noLocation
@@ -41,24 +65,93 @@ nonisolated enum WeatherService {
     /// Wetter laden (höchstens alle 30 Minuten neu, sonst aus dem Speicher).
     static func load(for school: SchoolInfo, federalStateName: String? = nil) async throws -> Snapshot {
         guard let query = placeQuery(for: school) else { throw WeatherError.noLocation }
-        if let cached = await cache.snapshot(for: query), Date.now.timeIntervalSince(cached.fetchedAt) < maxAge {
+        let postalCode = school.postalCode.trimmingCharacters(in: .whitespaces)
+        let street = school.street.trimmingCharacters(in: .whitespaces)
+        // Ganze Schuladresse als Schlüssel: andere Straße oder PLZ → neu laden.
+        let cacheKey = [street, postalCode, query].joined(separator: "|")
+        if let cached = await cache.snapshot(for: cacheKey), Date.now.timeIntervalSince(cached.fetchedAt) < maxAge {
             return cached
         }
-        let place = try await geocode(
-            query,
-            postalCode: school.postalCode.trimmingCharacters(in: .whitespaces),
-            federalStateName: federalStateName
-        )
-        let snapshot = try await forecast(for: place)
-        await cache.store(snapshot, for: query)
+        let place: Place
+        // Apple: die Schuladresse samt Straße; Open-Meteo kennt nur Orte (PLZ/Bundesland unterscheiden gleichnamige).
+        if let applePlace = await appleGeocode(query, postalCode: postalCode, street: street) {
+            place = applePlace
+        } else {
+            place = try await geocode(query, postalCode: postalCode, federalStateName: federalStateName)
+        }
+        let snapshot: Snapshot
+        do {
+            snapshot = try await appleForecast(for: place)
+        } catch {
+            log.info("WeatherKit nicht verfügbar, Open-Meteo: \(error.localizedDescription, privacy: .public)")
+            snapshot = try await forecast(for: place)
+        }
+        await cache.store(snapshot, for: cacheKey)
         return snapshot
     }
 
-    /// Bundesland der Schule aus PLZ und Ort (Open-Meteo-Ortssuche, keine weitere API).
-    /// Nur bei eindeutigem Treffer: passende PLZ oder ein einziger Ort dieses Namens.
+    // MARK: Apple (MapKit + WeatherKit)
+
+    /// Ortssuche über Apple; `nil` bei Fehler oder ohne Treffer (dann Open-Meteo).
+    private static func appleGeocode(_ city: String, postalCode: String, street: String) async -> Place? {
+        await appleLookup(city, postalCode: postalCode, street: street)?.place
+    }
+
+    /// „Köln, Nordrhein-Westfalen, Deutschland“ → DE-NW.
+    private static func appleFederalStateCode(_ city: String, postalCode: String) async -> String? {
+        guard let context = await appleLookup(city, postalCode: postalCode)?.cityWithContext else { return nil }
+        let parts = context.components(separatedBy: ", ")
+        return HolidayImporter.federalStates.first { parts.contains($0.name) }?.code
+    }
+
+    /// Treffer der Apple-Ortssuche (Koordinaten + „Ort, Bundesland, Land“), als Sendable-Wert statt `MKMapItem`.
+    private struct AppleLookup: Sendable {
+        let place: Place
+        let cityWithContext: String?
+    }
+
+    @MainActor
+    private static func appleLookup(_ city: String, postalCode: String, street: String = "") async -> AppleLookup? {
+        let place = [postalCode, city].filter { !$0.isEmpty }.joined(separator: " ")
+        let address = [street, place, "Deutschland"].filter { !$0.isEmpty }.joined(separator: ", ")
+        guard let request = MKGeocodingRequest(addressString: address) else { return nil }
+        request.preferredLocale = Locale(identifier: "de_DE")
+        do {
+            guard let item = try await request.mapItems.first else { return nil }
+            let coordinate = item.location.coordinate
+            return AppleLookup(
+                place: Place(name: city, latitude: coordinate.latitude, longitude: coordinate.longitude),
+                cityWithContext: item.addressRepresentations?.cityWithContext(.full)
+            )
+        } catch {
+            log.info("MapKit-Ortssuche fehlgeschlagen: \(error.localizedDescription, privacy: .public)")
+            return nil
+        }
+    }
+
+    /// Wirft ohne WeatherKit-Berechtigung (Entitlement fehlt, z. B. selbst signiert) oder bei Netzfehlern.
+    private static func appleForecast(for place: Place) async throws -> Snapshot {
+        let location = CLLocation(latitude: place.latitude, longitude: place.longitude)
+        let (current, daily) = try await WeatherKit.WeatherService.shared.weather(for: location, including: .current, .daily)
+        let today = daily.first
+        let temperature = current.temperature.converted(to: .celsius).value
+        return Snapshot(
+            place: place.name,
+            temperature: temperature,
+            high: today?.highTemperature.converted(to: .celsius).value ?? temperature,
+            low: today?.lowTemperature.converted(to: .celsius).value ?? temperature,
+            condition: WeatherCondition(apple: current.condition),
+            fetchedAt: .now,
+            source: .apple
+        )
+    }
+
+    /// Bundesland der Schule aus PLZ und Ort: über Apple (MapKit), sonst die Open-Meteo-Ortssuche.
+    /// Bei Open-Meteo nur bei eindeutigem Treffer: passende PLZ oder ein einziger Ort dieses Namens.
     static func federalStateCode(for school: SchoolInfo) async -> String? {
         let postalCode = school.postalCode.trimmingCharacters(in: .whitespaces)
         guard let query = placeQuery(for: school), postalCode.count == 5, postalCode.allSatisfy(\.isNumber) else { return nil }
+        if let code = await appleFederalStateCode(query, postalCode: postalCode) { return code }
         var components = URLComponents(string: "https://geocoding-api.open-meteo.com/v1/search")!
         components.queryItems = [
             URLQueryItem(name: "name", value: query),
@@ -72,7 +165,7 @@ nonisolated enum WeatherService {
         return place?.admin1.flatMap { name in HolidayImporter.federalStates.first { $0.name == name }?.code }
     }
 
-    // MARK: Open-Meteo
+    // MARK: Open-Meteo (Rückfall)
 
     private struct GeocodingResponse: Decodable {
         struct Place: Decodable {
@@ -113,7 +206,7 @@ nonisolated enum WeatherService {
     }
 
     /// Bei gleichnamigen Orten gewinnt: passende PLZ, dann passendes Bundesland, sonst der erste (größte) Treffer.
-    private static func geocode(_ query: String, postalCode: String, federalStateName: String?) async throws -> GeocodingResponse.Place {
+    private static func geocode(_ query: String, postalCode: String, federalStateName: String?) async throws -> Place {
         var components = URLComponents(string: "https://geocoding-api.open-meteo.com/v1/search")!
         components.queryItems = [
             URLQueryItem(name: "name", value: query),
@@ -128,10 +221,10 @@ nonisolated enum WeatherService {
         guard let place = byPostalCode ?? byState ?? places.first else {
             throw WeatherError.placeNotFound
         }
-        return place
+        return Place(name: place.name, latitude: place.latitude, longitude: place.longitude)
     }
 
-    private static func forecast(for place: GeocodingResponse.Place) async throws -> Snapshot {
+    private static func forecast(for place: Place) async throws -> Snapshot {
         var components = URLComponents(string: "https://api.open-meteo.com/v1/forecast")!
         components.queryItems = [
             URLQueryItem(name: "latitude", value: String(place.latitude)),
@@ -148,7 +241,8 @@ nonisolated enum WeatherService {
             high: response.daily.maximum.first ?? response.current.temperature2m,
             low: response.daily.minimum.first ?? response.current.temperature2m,
             condition: WeatherCondition(code: response.current.weatherCode),
-            fetchedAt: .now
+            fetchedAt: .now,
+            source: .openMeteo
         )
     }
 
@@ -166,13 +260,40 @@ nonisolated enum WeatherService {
     }
 }
 
-/// Wetterlage nach WMO-Code (wie von Open-Meteo geliefert) als deutsche Beschreibung.
+/// Wetterlage als Beschreibung in der App-Sprache – aus dem WMO-Code (Open-Meteo) bzw. von WeatherKit
+/// (dessen eigene Beschreibung folgt der Systemsprache, nicht der App-Sprache).
 nonisolated struct WeatherCondition: Equatable, Sendable {
     let title: String
 
     init(code: Int) {
         title = Self.titles.first { $0.codes.contains(code) }?.title ?? loc("Unbekannt")
     }
+
+    init(apple condition: WeatherKit.WeatherCondition) {
+        title = Self.appleTitles.first { $0.conditions.contains(condition) }?.title ?? condition.description
+    }
+
+    private static let appleTitles: [(conditions: Set<WeatherKit.WeatherCondition>, title: String)] = [
+        ([.clear, .hot, .frigid], loc("Klar")),
+        ([.mostlyClear], loc("Überwiegend klar")),
+        ([.partlyCloudy], loc("Teilweise bewölkt")),
+        ([.mostlyCloudy], loc("Überwiegend bewölkt")),
+        ([.cloudy], loc("Bedeckt")),
+        ([.foggy], loc("Nebel")),
+        ([.haze, .smoky, .blowingDust], loc("Dunst")),
+        ([.drizzle], loc("Nieselregen")),
+        ([.freezingDrizzle, .freezingRain], loc("Gefrierender Regen")),
+        ([.sleet, .wintryMix], loc("Schneeregen")),
+        ([.rain], loc("Regen")),
+        ([.heavyRain], loc("Starker Regen")),
+        ([.sunShowers], loc("Regenschauer")),
+        ([.snow, .heavySnow, .blizzard, .blowingSnow], loc("Schnee")),
+        ([.flurries, .sunFlurries], loc("Schneeschauer")),
+        ([.hail], loc("Hagel")),
+        ([.thunderstorms, .isolatedThunderstorms, .scatteredThunderstorms, .strongStorms], loc("Gewitter")),
+        ([.breezy, .windy], loc("Windig")),
+        ([.hurricane, .tropicalStorm], loc("Sturm")),
+    ]
 
     private static let titles: [(codes: Set<Int>, title: String)] = [
         ([0], loc("Klar")),
@@ -208,11 +329,14 @@ struct WeatherCard: View {
             value: snapshot.map { "\(Int($0.temperature.rounded()))°" } ?? "–",
             detail: detail,
             symbol: DashboardBuiltInCard.weather.symbol,
-            isSensitive: false
+            isSensitive: false,
+            // Quelle am Kopf erkennbar: Apple-Marke (Pflicht bei WeatherKit, Link zu den Datenquellen
+            // in den Schuleinstellungen), sonst das eigene Symbol mit „Wetter“.
+            brandMark: snapshot?.source == .apple ? WeatherService.appleAttributionMark : nil
         ) {
             reloadToken += 1
         }
-        .task(id: "\(WeatherService.placeQuery(for: school) ?? "")-\(reloadToken)") {
+        .task(id: "\(school.street)|\(school.postalCode)|\(WeatherService.placeQuery(for: school) ?? "")-\(reloadToken)") {
             await load()
         }
     }

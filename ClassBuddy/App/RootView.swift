@@ -76,6 +76,7 @@ struct RootView: View {
             // Toasts über allem, auch über der Sperre (z. B. Fehlermeldungen beim Entsperren).
             .overlay(alignment: .top) { ToastOverlay() }
             .task { RoomDemo.createIfNeeded(in: modelContext) }
+            .background { WidgetScheduleSync() }
             #if DEBUG
             .task { ScreenshotMode.prepare(app: app, context: modelContext, settings: settings) }
             #endif

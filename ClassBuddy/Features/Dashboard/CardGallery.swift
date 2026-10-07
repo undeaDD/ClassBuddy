@@ -367,3 +367,40 @@ private struct TemplatePreview: View {
         }
     }
 }
+
+/// Bild-Kachel ohne echtes Bild (Galerie-Vorschau).
+struct ImagePlaceholderCard: View {
+    let title: String
+
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            ImagePlaceholderBackground()
+            Text(title)
+                .font(.headline)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(.regularMaterial, in: .capsule)
+                .padding(12)
+        }
+        .frame(maxWidth: .infinity)
+            .frame(height: cardHeight)
+        .clipShape(cardShape)
+    }
+}
+
+/// Platzhalter statt eines echten Bilds (Galerie-Vorschau): Verlauf in der Akzentfarbe mit Bild-Symbol.
+struct ImagePlaceholderBackground: View {
+    @Environment(\.appAccent) private var accent
+
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                colors: [accent.opacity(0.55), accent.opacity(0.2)],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
+            Image(icon: .image)
+                .iconSize(48)
+                .foregroundStyle(.white.opacity(0.8))
+        }
+    }
+}

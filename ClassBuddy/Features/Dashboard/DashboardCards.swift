@@ -16,6 +16,8 @@ struct StatCard: View {
     let symbol: AppSymbol
     /// Wert/Detail im Privatsphäre-Modus ausblenden (nicht bei Uhrzeit, Wetter …).
     var isSensitive = true
+    /// Marke statt Symbol und Titel im Kopf, z. B. „ Weather“ (Pflicht-Quellenangabe von WeatherKit).
+    var brandMark: String?
     var action: (() -> Void)?
 
     var body: some View {
@@ -31,7 +33,7 @@ struct StatCard: View {
 
     private var content: some View {
         VStack(alignment: .leading, spacing: 12) {
-            CardHeader(title: title, symbol: symbol, showsChevron: action != nil)
+            CardHeader(title: title, symbol: symbol, showsChevron: action != nil, brandMark: brandMark)
             Spacer(minLength: 0)
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
@@ -187,43 +189,6 @@ struct ContentCard: View {
     }
 }
 
-/// Bild-Kachel ohne echtes Bild (Galerie-Vorschau).
-struct ImagePlaceholderCard: View {
-    let title: String
-
-    var body: some View {
-        ZStack(alignment: .bottomLeading) {
-            ImagePlaceholderBackground()
-            Text(title)
-                .font(.headline)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(.regularMaterial, in: .capsule)
-                .padding(12)
-        }
-        .frame(maxWidth: .infinity)
-            .frame(height: cardHeight)
-        .clipShape(cardShape)
-    }
-}
-
-/// Platzhalter statt eines echten Bilds (Galerie-Vorschau): Verlauf in der Akzentfarbe mit Bild-Symbol.
-struct ImagePlaceholderBackground: View {
-    @Environment(\.appAccent) private var accent
-
-    var body: some View {
-        ZStack {
-            LinearGradient(
-                colors: [accent.opacity(0.55), accent.opacity(0.2)],
-                startPoint: .topLeading, endPoint: .bottomTrailing
-            )
-            Image(icon: .image)
-                .iconSize(48)
-                .foregroundStyle(.white.opacity(0.8))
-        }
-    }
-}
-
 /// Zufallsauswahl: antippen wählt eine Schülerin / einen Schüler der Klasse.
 struct RandomStudentCard: View {
     @Environment(\.redactionReasons) private var redactionReasons
@@ -358,10 +323,17 @@ struct CardHeader: View {
     let showsChevron: Bool
     /// Bei Websites: Favicon statt Symbol.
     var faviconURL: URL?
+    /// Ersetzt Symbol und Titel (siehe `StatCard.brandMark`).
+    var brandMark: String?
 
     var body: some View {
         HStack {
-            if let faviconURL {
+            if let brandMark {
+                Text(verbatim: brandMark)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel(title)
+            } else if let faviconURL {
                 Label {
                     Text(title)
                 } icon: {
