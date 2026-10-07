@@ -20,12 +20,12 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-26
+    # Image mit Xcode 27 (das App-Icon ist eine Icon-Composer-Datei aus Xcode 27, ältere actool-Versionen stürzen ab).
+    runs-on: xcode-27
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      # Newest installed Xcode (incl. betas): the app icon is an Icon Composer file
-      # from Xcode 27, older actool versions crash on it.
+      # Newest installed Xcode on the image (incl. betas).
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1
         with:
