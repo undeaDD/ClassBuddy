@@ -16,7 +16,7 @@
 
 **ClassBuddy** is a privacy-first classroom companion for teachers on iPad and iPhone.
 It keeps your classes, students and timetable in one place — **stored only on your device**,
-protected by Face ID, with a one-tap privacy mode for when students are looking over your shoulder.
+protected by biometrics (Face ID or Touch ID), with a one-tap privacy mode for when students are looking over your shoulder.
 
 > The app's interface is in **German** (made for teachers in Germany).
 
@@ -42,8 +42,8 @@ Screenshots with dummy data: `scripts/screenshots.sh` (see the script for device
   weekly or one-off lessons, appointments (optionally per class), class focus mode; 3-day view on iPhone
 - **School holidays & public holidays** – imported per German state (via [OpenHolidays API](https://www.openholidaysapi.org))
 - **Privacy**
-  - Face ID / passcode lock on launch and when returning to the app
-  - Privacy mode hides names, grades, notes and more on every page (turning it off needs Face ID)
+  - Biometric (Face ID / Touch ID) or passcode lock on launch and when returning to the app
+  - Privacy mode hides names, grades, notes and more on every page (turning it off needs biometrics or the passcode)
   - Everything is stored locally with SwiftData — no account, no cloud, no tracking
 - **Excel export / import** – one sheet per area (classes, students, lessons, appointments, settings, …),
   editable in Excel or Numbers
@@ -119,7 +119,7 @@ ClassBuddy is built for GDPR-compliant use in German schools. The full privacy n
 - All data (classes, students, timetable, notes, documents) stays in the app container on the device,
   encrypted by iOS/iPadOS data protection when a device passcode is set
 - The developer never receives student data; the teacher (or school) is the data controller for everything entered in the app
-- App lock via Face ID / passcode, bound to a keychain item released only by the Secure Enclave
+- App lock via biometrics (Face ID / Touch ID) or passcode, bound to a keychain item released only by the Secure Enclave
 - Privacy mode hides names, grades and notes on every screen; content is blurred in the app switcher
 
 **Network requests** (never containing student data; the IP address is transmitted as with any request)

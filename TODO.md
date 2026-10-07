@@ -65,7 +65,16 @@ App kostenlos laden, Vollversion als In-App-Kauf, Testphase als zusätzlicher ko
       „Kauf wiederherstellen“), Übersetzungen
 - [ ] TestFlight: Käufe sind dort kostenlos (Sandbox) – Tester können alles durchspielen
 
+## App-Store-Bilder
+
+- [ ] Geräterahmen (Ton-Look) liefern: `Marketing/Frames/` (iphone, ipad, duo; Format siehe README dort)
+- [ ] Roh-Screenshots aufnehmen: `scripts/appstore-screenshots.sh` (eigene Simulatoren), dann `scripts/appstore-images.sh`
+- [ ] Texte prüfen: `Marketing/captions.json` (Überschriften je Seite, Kopfzeile, Suchzeile; de und en)
+- [ ] Hochladen: Kopfzeile + Suchzeile (5244 × 2950), iPhone 6,1″/6,3″ und iPhone Duo (1920 × 886), iPad 13″ (1600 × 1200)
+
 ## Manuell testen (iPhone und iPad)
+
+- [ ] iPhone Duo: komplette App durchtesten (Layout, Tab-Leiste, Übersicht, Sitzplan, Widget)
 
 - [ ] Demo-Raum aus Sicht der Lehrkraft (Tafel und Pult unten): wird beim Start jetzt umgestellt (falls unverändert),
       sonst Debug-Menü → „Demo-Klassenzimmer zurücksetzen“

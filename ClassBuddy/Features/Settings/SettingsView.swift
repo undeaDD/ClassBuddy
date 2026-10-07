@@ -191,7 +191,7 @@ private struct SettingsHero: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("ClassBuddy")
                         .font(.title2.bold())
-                    Text("Klassen, Schüler und Stundenplan – lokal und mit Face ID geschützt.")
+                    Text("Klassen, Schüler und Stundenplan – lokal und biometrisch geschützt.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)

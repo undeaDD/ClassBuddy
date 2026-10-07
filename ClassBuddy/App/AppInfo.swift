@@ -13,7 +13,7 @@ enum AppInfo {
     /// später der App-Store-Link.
     static let shareURL = sourceCodeURL
     static var shareMessage: String {
-        loc("ClassBuddy – Klassen, Schüler und Stundenplan, lokal und mit Face ID geschützt.")
+        loc("ClassBuddy – Klassen, Schüler und Stundenplan, lokal und biometrisch geschützt.")
     }
 
     /// Spendenlink (PayPal.Me).

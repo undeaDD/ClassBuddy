@@ -1,11 +1,11 @@
 import LocalAuthentication
 import SwiftUI
 
-/// App-Sperre (Face ID) und Privatsphäre-Modus.
+/// App-Sperre (Biometrie: Face ID / Touch ID, sonst Code) und Privatsphäre-Modus.
 ///
 /// - App-Sperre: gesperrt beim Start und sobald die App in den Hintergrund geht.
 /// - Privatsphäre-Modus: Einschalten jederzeit ohne Authentifizierung,
-///   Ausschalten nur mit Face ID / Code.
+///   Ausschalten nur mit Biometrie / Code.
 @Observable
 final class AppSecurity {
     private(set) var isLocked: Bool
@@ -51,7 +51,7 @@ final class AppSecurity {
 
     // MARK: App-Sperre
 
-    /// Automatisch nach Face ID fragen, sobald die App wieder aktiv ist
+    /// Automatisch nach Biometrie fragen, sobald die App wieder aktiv ist
     /// (nur nach Start / Rückkehr aus dem Hintergrund – nicht nach „Abbrechen“).
     private var promptOnNextActivation = true
 
@@ -61,7 +61,7 @@ final class AppSecurity {
         promptOnNextActivation = true
     }
 
-    /// Einschalten ohne Rückfrage, Ausschalten nur mit Face ID / Code.
+    /// Einschalten ohne Rückfrage, Ausschalten nur mit Biometrie / Code.
     func setAppLockEnabled(_ enabled: Bool) async {
         if enabled {
             isAppLockEnabled = true
@@ -104,7 +104,7 @@ final class AppSecurity {
         }
     }
 
-    /// Bestätigung per Face ID / Code vor unumkehrbaren Aktionen (z. B. alle Daten löschen).
+    /// Bestätigung per Biometrie / Code vor unumkehrbaren Aktionen (z. B. alle Daten löschen).
     func confirmDestructiveAction(reason: String) async -> Bool {
         await authenticate(reason: reason)
     }
@@ -129,7 +129,7 @@ final class AppSecurity {
             #endif
         }
 
-        // Face ID / Code über die Keychain (Secure Enclave), nicht nur als Bool.
+        // Biometrie / Code über die Keychain (Secure Enclave), nicht nur als Bool.
         let outcome = await Task.detached { KeychainGate.unlock(reason: reason) }.value
         switch outcome {
         case .success:

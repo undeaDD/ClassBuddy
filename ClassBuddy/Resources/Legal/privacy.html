@@ -129,9 +129,11 @@
     <div class="row">
       <div class="name">Schutzmaßnahmen in der App</div>
       <ul class="muted">
-        <li>App-Sperre mit Face ID bzw. Gerätecode; die Entsperrung ist an ein Schlüsselbund-Element gebunden, das nur die Secure Enclave freigibt</li>
-        <li>Der Privatsphäre-Modus blendet Namen, Noten und Notizen auf allen Seiten aus; das Ausschalten erfordert Face ID bzw. den Gerätecode</li>
+        <li>Biometrische App-Sperre (Face ID oder Touch ID) bzw. Gerätecode; die Entsperrung ist an ein Schlüsselbund-Element gebunden, das nur die Secure Enclave freigibt</li>
+        <li>Der Privatsphäre-Modus blendet Namen, Noten und Notizen auf allen Seiten aus; das Ausschalten erfordert die biometrische Bestätigung bzw. den Gerätecode</li>
         <li>Im App-Umschalter werden Inhalte verdeckt</li>
+        <li>Datenschutzklasse „vollständiger Schutz“ (iOS Data Protection): Ist das Gerät gesperrt, sind alle Daten verschlüsselt und auch für die App selbst nicht lesbar</li>
+        <li>Regelmäßige Updates, auch für Sicherheit und Datenschutz</li>
         <li>Regelmäßige automatische Sicherheitsprüfung des Quellcodes (Semgrep)</li>
         <li>Automatisierte Tests mit über 80 % Abdeckung der App-Logik (Datenmodelle, Import und Export, Berechnungen, App-Sperre)</li>
       </ul>
@@ -180,7 +182,7 @@
   <h2>Zugriffsrechte</h2>
   <div class="card">
     <div class="row">
-      <div class="name">Face ID</div>
+      <div class="name">Biometrie (Face ID, Touch ID)</div>
       <p class="muted">Die Erkennung erfolgt vollständig durch iOS bzw. iPadOS. Biometrische Daten verlassen die Secure Enclave nicht; ClassBuddy erhält nur „erfolgreich“ oder „abgebrochen“.</p>
     </div>
     <div class="row">

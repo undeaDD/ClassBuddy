@@ -2361,12 +2361,12 @@
         }
       }
     },
-    "ClassBuddy – Klassen, Schüler und Stundenplan, lokal und mit Face ID geschützt." : {
+    "ClassBuddy – Klassen, Schüler und Stundenplan, lokal und biometrisch geschützt." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ClassBuddy – classes, students and timetable, stored locally and protected with Face ID."
+            "value" : "ClassBuddy – classes, students and timetable, stored locally and protected with biometrics."
           }
         }
       }
@@ -5242,22 +5242,22 @@
         }
       }
     },
-    "Kein Konto, keine Cloud: Alle Daten bleiben auf diesem Gerät, geschützt mit Face ID." : {
+    "Kein Konto, keine Cloud: Alle Daten bleiben auf diesem Gerät, biometrisch geschützt." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No account, no cloud: all data stays on this device, protected with Face ID."
+            "value" : "No account, no cloud: all data stays on this device, protected with biometrics."
           }
         }
       }
     },
-    "Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, geschützt mit Face ID. Per Excel-Export sichern Sie Ihre Daten und importieren sie jederzeit wieder." : {
+    "Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, biometrisch geschützt. Per Excel-Export sichern Sie Ihre Daten und importieren sie jederzeit wieder." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No account, no cloud: everything stays offline on this device, protected with Face ID. Back up your data with an Excel export and import it again at any time."
+            "value" : "No account, no cloud: everything stays offline on this device, protected with biometrics. Back up your data with an Excel export and import it again at any time."
           }
         }
       }
@@ -5627,12 +5627,12 @@
         }
       }
     },
-    "Klassen, Schüler und Stundenplan – lokal und mit Face ID geschützt." : {
+    "Klassen, Schüler und Stundenplan – lokal und biometrisch geschützt." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Classes, students and timetable – stored locally and protected with Face ID."
+            "value" : "Classes, students and timetable – stored locally and protected with biometrics."
           }
         }
       }

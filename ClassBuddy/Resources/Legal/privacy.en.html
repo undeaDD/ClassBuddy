@@ -129,9 +129,11 @@
     <div class="row">
       <div class="name">Protective measures in the app</div>
       <ul class="muted">
-        <li>App lock with Face ID or the device passcode; unlocking is bound to a keychain item that only the Secure Enclave releases</li>
-        <li>Privacy mode hides names, grades and notes on all pages; turning it off requires Face ID or the device passcode</li>
+        <li>Biometric app lock (Face ID or Touch ID) or the device passcode; unlocking is bound to a keychain item that only the Secure Enclave releases</li>
+        <li>Privacy mode hides names, grades and notes on all pages; turning it off requires biometric confirmation or the device passcode</li>
         <li>Content is hidden in the app switcher</li>
+        <li>“Complete protection” data protection class (iOS Data Protection): while the device is locked, all data is encrypted and cannot be read, not even by the app itself</li>
+        <li>Regular updates, including security and privacy improvements</li>
         <li>Regular automated security scans of the source code (Semgrep)</li>
         <li>Automated tests covering more than 80 % of the app logic (data models, import and export, calculations, app lock)</li>
       </ul>
@@ -180,7 +182,7 @@
   <h2>Permissions</h2>
   <div class="card">
     <div class="row">
-      <div class="name">Face ID</div>
+      <div class="name">Biometrics (Face ID, Touch ID)</div>
       <p class="muted">Recognition is handled entirely by iOS or iPadOS. Biometric data never leaves the Secure Enclave; ClassBuddy only receives “successful” or “cancelled”.</p>
     </div>
     <div class="row">

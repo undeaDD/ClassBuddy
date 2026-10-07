@@ -1,0 +1,84 @@
+{
+  "colors": {
+    "backgroundTop": "#F7EFE5",
+    "backgroundBottom": "#E9D7C1",
+    "title": "#2B1D10",
+    "subtitle": "#7A5C3E",
+    "accent": "#9C6830",
+    "clay": "#F1ECE6"
+  },
+  "colorsDark": {
+    "backgroundTop": "#2A2119",
+    "backgroundBottom": "#120E0A",
+    "title": "#F7EFE5",
+    "subtitle": "#CDB295",
+    "accent": "#CD9C5E",
+    "clay": "#3A332D"
+  },
+  "header": {
+    "title": { "de": "ClassBuddy", "en": "ClassBuddy" },
+    "subtitle": {
+      "de": "Der digitale Begleiter für Lehrkräfte",
+      "en": "The digital companion for teachers"
+    },
+    "note": {
+      "de": "Lokal auf dem Gerät. Biometrisch geschützt. Ohne Konto.",
+      "en": "Stored on your device. Protected with biometrics. No account."
+    },
+    "screens": { "ipad": "dashboard", "iphone": "calendar" }
+  },
+  "search": {
+    "title": { "de": "Ihr Schulalltag an einem Ort", "en": "Your school day in one place" },
+    "screens": ["dashboard", "notes", "rooms"]
+  },
+  "screens": [
+    {
+      "id": "dashboard",
+      "title": { "de": "Alles Wichtige auf einen Blick", "en": "Everything at a glance" },
+      "subtitle": {
+        "de": "Nächste Stunde, Raum, Wetter und Werkzeuge für den Unterricht",
+        "en": "Next lesson, room, weather and tools for class"
+      }
+    },
+    {
+      "id": "calendar",
+      "title": { "de": "Stundenplan und Termine im Griff", "en": "Timetable and dates under control" },
+      "subtitle": {
+        "de": "Mit Räumen, Ferien und Feiertagen",
+        "en": "With rooms, school holidays and public holidays"
+      }
+    },
+    {
+      "id": "notes",
+      "title": { "de": "Beobachtungen und Leistungen festhalten", "en": "Capture observations and grades" },
+      "subtitle": {
+        "de": "Ihre Bewertung bleibt bei Ihnen",
+        "en": "The assessment stays with you"
+      }
+    },
+    {
+      "id": "rooms",
+      "title": { "de": "Sitzpläne in Sekunden", "en": "Seating plans in seconds" },
+      "subtitle": {
+        "de": "Raum zeichnen, Tische belegen, Anwesenheit erfassen",
+        "en": "Draw the room, assign seats, take attendance"
+      }
+    },
+    {
+      "id": "checklists",
+      "title": { "de": "Abgehakt statt nachgefragt", "en": "Checked off, not chased up" },
+      "subtitle": {
+        "de": "Wer hat den Elternbrief schon abgegeben?",
+        "en": "Who has returned the parent letter yet?"
+      }
+    },
+    {
+      "id": "students",
+      "title": { "de": "Ihre Klassen, gut sortiert", "en": "Your classes, well organised" },
+      "subtitle": {
+        "de": "Schülerinnen und Schüler mit Fotos und Kontakten",
+        "en": "Students with photos and contacts"
+      }
+    }
+  ]
+}

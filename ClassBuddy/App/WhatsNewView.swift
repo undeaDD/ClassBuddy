@@ -34,7 +34,7 @@ enum WhatsNew {
                 Feature(
                     icon: .lock,
                     title: loc("Privat, offline, DSGVO-konform"),
-                    text: loc("Kein Konto, keine Cloud: Alle Daten bleiben auf diesem Gerät, geschützt mit Face ID.")
+                    text: loc("Kein Konto, keine Cloud: Alle Daten bleiben auf diesem Gerät, biometrisch geschützt.")
                 ),
                 Feature(
                     icon: .sendMail,

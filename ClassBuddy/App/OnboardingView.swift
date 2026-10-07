@@ -32,7 +32,7 @@ struct OnboardingView: View {
             image: .shield,
             title: loc("Sicher, offline, DSGVO-konform"),
             text: loc("""
-                Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, geschützt mit Face ID. \
+                Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, biometrisch geschützt. \
                 Per Excel-Export sichern Sie Ihre Daten und importieren sie jederzeit wieder.
                 """)
         ),

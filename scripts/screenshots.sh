@@ -19,6 +19,8 @@ xcodebuild build -quiet \
   -destination "generic/platform=iOS Simulator" \
   -derivedDataPath build/Screenshots
 app="build/Screenshots/Build/Products/Debug-iphonesimulator/ClassBuddy.app"
+# Ohne App-Sperre und ohne „Neu in ClassBuddy“ (gilt als gesehen für die gebaute Version).
+version="$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$app/Info.plist")"
 
 for entry in $devices; do
   name="${entry%%:*}"
@@ -42,7 +44,8 @@ for entry in $devices; do
   mkdir -p "docs/screenshots/$folder"
   for tab in $tabs; do
     xcrun simctl launch --terminate-running-process "$udid" "$bundle" \
-      -screenshots -tab "$tab" -app.appearance "$appearance" -onboarding.completed YES >/dev/null
+      -screenshots -tab "$tab" -app.appearance "$appearance" -onboarding.completed YES \
+        -security.appLockEnabled NO -whatsNew.lastSeenVersion "$version" >/dev/null
     sleep 5
     xcrun simctl io "$udid" screenshot --type=png "docs/screenshots/$folder/$tab.png" >/dev/null
     print "  ✓ $folder/$tab.png"

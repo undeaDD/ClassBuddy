@@ -6,7 +6,7 @@ import Security
 ///
 /// Statt nur das Ergebnis von `LAContext.evaluatePolicy` (ein Bool, auf manipulierten
 /// Geräten fälschbar) zu verwenden, liegt ein zufälliges Token in der Keychain, das die
-/// Secure Enclave nur nach Face ID / Gerätecode herausgibt (`.userPresence`).
+/// Secure Enclave nur nach Biometrie / Gerätecode herausgibt (`.userPresence`).
 /// Das Token ist an dieses Gerät gebunden und landet nicht in Backups.
 nonisolated enum KeychainGate {
     enum Outcome: Equatable {
@@ -18,7 +18,7 @@ nonisolated enum KeychainGate {
     private static let service = "de.devsforge.ClassBuddy.appLock"
     private static let account = "unlock-token"
 
-    /// Fragt Face ID / Code ab und gibt bei Erfolg `.success` zurück. Blockiert – nicht auf dem Main Thread aufrufen.
+    /// Fragt Biometrie / Code ab und gibt bei Erfolg `.success` zurück. Blockiert – nicht auf dem Main Thread aufrufen.
     static func unlock(reason: String) -> Outcome {
         switch readToken(reason: reason) {
         case errSecSuccess:
@@ -65,7 +65,7 @@ nonisolated enum KeychainGate {
         let randomStatus = token.withUnsafeMutableBytes { SecRandomCopyBytes(kSecRandomDefault, 32, $0.baseAddress!) }
         guard randomStatus == errSecSuccess else { return randomStatus }
 
-        // Bewusst `.userPresence` (Face ID mit Rückfall auf den Gerätecode), wie iOS selbst:
+        // Bewusst `.userPresence` (Biometrie mit Rückfall auf den Gerätecode), wie iOS selbst:
         // Ohne Rückfall könnte eine fehlschlagende Face-ID-Erkennung (oder ein iPad ohne
         // eingerichtete Biometrie) den Zugriff auf die eigenen Daten komplett sperren.
         // nosemgrep: keychain-passcode-fallback, keychain-acl-allows-biometry-changes

@@ -21,7 +21,7 @@ Helpful details:
 
 ## Scope
 
-In scope: bypassing the app lock (Face ID), data shown despite privacy mode, data leaving the device,
+In scope: bypassing the app lock (Face ID / Touch ID / passcode), data shown despite privacy mode, data leaving the device,
 unsafe handling of imported files (Excel import, documents, images).
 
 The app intentionally makes only these network requests: public holiday data (openholidaysapi.org, on demand),
