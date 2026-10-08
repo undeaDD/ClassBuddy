@@ -209,6 +209,16 @@ private struct SettingsHero: View {
 
     @ViewBuilder
     private var chips: some View {
+        #if DEBUG
+        // Nicht auf Screenshots: Installationsdatum und „über Xcode“ gehören nicht in Store-Bilder.
+        if !ScreenshotMode.isActive { installChips }
+        #else
+        installChips
+        #endif
+    }
+
+    @ViewBuilder
+    private var installChips: some View {
         if let installDate = InstallInfo.installDate {
             HeroChip(text: loc("Installiert am \(installDate.appDate)"))
         }

@@ -52,3 +52,6 @@ build.log
 # Icon inbox: SVGs are imported into the asset catalog via scripts/sync-icons.sh
 Icons/*
 !Icons/.gitkeep
+
+# Marketing: Apple-Gerätebezels, Schrift und Hintergrund (Lizenzen erlauben keine Weitergabe)
+Marketing/Assets/

@@ -8,6 +8,7 @@
 #   scripts/appstore-screenshots.sh
 #   LANGUAGES="de en" scripts/appstore-screenshots.sh       (Standard: nur Deutsch)
 #   APPEARANCES="light" scripts/appstore-screenshots.sh     (Standard: hell und dunkel)
+#   TABS="settings" scripts/appstore-screenshots.sh         (nur diese Seiten neu, die übrigen bleiben)
 #
 # - Eigene Simulatoren „ClassBuddy Store …“ (werden beim ersten Mal angelegt) – nie deine eigenen.
 #   Sie werden gebootet und danach wieder heruntergefahren.
@@ -19,8 +20,8 @@ cd "${0:A:h:h}"
 bundle="de.devsforge.ClassBuddy"
 appearances=(${=APPEARANCES:-light dark})
 languages=(${=LANGUAGES:-de})
-# Alle Seiten, die in Marketing/captions.json vorkommen.
-tabs=(dashboard calendar notes rooms checklists students)
+# Alle Seiten, die in Marketing/captions.json vorkommen; einzelne neu aufnehmen: TABS="settings" scripts/…
+tabs=(${=TABS:-dashboard calendar notes rooms checklists students settings})
 # Anzeigename:Gerätetyp:Ordner
 devices=(
   "ClassBuddy Store iPhone:com.apple.CoreSimulator.SimDeviceType.iPhone-17:iphone"
@@ -54,7 +55,8 @@ for entry in $devices; do
     xcrun simctl uninstall "$udid" "$bundle" 2>/dev/null || true
     xcrun simctl install "$udid" "$app"
     output="build/AppStore/raw/$language/$folder"
-    rm -rf "$output" && mkdir -p "$output"
+    # Nur die aufgenommenen Seiten ersetzen, andere Screenshots bleiben liegen.
+    mkdir -p "$output"
     for appearance in $appearances; do
     suffix=""
     [[ $appearance == dark ]] && suffix="-dark"
