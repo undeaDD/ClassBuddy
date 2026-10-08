@@ -111,6 +111,7 @@ depending on your federal state. Collect only what you need, keep the app lock e
 ## Contributing
 
 Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code of Conduct](CODE_OF_CONDUCT.md).
+Accessibility support and known limitations: [ACCESSIBILITY.md](ACCESSIBILITY.md).
 Security issues: please follow [SECURITY.md](SECURITY.md).
 
 ## Support
