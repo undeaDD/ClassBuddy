@@ -46,14 +46,16 @@ struct AppGlass: Equatable {
 extension View {
     /// `glassEffect(_:in:)` mit Fallback auf `.thinMaterial` vor iOS 26.
     /// Interaktivität (Aufleuchten beim Drücken) gibt es nur mit echtem Glas.
-    func appGlassEffect<S: Shape>(_ glass: AppGlass = .regular, in shape: S = Capsule()) -> some View {
-        modifier(AppGlassModifier(glass: glass, shape: shape))
+    /// `fallbackShadow`: leichter Schatten im Fallback (aus für Knöpfe in der Navigationsleiste).
+    func appGlassEffect<S: Shape>(_ glass: AppGlass = .regular, in shape: S = Capsule(), fallbackShadow: Bool = true) -> some View {
+        modifier(AppGlassModifier(glass: glass, shape: shape, hasShadow: fallbackShadow))
     }
 }
 
 private struct AppGlassModifier<S: Shape>: ViewModifier {
     let glass: AppGlass
     let shape: S
+    let hasShadow: Bool
 
     func body(content: Content) -> some View {
         if #available(iOS 26, *) {
@@ -70,7 +72,7 @@ private struct AppGlassModifier<S: Shape>: ViewModifier {
                     }
                     shape.stroke(Color.primary.opacity(0.08), lineWidth: 0.5)
                 }
-                .shadow(color: .black.opacity(0.08), radius: 8, y: 2)
+                .shadow(color: .black.opacity(hasShadow ? 0.08 : 0), radius: 8, y: 2)
             }
         }
     }

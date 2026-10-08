@@ -21,6 +21,7 @@ private struct FloatingBottomBar<Bar: View>: ViewModifier {
     /// Eigene Tab-Leiste vor iOS 26: Sie meldet die Mitte ihres minimierten Knopfs selbst.
     @Environment(\.usesFloatingTabBar) private var usesFloatingTabBar
     @Environment(\.floatingTabBarMinimizedCenterY) private var floatingMinimizedCenterY
+    @Environment(\.floatingTabBarTopY) private var floatingTabBarTopY
     let bar: Bar
 
     /// Abstand der Mitte des kleinen Tab-Knopfs unter der Unterkante der Seite; `nil` = nicht minimiert.
@@ -49,8 +50,11 @@ private struct FloatingBottomBar<Bar: View>: ViewModifier {
 
     /// Minimiert: mittig auf Höhe des kleinen Knopfs (gemessen, da hochkant und quer verschieden).
     private var offset: CGFloat {
-        guard usesPhoneTabBar, let depth else { return 0 }
-        return 10 + depth + barHeight / 2
+        guard usesPhoneTabBar else { return 0 }
+        if let depth { return 10 + depth + barHeight / 2 }
+        // Eigene Tab-Leiste, groß: Je nach Seite reicht der Inhalt unter die Leiste, dann darüber anheben.
+        if usesFloatingTabBar, let floatingTabBarTopY { return min(0, floatingTabBarTopY - contentMaxY) }
+        return 0
     }
 
     private var depth: CGFloat? {

@@ -97,6 +97,7 @@ struct StudentsView: View {
     private func row(for student: Student) -> some View {
         NavigationLink {
             StudentSubjectsView(student: student)
+                .hidesTabBar()
         } label: {
             rowLabel(for: student)
         }
@@ -112,6 +113,7 @@ struct StudentsView: View {
         .swipeActions(edge: .trailing) {
             if canEdit {
                 Button("Löschen", icon: .trash, role: .destructive) { studentPendingDeletion = student }
+                    .tint(.red)
             }
         }
         .contextMenu {

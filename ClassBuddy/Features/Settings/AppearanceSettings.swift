@@ -101,6 +101,7 @@ struct IconThemeSection: View {
         .swipeActions(edge: .trailing) {
             if let pack = theme.pack {
                 Button("Entfernen", icon: .trash, role: .destructive) { remove(pack) }
+                    .tint(.red)
             }
         }
         .contextMenu {

@@ -83,6 +83,7 @@
 		81857B0F656429C9B2E5E457 /* ZipArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5E83768A3055F73116717F /* ZipArchive.swift */; };
 		824A0243381D3E7DF6BDC1CA /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81521268D282D6DF06A5E6D2 /* AppLanguage.swift */; };
 		824C54D8AE8F559316779459 /* IconTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D9072F12DEC822C6F30D7D /* IconTheme.swift */; };
+		82D4741E913B48B9ECD8F7BC /* TabScrollReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61B8B9AABFB9983D0753632 /* TabScrollReader.swift */; };
 		84781B1CA8634D0488897E0F /* BackupRecordSheets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F829F3D64AF44D38F0D09E0 /* BackupRecordSheets.swift */; };
 		86F3332D77714CF28AE68B8B /* StatsLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612A2100A01D44DF99E41ABE /* StatsLogic.swift */; };
 		8A4CC0C87B3940BCB7AB4F13 /* RandomGroupsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F315AE80104270B55F3A91 /* RandomGroupsTests.swift */; };
@@ -119,6 +120,7 @@
 		BA4A668A8072B3A5A6DE9FA3 /* collaborators.html in Resources */ = {isa = PBXBuildFile; fileRef = 8FFEB8A542E1E556994F653A /* collaborators.html */; };
 		BC3CB0BACAA2B5408624C01E /* licenses.en.html in Resources */ = {isa = PBXBuildFile; fileRef = CECC0D954543DD7EEE3F46F6 /* licenses.en.html */; };
 		BC43DB2C9A46E501D4A87896 /* FloatingTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91ECAB0B8EB75CB03C098C86 /* FloatingTabView.swift */; };
+		BEE70CE0D08B4CB3770CD202 /* LegacyHTMLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 926380848054DB1008FCB866 /* LegacyHTMLView.swift */; };
 		BFBB39A661B0D1D3505753CD /* CardGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723E830E960FEC552AC32623 /* CardGallery.swift */; };
 		C2BE0AAF2255BEB6490FA6DE /* TabBarScrollTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A84DFF3BFF4E212E377E52 /* TabBarScrollTracker.swift */; };
 		C35ECCAEC6F10CEC8F317C26 /* ClassScopedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF9124C1931B405BB777E91 /* ClassScopedView.swift */; };
@@ -294,6 +296,7 @@
 		8FFEB8A542E1E556994F653A /* collaborators.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = collaborators.html; sourceTree = "<group>"; };
 		90BB83B6EB5B4256B130AD71 /* HolidaysAttendanceCards.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HolidaysAttendanceCards.swift; sourceTree = "<group>"; };
 		91ECAB0B8EB75CB03C098C86 /* FloatingTabView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FloatingTabView.swift; sourceTree = "<group>"; };
+		926380848054DB1008FCB866 /* LegacyHTMLView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LegacyHTMLView.swift; sourceTree = "<group>"; };
 		9320F3CFA700821455DA73B6 /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
 		94BEADABDE994CA094A940B5 /* StudentRecordEditors.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = StudentRecordEditors.swift; sourceTree = "<group>"; };
 		95865081AE46E5F455EFB23D /* DataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
@@ -314,6 +317,7 @@
 		AEA107D0C849C5337E26C6AF /* ClassTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTimer.swift; sourceTree = "<group>"; };
 		AFB1EB8B8B1D4CF49FC03C8E /* AppSecurity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSecurity.swift; sourceTree = "<group>"; };
 		B520560E0BF66558DE32A34D /* XLSX.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSX.swift; sourceTree = "<group>"; };
+		B61B8B9AABFB9983D0753632 /* TabScrollReader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TabScrollReader.swift; sourceTree = "<group>"; };
 		B6D37F79758442C69929DEF7 /* Assessment.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Assessment.swift; sourceTree = "<group>"; };
 		B75AFEEA075C5FC27D985B89 /* PhotoCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCropView.swift; sourceTree = "<group>"; };
 		BA5B1F6CF676098DEB914826 /* SchoolSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoolSettingsView.swift; sourceTree = "<group>"; };
@@ -486,6 +490,7 @@
 				AE6AB5A47C4368067847CE31 /* AppTabView.swift */,
 				91ECAB0B8EB75CB03C098C86 /* FloatingTabView.swift */,
 				54A84DFF3BFF4E212E377E52 /* TabBarScrollTracker.swift */,
+				B61B8B9AABFB9983D0753632 /* TabScrollReader.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -567,6 +572,7 @@
 				3D66AC7D6C5A45B792474864 /* StatsView.swift */,
 				612A2100A01D44DF99E41ABE /* StatsLogic.swift */,
 				2A8897E97B099040E13D0E45 /* DummyData.swift */,
+				926380848054DB1008FCB866 /* LegacyHTMLView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1000,6 +1006,8 @@
 				7664D1A26D94121EB8322D44 /* OSCompatibility.swift in Sources */,
 				BC43DB2C9A46E501D4A87896 /* FloatingTabView.swift in Sources */,
 				C2BE0AAF2255BEB6490FA6DE /* TabBarScrollTracker.swift in Sources */,
+				82D4741E913B48B9ECD8F7BC /* TabScrollReader.swift in Sources */,
+				BEE70CE0D08B4CB3770CD202 /* LegacyHTMLView.swift in Sources */,
 			);
 		};
 		3B903BDFD3F696EA3281D92D /* Sources */ = {
@@ -1060,7 +1068,7 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = ClassBuddyWidgets/ClassBuddyWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClassBuddyWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
@@ -1138,7 +1146,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1212,7 +1220,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1338,7 +1346,7 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = ClassBuddyWidgets/ClassBuddyWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClassBuddyWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";

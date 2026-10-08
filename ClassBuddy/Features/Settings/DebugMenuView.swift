@@ -68,6 +68,7 @@ struct DebugMenuView: View {
                         message: loc("Legen Sie oben links Ihre erste Klasse an."),
                         symbol: .custom(.userXmark)
                     )
+                    .hidesTabBar()
                 } label: {
                     Label("Keine Klasse ausgewählt", icon: .userXmark)
                 }
@@ -77,6 +78,7 @@ struct DebugMenuView: View {
                         message: loc("Fügen Sie über + oben rechts die Schülerinnen und Schüler der Klasse 7b hinzu."),
                         symbol: AppTab.students.symbol
                     )
+                    .hidesTabBar()
                 } label: {
                     Label("Noch keine Schüler", symbol: AppTab.students.symbol)
                 }
@@ -86,11 +88,13 @@ struct DebugMenuView: View {
                         message: loc("Hier verwalten Sie bald Ihre Räume und deren Sitzordnungen."),
                         symbol: AppTab.rooms.symbol
                     )
+                    .hidesTabBar()
                 } label: {
                     Label("Räume (Platzhalter)", symbol: AppTab.rooms.symbol)
                 }
                 NavigationLink {
                     SearchEmptyStateView(text: "Xylophon")
+                        .hidesTabBar()
                 } label: {
                     Label("Suche ohne Treffer", icon: .search)
                 }

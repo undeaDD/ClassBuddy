@@ -6,6 +6,8 @@ extension EnvironmentValues {
     @Entry var usesFloatingTabBar = false
     /// Mitte des minimierten Tab-Knopfs (global), `nil` = Leiste nicht minimiert. Für `floatingBottomBar`.
     @Entry var floatingTabBarMinimizedCenterY: CGFloat?
+    /// Oberkante der großen Tab-Leiste (global). `floatingBottomBar` bleibt darüber.
+    @Entry var floatingTabBarTopY: CGFloat?
 }
 
 /// Navigation vor iOS 26 auf iPhone und iPad: Inhalt des aktiven Tabs plus eigene schwebende Tab-Leiste unten
@@ -23,10 +25,15 @@ struct FloatingTabView: View {
     @State private var morePath: [AppTab] = []
     @State private var isMinimized = false
     @State private var minimizedCenterY: CGFloat?
+    @State private var barTopY: CGFloat?
     @State private var isKeyboardVisible = false
     /// Untere Safe Area des Geräts (0 = Home-Button) für den Abstand der Leiste.
     @State private var bottomSafeArea: CGFloat = 0
     @State private var scroll = TabScrollController()
+    @State private var visibility = FloatingTabBarVisibility()
+
+    /// Ausgeblendet bei offener Tastatur und auf Seiten mit `hidesTabBar()`.
+    private var isBarVisible: Bool { !isKeyboardVisible && !visibility.isHidden }
 
     private var selection: FloatingTabSlot {
         isOnMore ? .more : .tab(app.selectedTab)
@@ -37,24 +44,40 @@ struct FloatingTabView: View {
             .environment(\.usesPhoneTabBar, true)
             .environment(\.usesFloatingTabBar, true)
             .environment(\.floatingTabBarMinimizedCenterY, isMinimized ? minimizedCenterY : nil)
-            // Inhalt scrollt unter der Leiste durch, endet aber oberhalb (Safe Area).
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                if !isKeyboardVisible {
-                    FloatingTabBar(
-                        selection: selection,
-                        isMinimized: isMinimized,
-                        hidesTitles: hidesTabLabels,
-                        addsBottomPadding: bottomSafeArea == 0,
-                        select: select,
-                        expand: { setMinimized(false) },
-                        minimizedCenterY: $minimizedCenterY
-                    )
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            // Ohne Leiste (Tastatur offen) gibt es nichts, worüber die schwebende Leiste bleiben müsste.
+            .environment(\.floatingTabBarTopY, isBarVisible ? barTopY : nil)
+            .environment(visibility)
+            // Die Leiste liegt über dem Inhalt. Platz dafür bekommen die Navigations-Stapel in UIKit
+            // (`additionalSafeAreaInsets`, siehe `TabScrollReader`): SwiftUIs `safeAreaInset` erreicht
+            // Listen und Web-Ansichten in einem NavigationStack vor iOS 26 nicht.
+            .overlay(alignment: isMinimized ? .bottomLeading : .bottom) {
+                ZStack {
+                    if isBarVisible {
+                        FloatingTabBar(
+                            selection: selection,
+                            isMinimized: isMinimized,
+                            hidesTitles: hidesTabLabels,
+                            addsBottomPadding: bottomSafeArea == 0,
+                            select: select,
+                            expand: { setMinimized(false) },
+                            minimizedCenterY: $minimizedCenterY,
+                            topY: $barTopY
+                        )
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
                 }
+                .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: visibility.isHidden)
             }
             .onGeometryChange(for: CGFloat.self, of: \.safeAreaInsets.bottom) { bottomSafeArea = $0 }
             .background {
-                TabScrollReader(controller: scroll, isEnabled: minimizesBarsOnScroll) { setMinimized($0) }
+                TabScrollReader(
+                    controller: scroll,
+                    isEnabled: minimizesBarsOnScroll,
+                    // Minimiert kein Platz: SwiftUI-Listen ignorieren Tipps auf Zeilen, die ganz im unteren
+                    // Safe-Area-Bereich liegen, auch wenn dort nur noch der kleine Knopf links sitzt.
+                    bottomInset: isBarVisible && !isMinimized
+                        ? FloatingTabBar.reservedHeight(addsBottomPadding: bottomSafeArea == 0) : 0
+                ) { setMinimized($0) }
                     .frame(width: 0, height: 0)
                     .accessibilityHidden(true)
             }
@@ -144,6 +167,43 @@ struct FloatingTabView: View {
     }
 }
 
+// MARK: - Leiste ausblenden
+
+/// Seiten, die die eigene Tab-Leiste gerade ausblenden (z. B. Unterseiten der Einstellungen).
+@MainActor @Observable
+final class FloatingTabBarVisibility {
+    private var hidingPages: Set<UUID> = []
+
+    var isHidden: Bool { !hidingPages.isEmpty }
+
+    func hide(for page: UUID) { hidingPages.insert(page) }
+    func show(for page: UUID) { hidingPages.remove(page) }
+}
+
+extension View {
+    /// Blendet die Tab-Leiste aus, solange diese Seite sichtbar ist (für Unterseiten): ab iOS 26 die
+    /// System-Tab-Leiste, davor die eigene (`FloatingTabView`); der Inhalt reicht dann bis zum unteren Rand.
+    func hidesTabBar() -> some View {
+        modifier(HidesTabBar())
+    }
+}
+
+private struct HidesTabBar: ViewModifier {
+    /// Nur in `FloatingTabView` gesetzt (vor iOS 26).
+    @Environment(FloatingTabBarVisibility.self) private var visibility: FloatingTabBarVisibility?
+    @State private var page = UUID()
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26, *) {
+            content.toolbar(.hidden, for: .tabBar)
+        } else {
+            content
+                .onAppear { visibility?.hide(for: page) }
+                .onDisappear { visibility?.show(for: page) }
+        }
+    }
+}
+
 /// Identität des Stacks: anderer Tab oder zurückgesetzt → neu aufbauen.
 private struct TabStackKey: Hashable {
     let tab: AppTab
@@ -185,31 +245,41 @@ private struct FloatingTabBar: View {
     let select: (FloatingTabSlot) -> Void
     let expand: () -> Void
     @Binding var minimizedCenterY: CGFloat?
+    @Binding var topY: CGFloat?
 
     @Namespace private var namespace
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.colorSchemeContrast) private var contrast
 
-    private static let barHeight: CGFloat = 62
+    fileprivate static let barHeight: CGFloat = 62
+    private static let topPadding: CGFloat = 6
+    private static let homeButtonPadding: CGFloat = 10
+
+    /// Platz, den die Leiste über der unteren Safe Area des Geräts belegt.
+    static func reservedHeight(addsBottomPadding: Bool) -> CGFloat {
+        topPadding + barHeight + (addsBottomPadding ? homeButtonPadding : 0)
+    }
     private static let minimizedSize: CGFloat = 48
 
+    /// Nur so groß wie das Sichtbare (kein Rahmen über die ganze Breite): Sonst nimmt die Leiste vor iOS 26
+    /// auch neben dem minimierten Knopf Berührungen weg. Ausgerichtet wird in `FloatingTabView`.
     var body: some View {
-        HStack(spacing: 0) {
+        Group {
             if isMinimized {
                 minimizedButton
                     .transition(.scale(scale: 0.6, anchor: .leading).combined(with: .opacity))
-                Spacer(minLength: 0)
             } else {
                 tabs
                     .transition(.scale(scale: 0.9, anchor: .leading).combined(with: .opacity))
             }
         }
-        .frame(maxWidth: .infinity)
         .frame(height: Self.barHeight)
+        // Oberkante der Kapsel (bleibt beim Minimieren gleich, die Höhe ändert sich nicht).
+        .onGeometryChange(for: CGFloat.self, of: { $0.frame(in: .global).minY }, action: { topY = $0 })
         .padding(.horizontal, 20)
-        .padding(.top, 6)
+        .padding(.top, Self.topPadding)
         // Geräte mit Home-Button: etwas Abstand zur Unterkante.
-        .padding(.bottom, addsBottomPadding ? 10 : 0)
+        .padding(.bottom, addsBottomPadding ? Self.homeButtonPadding : 0)
         .background { shortcuts }
         .accessibilityElement(children: .contain)
         .accessibilityAddTraits(.isTabBar)
@@ -291,161 +361,18 @@ private struct FloatingTabBar: View {
     }
 
     /// ⌘1 … ⌘4 (Hardware-Tastatur), auch bei minimierter Leiste.
+    /// Unsichtbar und für VoiceOver verborgen (sonst gäbe es jeden Tab doppelt), nur für die Tastatur.
     private var shortcuts: some View {
-        ForEach(Array(FloatingTabSlot.all.enumerated()), id: \.offset) { index, slot in
-            Button(slot.title) { select(slot) }
-                .keyboardShortcut(KeyEquivalent(Character("\(index + 1)")), modifiers: .command)
+        ZStack {
+            ForEach(Array(FloatingTabSlot.all.enumerated()), id: \.offset) { index, slot in
+                Button(slot.title) { select(slot) }
+                    .keyboardShortcut(KeyEquivalent(Character("\(index + 1)")), modifiers: .command)
+                    .accessibilityHidden(true)
+            }
         }
         .opacity(0)
         .allowsHitTesting(false)
+        .accessibilityElement(children: .ignore)
         .accessibilityHidden(true)
-    }
-}
-
-// MARK: - Scrollen (UIKit)
-
-/// Verbindung zur gerade sichtbaren Seite in UIKit: Scrollrichtung beobachten, nach oben scrollen,
-/// erkennen, ob eine Unterseite offen ist. SwiftUI meldet das vor iOS 18 nicht, daher für 17 und 18 gleich.
-@MainActor
-final class TabScrollController {
-    fileprivate weak var host: TabScrollReader.ReaderController?
-
-    /// Im sichtbaren Navigations-Stapel liegt mehr als die Wurzel.
-    var isShowingSubpage: Bool {
-        (host?.visibleNavigationController?.viewControllers.count ?? 0) > 1
-    }
-
-    func scrollToTop() {
-        guard let scrollView = host?.primaryScrollView() else { return }
-        let top = -scrollView.adjustedContentInset.top
-        scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: top), animated: true)
-    }
-}
-
-/// Prüft pro Frame (15–30 Hz) die größte senkrecht scrollbare Ansicht der sichtbaren Seite:
-/// Runterscrollen minimiert die Leiste, Hochscrollen oder ganz oben vergrößert sie wieder.
-/// Nur echte Gesten zählen (Ziehen, Ausrollen), kein Scrollen per Code.
-private struct TabScrollReader: UIViewControllerRepresentable {
-    let controller: TabScrollController
-    let isEnabled: Bool
-    let onMinimize: (Bool) -> Void
-
-    func makeUIViewController(context: Context) -> ReaderController {
-        let reader = ReaderController()
-        controller.host = reader
-        return reader
-    }
-
-    func updateUIViewController(_ reader: ReaderController, context: Context) {
-        controller.host = reader
-        reader.onMinimize = onMinimize
-        reader.isEnabled = isEnabled
-    }
-
-    final class ReaderController: UIViewController {
-        var onMinimize: (Bool) -> Void = { _ in }
-        var isEnabled = false {
-            didSet { if isEnabled != oldValue { updateDisplayLink() } }
-        }
-
-        private var displayLink: CADisplayLink?
-        private weak var trackedScrollView: UIScrollView?
-        private var tracker = TabBarScrollTracker()
-        private var framesUntilRescan = 0
-
-        override func viewDidAppear(_ animated: Bool) {
-            super.viewDidAppear(animated)
-            updateDisplayLink()
-        }
-
-        override func viewWillDisappear(_ animated: Bool) {
-            super.viewWillDisappear(animated)
-            displayLink?.invalidate()
-            displayLink = nil
-        }
-
-        private func updateDisplayLink() {
-            displayLink?.invalidate()
-            displayLink = nil
-            guard isEnabled, view.window != nil else { return }
-            let link = CADisplayLink(target: self, selector: #selector(tick))
-            link.preferredFrameRateRange = CAFrameRateRange(minimum: 15, maximum: 30)
-            link.add(to: .main, forMode: .common)
-            displayLink = link
-        }
-
-        /// Sichtbarster Navigations-Stapel im Inhalt (Tab oder „Mehr“); Sheets liegen nicht darin.
-        var visibleNavigationController: UINavigationController? {
-            guard let root = parent else { return nil }
-            var stack = root.children
-            var found: UINavigationController?
-            while let candidate = stack.popLast() {
-                if let navigation = candidate as? UINavigationController, navigation.viewIfLoaded?.window != nil {
-                    found = navigation
-                }
-                stack.append(contentsOf: candidate.children)
-            }
-            return found
-        }
-
-        /// Größte sichtbare, senkrecht scrollbare Ansicht (Liste, ScrollView, Formular) – ohne Textfelder.
-        func primaryScrollView() -> UIScrollView? {
-            guard let root = parent?.view, let window = root.window else { return nil }
-            var best: (view: UIScrollView, area: CGFloat)?
-            var queue: [UIView] = [root]
-            while let view = queue.popLast() {
-                if view.isHidden || view.alpha < 0.01 { continue }
-                if let scrollView = view as? UIScrollView, !(scrollView is UITextView), scrollView.isScrollEnabled,
-                   Self.scrollableHeight(of: scrollView) > 40 {
-                    let frame = scrollView.convert(scrollView.bounds, to: window).intersection(window.bounds)
-                    let area = frame.isNull ? 0 : frame.width * frame.height
-                    if area > (best?.area ?? 0) { best = (scrollView, area) }
-                }
-                queue.append(contentsOf: view.subviews)
-            }
-            return best?.view
-        }
-
-        private static func scrollableHeight(of scrollView: UIScrollView) -> CGFloat {
-            let insets = scrollView.adjustedContentInset
-            return scrollView.contentSize.height + insets.top + insets.bottom - scrollView.bounds.height
-        }
-
-        @objc private func tick() {
-            // Die Seite kann wechseln (Tab, Unterseite): alle ~0,5 s neu suchen.
-            if framesUntilRescan <= 0 || trackedScrollView?.window == nil {
-                framesUntilRescan = 15
-                let current = primaryScrollView()
-                if current !== trackedScrollView {
-                    trackedScrollView = current
-                    if let current {
-                        let (top, bottom) = Self.range(of: current)
-                        tracker.reset(offset: current.contentOffset.y, top: top, bottom: bottom)
-                    }
-                    report(false)
-                }
-            }
-            framesUntilRescan -= 1
-            guard let scrollView = trackedScrollView else { return }
-            let (top, bottom) = Self.range(of: scrollView)
-            if let minimized = tracker.update(
-                offset: scrollView.contentOffset.y, top: top, bottom: bottom,
-                isUserScrolling: scrollView.isTracking || scrollView.isDecelerating
-            ) {
-                report(minimized)
-            }
-        }
-
-        /// Kleinste und größte Scroll-Position (ohne Nachfedern).
-        private static func range(of scrollView: UIScrollView) -> (top: CGFloat, bottom: CGFloat) {
-            let top = -scrollView.adjustedContentInset.top
-            return (top, top + max(0, scrollableHeight(of: scrollView)))
-        }
-
-        /// Jedes Mal melden: SwiftUI prüft selbst auf Änderung, und nach Antippen des
-        /// minimierten Knopfs muss erneutes Runterscrollen wieder minimieren.
-        private func report(_ minimized: Bool) {
-            onMinimize(minimized)
-        }
     }
 }

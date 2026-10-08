@@ -113,6 +113,8 @@ struct MoreView: View {
             }
             .navigationTitle("Mehr")
             .appNavigationSubtitle(loc("Was möchten Sie als Nächstes tun?"))
+            // Vor iOS 26: „‹“ statt „‹ Mehr“ auf den geöffneten Seiten.
+            .legacyMinimalBackButton()
             .navigationDestination(for: AppTab.self) { tab in
                 AppTabDestination(tab: tab)
             }

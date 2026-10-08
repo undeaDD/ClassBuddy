@@ -148,7 +148,8 @@ struct StudentRecordView: View {
                     .buttonStyle(.plain)
                     .swipeActions {
                         if canEdit {
-                            Button("Löschen", destructiveIcon: .trash) { delete(observation) }
+                            Button("Löschen", icon: .trash, role: .destructive) { delete(observation) }
+                                .tint(.red)
                         }
                     }
                 }
@@ -200,7 +201,8 @@ struct StudentRecordView: View {
                 .buttonStyle(.plain)
                 .swipeActions {
                     if canEdit {
-                        Button("Löschen", destructiveIcon: .trash) { delete(absence) }
+                        Button("Löschen", icon: .trash, role: .destructive) { delete(absence) }
+                            .tint(.red)
                     }
                 }
             }

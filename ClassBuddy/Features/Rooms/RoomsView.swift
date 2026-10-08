@@ -58,13 +58,13 @@ struct RoomsView: View {
         if rooms.isEmpty {
             EmptyStateView(
                 title: loc("Noch keine Räume"),
-                message: loc("Zeichnen Sie den Grundriss eines Raums mit Tischen, Tafel, Tür und Fenstern."),
+                message: loc("""
+                    Legen Sie über + oben rechts einen Raum an und zeichnen Sie den Grundriss \
+                    mit Tischen, Tafel, Tür und Fenstern.
+                    """),
                 symbol: AppTab.rooms.symbol
-            ) {
-                Button("Raum hinzufügen") { editorRoute = .new }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(!canEdit)
-            }
+            )
+            .background(Color(.systemGroupedBackground))
         } else {
             ScrollView {
                 grid(visibleRooms)

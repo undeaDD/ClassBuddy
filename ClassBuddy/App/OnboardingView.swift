@@ -99,12 +99,7 @@ struct OnboardingView: View {
             .frame(maxWidth: 600)
         }
         .frame(maxWidth: .infinity)
-        .background {
-            Rectangle()
-                .fill(.tint.opacity(0.08))
-                .ignoresSafeArea()
-        }
-        .background(Color(.systemBackground))
+        .background(Color(.systemGroupedBackground))
     }
 
     private func pageView(_ page: Page) -> some View {

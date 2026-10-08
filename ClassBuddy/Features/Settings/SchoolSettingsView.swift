@@ -105,6 +105,7 @@ struct SchoolSettingsView: View {
             Section {
                 NavigationLink {
                     AssessmentTypesView()
+                        .hidesTabBar()
                 } label: {
                     Label("Leistungsarten und Bereiche", icon: .graduationCap)
                 }

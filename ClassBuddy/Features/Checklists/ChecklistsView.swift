@@ -38,6 +38,7 @@ struct ChecklistsView: View {
         }
         .navigationDestination(item: $openChecklist) { checklist in
             ChecklistDetailView(checklist: checklist)
+                .hidesTabBar()
         }
         .onChange(of: app.checklistToOpen) {
             if let selectedClass { openRequestedChecklist(in: selectedClass) }

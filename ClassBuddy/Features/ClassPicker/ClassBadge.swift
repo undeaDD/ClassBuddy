@@ -23,6 +23,7 @@ struct ClassBadge: View {
 /// Oben links: „Klasse auswählen“-Button – runder Glas-Kreis mit dem Kürzel der Klasse.
 struct ClassPickerButton: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.appAccent) private var accent
     let selectedClass: SchoolClass?
     /// Tab, in dessen Toolbar dieser Button sitzt. Jeder Tab hat einen eigenen
     /// Button – nur der im sichtbaren Tab darf das Popover zeigen.
@@ -35,24 +36,37 @@ struct ClassPickerButton: View {
         )
     }
 
+    /// Wie die übrigen Toolbar-Knöpfe: ab iOS 26 die Glas-Knöpfe des Systems (44 pt), davor die Kapseln (36 pt).
+    private static var size: CGFloat {
+        if #available(iOS 26, *) { 44 } else { 36 }
+    }
+
     var body: some View {
         Button {
             app.isClassPickerPresented = true
         } label: {
-            // Nur das Kürzel in einem Glas-Kreis in der Klassenfarbe (ohne Klasse: leeres Glas).
-            Text(selectedClass?.buttonName ?? "")
-                .font(.system(size: 16, weight: .bold, design: .rounded))
-                .monospacedDigit()
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
-                .foregroundStyle(.white)
-                .sensitive()
-                .padding(4)
-                .frame(width: 44, height: 44)
-                .contentShape(.circle)
+            // Kürzel in einem Glas-Kreis in der Klassenfarbe; ohne Klasse ein Plus in der Akzentfarbe.
+            Group {
+                if let selectedClass {
+                    Text(selectedClass.buttonName)
+                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .minimumScaleFactor(0.6)
+                        .lineLimit(1)
+                        .sensitive()
+                } else {
+                    Image(icon: .plus)
+                        .iconSize(18)
+                }
+            }
+            .foregroundStyle(.white)
+            .padding(4)
+            .frame(width: Self.size, height: Self.size)
+            .contentShape(.circle)
         }
         .buttonStyle(.plain)
-        .appGlassEffect(.regular.tint(selectedClass?.displayColor).interactive(), in: .circle)
+        // Ohne Schatten: die Navigationsleiste schneidet ihn vor iOS 26 unten ab.
+        .appGlassEffect(.regular.tint(selectedClass?.displayColor ?? accent).interactive(), in: .circle, fallbackShadow: false)
         .accessibilityLabel(selectedClass.map { loc("\($0.title), Klasse wechseln") } ?? "Klasse auswählen")
         .popover(isPresented: isPickerPresented, arrowEdge: .top) {
             ClassPickerView()

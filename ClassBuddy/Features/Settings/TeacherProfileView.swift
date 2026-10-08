@@ -21,6 +21,7 @@ struct TeacherProfileView: View {
             Section {
                 NavigationLink {
                     SubjectPickerView(subjects: teacher.subjects, title: loc("Hauptfächer"))
+                        .hidesTabBar()
                 } label: {
                     LabeledContent {
                         Text(settings.values.teacher.subjects.isEmpty

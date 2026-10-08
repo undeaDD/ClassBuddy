@@ -111,6 +111,7 @@ struct NotesView: View {
                         ForEach(section.students) { student in
                             NavigationLink {
                                 StudentSubjectsView(student: student)
+                                    .hidesTabBar()
                             } label: {
                                 StudentNameRow(student: student, detail: Self.noteCountText(for: student))
                             }
@@ -150,6 +151,7 @@ struct StudentSubjectsView: View {
                 ForEach(subjects, id: \.self) { subject in
                     NavigationLink {
                         StudentRecordView(student: student, subject: subject)
+                            .hidesTabBar()
                     } label: {
                         LabeledContent(SchoolClass.displayName(ofSubject: subject)) {
                             Text(StudentRecordFormat.count(student.observations(in: subject).count))

@@ -20,12 +20,14 @@ struct AssessmentListView: View {
                     ForEach(schoolClass.assessments.filter { $0.subject == subject }.sorted { $0.date > $1.date }) { assessment in
                         NavigationLink {
                             AssessmentDetailView(assessment: assessment)
+                                .hidesTabBar()
                         } label: {
                             AssessmentRow(assessment: assessment, system: system(for: subject))
                         }
                         .swipeActions {
                             if !security.isPrivacyModeOn {
-                                Button("Löschen", destructiveIcon: .trash) { pendingDeletion = assessment }
+                                Button("Löschen", icon: .trash, role: .destructive) { pendingDeletion = assessment }
+                                    .tint(.red)
                                 Button("Bearbeiten", icon: .editPencil) { editorRoute = .edit(assessment) }
                             }
                         }
@@ -203,7 +205,8 @@ struct AssessmentDetailView: View {
             if canEdit {
                 Button(result?.isMissing == true ? "Fehlt aufheben" : "Fehlt", icon: .userXmark) { toggleMissing(student) }
                     .tint(.orange)
-                Button("Note entfernen", destructiveIcon: .trash) { setGrade("", for: student) }
+                Button("Note entfernen", icon: .trash, role: .destructive) { setGrade("", for: student) }
+                    .tint(.red)
             }
         }
     }
@@ -291,6 +294,7 @@ struct StudentAssessmentSections: View {
                     ForEach(items) { assessment in
                         NavigationLink {
                             AssessmentDetailView(assessment: assessment)
+                                .hidesTabBar()
                         } label: {
                             row(assessment)
                         }

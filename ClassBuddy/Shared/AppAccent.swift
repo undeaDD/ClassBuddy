@@ -65,6 +65,7 @@ nonisolated enum AppAccent {
                 window.tintColor = color
             }
         }
+        LegacyBackButton.apply(accent: color)
     }
 }
 

@@ -109,7 +109,7 @@ struct WhatsNewView: View {
             .padding(.vertical, 24)
             .frame(maxWidth: 560)
         }
-        .background(Color(.systemBackground))
+        .background(Color(.systemGroupedBackground))
         .softScrollEdges()
     }
 

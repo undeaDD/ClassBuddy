@@ -37,13 +37,9 @@ struct ClassPickerView: View {
                         // Sheet über den ganzen Bildschirm: vollwertiger Leerzustand.
                         EmptyStateView(
                             title: "Noch keine Klassen",
-                            message: loc("Legen Sie Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen."),
+                            message: loc("Legen Sie über + oben rechts Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen."),
                             symbol: .custom(.userXmark)
-                        ) {
-                            Button("Klasse anlegen") { editorRoute = .new }
-                                .appGlassButtonStyle(prominent: true)
-                                .disabled(!canEdit)
-                        }
+                        )
                     } else {
                         Text("Noch keine Klassen")
                             .foregroundStyle(.secondary)
@@ -165,9 +161,10 @@ struct ClassPickerView: View {
         // Nach links wischen: löschen
         .swipeActions(edge: .trailing) {
             if canEdit {
-                Button("Löschen", destructiveIcon: .trash) {
+                Button("Löschen", icon: .trash, role: .destructive) {
                     classPendingDeletion = schoolClass
                 }
+                .tint(.red)
             }
         }
         // Lange drücken (Finger oder Apple Pencil) bzw. Rechtsklick.
@@ -176,7 +173,7 @@ struct ClassPickerView: View {
                 Button("Bearbeiten", icon: .editPencil) {
                     editorRoute = .edit(schoolClass)
                 }
-                Button("Löschen", icon: .trash, role: .destructive) {
+                Button("Löschen", destructiveIcon: .trash) {
                     classPendingDeletion = schoolClass
                 }
             }

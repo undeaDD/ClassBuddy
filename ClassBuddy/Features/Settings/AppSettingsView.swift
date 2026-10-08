@@ -355,17 +355,22 @@ struct AppSettingsView: View {
     }
 }
 
-/// Lokale Ablage der App (SwiftData-Store + Dokumente in Application Support).
+/// Lokale Ablage der App: Dokumente in Application Support, der SwiftData-Store im App-Group-Container
+/// (SwiftData legt ihn dort ab, sobald die App eine App Group hat, hier für das Widget).
 enum LocalDataStore {
-    /// Gesamtgröße aller Dateien in Application Support.
+    /// Gesamtgröße aller Dateien in Application Support und im App-Group-Container.
     nonisolated static func totalSize() -> Int64 {
-        let root = URL.applicationSupportDirectory
-        let keys: Set<URLResourceKey> = [.totalFileAllocatedSizeKey, .isRegularFileKey]
+        let group = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: WidgetSchedule.appGroup)
+        return ([URL.applicationSupportDirectory] + [group].compactMap { $0 }).reduce(0) { $0 + size(of: $1) }
+    }
+
+    nonisolated static func size(of root: URL) -> Int64 {
+        let keys: Set<URLResourceKey> = [.totalFileAllocatedSizeKey, .fileAllocatedSizeKey, .isRegularFileKey]
         guard let files = FileManager.default.enumerator(at: root, includingPropertiesForKeys: Array(keys)) else { return 0 }
         var total: Int64 = 0
         for case let url as URL in files {
             guard let values = try? url.resourceValues(forKeys: keys), values.isRegularFile == true else { continue }
-            total += Int64(values.totalFileAllocatedSize ?? 0)
+            total += Int64(values.totalFileAllocatedSize ?? values.fileAllocatedSize ?? 0)
         }
         return total
     }

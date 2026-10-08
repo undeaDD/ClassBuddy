@@ -4,6 +4,26 @@
     "" : {
 
     },
+    "Legen Sie über + oben rechts einen Raum an und zeichnen Sie den Grundriss mit Tischen, Tafel, Tür und Fenstern." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a room with + at the top right and draw its floor plan with tables, board, door and windows."
+          }
+        }
+      }
+    },
+    "Legen Sie über + oben rechts Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create your first class with + at the top right to assign students, lessons and cards."
+          }
+        }
+      }
+    },
     "Tab-Leiste einblenden" : {
       "localizations" : {
         "en" : {
