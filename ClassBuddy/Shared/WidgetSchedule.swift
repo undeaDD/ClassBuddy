@@ -4,7 +4,15 @@ import Foundation
 /// Die App schreibt die kommenden Stunden als JSON in den App-Group-Container; das Widget liest nur das –
 /// keine SwiftData-Datenbank, keine Schülerdaten (nur Klasse, Fach, Raum und Zeiten).
 nonisolated enum WidgetSchedule {
-    static let appGroup = "group.de.devsforge.ClassBuddy"
+    /// `group.<Bundle-ID der App>` (Config/Base.xcconfig: APP_GROUP_ID), in App und Widget gleich.
+    static let appGroup = groupID(forBundleID: Bundle.main.bundleIdentifier ?? "de.devsforge.ClassBuddy")
+
+    /// Das Widget hat die Bundle-ID `<App>.Widgets`; die Gruppe gehört zur App.
+    static func groupID(forBundleID bundleID: String) -> String {
+        let suffix = ".Widgets"
+        let appID = bundleID.hasSuffix(suffix) ? String(bundleID.dropLast(suffix.count)) : bundleID
+        return "group." + appID
+    }
     static let widgetKind = "ScheduleWidget"
 
     struct Lesson: Codable, Hashable, Sendable {

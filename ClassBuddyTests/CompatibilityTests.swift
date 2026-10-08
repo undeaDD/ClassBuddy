@@ -146,6 +146,16 @@ struct CompatibilityTests {
         #expect(IconTheme.availableSFSymbolNames == IconTheme.sfSymbolNames)
     }
 
+    // MARK: Konfiguration (Config/Base.xcconfig)
+
+    @Test("App Group: group.<App-Bundle-ID>, auch aus dem Widget heraus")
+    func appGroupFromBundleID() {
+        #expect(WidgetSchedule.groupID(forBundleID: "de.devsforge.ClassBuddy") == "group.de.devsforge.ClassBuddy")
+        #expect(WidgetSchedule.groupID(forBundleID: "de.devsforge.ClassBuddy.Widgets") == "group.de.devsforge.ClassBuddy")
+        #expect(WidgetSchedule.groupID(forBundleID: "com.example.Klasse") == "group.com.example.Klasse")
+        #expect(WidgetSchedule.appGroup == "group." + (Bundle.main.bundleIdentifier ?? ""))
+    }
+
     // MARK: Rechtliches (HTML)
 
     private static let html = """

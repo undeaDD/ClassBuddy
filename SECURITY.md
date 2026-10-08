@@ -25,6 +25,6 @@ In scope: bypassing the app lock (Face ID / Touch ID / passcode), data shown des
 unsafe handling of imported files (Excel import, documents, images).
 
 The app intentionally makes only these network requests: public holiday data (openholidaysapi.org, on demand),
-weather for the school's address (Apple Weather and Apple Maps, open-meteo.com as fallback; only while the weather
-card is visible), the federal state lookup for the school address and website favicons for
+weather for the school's address (Apple Weather and Apple Maps, open-meteo.com as fallback and for the address lookup
+below iOS 26; only while the weather card is visible), the federal state lookup for the school address and website favicons for
 dashboard link cards. No student data is ever sent.

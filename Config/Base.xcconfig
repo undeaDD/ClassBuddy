@@ -1,0 +1,19 @@
+// Gemeinsame Projekt-Einstellungen (Debug und Release, alle Targets).
+//
+// Eigene Werte zum Selbstbauen (Team, Bundle-ID, Name): Config/Local.example.xcconfig nach
+// Config/Local.xcconfig kopieren und anpassen. Die Datei wird nicht eingecheckt und überschreibt alles hier.
+
+// Apple-Entwicklerteam für die Signierung.
+DEVELOPMENT_TEAM = AXLC3PQNC8
+
+// Bundle-ID der App. Widget: <ID>.Widgets, Tests: <ID>Tests.
+APP_BUNDLE_ID = de.devsforge.ClassBuddy
+
+// Name unter dem App-Icon (und beim Widget).
+APP_DISPLAY_NAME = ClassBuddy
+
+// App Group für App und Widget (Stundenplan-Widget). Die App leitet sie zur Laufzeit selbst
+// aus der Bundle-ID ab (WidgetSchedule.appGroup): immer group.<APP_BUNDLE_ID>.
+APP_GROUP_ID = group.$(APP_BUNDLE_ID)
+
+#include? "Local.xcconfig"

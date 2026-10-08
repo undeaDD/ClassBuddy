@@ -41,6 +41,23 @@ jobs:
               --metrics off --error --sarif --output semgrep.sarif
           fi
 
+      # Exceptions marked with "nosemgrep" arrive as suppressed results. GitHub code scanning ignores
+      # SARIF suppressions and would open alerts for them anyway, so they are removed before the upload.
+      - name: Drop suppressed findings
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          path = "semgrep.sarif"
+          if os.path.exists(path):
+              with open(path) as file:
+                  sarif = json.load(file)
+              for run in sarif.get("runs", []):
+                  run["results"] = [r for r in run.get("results", []) if not r.get("suppressions")]
+              with open(path, "w") as file:
+                  json.dump(sarif, file)
+          PY
+
       - name: Upload results to code scanning
         if: always()
         uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4

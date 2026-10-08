@@ -55,3 +55,6 @@ Icons/*
 
 # Marketing: Apple-Gerätebezels, Schrift und Hintergrund (Lizenzen erlauben keine Weitergabe)
 Marketing/Assets/
+
+# Eigene Build-Einstellungen (Team, Bundle-ID), siehe Config/Local.example.xcconfig
+Config/Local.xcconfig

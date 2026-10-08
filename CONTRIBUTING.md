@@ -1,6 +1,7 @@
 # Contributing
 
 Thanks for your interest in ClassBuddy! Issues and pull requests are welcome.
+By taking part you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Ground rules
 
@@ -15,7 +16,9 @@ Thanks for your interest in ClassBuddy! Issues and pull requests are welcome.
 - Newer APIs (iOS 18 / 26) only behind availability checks: use the wrappers in `Shared/OSCompatibility.swift`
   and `Shared/Glass.swift` (e.g. `.appGlassEffect`, `.appNavigationSubtitle`, `AppToolbarSpacer`), so iOS 26
   keeps the system look and older versions get a fallback
-- Open `ClassBuddy.xcodeproj`, select your team under *Signing & Capabilities*, run on an iPad or iPhone
+- Own team / bundle ID: copy `Config/Local.example.xcconfig` to `Config/Local.xcconfig` (git-ignored, overrides
+  `Config/Base.xcconfig`), then open `ClassBuddy.xcodeproj` and run on an iPad or iPhone. Don't change team or
+  bundle IDs in the project file itself
 - Icons: drop Iconoir-style SVGs into `Icons/` and run `scripts/sync-icons.sh`
   (imports them into the asset catalog as template images, use them via `Image(.name)`)
 

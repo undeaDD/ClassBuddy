@@ -1,0 +1,11 @@
+// Vorlage: nach Config/Local.xcconfig kopieren (wird nicht eingecheckt) und anpassen.
+// Alles, was hier steht, überschreibt Config/Base.xcconfig.
+
+// Eigenes Team (Xcode → Settings → Accounts, oder developer.apple.com → Membership).
+DEVELOPMENT_TEAM = ABCDE12345
+
+// Eigene, eindeutige Bundle-ID (z. B. mit deiner Domain oder deinem Namen).
+APP_BUNDLE_ID = com.example.ClassBuddy
+
+// Optional: anderer Name unter dem App-Icon.
+// APP_DISPLAY_NAME = ClassBuddy

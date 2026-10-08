@@ -18,17 +18,22 @@
 It keeps your classes, students and timetable in one place — **stored only on your device**,
 protected by biometrics (Face ID or Touch ID), with a one-tap privacy mode for when students are looking over your shoulder.
 
-> The app's interface is in **German** (made for teachers in Germany) but the app supports **English** aswell.
+> The app's interface is in **German** (made for teachers in Germany) but the app supports **English** as well.
 
 ## Screenshots
 
-| Übersicht | Kalender |
-|---|---|
-| ![Dashboard](docs/screenshots/ipad/dashboard.png) | ![Calendar](docs/screenshots/ipad/calendar.png) |
-
-| Schüler | Einstellungen |
-|---|---|
-| ![Students](docs/screenshots/ipad/students.png) | ![Settings](docs/screenshots/ipad/settings.png) |
+<p align="center">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/ipad/01-dashboard-dark.jpg"><img src="docs/screenshots/ipad/01-dashboard.jpg" alt="Übersicht" width="190"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/ipad/02-calendar-dark.jpg"><img src="docs/screenshots/ipad/02-calendar.jpg" alt="Kalender" width="190"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/ipad/03-notes-dark.jpg"><img src="docs/screenshots/ipad/03-notes.jpg" alt="Bewertungen" width="190"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/ipad/04-settings-dark.jpg"><img src="docs/screenshots/ipad/04-settings.jpg" alt="Einstellungen" width="190"></picture>
+</p>
+<p align="center">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/iphone/01-dashboard-dark.jpg"><img src="docs/screenshots/iphone/01-dashboard.jpg" alt="Übersicht" width="160"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/iphone/02-calendar-dark.jpg"><img src="docs/screenshots/iphone/02-calendar.jpg" alt="Kalender" width="160"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/iphone/03-notes-dark.jpg"><img src="docs/screenshots/iphone/03-notes.jpg" alt="Bewertungen" width="160"></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/iphone/04-settings-dark.jpg"><img src="docs/screenshots/iphone/04-settings.jpg" alt="Einstellungen" width="160"></picture>
+</p>
 
 ## Features
 
@@ -50,7 +55,7 @@ protected by biometrics (Face ID or Touch ID), with a one-tap privacy mode for w
 
 ## Requirements
 
-- iPad with **iPadOS 17.7** or later, or iPhone with **iOS 17.7** or later. iPadOS 26.0+ and iOS 26.0+ are reccommended thought for the best experience.
+- iPad with **iPadOS 17.7** or later, or iPhone with **iOS 17.7** or later. iPadOS 26 or iOS 26 and later are recommended for the best experience.
 
 ## Installation (sideloading)
 
@@ -64,8 +69,10 @@ sideload yourself using your own Apple ID.
 
 1. Xcode 26 or newer
 2. `git clone https://github.com/undeaDD/ClassBuddy.git`
-3. Open `ClassBuddy.xcodeproj`, choose your team under *Signing & Capabilities*
-4. Run on your iPad or iPhone
+3. Copy `Config/Local.example.xcconfig` to `Config/Local.xcconfig` and set your own team, bundle ID
+   (and optionally the app name). The file is git-ignored and overrides `Config/Base.xcconfig`;
+   widget, tests and the App Group follow the bundle ID automatically
+4. Open `ClassBuddy.xcodeproj` and run on your iPad or iPhone
 
 ## Privacy & GDPR
 
@@ -87,8 +94,8 @@ ClassBuddy is built for GDPR-compliant use in German schools. The full privacy n
 |---|---|---|
 | Tap *Ferien & Feiertage importieren* | [openholidaysapi.org](https://www.openholidaysapi.org) | federal state, date range |
 | Weather card is visible (max. every 30 min) | Apple Weather (WeatherKit) + Apple Maps | the school's address from the settings, then its coordinates |
-| … only if Apple is unreachable | [open-meteo.com](https://open-meteo.com) | the school's town |
-| Postal code / town edited in the school settings | Apple Maps, otherwise open-meteo.com | postal code and town (to suggest the federal state) |
+| … only if Apple is unreachable, and for the address lookup below iOS 26 | [open-meteo.com](https://open-meteo.com) | the school's town |
+| Postal code / town edited in the school settings | Apple Maps (iOS 26 and later), otherwise open-meteo.com | postal code and town (to suggest the federal state) |
 | Website card is shown | the website itself | favicon request |
 | You send feedback | your mail app | only what you send (plus app and iOS/iPadOS version) |
 
@@ -103,7 +110,7 @@ depending on your federal state. Collect only what you need, keep the app lock e
 
 ## Contributing
 
-Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code of Conduct](CODE_OF_CONDUCT.md).
 Security issues: please follow [SECURITY.md](SECURITY.md).
 
 ## Support
