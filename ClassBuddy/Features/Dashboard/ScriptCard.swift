@@ -182,9 +182,11 @@ struct ScriptEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: loc("Sichern"), action: save)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
             // Vorschau kurz nach dem Tippen neu berechnen.
@@ -237,7 +239,8 @@ private struct CodeEditor: UIViewRepresentable {
         view.smartDashesType = .no
         view.smartInsertDeleteType = .no
         view.inlinePredictionType = .no
-        view.writingToolsBehavior = .none
+        // Writing Tools gibt es erst ab iOS 18.
+        if #available(iOS 18, *) { view.writingToolsBehavior = .none }
         view.textContainerInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         view.textContainer.lineFragmentPadding = 0
         view.text = text

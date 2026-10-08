@@ -22,7 +22,7 @@ nonisolated struct IconPack: Codable, Identifiable, Hashable, Sendable {
 
 /// Installieren, Auflisten und Entfernen von Icon-Paketen.
 nonisolated enum IconPackStore {
-    enum InstallError: LocalizedError {
+    enum InstallError: LocalizedError, Equatable {
         case notHTTPS
         case tooLarge
         case download(String)

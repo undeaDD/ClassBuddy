@@ -118,16 +118,18 @@ struct AssessmentDetailView: View {
             }
         }
         .navigationTitle(assessment.title)
-        .navigationSubtitle("\(assessment.typeName) · \(schoolSettings.values.areaName(assessment.area))")
+        .appNavigationSubtitle("\(assessment.typeName) · \(schoolSettings.values.areaName(assessment.area))")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Bearbeiten", icon: .editPencil) { editorRoute = .edit(assessment) }
                     .disabled(!canEdit)
+                    .toolbarGroupBackground()
             }
-            ToolbarSpacer(.fixed, placement: .topBarTrailing)
+            AppToolbarSpacer(placement: .topBarTrailing)
             ToolbarItem(placement: .topBarTrailing) {
                 PrivacyModeButton()
+                    .toolbarGroupBackground()
             }
         }
         .sheet(item: $editorRoute) { AssessmentEditorView(route: $0) }

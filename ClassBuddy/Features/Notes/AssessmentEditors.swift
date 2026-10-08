@@ -110,10 +110,12 @@ struct AssessmentEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: isNew ? loc("Anlegen") : loc("Sichern"), action: save)
                         .disabled(!isValid)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
             .onChange(of: typeID) { _, id in

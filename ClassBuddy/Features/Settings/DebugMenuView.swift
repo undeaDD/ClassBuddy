@@ -123,7 +123,7 @@ struct DebugMenuView: View {
                 .labelStyle(.iconOnly)
                 .padding(6)
         }
-        .buttonStyle(.glass)
+        .appGlassButtonStyle()
         .padding()
     }
 

@@ -33,9 +33,11 @@ struct PhotoCropView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: loc("Übernehmen"), action: confirm)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }

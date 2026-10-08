@@ -120,6 +120,18 @@ struct AppSettingsView: View {
         )
     }
 
+    private var appearanceFooter: String {
+        guard #available(iOS 26, *) else {
+            return loc("UI Minimieren verkleinert die Tab-Leiste beim Scrollen.")
+        }
+        return UIDevice.current.userInterfaceIdiom == .pad
+            ? loc("""
+                Tab-Titel gibt es nur in der iPhone-Tab-Leiste. UI Minimieren verkleinert sie beim Scrollen. \
+                Die iPhone-Tab-Leiste ersetzt die Leiste oben und die Seitenleiste.
+                """)
+            : loc("Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Tab-Leiste beim Scrollen.")
+    }
+
     var body: some View {
         Form {
             Section {
@@ -173,7 +185,8 @@ struct AppSettingsView: View {
                 Toggle(isOn: $minimizesBarsOnScroll) {
                     Label("UI Minimieren", icon: .swipeLeftGesture)
                 }
-                if UIDevice.current.userInterfaceIdiom == .pad {
+                // Vor iOS 26 gibt es auf dem iPad ohnehin nur die Tab-Leiste unten (`FloatingTabView`).
+                if #available(iOS 26, *), UIDevice.current.userInterfaceIdiom == .pad {
                     Toggle(isOn: $padUsesPhoneTabBar) {
                         Label("iPhone-Tab-Leiste", icon: .bottomTabs)
                     }
@@ -181,12 +194,7 @@ struct AppSettingsView: View {
             } header: {
                 Text("Darstellung")
             } footer: {
-                Text(UIDevice.current.userInterfaceIdiom == .pad
-                    ? loc("""
-                        Tab-Titel gibt es nur in der iPhone-Tab-Leiste. UI Minimieren verkleinert sie beim Scrollen. \
-                        Die iPhone-Tab-Leiste ersetzt die Leiste oben und die Seitenleiste.
-                        """)
-                    : loc("Tab-Titel gibt es nur auf dem iPhone. UI Minimieren verkleinert die Tab-Leiste beim Scrollen."))
+                Text(appearanceFooter)
             }
 
             IconThemeSection()

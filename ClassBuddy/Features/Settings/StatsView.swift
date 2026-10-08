@@ -37,6 +37,7 @@ struct StatsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 PrivacyModeButton()
+                    .toolbarGroupBackground()
             }
         }
         .task {

@@ -193,7 +193,7 @@ final class RoomEditorModel {
         pendingStart = nil
     }
 
-    /// Pencil-Doppeltippen: zwischen aktuellem Stift und Radierer wechseln.
+    /// Zwischen aktuellem Stift und Radierer wechseln (war Pencil-Doppeltippen, derzeit nicht belegt).
     func toggleEraser() {
         tool = tool == .eraser ? lastPen : .eraser
     }

@@ -176,7 +176,7 @@ struct GroupsCard: View {
         .sheet(item: device.isPhone ? .constant(nil) : $result) { route in
             GroupsResultView(schoolClass: schoolClass, route: route)
                 .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
-                .presentationSizing(.form)
+                .appPresentationSizing(.form)
         }
         .fullScreenCover(item: device.isPhone ? $result : .constant(nil)) { route in
             // Privatsphäre-Modus und Geräteweiche im Cover erneut setzen.
@@ -264,10 +264,12 @@ struct GroupsPromptView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: loc("Gruppen bilden"), action: create)
                         .disabled(studentCount < 2 || security.isPrivacyModeOn)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }
@@ -336,7 +338,7 @@ struct GroupsResultView: View {
             }
             .background(Color(.systemGroupedBackground))
             .navigationTitle(DashboardBuiltInCard.groups.title)
-            .navigationSubtitle(GroupSplit.sentence(sizes: resolved.map(\.count)))
+            .appNavigationSubtitle(GroupSplit.sentence(sizes: resolved.map(\.count)))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbar }
             .quickLookPreview($pdfPreview)
@@ -347,7 +349,8 @@ struct GroupsResultView: View {
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
-            Button("Schließen", icon: .xmark, role: .close) { dismiss() }
+            Button("Schließen", icon: .xmark, role: .appClose) { dismiss() }
+                .toolbarGroupBackground()
         }
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
@@ -361,15 +364,18 @@ struct GroupsResultView: View {
             }
             // Im Privatsphäre-Modus weder mischen noch teilen.
             .disabled(security.isPrivacyModeOn)
+            .toolbarGroupBackground()
         }
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        AppToolbarSpacer(placement: .topBarTrailing)
         ToolbarItem(placement: .topBarTrailing) {
             PrivacyModeButton()
+                .toolbarGroupBackground()
         }
         // Haken ganz rechts wie in allen Sheets.
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        AppToolbarSpacer(placement: .topBarTrailing)
         ToolbarItem(placement: .topBarTrailing) {
             ConfirmButton(title: loc("Sichern"), action: save)
+                .toolbarGroupBackground(prominent: true)
         }
     }
 

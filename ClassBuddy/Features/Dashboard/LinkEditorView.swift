@@ -79,10 +79,12 @@ struct LinkEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: isNew ? "Hinzufügen" : loc("Sichern"), action: save)
                         .disabled(!isValid)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }

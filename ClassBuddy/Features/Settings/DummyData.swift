@@ -346,8 +346,11 @@ enum DummyData {
         for schoolClass in classes where classIDs.contains(schoolClass.id) {
             context.delete(schoolClass)
         }
+        // Einzeln statt per Batch-Delete: Das scheitert still an Terminen, deren Klasse gerade gelöscht wird.
         let ids = entryIDs
-        try? context.delete(model: CalendarEntry.self, where: #Predicate { ids.contains($0.id) })
+        for entry in (try? context.fetch(FetchDescriptor<CalendarEntry>(predicate: #Predicate { ids.contains($0.id) }))) ?? [] {
+            context.delete(entry)
+        }
         let roomID = roomID
         if let room = try? context.fetch(FetchDescriptor<Room>(predicate: #Predicate { $0.id == roomID })).first {
             context.delete(room)

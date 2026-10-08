@@ -29,7 +29,7 @@ enum HomeScreenAction: String {
 
     /// Symbol im aktiven Icon-Theme (Iconoir aus dem Katalog bzw. SF Symbol).
     private static func shortcutIcon(_ icon: AppIcon) -> UIApplicationShortcutIcon {
-        if IconManager.shared.theme == .sfSymbols, let name = IconTheme.sfSymbolNames[icon] {
+        if IconManager.shared.theme == .sfSymbols, let name = IconTheme.availableSFSymbolNames[icon] {
             return UIApplicationShortcutIcon(systemImageName: name)
         }
         return UIApplicationShortcutIcon(templateImageName: icon.rawValue)

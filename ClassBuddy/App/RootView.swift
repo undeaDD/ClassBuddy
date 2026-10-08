@@ -1,7 +1,7 @@
 import SwiftData
 import SwiftUI
 
-/// Oberste View: Navigation + Privatsphäre-Modus + App-Sperre + Pencil-Aktionen.
+/// Oberste View: Navigation + Privatsphäre-Modus + App-Sperre.
 struct RootView: View {
     @Environment(AppSecurity.self) private var security
     @Environment(\.scenePhase) private var scenePhase
@@ -26,7 +26,6 @@ struct RootView: View {
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
             // Gesperrt / im Hintergrund: Inhalt stark unscharf, darüber Milchglas.
             .blur(radius: security.isLocked || scenePhase != .active ? 12 : 0)
-            .pencilQuickActions()
             // Gilt nur im Vordergrund – iOS setzt es im Hintergrund ohnehin außer Kraft.
             .onChange(of: keepsScreenAwake, initial: true) { _, isOn in
                 UIApplication.shared.isIdleTimerDisabled = isOn
@@ -40,7 +39,7 @@ struct RootView: View {
             }
             .sheet(isPresented: onboardingBinding(isPhone: false)) {
                 OnboardingView(onFinish: finishOnboarding)
-                    .presentationSizing(.form)
+                    .appPresentationSizing(.form)
                     .interactiveDismissDisabled()
             }
             // Vollbild-Cover und Sheets liegen außerhalb der Modifier oben → Geräteweiche und
@@ -61,7 +60,7 @@ struct RootView: View {
             .sheet(isPresented: whatsNewBinding) {
                 if let release = WhatsNew.current {
                     WhatsNewView(release: release) { lastSeenWhatsNew = release.version }
-                        .presentationSizing(.form)
+                        .appPresentationSizing(.form)
                 }
             }
             .overlay {
@@ -138,8 +137,13 @@ extension RootView {
 
 extension View {
     /// Weiche Scroll-Kanten für alle Scroll-Container darunter. Einmal in `RootView` und
-    /// zusätzlich in jedem Sheet/Popover/Vollbild-Cover (die erben es nicht).
+    /// zusätzlich in jedem Sheet/Popover/Vollbild-Cover (die erben es nicht). Erst ab iOS 26.
+    @ViewBuilder
     func softScrollEdges() -> some View {
-        scrollEdgeEffectStyle(.soft, for: .all)
+        if #available(iOS 26, *) {
+            scrollEdgeEffectStyle(.soft, for: .all)
+        } else {
+            self
+        }
     }
 }

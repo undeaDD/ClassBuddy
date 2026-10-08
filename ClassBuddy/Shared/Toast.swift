@@ -78,7 +78,7 @@ struct ToastOverlay: View {
                 }
                 .padding(.horizontal, 18)
                 .padding(.vertical, 12)
-                .glassEffect(.regular, in: .capsule)
+                .appGlassEffect(.regular, in: .capsule)
                 .onTapGesture { toasts.dismiss(toast.id) }
                 .transition(.move(edge: .top).combined(with: .opacity))
                 .id(toast.id)

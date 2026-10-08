@@ -106,10 +106,12 @@ struct StudentRecordView: View {
                 Label("Hinzufügen", icon: .plus)
             }
             .disabled(!canEdit)
+            .toolbarGroupBackground()
         }
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        AppToolbarSpacer(placement: .topBarTrailing)
         ToolbarItem(placement: .topBarTrailing) {
             PrivacyModeButton()
+                .toolbarGroupBackground()
         }
     }
 

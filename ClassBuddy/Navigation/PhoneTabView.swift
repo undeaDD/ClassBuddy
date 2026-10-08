@@ -5,6 +5,7 @@ import SwiftUI
 ///
 /// Ersetzt den System-„Mehr“-Reiter, den iOS ab 6 Tabs einblendet: Der packt jede Seite
 /// in einen zweiten Navigation-Controller (→ doppelte Navigationsleiste) und sieht veraltet aus.
+@available(iOS 26, *)
 struct PhoneTabView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -66,7 +67,7 @@ struct PhoneTabView: View {
         // Die Seiten selbst behalten die tatsächliche Größenklasse (s. o.).
         .environment(\.horizontalSizeClass, .compact)
         // Beim Runterscrollen auf den aktiven Tab schrumpfen, beim Hochscrollen wieder groß.
-        .tabBarMinimizeBehavior(minimizesBarsOnScroll ? .onScrollDown : .never)
+        .appTabBarMinimizesOnScroll(minimizesBarsOnScroll)
         // Seiten, die von außen geöffnet werden (z. B. Kachel auf der Übersicht),
         // aber nicht in der Tab-Leiste liegen, öffnen sich unter „Mehr“.
         .onChange(of: app.selectedTab, initial: true) { _, tab in
@@ -91,7 +92,8 @@ struct PhoneTabView: View {
 }
 
 /// Eigene „Mehr“-Seite: alle Seiten außerhalb der Tab-Leiste, nach Gruppen einklappbar.
-private struct MoreView: View {
+/// Auch in der eigenen Tab-Leiste vor iOS 26 (`FloatingTabView`).
+struct MoreView: View {
     @Environment(\.openURL) private var openURL
     @Binding var path: [AppTab]
     @State private var collapsed: Set<AppTabSection> = []
@@ -110,7 +112,7 @@ private struct MoreView: View {
                 }
             }
             .navigationTitle("Mehr")
-            .navigationSubtitle("Was möchten Sie als Nächstes tun?")
+            .appNavigationSubtitle(loc("Was möchten Sie als Nächstes tun?"))
             .navigationDestination(for: AppTab.self) { tab in
                 AppTabDestination(tab: tab)
             }

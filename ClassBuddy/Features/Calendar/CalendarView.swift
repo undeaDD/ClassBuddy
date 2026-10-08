@@ -110,7 +110,7 @@ struct CalendarView: View {
             }
         }
         .navigationTitle(AppTab.calendar.title)
-        .navigationSubtitle(weekTitle)
+        .appNavigationSubtitle(weekTitle)
         .toolbarTitleDisplayMode(.inline)
         .appChrome(tab: .calendar) {
             if let focusClass {
@@ -230,7 +230,7 @@ struct CalendarPager: View {
         .foregroundStyle(.tint)
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .glassEffect(.regular.interactive(), in: .capsule)
+        .appGlassEffect(.regular.interactive(), in: .capsule)
     }
 
     private func move(by pages: Int) {
@@ -245,7 +245,7 @@ private extension View {
     @ViewBuilder
     func fittedSheetOnPad(_ device: Device) -> some View {
         if device.isPad {
-            presentationSizing(.fitted)
+            appPresentationSizing(.fitted)
         } else {
             self
         }

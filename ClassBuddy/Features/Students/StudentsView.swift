@@ -28,7 +28,7 @@ struct StudentsView: View {
             content(for: schoolClass)
         }
         .navigationTitle(AppTab.students.title)
-        .navigationSubtitle(selectedClass.map { loc("\($0.students.count) Schüler") } ?? "")
+        .appNavigationSubtitle(selectedClass.map { loc("\($0.students.count) Schüler") } ?? "")
         .appChrome(tab: .students) {
             if let selectedClass {
                 Button("Schüler hinzufügen", icon: .plus) {
@@ -80,10 +80,10 @@ struct StudentsView: View {
                             row(for: student)
                         }
                     }
-                    .sectionIndexLabel(section.letter)
+                    .appSectionIndexLabel(section.letter)
                 }
             }
-            .listSectionIndexVisibility(.visible)
+            .appSectionIndexVisible()
             .searchable(text: $searchText, prompt: "Schüler suchen")
             .overlay {
                 if sections.isEmpty {

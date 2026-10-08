@@ -119,6 +119,18 @@ nonisolated enum IconTheme: Identifiable, Hashable, Sendable {
         .www: "network",
         .xmark: "xmark",
     ]
+
+    /// Ersatz für Symbole, die es erst in neueren iOS-Versionen gibt.
+    static let sfSymbolFallbackNames: [AppIcon: String] = [
+        .bottomTabs: "platter.filled.bottom.iphone", // Original ab iOS 18
+        .fillColor: "paintbrush.pointed.fill", // Original ab iOS 26
+    ]
+
+    /// Symbole, die es auf diesem System gibt: das Original, sonst der Ersatz;
+    /// fehlen beide, zeigt das Icon die eingebaute Grafik.
+    static let availableSFSymbolNames: [AppIcon: String] = sfSymbolNames.compactMapValues { name in
+        UIImage(systemName: name) != nil ? name : nil
+    }.merging(sfSymbolFallbackNames.filter { UIImage(systemName: $0.value) != nil }) { original, _ in original }
 }
 
 /// Liefert das Bild eines Icons im aktiven Theme. `theme` ist beobachtbar: Views, die beim Zeichnen
@@ -154,7 +166,7 @@ final class IconManager {
         case .builtIn:
             Image(icon.resource)
         case .sfSymbols:
-            IconTheme.sfSymbolNames[icon].map { Image(systemName: $0) } ?? Image(icon.resource)
+            IconTheme.availableSFSymbolNames[icon].map { Image(systemName: $0) } ?? Image(icon.resource)
         case .pack(let pack):
             packImage(icon, in: pack).map { Image(uiImage: $0) } ?? Image(icon.resource)
         }
@@ -165,7 +177,7 @@ final class IconManager {
         case .builtIn:
             UIImage(resource: icon.resource)
         case .sfSymbols:
-            IconTheme.sfSymbolNames[icon].flatMap { UIImage(systemName: $0) } ?? UIImage(resource: icon.resource)
+            IconTheme.availableSFSymbolNames[icon].flatMap { UIImage(systemName: $0) } ?? UIImage(resource: icon.resource)
         case .pack(let pack):
             packImage(icon, in: pack) ?? UIImage(resource: icon.resource)
         }
@@ -175,7 +187,7 @@ final class IconManager {
     func preview(_ icon: AppIcon, in theme: IconTheme) -> Image {
         switch theme {
         case .builtIn: Image(icon.resource)
-        case .sfSymbols: IconTheme.sfSymbolNames[icon].map { Image(systemName: $0) } ?? Image(icon.resource)
+        case .sfSymbols: IconTheme.availableSFSymbolNames[icon].map { Image(systemName: $0) } ?? Image(icon.resource)
         case .pack(let pack): IconPackStore.image(for: icon, in: pack).map { Image(uiImage: $0) } ?? Image(icon.resource)
         }
     }

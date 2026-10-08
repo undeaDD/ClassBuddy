@@ -246,6 +246,7 @@ struct CardGalleryView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
             }
         }

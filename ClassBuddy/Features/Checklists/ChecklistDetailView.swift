@@ -79,7 +79,7 @@ struct ChecklistDetailView: View {
             }
         }
         .navigationTitle(checklist.title)
-        .navigationSubtitle(checklist.scopeTitle)
+        .appNavigationSubtitle(checklist.scopeTitle)
         .toolbar { toolbar }
         .sheet(isPresented: $isEditorPresented) {
             ChecklistEditorView(route: .edit(checklist))
@@ -142,10 +142,12 @@ struct ChecklistDetailView: View {
                 Label("Mehr", icon: .moreHoriz)
             }
             .disabled(security.isPrivacyModeOn)
+            .toolbarGroupBackground()
         }
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        AppToolbarSpacer(placement: .topBarTrailing)
         ToolbarItem(placement: .topBarTrailing) {
             PrivacyModeButton()
+                .toolbarGroupBackground()
         }
     }
 

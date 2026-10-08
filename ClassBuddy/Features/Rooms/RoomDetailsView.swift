@@ -102,6 +102,7 @@ struct RoomDetailsView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: loc("Fertig")) { dismiss() }
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }

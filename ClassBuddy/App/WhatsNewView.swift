@@ -67,6 +67,7 @@ struct WhatsNewView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button("Schließen", icon: .xmark, action: onFinish)
+                            .toolbarGroupBackground()
                     }
                 }
         }
@@ -102,7 +103,7 @@ struct WhatsNewView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
             }
-            .buttonStyle(.glassProminent)
+            .appGlassButtonStyle(prominent: true)
             .controlSize(.large)
             .padding(.horizontal, 32)
             .padding(.vertical, 24)

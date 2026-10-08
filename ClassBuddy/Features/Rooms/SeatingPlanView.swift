@@ -124,7 +124,8 @@ struct SeatingPlanView: View {
                                 .navigationBarTitleDisplayMode(.inline)
                                 .toolbar {
                                     ToolbarItem(placement: .cancellationAction) {
-                                        Button("Schließen", icon: .xmark, role: .close) { selectedTable = nil }
+                                        Button("Schließen", icon: .xmark, role: .appClose) { selectedTable = nil }
+                                            .toolbarGroupBackground()
                                     }
                                 }
                         }
@@ -178,7 +179,7 @@ struct SeatingPlanView: View {
         content
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Sitzplan")
-            .navigationSubtitle(subtitle)
+            .appNavigationSubtitle(subtitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbar }
             .navigationDestination(item: $notesStudent) { student in
@@ -243,7 +244,8 @@ struct SeatingPlanView: View {
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
-            Button("Schließen", icon: .xmark, role: .close) { dismiss() }
+            Button("Schließen", icon: .xmark, role: .appClose) { dismiss() }
+                .toolbarGroupBackground()
         }
         ToolbarItem(placement: .topBarTrailing) {
             Menu {
@@ -265,10 +267,12 @@ struct SeatingPlanView: View {
             }
             // Im Privatsphäre-Modus weder teilen noch ändern.
             .disabled(security.isPrivacyModeOn)
+            .toolbarGroupBackground()
         }
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        AppToolbarSpacer(placement: .topBarTrailing)
         ToolbarItem(placement: .topBarTrailing) {
             PrivacyModeButton()
+                .toolbarGroupBackground()
         }
     }
 

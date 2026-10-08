@@ -58,6 +58,7 @@ struct OnboardingView: View {
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button("Schließen", icon: .xmark, action: onFinish)
+                            .toolbarGroupBackground()
                     }
                 }
         }
@@ -86,7 +87,7 @@ struct OnboardingView: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 4)
                 }
-                .buttonStyle(.glassProminent)
+                .appGlassButtonStyle(prominent: true)
                 .controlSize(.large)
 
                 Spacer()

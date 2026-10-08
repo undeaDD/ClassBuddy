@@ -69,9 +69,9 @@ struct QuickRatingBar: View {
 
     private var header: some View {
         HStack(spacing: 12) {
-            Button("Schließen", icon: .xmark, role: .close, action: onClose)
+            Button("Schließen", icon: .xmark, role: .appClose, action: onClose)
                 .labelStyle(.iconOnly)
-                .buttonStyle(.glass)
+                .appGlassButtonStyle()
                 .buttonBorderShape(.circle)
             StudentAvatar(student: student, size: 40)
             Text(student.fullName)
@@ -81,7 +81,7 @@ struct QuickRatingBar: View {
             Spacer(minLength: 8)
             Button("Details", action: onOpenRecord)
                 .font(.subheadline.weight(.medium))
-                .buttonStyle(.glass)
+                .appGlassButtonStyle()
                 .buttonBorderShape(.capsule)
         }
     }
@@ -134,7 +134,7 @@ struct QuickRatingBar: View {
                 Button("Rückgängig", icon: .undo, action: undo)
                     .labelStyle(.titleAndIcon)
                     .font(.subheadline.weight(.semibold))
-                    .buttonStyle(.glass)
+                    .appGlassButtonStyle()
                     .buttonBorderShape(.capsule)
                     .transition(.opacity)
             }

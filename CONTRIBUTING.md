@@ -11,7 +11,10 @@ Thanks for your interest in ClassBuddy! Issues and pull requests are welcome.
 
 ## Development
 
-- Xcode 26 or newer, iOS/iPadOS 26 deployment target
+- Xcode 26 or newer, iOS/iPadOS 17.7 deployment target
+- Newer APIs (iOS 18 / 26) only behind availability checks: use the wrappers in `Shared/OSCompatibility.swift`
+  and `Shared/Glass.swift` (e.g. `.appGlassEffect`, `.appNavigationSubtitle`, `AppToolbarSpacer`), so iOS 26
+  keeps the system look and older versions get a fallback
 - Open `ClassBuddy.xcodeproj`, select your team under *Signing & Capabilities*, run on an iPad or iPhone
 - Icons: drop Iconoir-style SVGs into `Icons/` and run `scripts/sync-icons.sh`
   (imports them into the asset catalog as template images, use them via `Image(.name)`)

@@ -116,10 +116,10 @@ struct NotesView: View {
                             }
                         }
                     }
-                    .sectionIndexLabel(section.letter)
+                    .appSectionIndexLabel(section.letter)
                 }
             }
-            .listSectionIndexVisibility(.visible)
+            .appSectionIndexVisible()
             .searchable(text: $searchText, prompt: "Schüler suchen")
             .overlay {
                 if sections.isEmpty {
@@ -234,6 +234,7 @@ extension View {
         toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 PrivacyModeButton()
+                    .toolbarGroupBackground()
             }
         }
     }

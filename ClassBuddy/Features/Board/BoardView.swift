@@ -305,6 +305,7 @@ private struct BoardScanPrompt: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: loc("Scannen")) {
@@ -312,6 +313,7 @@ private struct BoardScanPrompt: View {
                         dismiss()
                     }
                     .disabled(subject == nil)
+                    .toolbarGroupBackground(prominent: true)
                 }
             }
         }

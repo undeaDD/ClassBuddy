@@ -90,10 +90,12 @@ struct ObservationEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: isNew ? loc("Anlegen") : loc("Sichern"), action: save)
                         .disabled(kind == .note && note.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }
@@ -194,9 +196,11 @@ struct AbsenceEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: isNew ? loc("Anlegen") : loc("Sichern"), action: save)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }
@@ -279,11 +283,12 @@ struct RecordSettingsView: View {
                 }
             }
             .navigationTitle("Bewertung")
-            .navigationSubtitle(SchoolClass.displayName(ofSubject: subject))
+            .appNavigationSubtitle(SchoolClass.displayName(ofSubject: subject))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: loc("Sichern")) {
@@ -291,6 +296,7 @@ struct RecordSettingsView: View {
                         try? modelContext.save()
                         dismiss()
                     }
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }

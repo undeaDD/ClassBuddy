@@ -1,16 +1,30 @@
 import SwiftUI
 
-/// Hauptnavigation: oben Tab-Bar, links einklappbare Sidebar (iPad).
-/// Schmale Fenster (iPhone, kleines iPad-Fenster): `PhoneTabView` mit eigenem „Mehr“-Tab.
+/// Hauptnavigation. Ab iOS 26 die System-Tab-Leiste (`NativeTabView`), davor auf iPhone und iPad
+/// die eigene schwebende Leiste unten (`FloatingTabView`).
 /// Aufbau fest (nicht anpassbar): Hauptseiten ohne Titel, dann „Klasse“ und „Sonstige“.
 /// Neue Seiten: Case in `AppTab` ergänzen und in `AppTabDestination` zuordnen.
 struct AppTabView: View {
-    @Environment(AppModel.self) private var app
-    @Environment(\.openURL) private var openURL
-    @Environment(\.device) private var device
     /// Nur nötig, damit `defaultVisibility` greift; Anpassen selbst ist überall gesperrt.
     /// Versioniert: bei Strukturänderungen hochzählen. v6: feste Gruppen, kein Anordnen.
     static let customizationKey = "navigation.tabCustomization.v6"
+
+    var body: some View {
+        if #available(iOS 26, *) {
+            NativeTabView()
+        } else {
+            FloatingTabView()
+        }
+    }
+}
+
+/// Ab iOS 26: oben Tab-Bar, links einklappbare Sidebar (iPad).
+/// Schmale Fenster (iPhone, kleines iPad-Fenster): `PhoneTabView` mit eigenem „Mehr“-Tab.
+@available(iOS 26, *)
+private struct NativeTabView: View {
+    @Environment(AppModel.self) private var app
+    @Environment(\.openURL) private var openURL
+    @Environment(\.device) private var device
     @AppStorage(AppTabView.customizationKey) private var customization = TabViewCustomization()
     /// iPad: auf Wunsch die Tab-Leiste des iPhones (App-Einstellungen → Darstellung).
     @AppStorage(AppPreference.padUsesPhoneTabBar) private var padUsesPhoneTabBar = false

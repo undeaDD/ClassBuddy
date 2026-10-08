@@ -34,23 +34,26 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
                 ToolbarItem(placement: .topBarLeading) {
                     ClassPickerButton(selectedClass: selectedClass, tab: tab)
                 }
-                .sharedBackgroundVisibility(.hidden)
+                .appSharedBackgroundHidden()
             }
 
             if hasActions {
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     // Aktionen der Seite in der Akzentfarbe.
-                    actions
-                        .foregroundStyle(.tint)
+                    ToolbarCapsuleGroup {
+                        actions
+                            .foregroundStyle(.tint)
+                    }
                 }
             }
 
             if tab.showsPrivacyMode {
                 if hasActions {
-                    ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                    AppToolbarSpacer(placement: .topBarTrailing)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     PrivacyModeButton()
+                        .toolbarGroupBackground()
                 }
             }
         }

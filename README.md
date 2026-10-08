@@ -9,9 +9,9 @@
 
 [![Build IPA](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml)
 [![Semgrep](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml)
-[![Test coverage: logic 82%](https://img.shields.io/badge/test%20coverage%20(logic)-82%25-brightgreen)](scripts/coverage.sh)
+[![Test coverage: logic 85%](https://img.shields.io/badge/test%20coverage%20(logic)-85%25-brightgreen)](scripts/coverage.sh)
 [![Latest release](https://img.shields.io/github/v/release/undeaDD/ClassBuddy?label=version&color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases/latest)
-![Platform](https://img.shields.io/badge/iOS%20%7C%20iPadOS-26%2B-000000?logo=apple)
+![Platform](https://img.shields.io/badge/iOS%20%7C%20iPadOS-17.7%2B-000000?logo=apple)
 [![License: PolyForm Strict](https://img.shields.io/badge/license-PolyForm%20Strict-blue)](LICENSE)
 
 **ClassBuddy** is a privacy-first classroom companion for teachers on iPad and iPhone.
@@ -47,12 +47,15 @@ Screenshots with dummy data: `scripts/screenshots.sh` (see the script for device
   - Everything is stored locally with SwiftData — no account, no cloud, no tracking
 - **Excel export / import** – one sheet per area (classes, students, lessons, appointments, settings, …),
   editable in Excel or Numbers
-- **Apple Pencil** (iPad) – squeeze for a radial quick menu at the pencil's position, double-tap toggles privacy mode
 - iPad and iPhone, light & dark mode, native SwiftUI, no third-party dependencies
 
 ## Requirements
 
-- iPad with **iPadOS 26** or later, or iPhone with **iOS 26** or later
+- iPad with **iPadOS 17.7** or later, or iPhone with **iOS 17.7** or later
+- On iOS/iPadOS 26 and later the app uses the system tab bar (iPad: tab bar on top plus sidebar) and Liquid Glass.
+  Earlier versions get a floating tab bar at the bottom (iPhone and iPad) that shrinks while scrolling,
+  and material backgrounds instead of glass. A few extras need iOS 26: the Apple Intelligence daily
+  motto card, the A–Z index in the student lists and the iPad option for the iPhone tab bar
 
 ## Installation (sideloading with AltStore)
 

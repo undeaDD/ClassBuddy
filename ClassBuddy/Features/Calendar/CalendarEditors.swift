@@ -107,11 +107,13 @@ struct LessonEditorView: View {
                 if device.isPhone {
                     ToolbarItem(placement: .cancellationAction) {
                         CancelButton()
+                            .toolbarGroupBackground()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: loc("Sichern"), action: save)
                         .disabled(selectedClass == nil)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
             .onChange(of: classID) {
@@ -236,10 +238,12 @@ struct EntryEditorView: View {
                 if isSheet || device.isPhone {
                     ToolbarItem(placement: .cancellationAction) {
                         CancelButton()
+                            .toolbarGroupBackground()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: entry == nil ? loc("Anlegen") : loc("Sichern"), action: save)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }
@@ -286,12 +290,17 @@ struct CancelButton: View {
 }
 
 /// Bestätigen als Icon-Button (Haken); `title` ist das Accessibility-Label.
+/// Vor iOS 26 (ohne `.confirm`) ein normaler Button mit Haken.
 struct ConfirmButton: View {
     let title: String
     let action: () -> Void
 
     var body: some View {
-        Button(title, icon: .check, role: .confirm, action: action)
+        if #available(iOS 26, *) {
+            Button(title, icon: .check, role: .confirm, action: action)
+        } else {
+            Button(title, icon: .check, action: action)
+        }
     }
 }
 
@@ -304,7 +313,7 @@ extension View {
         if prominent {
             modifier(ProminentGlassButton())
         } else {
-            labelStyle(.iconOnly).buttonStyle(.glass).buttonBorderShape(.circle)
+            labelStyle(.iconOnly).appGlassButtonStyle().buttonBorderShape(.circle)
         }
     }
 }
@@ -319,7 +328,7 @@ private struct ProminentGlassButton: ViewModifier {
             .buttonStyle(.plain)
             .foregroundStyle(.white)
             .padding(8)
-            .glassEffect(.regular.tint(accent).interactive(), in: .circle)
+            .appGlassEffect(.regular.tint(accent).interactive(), in: .circle)
             .opacity(isEnabled ? 1 : 0.4)
     }
 }

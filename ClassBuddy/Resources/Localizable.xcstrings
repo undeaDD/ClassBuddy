@@ -4,6 +4,26 @@
     "" : {
 
     },
+    "Tab-Leiste einblenden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show tab bar"
+          }
+        }
+      }
+    },
+    "UI Minimieren verkleinert die Tab-Leiste beim Scrollen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimize UI shrinks the tab bar while scrolling."
+          }
+        }
+      }
+    },
     "Anrufen" : {
       "localizations" : {
         "en" : {

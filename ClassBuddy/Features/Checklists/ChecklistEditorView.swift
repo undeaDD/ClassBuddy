@@ -112,10 +112,12 @@ struct ChecklistEditorView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     ConfirmButton(title: isNew ? loc("Anlegen") : loc("Sichern"), action: save)
                         .disabled(trimmedTitle.isEmpty)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }

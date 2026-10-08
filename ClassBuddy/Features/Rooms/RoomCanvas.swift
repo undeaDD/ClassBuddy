@@ -105,7 +105,7 @@ struct RoomCanvas: View {
 }
 
 /// Gesten-Ebene: ein Finger bzw. Pencil zeichnet (Ziehen = Strecke, Antippen = Punkt), zwei Finger
-/// verschieben und zoomen. Pencil: Doppeltippen wechselt zum Radierer, Hover zeigt den nächsten Rasterpunkt.
+/// verschieben und zoomen. Pencil-Hover zeigt den nächsten Rasterpunkt.
 private struct RoomCanvasGestures: UIViewRepresentable {
     let model: RoomEditorModel
 
@@ -117,7 +117,7 @@ private struct RoomCanvasGestures: UIViewRepresentable {
         view.model = model
     }
 
-    final class GestureView: UIView, UIGestureRecognizerDelegate, UIPencilInteractionDelegate {
+    final class GestureView: UIView, UIGestureRecognizerDelegate {
         var model: RoomEditorModel
         private var lastPinchScale: CGFloat = 1
         private var lastPanTranslation: CGPoint = .zero
@@ -148,9 +148,6 @@ private struct RoomCanvasGestures: UIViewRepresentable {
             addGestureRecognizer(pinch)
 
             addGestureRecognizer(UIHoverGestureRecognizer(target: self, action: #selector(handleHover)))
-
-            let pencil = UIPencilInteraction(delegate: self)
-            addInteraction(pencil)
         }
 
         @available(*, unavailable)
@@ -262,11 +259,6 @@ private struct RoomCanvasGestures: UIViewRepresentable {
             case .began, .changed: model.hoverPoint = model.drawingKind == nil ? nil : model.snap(gesture.location(in: self))
             default: model.hoverPoint = nil
             }
-        }
-
-        func pencilInteraction(_ interaction: UIPencilInteraction, didReceiveTap tap: UIPencilInteraction.Tap) {
-            model.toggleEraser()
-            Haptics.selection()
         }
     }
 }

@@ -101,19 +101,23 @@ struct RoomEditorView: View {
             Button("Verwerfen", icon: .xmark, role: .cancel) {
                 if hasChanges { isDiscardConfirmationPresented = true } else { dismiss() }
             }
+                .toolbarGroupBackground()
         }
         // iPhone: Einpassen und Details stehen in der Toolbox unten.
         if !device.isPhone {
             ToolbarItemGroup(placement: .primaryAction) {
-                Button("Einpassen", icon: .fit) { model.fit() }
-                Button("Details", icon: .moreHoriz) { isDetailsPresented = true }
+                ToolbarCapsuleGroup {
+                    Button("Einpassen", icon: .fit) { model.fit() }
+                    Button("Details", icon: .moreHoriz) { isDetailsPresented = true }
+                }
             }
-            ToolbarSpacer(.fixed, placement: .primaryAction)
+            AppToolbarSpacer(placement: .primaryAction)
         }
         ToolbarItem(placement: .confirmationAction) {
             ConfirmButton(title: loc("Speichern"), action: attemptSave)
                 .disabled(!canSave)
                 .keyboardShortcut("s", modifiers: .command)
+                .toolbarGroupBackground(prominent: true)
         }
     }
 
@@ -125,7 +129,7 @@ struct RoomEditorView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .glassEffect(.regular, in: .capsule)
+                .appGlassEffect(.regular, in: .capsule)
                 .padding(.top, 8)
                 .padding(.horizontal, 16)
                 .allowsHitTesting(false)
@@ -172,7 +176,7 @@ private struct RoomToolbox: View {
     private static let tools: [RoomTool] = [.move] + RoomElementKind.allCases.map(RoomTool.pen) + [.eraser]
 
     var body: some View {
-        GlassEffectContainer(spacing: 10) {
+        AppGlassContainer(spacing: 10) {
             if isCompact {
                 VStack(spacing: 10) {
                     HStack(spacing: 10) {
@@ -211,7 +215,7 @@ private struct RoomToolbox: View {
         // Links und rechts etwas Luft, damit „Maus“ und „Radierer“ nicht am Glasrand kleben.
         .padding(.horizontal, 4)
         .padding(4)
-        .glassEffect(.regular.interactive(), in: showsLabels ? AnyShape(.rect(cornerRadius: 24)) : AnyShape(.capsule))
+        .appGlassEffect(.regular.interactive(), in: showsLabels ? AnyShape(.rect(cornerRadius: 24)) : AnyShape(.capsule))
         .fixedSize()
     }
 
@@ -229,7 +233,7 @@ private struct RoomToolbox: View {
     private func bubble<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
         HStack(spacing: 0, content: content)
             .padding(4)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .appGlassEffect(.regular.interactive(), in: .capsule)
             .fixedSize()
     }
 

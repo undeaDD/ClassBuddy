@@ -41,7 +41,7 @@ struct ClassPickerView: View {
                             symbol: .custom(.userXmark)
                         ) {
                             Button("Klasse anlegen") { editorRoute = .new }
-                                .buttonStyle(.glassProminent)
+                                .appGlassButtonStyle(prominent: true)
                                 .disabled(!canEdit)
                         }
                     } else {

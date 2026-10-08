@@ -27,7 +27,7 @@ struct RoomsView: View {
         content
             .background(Color(.systemGroupedBackground))
             .navigationTitle(AppTab.rooms.title)
-            .navigationSubtitle(rooms.count == 1 ? loc("1 Raum") : loc("\(rooms.count) Räume"))
+            .appNavigationSubtitle(rooms.count == 1 ? loc("1 Raum") : loc("\(rooms.count) Räume"))
             .modifier(RoomsChrome(isModal: isModal, canEdit: canEdit, add: { editorRoute = .new }, close: { dismiss() }))
             .fullScreenCover(item: $editorRoute) { route in
                 RoomEditorView(route: route, nextSortIndex: (rooms.map(\.sortIndex).max() ?? -1) + 1)
@@ -181,15 +181,18 @@ private struct RoomsChrome: ViewModifier {
         if isModal {
             content.toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Schließen", icon: .xmark, role: .close, action: close)
+                    Button("Schließen", icon: .xmark, role: .appClose, action: close)
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Raum hinzufügen", icon: .plus, action: add)
                         .disabled(!canEdit)
+                        .toolbarGroupBackground()
                 }
-                ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                AppToolbarSpacer(placement: .topBarTrailing)
                 ToolbarItem(placement: .topBarTrailing) {
                     PrivacyModeButton()
+                        .toolbarGroupBackground()
                 }
             }
         } else {

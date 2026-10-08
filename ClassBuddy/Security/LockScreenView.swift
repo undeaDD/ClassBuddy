@@ -34,7 +34,7 @@ struct LockScreenView: View {
                     Text("Mit \(security.biometryName) entsperren")
                         .padding(.horizontal, 8)
                 }
-                .buttonStyle(.glassProminent)
+                .appGlassButtonStyle(prominent: true)
                 .controlSize(.large)
                 .disabled(security.isAuthenticating)
                 .hoverEffect(.lift)

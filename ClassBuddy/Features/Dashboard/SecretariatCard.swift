@@ -55,7 +55,7 @@ struct SecretariatCard: View {
             .opacity(url == nil ? 0.35 : 1)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .buttonStyle(.glass)
+        .appGlassButtonStyle()
         .buttonBorderShape(.roundedRectangle(radius: 20))
         .help(help)
         .accessibilityLabel(help)

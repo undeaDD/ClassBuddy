@@ -3,9 +3,11 @@ import SwiftUI
 
 /// Tagesmotivation: ein kurzer Glückskeks-Spruch (Vorhersage, Weisheit oder Witz) vom Sprachmodell auf dem Gerät (Apple Intelligence).
 /// Ohne bereites Modell (Gerät nicht unterstützt, Apple Intelligence aus, Modell lädt noch) gibt es
-/// die Kachel weder in der Übersicht noch in der Galerie.
+/// die Kachel weder in der Übersicht noch in der Galerie – vor iOS 26 also nie.
 enum DailyBoost {
-    static var isAvailable: Bool { SystemLanguageModel.default.isAvailable }
+    static var isAvailable: Bool {
+        if #available(iOS 26, *) { SystemLanguageModel.default.isAvailable } else { false }
+    }
 
     /// Anweisungen auf Englisch (zuverlässiger), Antwort in der App-Sprache.
     private static func instructions(german: Bool, style: String) -> String {
@@ -47,12 +49,15 @@ enum DailyBoost {
     /// bei Fehlern (z. B. Schutzfilter) ein eingebauter Spruch.
     static func generate() async -> String {
         let german = AppLanguage.current.resolved == .german
-        for _ in 0..<3 {
-            if let text = await attempt(german: german) { return text }
+        if #available(iOS 26, *) {
+            for _ in 0..<3 {
+                if let text = await attempt(german: german) { return text }
+            }
         }
         return fallback(german: german)
     }
 
+    @available(iOS 26, *)
     private static func attempt(german: Bool) async -> String? {
         let session = LanguageModelSession(instructions: instructions(german: german, style: styles.randomElement() ?? styles[0]))
         let topic = topics.randomElement() ?? "coffee"

@@ -150,8 +150,10 @@ nonisolated enum WeatherService {
         let cityWithContext: String?
     }
 
+    /// Vor iOS 26 (ohne `MKGeocodingRequest`) immer `nil`, also gleich die Open-Meteo-Ortssuche.
     @MainActor
     private static func appleLookup(_ city: String, postalCode: String, street: String = "") async -> AppleLookup? {
+        guard #available(iOS 26, *) else { return nil }
         let place = [postalCode, city].filter { !$0.isEmpty }.joined(separator: " ")
         let address = [street, place, "Deutschland"].filter { !$0.isEmpty }.joined(separator: ", ")
         guard let request = MKGeocodingRequest(addressString: address) else { return nil }

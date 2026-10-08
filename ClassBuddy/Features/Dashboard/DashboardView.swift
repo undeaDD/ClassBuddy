@@ -73,7 +73,7 @@ struct DashboardView: View {
                 ) { template in
                     pendingTemplate = template
                 }
-                .presentationSizing(.page)
+                .appPresentationSizing(.page)
                 .softScrollEdges()
             })
             .onChange(of: photoSelection) { _, item in
@@ -84,7 +84,7 @@ struct DashboardView: View {
             .task(id: schoolClass.id) { registerNewCards(in: schoolClass) }
         }
         .navigationTitle(AppTab.dashboard.title)
-        .navigationSubtitle(selectedClass.map { "\($0.title) · \($0.schoolYear)" } ?? "")
+        .appNavigationSubtitle(selectedClass.map { "\($0.title) · \($0.schoolYear)" } ?? "")
         .appChrome(tab: .dashboard) {
             if selectedClass != nil {
                 Button(isArranging ? "Fertig" : "Kacheln anordnen", image: isArranging ? .check : .editPencil) {
@@ -192,7 +192,7 @@ struct DashboardView: View {
                     }
                     .labelStyle(.iconOnly)
                     .foregroundStyle(.tint)
-                    .buttonStyle(.glass)
+                    .appGlassButtonStyle()
                     .buttonBorderShape(.circle)
                     .offset(x: 8, y: -8)
                 }

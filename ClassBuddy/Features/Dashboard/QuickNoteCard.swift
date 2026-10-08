@@ -19,7 +19,7 @@ struct QuickNoteCard: View {
         .sheet(isPresented: $isEditorPresented) {
             QuickNoteEditor(schoolClass: schoolClass)
                 .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
-                .presentationSizing(.form)
+                .appPresentationSizing(.form)
         }
     }
 
@@ -93,14 +93,17 @@ private struct QuickNoteEditor: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     CancelButton()
+                        .toolbarGroupBackground()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     PrivacyModeButton()
+                        .toolbarGroupBackground()
                 }
-                ToolbarSpacer(.fixed, placement: .topBarTrailing)
+                AppToolbarSpacer(placement: .topBarTrailing)
                 ToolbarItem(placement: .topBarTrailing) {
                     ConfirmButton(title: loc("Sichern"), action: save)
                         .disabled(security.isPrivacyModeOn)
+                        .toolbarGroupBackground(prominent: true)
                 }
             }
         }

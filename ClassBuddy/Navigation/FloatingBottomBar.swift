@@ -18,11 +18,16 @@ extension EnvironmentValues {
 
 private struct FloatingBottomBar<Bar: View>: ViewModifier {
     @Environment(\.usesPhoneTabBar) private var usesPhoneTabBar
+    /// Eigene Tab-Leiste vor iOS 26: Sie meldet die Mitte ihres minimierten Knopfs selbst.
+    @Environment(\.usesFloatingTabBar) private var usesFloatingTabBar
+    @Environment(\.floatingTabBarMinimizedCenterY) private var floatingMinimizedCenterY
     let bar: Bar
 
     /// Abstand der Mitte des kleinen Tab-Knopfs unter der Unterkante der Seite; `nil` = nicht minimiert.
     @State private var minimizedButtonDepth: CGFloat?
     @State private var barHeight: CGFloat = 0
+    /// Unterkante der Seite (global), nur für die eigene Tab-Leiste.
+    @State private var contentMaxY: CGFloat = 0
 
     func body(content: Content) -> some View {
         content
@@ -31,20 +36,26 @@ private struct FloatingBottomBar<Bar: View>: ViewModifier {
                     .onGeometryChange(for: CGFloat.self, of: \.size.height) { barHeight = $0 }
                     .padding(.bottom, 10)
                     .offset(y: offset)
-                    .animation(.smooth, value: minimizedButtonDepth)
+                    .animation(.smooth, value: depth)
             }
             .background {
-                if usesPhoneTabBar {
+                if usesPhoneTabBar && !usesFloatingTabBar {
                     TabBarMinimizationReader { minimizedButtonDepth = $0 }
                 }
             }
+            .onGeometryChange(for: CGFloat.self, of: { $0.frame(in: .global).maxY }, action: { contentMaxY = $0 })
             .onChange(of: usesPhoneTabBar) { minimizedButtonDepth = nil }
     }
 
     /// Minimiert: mittig auf Höhe des kleinen Knopfs (gemessen, da hochkant und quer verschieden).
     private var offset: CGFloat {
-        guard usesPhoneTabBar, let minimizedButtonDepth else { return 0 }
-        return 10 + minimizedButtonDepth + barHeight / 2
+        guard usesPhoneTabBar, let depth else { return 0 }
+        return 10 + depth + barHeight / 2
+    }
+
+    private var depth: CGFloat? {
+        guard usesFloatingTabBar else { return minimizedButtonDepth }
+        return floatingMinimizedCenterY.map { $0 - contentMaxY }
     }
 }
 
@@ -120,6 +131,6 @@ struct FloatingSegmentedPicker<Value: Hashable, Content: View>: View {
             // Nur so breit wie die Segmente – sonst reicht die Leiste über den minimierten Tab-Knopf.
             .fixedSize()
             .padding(6)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .appGlassEffect(.regular.interactive(), in: .capsule)
     }
 }
