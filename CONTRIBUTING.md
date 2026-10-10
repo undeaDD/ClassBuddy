@@ -3,6 +3,10 @@
 Thanks for your interest in ClassBuddy! Issues and pull requests are welcome.
 By taking part you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
+ClassBuddy is source-available under the [PolyForm Strict License 1.0.0](LICENSE), not open source.
+By submitting a pull request you agree that your contribution may be used, changed and distributed
+by Dominic Drees (Devsforge.de) as part of ClassBuddy under any license, including the App Store version.
+
 ## Ground rules
 
 - **Privacy first:** student data never leaves the device. No analytics, no cloud sync, no third-party SDKs.
