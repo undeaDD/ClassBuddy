@@ -50,6 +50,13 @@ final class PurchaseStore {
     private var trialStart: Date?
     private var updates: Task<Void, Never>?
 
+    #if TESTFLIGHT_UNLOCKED
+    /// Nur Archive mit dem Flag `TESTFLIGHT_UNLOCKED` (TestFlight-Uploads): Vollversion ohne Kauf. Zusätzlich nur in der
+    /// Sandbox, damit ein versehentlich eingereichter Build im App Store trotzdem die Kaufseite zeigt.
+    /// Der Build für die App-Prüfung wird ohne Flag archiviert (die Prüfer müssen die Käufe sehen).
+    private var isTestFlightUnlocked = false
+    #endif
+
     #if DEBUG
     /// Debug-Menü: Status simulieren statt der echten Käufe (`nil` = echt). Bleibt über Neustarts erhalten;
     /// Testen und Kaufen schalten dann ebenfalls nur die Simulation weiter.
@@ -76,6 +83,11 @@ final class PurchaseStore {
 
     /// Produkte (Preise) und Berechtigungen laden. Auch beim Wechsel in den Vordergrund, damit der Tageszähler stimmt.
     func load() async {
+        #if TESTFLIGHT_UNLOCKED
+        if !isTestFlightUnlocked, let transaction = try? await AppTransaction.shared {
+            isTestFlightUnlocked = transaction.unsafePayloadValue.environment == .sandbox
+        }
+        #endif
         if fullVersion == nil || trial == nil {
             let products = (try? await Product.products(for: [Self.fullVersionID, Self.trialID])) ?? []
             fullVersion = products.first { $0.id == Self.fullVersionID }
@@ -104,6 +116,12 @@ final class PurchaseStore {
         #if DEBUG
         if let simulatedStatus {
             status = simulatedStatus
+            return
+        }
+        #endif
+        #if TESTFLIGHT_UNLOCKED
+        if isTestFlightUnlocked {
+            status = .purchased
             return
         }
         #endif
