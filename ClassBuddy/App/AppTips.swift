@@ -36,6 +36,39 @@ nonisolated enum SetupStep: String, CaseIterable, Sendable {
         return nil
     }
 
+    var title: String {
+        switch self {
+        case .createClass: loc("Erste Klasse anlegen")
+        case .addStudents: loc("Schülerliste anlegen")
+        case .createSchedule: loc("Stundenplan anlegen")
+        case .schoolTimes: loc("Stundenraster und Pausen einstellen")
+        case .assignRoom: loc("Raum zuweisen")
+        case .importHolidays: loc("Ferien importieren")
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .createClass: loc("Tippen Sie hier, um Ihre erste Klasse mit Fächern und Farbe anzulegen.")
+        case .addStudents: loc("Tragen Sie die Schüler dieser Klasse ein.")
+        case .createSchedule: loc("Tragen Sie die Stunden dieser Klasse im Kalender ein.")
+        case .schoolTimes: loc("Passen Sie Schulbeginn, Stundenlänge und Pausen an Ihre Schule an.")
+        case .assignRoom: loc("Weisen Sie Ihren Stunden einen Raum zu, dann öffnet die Stunde direkt den Sitzplan.")
+        case .importHolidays: loc("Importieren Sie die Ferien Ihres Bundeslands in den Schuleinstellungen.")
+        }
+    }
+
+    /// Button zur passenden Seite (Schritt 1 zeigt auf den Klassen-Button selbst).
+    var actionTitle: String? {
+        switch self {
+        case .createClass: nil
+        case .addStudents: loc("Zu den Schülern")
+        case .createSchedule: loc("Zum Kalender")
+        case .schoolTimes, .importHolidays: loc("Zu den Schuleinstellungen")
+        case .assignRoom: loc("Zu den Räumen")
+        }
+    }
+
     var icon: AppIcon {
         switch self {
         case .createClass: .plus
@@ -97,45 +130,11 @@ nonisolated struct SetupTip: Tip {
 
     var id: String { "setup.\(step.rawValue)" }
 
-    var title: Text {
-        switch step {
-        case .createClass: Text(loc("Erste Klasse anlegen"))
-        case .addStudents: Text(loc("Schülerliste anlegen"))
-        case .createSchedule: Text(loc("Stundenplan anlegen"))
-        case .schoolTimes: Text(loc("Stundenraster und Pausen einstellen"))
-        case .assignRoom: Text(loc("Raum zuweisen"))
-        case .importHolidays: Text(loc("Ferien importieren"))
-        }
-    }
-
-    var message: Text? {
-        switch step {
-        case .createClass:
-            Text(loc("Tippen Sie hier, um Ihre erste Klasse mit Fächern und Farbe anzulegen."))
-        case .addStudents:
-            Text(loc("Tragen Sie die Schüler dieser Klasse ein."))
-        case .createSchedule:
-            Text(loc("Tragen Sie die Stunden dieser Klasse im Kalender ein."))
-        case .schoolTimes:
-            Text(loc("Passen Sie Schulbeginn, Stundenlänge und Pausen in den Schuleinstellungen an Ihre Schule an."))
-        case .assignRoom:
-            Text(loc("""
-                Legen Sie einen Raum an und weisen Sie ihn Ihren Stunden im Kalender zu. \
-                Dann öffnet die Stunde direkt den Sitzplan.
-                """))
-        case .importHolidays:
-            Text(loc("Importieren Sie die Ferien Ihres Bundeslands in den Schuleinstellungen."))
-        }
-    }
+    var title: Text { Text(step.title) }
+    var message: Text? { Text(step.message) }
 
     var actions: [Action] {
-        switch step {
-        case .createClass: []
-        case .addStudents: [Action(id: "open", title: loc("Zu den Schülern"))]
-        case .createSchedule: [Action(id: "open", title: loc("Zum Kalender"))]
-        case .schoolTimes, .importHolidays: [Action(id: "open", title: loc("Zu den Schuleinstellungen"))]
-        case .assignRoom: [Action(id: "open", title: loc("Zu den Räumen"))]
-        }
+        step.actionTitle.map { [Action(id: "open", title: $0)] } ?? []
     }
 
     var rules: [Rule] {
@@ -193,9 +192,34 @@ nonisolated struct ArrangeCardsTip: Tip {
     }
 }
 
-/// Oben auf der Übersicht: Tipp zum offenen Einrichtungsschritt ab Schritt 2
-/// (Schritt 1 zeigt der Klassen-Button), mit Button zur passenden Seite.
-struct SetupTipView: View {
+/// Ob TipKit einen Einrichtungs-Tipp gerade zeigen würde (Regeln erfüllt, nicht geschlossen).
+/// Beobachtet in `RootView`, damit die Kachel auf der Übersicht ohne eigene Aufgabe reagiert.
+@Observable
+final class SetupTipVisibility {
+    static let shared = SetupTipVisibility()
+
+    private(set) var displayable: Set<SetupStep> = []
+
+    /// Je Schritt eine Beobachtung; endet mit der aufrufenden Aufgabe (`.task` in `RootView`).
+    func observe() async {
+        let tasks = SetupStep.allCases.map { step in
+            Task {
+                for await shouldDisplay in SetupTip(step).shouldDisplayUpdates {
+                    if shouldDisplay { displayable.insert(step) } else { displayable.remove(step) }
+                }
+            }
+        }
+        await withTaskCancellationHandler {
+            for task in tasks { await task.value }
+        } onCancel: {
+            for task in tasks { task.cancel() }
+        }
+    }
+}
+
+/// Kachel der Übersicht mit dem offenen Einrichtungsschritt ab Schritt 2 (Schritt 1 zeigt der Klassen-Button):
+/// fest nach der Testphasen-Kachel, der Button öffnet die passende Seite, xmark schließt den Tipp.
+struct SetupTipCard: View {
     @Environment(AppModel.self) private var app
     @Environment(SchoolSettings.self) private var settings
     @Environment(\.device) private var device
@@ -203,8 +227,6 @@ struct SetupTipView: View {
     @Query private var holidays: [Holiday]
     @AppStorage(AppPreference.hasOpenedSchoolSettings) private var hasOpenedSchoolSettings = false
     let schoolClass: SchoolClass
-    /// Beim Anordnen der Kacheln ausgeblendet.
-    var isHidden = false
 
     private var step: SetupStep? {
         let state = SetupStep.State(
@@ -214,16 +236,20 @@ struct SetupTipView: View {
             hasOpenedSchoolSettings: hasOpenedSchoolSettings,
             holidayCount: holidays.count
         )
-        guard let step = SetupStep.current(state), step != .createClass else { return nil }
+        guard let step = SetupStep.current(state), step != .createClass,
+              SetupTipVisibility.shared.displayable.contains(step) else { return nil }
         return step
     }
 
     var body: some View {
-        if !isHidden, let step {
+        if let step {
+            // TipKit-Optik (xmark oben rechts, Button unter der Trennlinie) in der Form und Höhe einer Kachel.
             TipView(SetupTip(step, image: Image(icon: step.icon))) { _ in
                 open(step)
             }
-            .tipBackground(Color(.secondarySystemGroupedBackground))
+            .tipBackground(.clear)
+            .frame(maxWidth: .infinity, minHeight: cardHeight, alignment: .top)
+            .background(Color(.secondarySystemGroupedBackground), in: cardShape)
         }
     }
 

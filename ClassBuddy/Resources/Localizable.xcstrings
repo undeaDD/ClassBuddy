@@ -1,6 +1,26 @@
 {
   "sourceLanguage" : "de",
   "strings" : {
+    "Passen Sie Schulbeginn, Stundenlänge und Pausen an Ihre Schule an." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Match the start of school, lesson length and breaks to your school."
+          }
+        }
+      }
+    },
+    "Weisen Sie Ihren Stunden einen Raum zu, dann öffnet die Stunde direkt den Sitzplan." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assign a room to your lessons, then the lesson opens the seating plan directly."
+          }
+        }
+      }
+    },
     "Käufe wiederherstellen" : {
       "localizations" : {
         "en" : {
@@ -321,32 +341,12 @@
         }
       }
     },
-    "Passen Sie Schulbeginn, Stundenlänge und Pausen in den Schuleinstellungen an Ihre Schule an." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Match the start of school, lesson length and breaks to your school in the school settings."
-          }
-        }
-      }
-    },
     "Raum zuweisen" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Assign a room"
-          }
-        }
-      }
-    },
-    "Legen Sie einen Raum an und weisen Sie ihn Ihren Stunden im Kalender zu. Dann öffnet die Stunde direkt den Sitzplan." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a room and assign it to your lessons in the calendar. The lesson then opens the seating plan directly."
           }
         }
       }

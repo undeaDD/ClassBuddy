@@ -49,8 +49,6 @@ struct DashboardView: View {
         ClassScopedView { schoolClass in
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
-                    SetupTipView(schoolClass: schoolClass, isHidden: isArranging)
-
                     cardGrid(visibleCardIDs(for: schoolClass), in: schoolClass, showsAddCard: true)
 
                     if isArranging {
@@ -123,17 +121,9 @@ struct DashboardView: View {
     // MARK: Grid
 
     private func cardGrid(_ cardIDs: [String], in schoolClass: SchoolClass, showsAddCard: Bool) -> some View {
-        LazyVGrid(
-            // iPhone: eine Spalte über die volle Breite; iPad: so viele 240–320 pt breite Spalten wie passen.
-            columns: device.isPhone
-                ? [GridItem(.flexible(), spacing: 16)]
-                : [GridItem(.adaptive(minimum: 240, maximum: 320), spacing: 16)],
-            alignment: .leading,
-            spacing: 16
-        ) {
-            // Testphase: feste erste Kachel, nicht anordnen- oder ausblendbar.
-            if showsAddCard, !isArranging, let days = purchases.status.trialDaysLeft {
-                TrialDashboardCard(daysLeft: days) { app.isPurchasePagePresented = true }
+        LazyVGrid(columns: gridColumns, alignment: .leading, spacing: 16) {
+            if showsAddCard {
+                fixedCards(in: schoolClass)
             }
             ForEach(cardIDs, id: \.self) { cardID in
                 arrangeableCard(cardID, in: schoolClass)
@@ -337,6 +327,25 @@ struct DashboardView: View {
 // MARK: - Kacheln
 
 extension DashboardView {
+    /// iPhone: eine Spalte über die volle Breite; iPad: so viele 240–320 pt breite Spalten wie passen.
+    var gridColumns: [GridItem] {
+        device.isPhone
+            ? [GridItem(.flexible(), spacing: 16)]
+            : [GridItem(.adaptive(minimum: 240, maximum: 320), spacing: 16)]
+    }
+
+    /// Feste Kacheln vor allen anderen: Testphase, dann der offene Einrichtungs-Tipp. Auch beim Anordnen
+    /// sichtbar, aber ohne Buttons, ohne Wackeln und nicht verschieb- oder ausblendbar.
+    func fixedCards(in schoolClass: SchoolClass) -> some View {
+        Group {
+            if let days = purchases.status.trialDaysLeft {
+                TrialDashboardCard(daysLeft: days) { app.isPurchasePagePresented = true }
+            }
+            SetupTipCard(schoolClass: schoolClass)
+        }
+        .allowsHitTesting(!isArranging)
+    }
+
     /// Bereich „Ausgeblendet“ – nur im Anordnen-Modus. Kacheln hierher ziehen blendet sie aus.
     private func hiddenSection(for schoolClass: SchoolClass) -> some View {
         let hidden = hiddenCardIDs(for: schoolClass)

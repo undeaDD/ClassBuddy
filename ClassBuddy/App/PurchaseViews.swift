@@ -192,11 +192,17 @@ struct PurchaseCard: View {
     }
 }
 
-/// Feste erste Kachel der Übersicht während der Testphase: verbleibende Tage, in der Akzentfarbe
-/// hervorgehoben; Antippen öffnet die Kaufseite.
+/// Feste erste Kachel der Übersicht während der Testphase: verbleibende Tage, farbig hervorgehoben
+/// (Grün bis Rot je nach Resttagen); Antippen öffnet die Kaufseite.
 struct TrialDashboardCard: View {
     let daysLeft: Int
     let action: () -> Void
+
+    /// Von Grün (30 Tage) gleichmäßig über Gelb und Orange nach Rot (1 Tag).
+    static func color(daysLeft: Int) -> Color {
+        let progress = Double(min(max(daysLeft, 1), PurchaseStatus.trialDays) - 1) / Double(PurchaseStatus.trialDays - 1)
+        return Color(hue: 0.33 * progress, saturation: 0.75, brightness: 0.78)
+    }
 
     var body: some View {
         Button(action: Haptics.tapping(action)) {
@@ -221,7 +227,7 @@ struct TrialDashboardCard: View {
             .padding(18)
             .frame(maxWidth: .infinity, alignment: .topLeading)
             .frame(height: cardHeight, alignment: .topLeading)
-            .background(.tint, in: cardShape)
+            .background(Self.color(daysLeft: daysLeft).gradient, in: cardShape)
             .contentShape(.hoverEffect, cardShape)
         }
         .buttonStyle(.plain)

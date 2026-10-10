@@ -120,12 +120,14 @@ struct OnboardingView: View {
     private var content: some View {
         VStack(spacing: 0) {
             TabView(selection: $page) {
-                ForEach(allPages.indices, id: \.self) { index in
-                    pageView(allPages[index])
+                // Seite als Wert statt Index: Nach dem Kauf fällt die Kaufseite weg, ein veralteter Index stürzte ab.
+                ForEach(Array(allPages.enumerated()), id: \.offset) { index, page in
+                    pageView(page)
                         .tag(index)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .onChange(of: allPages.count) { _, count in page = min(page, count - 1) }
 
             if isOnPurchasePage {
                 PurchaseChoices(onDone: onFinish)

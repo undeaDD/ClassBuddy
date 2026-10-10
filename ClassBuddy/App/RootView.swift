@@ -105,6 +105,7 @@ struct RootView: View {
             .onChange(of: tipsAllowed, initial: true) { _, isAllowed in
                 SetupTip.isAllowed = isAllowed
             }
+            .task { await SetupTipVisibility.shared.observe() }
             // „Kacheln anordnen“ erst nach dem Tipp zum Privatsphäre-Modus (nie zwei Popover gleichzeitig).
             .task {
                 for await status in PrivacyModeTip().statusUpdates {
