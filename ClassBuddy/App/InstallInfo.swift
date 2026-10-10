@@ -6,7 +6,6 @@ import UIKit
 enum InstallInfo {
     nonisolated enum Method: String, Sendable {
         case xcode = "Xcode"
-        case sideloaded = "AltStore / SideStore"
         case developer = "Entwickler-Signatur"
         case testFlight = "TestFlight"
         case appStore = "App Store"
@@ -19,25 +18,19 @@ enum InstallInfo {
 
     /// Wie die App installiert wurde (best effort). Fragt bei Store-Builds StoreKit.
     static func detectMethod() async -> Method {
-        let infoKeys = Set(Bundle.main.infoDictionary?.keys.map { $0 } ?? [])
         let hasProfile = Bundle.main.path(forResource: "embedded", ofType: "mobileprovision") != nil
         var storeEnvironment: String?
-        if !infoKeys.contains("ALTDeviceID"), !isDebugBuild, !hasProfile,
-           let transaction = try? await AppTransaction.shared {
+        if !isDebugBuild, !hasProfile, let transaction = try? await AppTransaction.shared {
             storeEnvironment = transaction.unsafePayloadValue.environment.rawValue
         }
-        return method(
-            infoKeys: infoKeys, isDebugBuild: isDebugBuild, hasProvisioningProfile: hasProfile, storeEnvironment: storeEnvironment
-        )
+        return method(isDebugBuild: isDebugBuild, hasProvisioningProfile: hasProfile, storeEnvironment: storeEnvironment)
     }
 
     /// Reine Entscheidung (testbar):
-    /// - AltStore/SideStore tragen `ALTDeviceID` in die Info.plist ein.
     /// - Debug-Builds kommen aus Xcode.
     /// - Ein eingebettetes Provisioning-Profil ohne Store = Entwickler-/Ad-hoc-Signatur.
     /// - StoreKit-Umgebung „Sandbox“ = TestFlight, sonst App Store.
-    static func method(infoKeys: Set<String>, isDebugBuild: Bool, hasProvisioningProfile: Bool, storeEnvironment: String?) -> Method {
-        if infoKeys.contains("ALTDeviceID") { return .sideloaded }
+    static func method(isDebugBuild: Bool, hasProvisioningProfile: Bool, storeEnvironment: String?) -> Method {
         if isDebugBuild { return .xcode }
         if hasProvisioningProfile { return .developer }
         if storeEnvironment == AppStore.Environment.sandbox.rawValue { return .testFlight }

@@ -1,14 +1,26 @@
 import SwiftUI
 
-/// Einführung beim ersten Start: drei Seiten, wischen oder über den Button weiter; xmark schließt.
-/// iPhone: Vollbild; iPad: Form-Sheet. Einmalig (`storageKey`); in den App-Einstellungen erneut aufrufbar.
+/// Einführung beim ersten Start: drei Seiten, wischen oder über den Button weiter. Solange weder Testphase
+/// noch Vollversion gewählt ist, folgt die Kaufseite (zwei Karten statt Button); die Einführung lässt sich dann
+/// nicht schließen und beginnt nach dem Wechsel in den Hintergrund wieder von vorn.
+/// iPhone: Vollbild; iPad: Form-Sheet. Einmalig (`storageKey`); in den Einstellungen erneut aufrufbar.
+///
+/// `purchase`: nur die Kaufseite, ohne Zurück (nach Ablauf der Testphase; von der Testphasen-Kachel mit xmark).
 ///
 /// Aufbau je Seite: Illustration mittig im oberen Bereich, Titel und Text unten linksbündig mit
 /// fester Zeilenzahl – so steht der Button auf jeder Seite an derselben Stelle.
 struct OnboardingView: View {
     static let storageKey = "onboarding.completed"
 
+    enum Mode: Equatable {
+        case intro
+        case purchase(isClosable: Bool)
+    }
+
     @Environment(\.device) private var device
+    @Environment(\.scenePhase) private var scenePhase
+    @Environment(PurchaseStore.self) private var purchases
+    var mode: Mode = .intro
     let onFinish: () -> Void
 
     @State private var page = 0
@@ -46,7 +58,41 @@ struct OnboardingView: View {
         ),
     ]
 
-    private var isLastPage: Bool { page == pages.count - 1 }
+    /// Kaufseite anhängen: vor der Entscheidung, nach Ablauf und während der Testphase (von der Kachel).
+    private var showsPurchasePage: Bool {
+        if case .purchase = mode { return true }
+        return purchases.status.requiresChoice || purchases.status == .loading
+    }
+
+    private var allPages: [Page] {
+        switch mode {
+        case .purchase: [purchasePage]
+        case .intro: showsPurchasePage ? pages + [purchasePage] : pages
+        }
+    }
+
+    private var purchasePage: Page {
+        switch purchases.status {
+        case .expired:
+            Page(image: .hourglass, title: loc("Die Testphase ist vorbei"), text: loc("""
+                Ihre Daten liegen weiterhin auf diesem Gerät. Mit der Vollversion geht es genau dort weiter, \
+                einmalig und ohne Abo.
+                """))
+        case .trial(let days):
+            Page(image: .hourglass, title: trialDaysText(days), text: loc("""
+                Mit der Vollversion nutzen Sie ClassBuddy dauerhaft, einmalig und ohne Abo. \
+                Ihre Daten bleiben, wie sie sind.
+                """))
+        default:
+            Page(image: .hourglass, title: loc("ClassBuddy kennenlernen"), text: loc("""
+                Testen Sie 30 Tage lang alle Funktionen kostenlos. Danach schalten Sie die Vollversion \
+                einmalig frei, ohne Abo.
+                """))
+        }
+    }
+
+    private var isLastPage: Bool { page == allPages.count - 1 }
+    private var isOnPurchasePage: Bool { showsPurchasePage && isLastPage }
 
     /// Feste Zeilenzahl, damit Titel/Text/Button auf allen Seiten gleich stehen.
     private static let titleLines = 2
@@ -56,50 +102,69 @@ struct OnboardingView: View {
         NavigationStack {
             content
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button("Schließen", icon: .xmark, action: onFinish)
-                            .toolbarGroupBackground()
+                    if mode == .purchase(isClosable: true) {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button("Schließen", icon: .xmark, action: onFinish)
+                                .toolbarGroupBackground()
+                        }
                     }
                 }
+        }
+        .interactiveDismissDisabled(mode != .purchase(isClosable: true))
+        // Ohne Entscheidung: beim nächsten Öffnen wieder von vorn.
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .background, mode == .intro, purchases.status.requiresChoice { page = 0 }
         }
     }
 
     private var content: some View {
         VStack(spacing: 0) {
             TabView(selection: $page) {
-                ForEach(pages.indices, id: \.self) { index in
-                    pageView(pages[index])
+                ForEach(allPages.indices, id: \.self) { index in
+                    pageView(allPages[index])
                         .tag(index)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
 
-            HStack {
-                Button {
-                    if isLastPage {
-                        onFinish()
-                    } else {
-                        withAnimation { page += 1 }
-                    }
-                } label: {
-                    Text(isLastPage ? "Los geht’s" : "Weiter")
-                        .font(.headline)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 4)
-                }
-                .appGlassButtonStyle(prominent: true)
-                .controlSize(.large)
-
-                Spacer()
-                pageDots
+            if isOnPurchasePage {
+                PurchaseChoices(onDone: onFinish)
+                    .padding(.top, 24)
+                    .padding(.bottom, 16)
+                    .padding(.horizontal, 28)
+                    .frame(maxWidth: 600)
+            } else {
+                buttonBar
             }
-            .padding(.top, 24)
-            .padding(.bottom, 24)
-            .padding(.horizontal, 28)
-            .frame(maxWidth: 600)
         }
         .frame(maxWidth: .infinity)
         .background(Color(.systemGroupedBackground))
+    }
+
+    private var buttonBar: some View {
+        HStack {
+            Button {
+                if isLastPage {
+                    onFinish()
+                } else {
+                    withAnimation { page += 1 }
+                }
+            } label: {
+                Text(isLastPage ? "Los geht’s" : "Weiter")
+                    .font(.headline)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 4)
+            }
+            .appGlassButtonStyle(prominent: true)
+            .controlSize(.large)
+
+            Spacer()
+            pageDots
+        }
+        .padding(.top, 24)
+        .padding(.bottom, 24)
+        .padding(.horizontal, 28)
+        .frame(maxWidth: 600)
     }
 
     private func pageView(_ page: Page) -> some View {
@@ -134,7 +199,7 @@ struct OnboardingView: View {
 
     private var pageDots: some View {
         HStack(spacing: 8) {
-            ForEach(pages.indices, id: \.self) { index in
+            ForEach(allPages.indices, id: \.self) { index in
                 Capsule()
                     .fill(index == page ? AnyShapeStyle(.tint) : AnyShapeStyle(Color.secondary.opacity(0.3)))
                     .frame(width: index == page ? 20 : 8, height: 8)
@@ -142,10 +207,11 @@ struct OnboardingView: View {
         }
         .animation(.smooth, value: page)
         .accessibilityElement()
-        .accessibilityLabel("Seite \(page + 1) von \(pages.count)")
+        .accessibilityLabel("Seite \(page + 1) von \(allPages.count)")
     }
 }
 
 #Preview {
     OnboardingView {}
+        .environment(PurchaseStore())
 }

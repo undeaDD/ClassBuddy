@@ -8,6 +8,7 @@ struct SchoolSettingsView: View {
     @Environment(ToastCenter.self) private var toasts
     @Environment(\.openURL) private var openURL
     @Query(sort: \Holiday.startDate) private var holidays: [Holiday]
+    @AppStorage(AppPreference.hasOpenedSchoolSettings) private var hasOpenedSchoolSettings = false
 
     @State private var isImporting = false
     /// Aus PLZ und Ort erkanntes Bundesland (Hinweis im Footer).
@@ -151,6 +152,7 @@ struct SchoolSettingsView: View {
             }
         }
         .navigationTitle("Schuleinstellungen")
+        .onAppear { hasOpenedSchoolSettings = true }
         // Bundesland aus PLZ und Ort (über dieselbe Ortssuche wie das Wetter, kurz nach der letzten Eingabe).
         .task(id: "\(settings.values.school.postalCode)|\(settings.values.school.city)") {
             try? await Task.sleep(for: .seconds(1))

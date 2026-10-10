@@ -10,6 +10,7 @@ struct DebugMenuView: View {
     @Environment(AppSecurity.self) private var security
     @Environment(SchoolSettings.self) private var settings
     @Environment(ToastCenter.self) private var toasts
+    @Environment(PurchaseStore.self) private var purchases
     @Query private var classes: [SchoolClass]
 
     @State private var isLockPreviewPresented = false
@@ -41,6 +42,21 @@ struct DebugMenuView: View {
                     4 Klassen mit Schülern, ein Stundenplan (wöchentlich und einmalig) und Termine in der aktuellen Woche. \
                     Nur einmal einfügbar – erst nach dem Entfernen (oder „Alle lokalen Daten löschen“) wieder.
                     """)
+            }
+
+            Section {
+                Picker("Kauf-Status", selection: Bindable(purchases).simulatedStatus) {
+                    Text("Echt (StoreKit)").tag(PurchaseStatus?.none)
+                    ForEach(PurchaseStatus.debugCases, id: \.debugKey) { status in
+                        Text(status.debugTitle).tag(Optional(status))
+                    }
+                }
+                .pickerStyle(.inline)
+                .labelsHidden()
+            } header: {
+                Text("Kauf-Status simulieren")
+            } footer: {
+                Text("Bleibt bis zum Zurückstellen auf „Echt“. Testen und Kaufen schalten dann nur die Simulation weiter.")
             }
 
             Section("Sperre & Privatsphäre") {
@@ -201,4 +217,17 @@ private struct WeatherDiagnosticsSection: View {
         }
     }
 }
+
+extension PurchaseStatus {
+    fileprivate var debugTitle: String {
+        switch self {
+        case .loading: "Lädt"
+        case .notStarted: "Nicht gestartet"
+        case .trial(let days): "Testphase, \(trialDaysText(days).lowercased())"
+        case .expired: "Abgelaufen"
+        case .purchased: "Gekauft"
+        }
+    }
+}
+
 #endif

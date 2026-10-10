@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 /// Kreis mit Kurzbezeichnung der Klasse (z. B. „7b“); ohne Kürzel ein leerer Kreis.
 struct ClassBadge: View {
@@ -43,6 +44,7 @@ struct ClassPickerButton: View {
 
     var body: some View {
         Button {
+            SetupTip(.createClass).invalidate(reason: .actionPerformed)
             app.isClassPickerPresented = true
         } label: {
             // Kürzel in einem Glas-Kreis in der Klassenfarbe; ohne Klasse ein Plus in der Akzentfarbe.

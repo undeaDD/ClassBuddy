@@ -9,8 +9,10 @@ import UIKit
 enum ScreenshotMode {
     static var isActive: Bool { ProcessInfo.processInfo.arguments.contains("-screenshots") }
 
-    static func prepare(app: AppModel, context: ModelContext, settings: SchoolSettings) {
+    static func prepare(app: AppModel, context: ModelContext, settings: SchoolSettings, purchases: PurchaseStore) {
         guard isActive else { return }
+        // Ohne Kaufseite (frisch installierte Simulatoren haben keine Käufe).
+        purchases.simulatedStatus = .purchased
         // Beispiel-Schule für Wetter und Sekretariat (nur auf frisch installierten Screenshot-Simulatoren).
         if settings.values.school.city.isEmpty {
             settings.values.school = SchoolInfo(

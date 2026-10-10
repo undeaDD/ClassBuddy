@@ -7,7 +7,6 @@
 
 <h1 align="center">ClassBuddy</h1>
 
-[![Build IPA](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/build-ipa.yml)
 [![Semgrep](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml)
 [![Test coverage: logic 85%](https://img.shields.io/badge/test%20coverage%20(logic)-85%25-brightgreen)](scripts/coverage.sh)
 [![Latest release](https://img.shields.io/github/v/release/undeaDD/ClassBuddy?label=version&color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases/latest)
@@ -57,13 +56,13 @@ protected by biometrics (Face ID or Touch ID), with a one-tap privacy mode for w
 
 - iPad with **iPadOS 17.7** or later, or iPhone with **iOS 17.7** or later. iPadOS 26 or iOS 26 and later are recommended for the best experience.
 
-## Installation (sideloading)
+## Installation
 
-ClassBuddy is not yet on the App Store. Every build on GitHub produces an unsigned `.ipa` that you can
-sideload yourself using your own Apple ID.
+ClassBuddy is distributed through the App Store: free download, 30 days to try every feature,
+then a one-time purchase for the full version (no subscription).
 
 > **Tip:** Make regular backups via *Einstellungen → App-Einstellungen → Exportieren (Excel)*.
-> If the app ever expires or gets deleted, the data on the device is lost with it.
+> If the app gets deleted, the data on the device is lost with it.
 
 ## Building from source
 

@@ -77,6 +77,17 @@ final class AppModel {
         }
     }
 
+    /// Kaufseite von der Testphasen-Kachel (schließbar, siehe `RootView`).
+    var isPurchasePagePresented = false
+
+    /// Einstellungen öffnen die Schuleinstellungen (Einrichtungs-Tipps auf der Übersicht).
+    var isSchoolSettingsRequested = false
+
+    func openSchoolSettings() {
+        isSchoolSettingsRequested = true
+        open(.settings)
+    }
+
     /// Checkliste, die der Checklisten-Tab beim nächsten Öffnen zeigen soll (Kachel „Checklisten“).
     var checklistToOpen: UUID?
 

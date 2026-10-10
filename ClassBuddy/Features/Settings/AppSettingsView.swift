@@ -63,6 +63,10 @@ enum AppPreference {
     static let timerVibratesOnly = "app.timerVibratesOnly"
     /// iPad: Tab-Leiste wie auf dem iPhone statt oben zentrierter Leiste mit Sidebar (Standard: aus).
     static let padUsesPhoneTabBar = "app.padUsesPhoneTabBar"
+    /// Tipps für neue Nutzer (TipKit, Standard: an).
+    static let showsTips = "app.showsTips"
+    /// Schuleinstellungen mindestens einmal geöffnet (Einrichtungs-Tipp „Stundenraster und Pausen“).
+    static let hasOpenedSchoolSettings = "app.hasOpenedSchoolSettings"
 }
 
 /// Einstellungen → App-Einstellungen: Darstellung, App-Sperre, lokale Daten.
@@ -80,6 +84,7 @@ struct AppSettingsView: View {
     @AppStorage(AppPreference.startTab) private var startTab: AppTab = .dashboard
     @AppStorage(AppPreference.timerVibratesOnly) private var timerVibratesOnly = false
     @AppStorage(AppPreference.padUsesPhoneTabBar) private var padUsesPhoneTabBar = false
+    @AppStorage(AppPreference.showsTips) private var showsTips = true
     @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
     @AppStorage(AppAccent.storageKey) private var accent = AppAccent.defaultValue
 
@@ -162,6 +167,9 @@ struct AppSettingsView: View {
                 }
                 Toggle(isOn: $keepsScreenAwake) {
                     Label("Bildschirm wach halten", icon: .lockSlash)
+                }
+                Toggle(isOn: $showsTips) {
+                    Label("Tipps anzeigen", icon: .helpCircle)
                 }
             } header: {
                 Text("Allgemein")
@@ -347,6 +355,7 @@ struct AppSettingsView: View {
             app.selectedClassID = nil
             app.calendarFocusClassID = nil
             UserDefaults.standard.removeObject(forKey: AppTabView.customizationKey)
+            UserDefaults.standard.removeObject(forKey: AppPreference.hasOpenedSchoolSettings)
             toasts.success(loc("Alle lokalen Daten wurden gelöscht"))
         } catch {
             toasts.error(loc("Löschen fehlgeschlagen: \(error.localizedDescription)"))

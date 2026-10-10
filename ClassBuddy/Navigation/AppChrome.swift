@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import TipKit
 
 extension View {
     /// Gemeinsame Toolbar für jede Tab-Root-View:
@@ -28,11 +29,26 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
         classes.first { $0.id == app.selectedClassID }
     }
 
+    /// Jeder Tab hat eigene Toolbar-Buttons: Tipps nur am Button des sichtbaren Tabs.
+    private var isVisibleTab: Bool { app.selectedTab == tab }
+
+    private var classTip: SetupTip? {
+        guard isVisibleTab, classes.isEmpty else { return nil }
+        return SetupTip(.createClass, image: Image(icon: SetupStep.createClass.icon))
+    }
+
+    private var privacyTip: PrivacyModeTip? {
+        guard isVisibleTab, selectedClass?.students.isEmpty == false else { return nil }
+        return PrivacyModeTip(image: Image(icon: .eyeClosed))
+    }
+
     func body(content: Content) -> some View {
         content.toolbar {
             if tab.usesClassSelection {
                 ToolbarItem(placement: .topBarLeading) {
                     ClassPickerButton(selectedClass: selectedClass, tab: tab)
+                        // Eigene Ankerfläche: Der Button hat schon das Klassen-Popover.
+                        .background { Color.clear.appPopoverTip(classTip) }
                 }
                 .appSharedBackgroundHidden()
             }
@@ -53,6 +69,7 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     PrivacyModeButton()
+                        .appPopoverTip(privacyTip)
                         .toolbarGroupBackground()
                 }
             }
@@ -71,6 +88,7 @@ struct PrivacyModeButton: View {
         let isOn = security.isPrivacyModeOn
         Button {
             Haptics.tap()
+            PrivacyModeTip().invalidate(reason: .actionPerformed)
             Task { await security.togglePrivacyMode() }
         } label: {
             Label(

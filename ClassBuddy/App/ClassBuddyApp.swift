@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import TipKit
 
 @main
 struct ClassBuddyApp: App {
@@ -9,8 +10,13 @@ struct ClassBuddyApp: App {
     @State private var schoolSettings = SchoolSettings()
     @State private var toasts = ToastCenter()
     @State private var timer = ClassTimer()
+    @State private var purchases = PurchaseStore()
     @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
     @AppStorage(AppAccent.storageKey) private var accent = AppAccent.defaultValue
+
+    init() {
+        AppTips.configure()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -27,6 +33,7 @@ struct ClassBuddyApp: App {
                 .environment(schoolSettings)
                 .environment(toasts)
                 .environment(timer)
+                .environment(purchases)
                 .onAppear {
                     timer.onFinish = { [toasts] in toasts.success(loc("Timer abgelaufen")) }
                     HomeScreenAction.register()

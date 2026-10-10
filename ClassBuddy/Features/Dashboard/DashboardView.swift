@@ -2,6 +2,7 @@ import PhotosUI
 import QuickLook
 import SwiftData
 import SwiftUI
+import TipKit
 
 /// Startseite der ausgewählten Klasse: Kachel-Grid aus Kennzahlen und eigenen
 /// Kacheln (Dokumente, Bilder, Websites).
@@ -14,6 +15,7 @@ import SwiftUI
 struct DashboardView: View {
     @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
+    @Environment(PurchaseStore.self) private var purchases
     @Environment(SchoolSettings.self) private var settings
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
@@ -47,6 +49,8 @@ struct DashboardView: View {
         ClassScopedView { schoolClass in
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
+                    SetupTipView(schoolClass: schoolClass, isHidden: isArranging)
+
                     cardGrid(visibleCardIDs(for: schoolClass), in: schoolClass, showsAddCard: true)
 
                     if isArranging {
@@ -88,9 +92,11 @@ struct DashboardView: View {
         .appChrome(tab: .dashboard) {
             if selectedClass != nil {
                 Button(isArranging ? "Fertig" : "Kacheln anordnen", image: isArranging ? .check : .editPencil) {
+                    ArrangeCardsTip().invalidate(reason: .actionPerformed)
                     isArranging.toggle()
                 }
                 .disabled(!canEdit)
+                .arrangeCardsTip(isEnabled: app.selectedTab == .dashboard && !isArranging && canEdit)
             }
         }
         .sheet(item: $linkEditorRoute) { route in
@@ -125,6 +131,10 @@ struct DashboardView: View {
             alignment: .leading,
             spacing: 16
         ) {
+            // Testphase: feste erste Kachel, nicht anordnen- oder ausblendbar.
+            if showsAddCard, !isArranging, let days = purchases.status.trialDaysLeft {
+                TrialDashboardCard(daysLeft: days) { app.isPurchasePagePresented = true }
+            }
             ForEach(cardIDs, id: \.self) { cardID in
                 arrangeableCard(cardID, in: schoolClass)
             }
@@ -133,37 +143,6 @@ struct DashboardView: View {
             // (nicht an dieser Kachel), damit ihr Anker nie verschwindet.
             if showsAddCard, !isArranging, canEdit {
                 AddCard { isGalleryPresented = true }
-            }
-        }
-    }
-
-    /// Bereich „Ausgeblendet“ – nur im Anordnen-Modus. Kacheln hierher ziehen blendet sie aus.
-    private func hiddenSection(for schoolClass: SchoolClass) -> some View {
-        let hidden = hiddenCardIDs(for: schoolClass)
-        return VStack(alignment: .leading, spacing: 12) {
-            Label("Ausgeblendet", icon: .eyeClosed)
-                .font(.headline)
-                .foregroundStyle(.secondary)
-
-            Group {
-                if hidden.isEmpty {
-                    Text("Kacheln hierher ziehen oder über das Auge ausblenden.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, minHeight: 110)
-                } else {
-                    cardGrid(hidden, in: schoolClass, showsAddCard: false)
-                        .padding(16)
-                }
-            }
-            .background(
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .strokeBorder(.secondary.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [6, 5]))
-            )
-            .dropDestination(for: String.self) { items, _ in
-                guard let dragged = items.first else { return false }
-                setHidden(true, dragged, in: schoolClass)
-                return true
             }
         }
     }
@@ -358,6 +337,37 @@ struct DashboardView: View {
 // MARK: - Kacheln
 
 extension DashboardView {
+    /// Bereich „Ausgeblendet“ – nur im Anordnen-Modus. Kacheln hierher ziehen blendet sie aus.
+    private func hiddenSection(for schoolClass: SchoolClass) -> some View {
+        let hidden = hiddenCardIDs(for: schoolClass)
+        return VStack(alignment: .leading, spacing: 12) {
+            Label("Ausgeblendet", icon: .eyeClosed)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+
+            Group {
+                if hidden.isEmpty {
+                    Text("Kacheln hierher ziehen oder über das Auge ausblenden.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, minHeight: 110)
+                } else {
+                    cardGrid(hidden, in: schoolClass, showsAddCard: false)
+                        .padding(16)
+                }
+            }
+            .background(
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .strokeBorder(.secondary.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [6, 5]))
+            )
+            .dropDestination(for: String.self) { items, _ in
+                guard let dragged = items.first else { return false }
+                setHidden(true, dragged, in: schoolClass)
+                return true
+            }
+        }
+    }
+
     @ViewBuilder
     func card(_ cardID: String, in schoolClass: SchoolClass) -> some View {
         if let builtIn = DashboardBuiltInCard(rawValue: cardID) {
@@ -374,7 +384,7 @@ extension DashboardView {
             StatCard(
                 title: card.title,
                 value: "\(schoolClass.students.count)",
-                detail: genderBreakdown(schoolClass.students),
+                detail: DashboardText.genderBreakdown(schoolClass.students),
                 symbol: card.symbol
             ) {
                 app.open(.students)
@@ -452,7 +462,7 @@ extension DashboardView {
         let next = schedule.nextLesson(forClass: schoolClass.id)
         return StatCard(
             title: loc("Nächste Stunde"),
-            value: next.map { relativeDay($0.start) } ?? "–",
+            value: next.map { DashboardText.relativeDay($0.start) } ?? "–",
             detail: next.map { next in
                 [loc("\(next.slot.number). Stunde, \(next.slot.start.clockString)"), SchoolClass.displayName(ofSubject: next.lesson.subject)]
                     .filter { !$0.isEmpty }
@@ -475,26 +485,5 @@ extension DashboardView {
         ) {
             app.open(.students)
         }
-    }
-
-    /// „♀ 46 % · ♂ 46 % · ⚧ 8 %“ (Anteile gerundet; ohne Angabe als „?“).
-    private func genderBreakdown(_ students: [Student]) -> String {
-        guard !students.isEmpty else { return loc("Noch keine Schüler") }
-        let total = Double(students.count)
-        var parts: [String] = Gender.allCases.compactMap { gender in
-            let count = students.filter { $0.gender == gender }.count
-            guard count > 0 else { return nil }
-            return loc("\(gender.symbol) \(Int((Double(count) / total * 100).rounded())) %")
-        }
-        let unknown = students.filter { $0.gender == nil }.count
-        if unknown > 0 { parts.append("? \(Int((Double(unknown) / total * 100).rounded())) %") }
-        return parts.joined(separator: " · ")
-    }
-
-    private func relativeDay(_ date: Date) -> String {
-        let calendar = Calendar.school
-        if calendar.isDateInToday(date) { return "Heute" }
-        if calendar.isDateInTomorrow(date) { return loc("Morgen") }
-        return date.appDate
     }
 }

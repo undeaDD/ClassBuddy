@@ -1,15 +1,18 @@
 import SwiftData
 import SwiftUI
+import TipKit
 
 /// Oberste View: Navigation + Privatsphäre-Modus + App-Sperre.
 struct RootView: View {
     @Environment(AppSecurity.self) private var security
+    @Environment(PurchaseStore.self) private var purchases
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @AppStorage(AppAppearance.storageKey) private var appearance: AppAppearance = .system
     @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
     @AppStorage(WhatsNew.storageKey) private var lastSeenWhatsNew = ""
     @AppStorage(AppPreference.keepsScreenAwake) private var keepsScreenAwake = false
+    @AppStorage(AppPreference.showsTips) private var showsTips = true
     @Environment(\.openURL) private var openURL
     private let homeScreenActions = HomeScreenActionCenter.shared
     @Environment(AppModel.self) private var app
@@ -25,7 +28,8 @@ struct RootView: View {
             .softScrollEdges()
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
             // Gesperrt / im Hintergrund: Inhalt stark unscharf, darüber Milchglas.
-            .blur(radius: security.isLocked || scenePhase != .active ? 12 : 0)
+            // Ohne Kaufentscheidung ebenso (auf dem iPad liegt die Kaufseite als Sheet über der App).
+            .blur(radius: security.isLocked || scenePhase != .active || purchases.status.requiresChoice ? 12 : 0)
             // Gilt nur im Vordergrund – iOS setzt es im Hintergrund ohnehin außer Kraft.
             .onChange(of: keepsScreenAwake, initial: true) { _, isOn in
                 UIApplication.shared.isIdleTimerDisabled = isOn
@@ -35,12 +39,11 @@ struct RootView: View {
             // dabei gesperrt, verschwindet sie und erscheint danach wieder – erledigt über „Los geht’s“ oder xmark.
             // Zwei getrennte Präsentationen statt if/else, damit die App beim Größenwechsel nicht neu aufgebaut wird.
             .fullScreenCover(isPresented: onboardingBinding(isPhone: true)) {
-                OnboardingView(onFinish: finishOnboarding)
+                OnboardingView(mode: onboardingMode ?? .intro, onFinish: finishOnboarding)
             }
             .sheet(isPresented: onboardingBinding(isPhone: false)) {
-                OnboardingView(onFinish: finishOnboarding)
+                OnboardingView(mode: onboardingMode ?? .intro, onFinish: finishOnboarding)
                     .appPresentationSizing(.form)
-                    .interactiveDismissDisabled()
             }
             // Vollbild-Cover und Sheets liegen außerhalb der Modifier oben → Geräteweiche und
             // Privatsphäre-Modus dort erneut setzen.
@@ -77,7 +80,7 @@ struct RootView: View {
             .task { RoomDemo.createIfNeeded(in: modelContext) }
             .background { WidgetScheduleSync() }
             #if DEBUG
-            .task { ScreenshotMode.prepare(app: app, context: modelContext, settings: settings) }
+            .task { ScreenshotMode.prepare(app: app, context: modelContext, settings: settings, purchases: purchases) }
             #endif
             // Schnellaktion vom App-Icon: erst nach dem Entsperren ausführen.
             .onChange(of: homeScreenActions.pending == nil || security.isLocked, initial: true) { _, isWaiting in
@@ -91,8 +94,21 @@ struct RootView: View {
             .onChange(of: scenePhase, initial: true) { _, phase in
                 switch phase {
                 case .background: security.lock()
-                case .active: Task { await security.sceneDidBecomeActive() }
+                case .active:
+                    Task { await security.sceneDidBecomeActive() }
+                    // Tageszähler der Testphase und Ablauf aktuell halten.
+                    Task { await purchases.load() }
+                    Task { await PrivacyModeTip.appOpened.donate() }
                 default: break
+                }
+            }
+            .onChange(of: tipsAllowed, initial: true) { _, isAllowed in
+                SetupTip.isAllowed = isAllowed
+            }
+            // „Kacheln anordnen“ erst nach dem Tipp zum Privatsphäre-Modus (nie zwei Popover gleichzeitig).
+            .task {
+                for await status in PrivacyModeTip().statusUpdates {
+                    if case .invalidated = status { ArrangeCardsTip.isPrivacyTipDone = true }
                 }
             }
     }
@@ -106,10 +122,34 @@ extension RootView {
         }
     }
 
+    /// Tipps nur bei eingeschalteter Einstellung, nach der Einführung, entsperrt, im Vordergrund
+    /// und ohne Neuigkeiten-Sheet (darüber kann kein Popover erscheinen).
+    private var tipsAllowed: Bool {
+        #if DEBUG
+        if ScreenshotMode.isActive { return false }
+        #endif
+        return showsTips && hasCompletedOnboarding && !security.isLocked && scenePhase == .active
+            && !whatsNewBinding.wrappedValue && onboardingMode == nil
+    }
+
+    /// Einführung bzw. Kaufseite, falls nötig: vor der Entscheidung und nach Ablauf nicht schließbar
+    /// (wer die Einführung schon kennt, bekommt nur die Kaufseite), von der Testphasen-Kachel mit xmark.
+    private var onboardingMode: OnboardingView.Mode? {
+        switch purchases.status {
+        case .expired: return .purchase(isClosable: false)
+        case .notStarted: return hasCompletedOnboarding ? .purchase(isClosable: false) : .intro
+        default:
+            if !hasCompletedOnboarding { return .intro }
+            if app.isPurchasePagePresented, purchases.status.trialDaysLeft != nil { return .purchase(isClosable: true) }
+            return nil
+        }
+    }
+
     /// Wer die Einführung gerade gesehen hat, braucht die Neuigkeiten dieser Version nicht mehr.
     private func finishOnboarding() {
         hasCompletedOnboarding = true
         lastSeenWhatsNew = AppInfo.shortVersion
+        app.isPurchasePagePresented = false
     }
 
     private var whatsNewBinding: Binding<Bool> {
@@ -117,6 +157,7 @@ extension RootView {
             get: {
                 guard let release = WhatsNew.current else { return false }
                 return hasCompletedOnboarding && !security.isLocked && lastSeenWhatsNew != release.version
+                    && !purchases.status.requiresChoice
             },
             set: { isPresented in
                 if !isPresented, let release = WhatsNew.current { lastSeenWhatsNew = release.version }
@@ -127,10 +168,13 @@ extension RootView {
     private func onboardingBinding(isPhone: Bool) -> Binding<Bool> {
         Binding(
             get: {
-                !hasCompletedOnboarding && !security.isLocked
+                onboardingMode != nil && !security.isLocked
                     && Device(horizontalSizeClass: horizontalSizeClass).isPhone == isPhone
             },
-            set: { _ in }
+            // Nur die Kaufseite von der Kachel lässt sich wegwischen (iPad-Sheet).
+            set: { isPresented in
+                if !isPresented { app.isPurchasePagePresented = false }
+            }
         )
     }
 }

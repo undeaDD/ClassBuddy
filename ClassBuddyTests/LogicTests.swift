@@ -175,7 +175,6 @@ struct LogicTests {
     }
 
     nonisolated struct InstallCase: Sendable {
-        var keys: Set<String> = []
         var debug = false
         var profile = false
         var environment: String?
@@ -183,7 +182,6 @@ struct LogicTests {
     }
 
     @Test("Installationsweg erkennen", arguments: [
-        InstallCase(keys: ["ALTDeviceID"], debug: true, profile: true, expected: .sideloaded),
         InstallCase(debug: true, profile: true, expected: .xcode),
         InstallCase(profile: true, expected: .developer),
         InstallCase(environment: "Sandbox", expected: .testFlight),
@@ -191,7 +189,7 @@ struct LogicTests {
     ])
     func installMethod(test: InstallCase) {
         let method = InstallInfo.method(
-            infoKeys: test.keys, isDebugBuild: test.debug, hasProvisioningProfile: test.profile, storeEnvironment: test.environment
+            isDebugBuild: test.debug, hasProvisioningProfile: test.profile, storeEnvironment: test.environment
         )
         #expect(method == test.expected)
     }
@@ -368,5 +366,76 @@ struct LogicTests {
         #expect(NoiseLevel.smoothed(previous: 70, new: 50) > 60) // fällt langsam
         let shares = NoiseLevel.Stage.allCases.map { $0.share(of: NoiseLevel.displayRange) }
         #expect(abs(shares.reduce(0, +) - 1) < 0.0001)
+    }
+}
+
+// MARK: - Einrichtungs-Tipps
+
+extension LogicTests {
+
+    @Test("Einrichtungs-Tipps: immer nur der erste offene Schritt, in fester Reihenfolge")
+    func setupSteps() {
+        var state = SetupStep.State()
+        #expect(SetupStep.current(state) == .createClass)
+        state.hasClasses = true
+        #expect(SetupStep.current(state) == nil) // Klassen vorhanden, aber keine ausgewählt
+        state.hasSelectedClass = true
+        #expect(SetupStep.current(state) == .addStudents)
+        state.studentCount = 24
+        #expect(SetupStep.current(state) == .createSchedule)
+        state.scheduleCount = 3
+        #expect(SetupStep.current(state) == .schoolTimes)
+        state.hasReviewedSchoolTimes = true
+        #expect(SetupStep.current(state) == .assignRoom)
+        state.scheduleWithRoomCount = 1
+        #expect(SetupStep.current(state) == .importHolidays)
+        state.hasHolidays = true
+        #expect(SetupStep.current(state) == nil)
+
+        // Ein früherer Schritt geht vor, auch wenn spätere schon erledigt sind.
+        state.studentCount = 0
+        #expect(SetupStep.current(state) == .addStudents)
+        #expect(Set(SetupStep.allCases.map(\.icon)).count == SetupStep.allCases.count)
+    }
+
+    @Test("Angepasstes Stundenraster zählt als eingestellt, die Vorgaben nicht")
+    @MainActor
+    func customSchoolTimes() {
+        var values = SchoolSettings.Values()
+        #expect(!values.hasCustomTimes)
+        values.breaks = values.breaks.map { BreakTime(start: $0.start, duration: $0.duration) } // neue IDs, gleiche Zeiten
+        #expect(!values.hasCustomTimes)
+        values.breaks[0].duration = 25
+        #expect(values.hasCustomTimes)
+        values = SchoolSettings.Values()
+        values.lessonDuration = 60
+        #expect(values.hasCustomTimes)
+    }
+}
+
+// MARK: - Testphase und Vollversion
+
+extension LogicTests {
+    @Test("Kauf-Status: Vollversion schlägt alles, Testphase zählt 30 Tage ab dem Start, aufgerundet")
+    @MainActor
+    func purchaseStatus() {
+        func status(full: Bool = false, start: Date?, now: Date) -> PurchaseStatus {
+            .from(hasFullVersion: full, trialStart: start, now: now, calendar: .school)
+        }
+        let start = Self.date(2026, 10, 1, 9)
+        #expect(status(start: nil, now: start) == .notStarted)
+        #expect(status(full: true, start: nil, now: start) == .purchased)
+        #expect(status(full: true, start: start, now: Self.date(2027, 1, 1)) == .purchased)
+
+        #expect(status(start: start, now: start) == .trial(daysLeft: 30))
+        #expect(status(start: start, now: Self.date(2026, 10, 8, 9)) == .trial(daysLeft: 23))
+        // Letzte Stunde: „Noch 1 Tag“, danach abgelaufen.
+        #expect(status(start: start, now: Self.date(2026, 10, 31, 8)) == .trial(daysLeft: 1))
+        #expect(status(start: start, now: Self.date(2026, 10, 31, 9)) == .expired)
+
+        #expect(PurchaseStatus.notStarted.requiresChoice && PurchaseStatus.expired.requiresChoice)
+        #expect(!PurchaseStatus.loading.requiresChoice && !PurchaseStatus.trial(daysLeft: 3).requiresChoice)
+        #expect(PurchaseStatus.trial(daysLeft: 3).trialDaysLeft == 3 && PurchaseStatus.purchased.trialDaysLeft == nil)
+        #expect(trialDaysText(1) == "Noch 1 Tag" && trialDaysText(23) == "Noch 23 Tage")
     }
 }

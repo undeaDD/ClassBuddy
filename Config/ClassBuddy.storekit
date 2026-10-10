@@ -1,0 +1,55 @@
+{
+  "identifier" : "6C1C5E0E-1B9A-4C55-9E2A-3F1D7A0C2B11",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6739204401",
+      "localizations" : [
+        {
+          "description" : "Alle Funktionen dauerhaft, einmalig und ohne Abo.",
+          "displayName" : "ClassBuddy Vollversion",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "de.devsforge.ClassBuddy.full",
+      "referenceName" : "ClassBuddy Vollversion",
+      "type" : "NonConsumable"
+    },
+    {
+      "displayPrice" : "0.0",
+      "familyShareable" : false,
+      "internalID" : "6739204402",
+      "localizations" : [
+        {
+          "description" : "Alle Funktionen 30 Tage lang kostenlos.",
+          "displayName" : "30 Tage kostenlos testen",
+          "locale" : "de"
+        }
+      ],
+      "productID" : "de.devsforge.ClassBuddy.trial",
+      "referenceName" : "30 Tage kostenlos testen",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "de",
+    "_storefront" : "DEU",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

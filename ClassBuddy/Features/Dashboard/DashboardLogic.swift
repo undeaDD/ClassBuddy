@@ -112,3 +112,27 @@ enum WeeklyWorkload {
         return "\(value) h"
     }
 }
+
+/// Texte der Übersichts-Kacheln.
+enum DashboardText {
+    /// „♀ 46 % · ♂ 46 % · ⚧ 8 %“ (Anteile gerundet; ohne Angabe als „?“).
+    static func genderBreakdown(_ students: [Student]) -> String {
+        guard !students.isEmpty else { return loc("Noch keine Schüler") }
+        let total = Double(students.count)
+        var parts: [String] = Gender.allCases.compactMap { gender in
+            let count = students.filter { $0.gender == gender }.count
+            guard count > 0 else { return nil }
+            return loc("\(gender.symbol) \(Int((Double(count) / total * 100).rounded())) %")
+        }
+        let unknown = students.filter { $0.gender == nil }.count
+        if unknown > 0 { parts.append("? \(Int((Double(unknown) / total * 100).rounded())) %") }
+        return parts.joined(separator: " · ")
+    }
+
+    static func relativeDay(_ date: Date) -> String {
+        let calendar = Calendar.school
+        if calendar.isDateInToday(date) { return "Heute" }
+        if calendar.isDateInTomorrow(date) { return loc("Morgen") }
+        return date.appDate
+    }
+}

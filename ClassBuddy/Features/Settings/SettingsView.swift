@@ -3,6 +3,7 @@ import UIKit
 import WebKit
 
 struct SettingsView: View {
+    @Environment(AppModel.self) private var app
     @Environment(\.openURL) private var openURL
     @Environment(ToastCenter.self) private var toasts
     @AppStorage(OnboardingView.storageKey) private var hasCompletedOnboarding = false
@@ -132,6 +133,10 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(AppTab.settings.title)
+        .navigationDestination(isPresented: Bindable(app).isSchoolSettingsRequested) {
+            SchoolSettingsView()
+                .hidesTabBar()
+        }
         // Am Form, nicht an der Section: Modifier einer Section gehen an jede ihrer Zeilen
         // (dreimal dasselbe Sheet → Hänger beim Schließen und Scrollen).
         .sheet(isPresented: $isWhatsNewPresented) {
