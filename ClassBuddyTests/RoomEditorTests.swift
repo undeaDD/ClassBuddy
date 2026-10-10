@@ -320,3 +320,51 @@ struct RoomEditorTests {
         #expect(try context.fetchCount(FetchDescriptor<RoomElement>()) == 1)
     }
 }
+
+// MARK: - Punkte verschieben
+
+extension RoomEditorTests {
+    @Test("Maus: gemeinsamer Punkt zweier Tische wandert mit, ein Rückgängig-Schritt je Ziehen")
+    func movePoint() throws {
+        let left = RoomShape(kind: .table, points: Self.rect(0, 0, 2, 2))
+        let right = RoomShape(kind: .table, points: Self.rect(2, 0, 2, 2))
+        let door = RoomShape(kind: .door, points: [Self.p(6, 0), Self.p(8, 0)])
+        let model = RoomEditorModel(shapes: [left, right, door])
+
+        #expect(model.point(near: [2.2, 0.1], tolerance: 0.5) == Self.p(2, 0))
+        #expect(model.point(near: [5, 5], tolerance: 0.5) == nil)
+
+        model.beginMovingPoint(Self.p(2, 0))
+        model.movePoint(to: Self.p(3, -1))
+        model.movePoint(to: Self.p(2, -1))
+        model.endMovingPoint()
+
+        #expect(model.shapes[0].points[1] == Self.p(2, -1))
+        #expect(model.shapes[1].points.first == Self.p(2, -1))
+        #expect(model.shapes[1].points.last == Self.p(2, -1)) // geschlossener Tisch bleibt geschlossen
+        #expect(model.shapes[2] == door)
+        #expect(model.shapes.map(\.id) == [left.id, right.id, door.id]) // IDs bleiben (Sitzpläne)
+
+        model.undo()
+        #expect(model.shapes == [left, right, door])
+        #expect(!model.canUndo)
+    }
+
+    @Test("Maus: abgebrochenes Ziehen setzt zurück, Ziehen ohne Änderung erzeugt keinen Schritt")
+    func moveCancelled() {
+        let table = RoomShape(kind: .table, points: Self.rect(0, 0, 2, 2))
+        let model = RoomEditorModel(shapes: [table])
+
+        model.beginMovingPoint(Self.p(0, 0))
+        model.movePoint(to: Self.p(-3, -3))
+        model.endMovingPoint(cancelled: true)
+        #expect(model.shapes == [table])
+        #expect(model.movingPoint == nil)
+
+        model.beginMovingPoint(Self.p(0, 0))
+        model.movePoint(to: Self.p(1, 1))
+        model.movePoint(to: Self.p(0, 0))
+        model.endMovingPoint()
+        #expect(!model.canUndo)
+    }
+}

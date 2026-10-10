@@ -1,8 +1,10 @@
 import SwiftUI
+import simd
 
 /// Werkzeug in der Toolbox.
 enum RoomTool: Hashable {
     /// Standard: ein Finger verschiebt den Raum, damit nicht versehentlich gezeichnet wird.
+    /// Ziehen auf einem Eck- oder Endpunkt verschiebt stattdessen diesen Punkt.
     case move
     case pen(RoomElementKind)
     case eraser
@@ -80,6 +82,9 @@ final class RoomEditorModel {
     var dragEnd: GridPoint?
     /// Pencil-Hover: Vorschau des nächsten Rasterpunkts.
     var hoverPoint: GridPoint?
+    /// Punkt, der gerade mit der Maus gezogen wird (Markierung auf der Zeichenfläche).
+    private(set) var movingPoint: GridPoint?
+    private var pointMove: PointMove?
 
     // Ausschnitt
     var zoom: CGFloat = 1
@@ -102,6 +107,12 @@ final class RoomEditorModel {
     struct SplitDraft: Equatable {
         let tableID: UUID
         var points: [GridPoint]
+    }
+
+    /// Laufendes Ziehen eines Punkts: Zustand davor und alle Stellen (Element, Punkt), die mitwandern.
+    private struct PointMove {
+        let before: Snapshot
+        let targets: [(shape: Int, point: Int)]
     }
 
     private struct Snapshot {
@@ -253,6 +264,52 @@ final class RoomEditorModel {
         if splitDraft?.tableID == hit.id { splitDraft = nil }
         recordUndo(before)
         Haptics.tap()
+    }
+
+    // MARK: Punkte verschieben
+
+    /// Nächster Eck- oder Endpunkt eines Elements im Umkreis `tolerance` (Rasterkoordinaten).
+    func point(near location: RoomGeometry.Vector, tolerance: Double) -> GridPoint? {
+        Set(shapes.flatMap(\.points))
+            .map { point in (point, simd_distance(RoomGeometry.vector(point), location)) }
+            .filter { $0.1 <= tolerance }
+            .min { $0.1 < $1.1 }?.0
+    }
+
+    /// Beginnt das Ziehen: Alle Elemente mit diesem Punkt (z. B. Tische einer Gruppe, Raumecke) wandern mit.
+    func beginMovingPoint(_ point: GridPoint) {
+        finishLine()
+        var targets: [(shape: Int, point: Int)] = []
+        for (shapeIndex, shape) in shapes.enumerated() {
+            for (pointIndex, candidate) in shape.points.enumerated() where candidate == point {
+                targets.append((shapeIndex, pointIndex))
+            }
+        }
+        pointMove = PointMove(before: snapshot, targets: targets)
+        movingPoint = point
+    }
+
+    func movePoint(to point: GridPoint) {
+        guard let pointMove, movingPoint != point else { return }
+        var updated = shapes
+        for target in pointMove.targets {
+            updated[target.shape].points[target.point] = point
+        }
+        shapes = updated
+        movingPoint = point
+    }
+
+    /// Beendet das Ziehen als ein Rückgängig-Schritt; abgebrochen kehrt alles an den Ausgangspunkt zurück.
+    func endMovingPoint(cancelled: Bool = false) {
+        guard let pointMove else { return }
+        self.pointMove = nil
+        movingPoint = nil
+        if cancelled {
+            restore(pointMove.before)
+        } else if pointMove.before.shapes != shapes {
+            recordUndo(pointMove.before)
+            Haptics.tap()
+        }
     }
 
     // MARK: Rückgängig

@@ -31,6 +31,7 @@ struct RoomCanvas: View {
         let drag: (start: GridPoint, end: GridPoint)?
         let anchor: GridPoint?
         let hover: GridPoint?
+        let moving: GridPoint?
 
         init(model: RoomEditorModel) {
             shapes = model.shapes
@@ -42,6 +43,7 @@ struct RoomCanvas: View {
             drag = model.dragStart.flatMap { start in model.dragEnd.map { (start, $0) } }
             anchor = model.anchor
             hover = model.hoverPoint
+            moving = model.movingPoint
         }
 
         func screenPoint(_ point: GridPoint) -> CGPoint {
@@ -89,6 +91,12 @@ struct RoomCanvas: View {
             if let hover {
                 dot(at: hover, color: color.opacity(0.5), in: context)
             }
+            if let moving {
+                // Akzentfarbe der App (Umgebung), etwas größer als die übrigen Punkte.
+                let center = screenPoint(moving), radius = max(spacing * 0.25, 7)
+                let rect = CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2)
+                context.fill(Path(ellipseIn: rect), with: .style(.tint))
+            }
         }
 
         private func dashed(_ lineWidth: CGFloat) -> StrokeStyle {
@@ -122,6 +130,8 @@ private struct RoomCanvasGestures: UIViewRepresentable {
         private var lastPinchScale: CGFloat = 1
         private var lastPanTranslation: CGPoint = .zero
         private var drawGesture: UIPanGestureRecognizer?
+        /// Die laufende Ein-Finger-Geste zieht einen Punkt statt den Ausschnitt.
+        private var isMovingPoint = false
 
         init(model: RoomEditorModel) {
             self.model = model
@@ -162,13 +172,38 @@ private struct RoomCanvasGestures: UIViewRepresentable {
 
         @objc private func handleDraw(_ gesture: UIPanGestureRecognizer) {
             switch model.tool {
-            case .move: panWithOneFinger(gesture)
+            case .move: movePointOrPan(gesture)
             case .eraser: eraseAlong(gesture)
             case .pen: drawSegment(gesture)
             }
         }
 
-        /// Verschieben-Werkzeug: ein Finger verschiebt den Ausschnitt, nichts wird gezeichnet.
+        /// Maus: Beginnt die Geste auf einem Eck- oder Endpunkt, wird der Punkt verschoben (mit Rasterfang),
+        /// sonst der Ausschnitt.
+        private func movePointOrPan(_ gesture: UIPanGestureRecognizer) {
+            if gesture.state == .began {
+                // Trefferbereich ~22 pt, unabhängig vom Zoom.
+                let start = model.gridLocation(startLocation(of: gesture))
+                isMovingPoint = false
+                if let point = model.point(near: start, tolerance: Double(22 / model.spacing)) {
+                    isMovingPoint = true
+                    model.beginMovingPoint(point)
+                }
+            }
+            guard isMovingPoint else { return panWithOneFinger(gesture) }
+            switch gesture.state {
+            case .began, .changed: model.movePoint(to: model.snap(gesture.location(in: self)))
+            case .ended: endMovingPoint()
+            default: endMovingPoint(cancelled: true)
+            }
+        }
+
+        private func endMovingPoint(cancelled: Bool = false) {
+            isMovingPoint = false
+            model.endMovingPoint(cancelled: cancelled)
+        }
+
+        /// Ein Finger verschiebt den Ausschnitt, nichts wird gezeichnet.
         private func panWithOneFinger(_ gesture: UIPanGestureRecognizer) {
             let translation = gesture.translation(in: self)
             if gesture.state == .began { lastPanTranslation = .zero }
@@ -229,6 +264,7 @@ private struct RoomCanvasGestures: UIViewRepresentable {
         private func cancelDrawing() {
             model.dragStart = nil
             model.dragEnd = nil
+            if isMovingPoint { endMovingPoint(cancelled: true) }
             drawGesture?.isEnabled = false
             drawGesture?.isEnabled = true
         }
