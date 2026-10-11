@@ -36,17 +36,17 @@ struct DashboardView: View {
     @State private var photoSelection: PhotosPickerItem?
     @State private var linkEditorRoute: LinkEditorRoute?
     @State private var previewURL: URL?
-    /// Gemessene Kachelgrößen – die Drag-Vorschau wird sonst in Idealgröße statt Grid-Breite gerendert.
-    @State private var cardSizes: [String: CGSize] = [:]
+    /// Gemessene Kachelgrößen für die Drag-Vorschau (nicht beobachtet, siehe `CardSizes`).
+    @State private var cardSizes = CardSizes()
 
     private var canEdit: Bool { !security.isPrivacyModeOn }
 
     private var selectedClass: SchoolClass? {
-        classes.first { $0.id == app.selectedClassID }
+        classes.first { $0.id == app.selectedClassID && !$0.isDeleted }
     }
 
     var body: some View {
-        ClassScopedView { schoolClass in
+        ClassScopedView(showsFirstClassTip: true) { schoolClass in
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
                     cardGrid(visibleCardIDs(for: schoolClass), in: schoolClass, showsAddCard: true)
@@ -87,14 +87,13 @@ struct DashboardView: View {
         }
         .navigationTitle(AppTab.dashboard.title)
         .appNavigationSubtitle(selectedClass.map { "\($0.title) · \($0.schoolYear)" } ?? "")
-        .appChrome(tab: .dashboard) {
+        .appChrome(tab: .dashboard, hidesPrivacyMode: isArranging) {
             if selectedClass != nil {
                 Button(isArranging ? "Fertig" : "Kacheln anordnen", image: isArranging ? .check : .editPencil) {
                     ArrangeCardsTip().invalidate(reason: .actionPerformed)
                     isArranging.toggle()
                 }
                 .disabled(!canEdit)
-                .arrangeCardsTip(isEnabled: app.selectedTab == .dashboard && !isArranging && canEdit)
             }
         }
         .sheet(item: $linkEditorRoute) { route in
@@ -145,11 +144,9 @@ struct DashboardView: View {
             card(cardID, in: schoolClass)
                 .allowsHitTesting(false)
                 .opacity(isHidden ? 0.55 : 1)
-                // Vor dem Overlay, damit Auge und ✕ ruhig stehen bleiben.
-                .wiggling(seed: cardID)
                 // Die Kachel selbst ist nicht antippbar – ohne eigene Form greift das Ziehen nur an den Buttons.
                 .contentShape(cardShape)
-                .onGeometryChange(for: CGSize.self, of: \.size) { cardSizes[cardID] = $0 }
+                .onGeometryChange(for: CGSize.self, of: \.size) { cardSizes.values[cardID] = $0 }
                 .overlay(alignment: .topTrailing) {
                     HStack(spacing: 8) {
                         Button(isHidden ? "Einblenden" : "Ausblenden", image: isHidden ? .eye : .eyeClosed) {
@@ -161,14 +158,13 @@ struct DashboardView: View {
                     }
                     .labelStyle(.iconOnly)
                     .foregroundStyle(.tint)
-                    .appGlassButtonStyle()
-                    .buttonBorderShape(.circle)
+                    .buttonStyle(ArrangeCardButtonStyle())
                     .offset(x: 8, y: -8)
                 }
                 // Eigene Vorschau nur aus der Kachel – sonst hängen die Buttons abgeschnitten dran.
                 .draggable(cardID) {
                     card(cardID, in: schoolClass)
-                        .frame(width: cardSizes[cardID]?.width, height: cardSizes[cardID]?.height)
+                        .frame(width: cardSizes.values[cardID]?.width, height: cardSizes.values[cardID]?.height)
                         .contentShape(.dragPreview, cardShape)
                 }
                 .dropDestination(for: String.self) { items, _ in
@@ -327,6 +323,11 @@ struct DashboardView: View {
 // MARK: - Kacheln
 
 extension DashboardView {
+    /// Stundenplan aller Klassen (für Stunden-, Raum-, Wochen- und Buddy-Kachel).
+    var schedule: LessonSchedule {
+        LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots)
+    }
+
     /// iPhone: eine Spalte über die volle Breite; iPad: so viele 240–320 pt breite Spalten wie passen.
     var gridColumns: [GridItem] {
         device.isPhone
@@ -334,14 +335,14 @@ extension DashboardView {
             : [GridItem(.adaptive(minimum: 240, maximum: 320), spacing: 16)]
     }
 
-    /// Feste Kacheln vor allen anderen: Testphase, dann der offene Einrichtungs-Tipp. Auch beim Anordnen
-    /// sichtbar, aber ohne Buttons, ohne Wackeln und nicht verschieb- oder ausblendbar.
+    /// Feste Kacheln vor allen anderen: Testphase, dann der aktuelle Tipp. Auch beim Anordnen
+    /// sichtbar, aber ohne Buttons und nicht verschieb- oder ausblendbar.
     func fixedCards(in schoolClass: SchoolClass) -> some View {
         Group {
             if let days = purchases.status.trialDaysLeft {
                 TrialDashboardCard(daysLeft: days) { app.isPurchasePagePresented = true }
             }
-            SetupTipCard(schoolClass: schoolClass)
+            DashboardTipCard(schoolClass: schoolClass) { isArranging = true }
         }
         .allowsHitTesting(!isArranging)
     }
@@ -407,18 +408,12 @@ extension DashboardView {
         case .timer, .dateTime, .dailyBoost, .noiseMeter, .secretariat, .holidays:
             standaloneCard(card)
         case .currentLesson:
-            CurrentLessonCard(
-                schedule: LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots),
-                visibleWeekdays: settings.visibleWeekdays
-            ) {
+            CurrentLessonCard(schedule: schedule, visibleWeekdays: settings.visibleWeekdays) {
                 app.openCalendar(focusing: nil, at: .now)
             }
         case .weeklyHours:
             TimelineView(.periodic(from: .now, by: 60)) { context in
-                WeeklyHoursCard(result: WeeklyWorkload.compute(
-                    schedule: LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots),
-                    now: context.date
-                )) {
+                WeeklyHoursCard(result: WeeklyWorkload.compute(schedule: schedule, now: context.date)) {
                     app.openCalendar(focusing: nil, at: .now)
                 }
             }
@@ -428,7 +423,9 @@ extension DashboardView {
                 federalStateName: HolidayImporter.federalStates.first { $0.code == settings.values.federalState }?.name
             )
         case .room:
-            CurrentRoomCard(schedule: LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots), classID: schoolClass.id)
+            CurrentRoomCard(schedule: schedule, classID: schoolClass.id)
+        case .buddy:
+            DashboardBuddyCard(schedule: schedule, isArranging: isArranging)
         }
     }
 
@@ -436,7 +433,7 @@ extension DashboardView {
     @ViewBuilder
     private func standaloneCard(_ card: DashboardBuiltInCard) -> some View {
         switch card {
-        case .timer: TimerCard()
+        case .timer: TimerCard(isStatic: isArranging)
         case .dateTime: DateTimeCard()
         case .noiseMeter: NoiseMeterCard()
         case .secretariat: SecretariatCard()
@@ -467,7 +464,6 @@ extension DashboardView {
 
     /// Nächste Stunde der Klasse; öffnet den Kalender auf diese Klasse fokussiert.
     private func nextLessonCard(for schoolClass: SchoolClass) -> some View {
-        let schedule = LessonSchedule(lessons: lessons, holidays: holidays, slots: settings.slots)
         let next = schedule.nextLesson(forClass: schoolClass.id)
         return StatCard(
             title: loc("Nächste Stunde"),

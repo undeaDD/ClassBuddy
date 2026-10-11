@@ -143,8 +143,19 @@ final class ClassTimer {
 /// Timer-Kachel: Dauer wählen, Countdown, verlängern oder stoppen – oder Stoppuhr (über ein Menü).
 struct TimerCard: View {
     @Environment(ClassTimer.self) private var timer
+    /// Anordnen-Modus: nur der Inhalt (ohne Menü und Sekunden-Takt). Ein UIKit-Menü mit sekündlich neuem
+    /// Inhalt wackelte dort viel zu schnell.
+    var isStatic = false
 
     var body: some View {
+        if isStatic {
+            content(now: .now)
+        } else {
+            menu
+        }
+    }
+
+    private var menu: some View {
         Menu {
             if timer.isRunning {
                 Button("+1 Minute", icon: .plus) { timer.extend(byMinutes: 1) }

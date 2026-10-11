@@ -23,6 +23,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
     case holidays = "stat.holidays"
     case attendance = "stat.attendance"
     case quickNote = "tool.quickNote"
+    case buddy = "tool.buddy"
 
     var id: String { rawValue }
 
@@ -30,7 +31,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         switch self {
         case .students, .nextLesson: false
         case .nextBirthday, .randomStudent, .timer, .currentLesson, .dateTime, .weather, .weeklyHours, .dailyBoost, .room,
-             .noiseMeter, .groups, .lastBoard, .secretariat, .checklists, .holidays, .attendance, .quickNote: true
+             .noiseMeter, .groups, .lastBoard, .secretariat, .checklists, .holidays, .attendance, .quickNote, .buddy: true
         }
     }
 
@@ -60,6 +61,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .holidays: loc("Ferien")
         case .attendance: loc("Anwesenheit")
         case .quickNote: loc("Schnellnotiz")
+        case .buddy: "Buddy"
         }
     }
 
@@ -84,6 +86,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .holidays: loc("Wie viele Schultage es noch bis zu den nächsten Ferien sind.")
         case .attendance: loc("Wer heute fehlt oder zu spät kam (aus dem Sitzplan) – öffnet den Sitzplan.")
         case .quickNote: loc("Eine kurze Notiz zur Klasse, z. B. „Hefte einsammeln“ – antippen zum Bearbeiten.")
+        case .buddy: loc("Ein kleiner Begleiter, der durch die Kachel läuft und auf den Schultag reagiert. Antippen zum Freuen.")
         }
     }
 
@@ -108,6 +111,8 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .holidays: .custom(.calendar)
         case .attendance: .custom(.userXmark)
         case .quickNote: .custom(.editPencil)
+        // Wird nirgends angezeigt (Kachel ohne Kopfzeile), nur für die Vollständigkeit.
+        case .buddy: AppTab.dashboard.symbol
         }
     }
 
@@ -133,6 +138,7 @@ enum DashboardBuiltInCard: String, CaseIterable, Identifiable {
         case .holidays: (loc("12 Tage"), loc("Schultage bis Herbstferien"))
         case .attendance: ("22/24", loc("2 abwesend · 1 verspätet"))
         case .quickNote: (loc("Hefte einsammeln, Elternbrief zum Ausflug austeilen"), loc("Heute um 08:05"))
+        case .buddy: ("Buddy", loc("Läuft durch die Kachel"))
         }
     }
 }
@@ -340,6 +346,8 @@ private struct TemplatePreview: View {
             }
         case .builtIn(.noiseMeter):
             NoiseMeterCardContent(value: loc("58 dB"), detail: NoiseLevel.Stage.calm.title, level: 58, stage: .calm)
+        case .builtIn(.buddy):
+            BuddyCard(context: BuddyContext(isLessonRunning: true), isPaused: true)
         case .builtIn(.timer):
             TimerCardContent(remaining: "12:34", detail: loc("20 min · endet um 10:15"))
         case .builtIn(.quickNote):

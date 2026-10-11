@@ -2,8 +2,8 @@ import SwiftData
 import SwiftUI
 import TipKit
 
-/// Einrichtung für neue Nutzer: Es zeigt immer nur der erste offene Schritt einen Tipp
-/// (Schritt 1 als Popover am Klassen-Button, alle weiteren oben auf der Übersicht).
+/// Einrichtung für neue Nutzer: Es zeigt immer nur der erste offene Schritt einen Tipp, als Kachel auf der
+/// Übersicht (Schritt 1 über dem Leerzustand, solange es keine Klasse gibt).
 nonisolated enum SetupStep: String, CaseIterable, Sendable {
     case createClass
     case addStudents
@@ -49,7 +49,7 @@ nonisolated enum SetupStep: String, CaseIterable, Sendable {
 
     var message: String {
         switch self {
-        case .createClass: loc("Tippen Sie hier, um Ihre erste Klasse mit Fächern und Farbe anzulegen.")
+        case .createClass: loc("Legen Sie Ihre erste Klasse mit Fächern und Farbe an.")
         case .addStudents: loc("Tragen Sie die Schüler dieser Klasse ein.")
         case .createSchedule: loc("Tragen Sie die Stunden dieser Klasse im Kalender ein.")
         case .schoolTimes: loc("Passen Sie Schulbeginn, Stundenlänge und Pausen an Ihre Schule an.")
@@ -58,10 +58,10 @@ nonisolated enum SetupStep: String, CaseIterable, Sendable {
         }
     }
 
-    /// Button zur passenden Seite (Schritt 1 zeigt auf den Klassen-Button selbst).
+    /// Button zur passenden Seite bzw. Aktion.
     var actionTitle: String? {
         switch self {
-        case .createClass: nil
+        case .createClass: loc("Klasse anlegen")
         case .addStudents: loc("Zu den Schülern")
         case .createSchedule: loc("Zum Kalender")
         case .schoolTimes, .importHolidays: loc("Zu den Schuleinstellungen")
@@ -142,7 +142,7 @@ nonisolated struct SetupTip: Tip {
     }
 }
 
-/// Privatsphäre-Modus (Button oben rechts), sobald die Klasse Schüler hat und die App ein paar Mal geöffnet wurde.
+/// Privatsphäre-Modus, sobald die Klasse Schüler hat und die App ein paar Mal geöffnet wurde.
 nonisolated struct PrivacyModeTip: Tip {
     static let appOpened = Tips.Event(id: "appOpened")
 
@@ -158,6 +158,10 @@ nonisolated struct PrivacyModeTip: Tip {
         Text(loc("Blendet Namen und Notizen aus, zum Beispiel wenn Ihr Bildschirm per Beamer zu sehen ist."))
     }
 
+    var actions: [Action] {
+        [Action(id: "open", title: loc("Einschalten"))]
+    }
+
     var rules: [Rule] {
         [
             #Rule(SetupTip.$isAllowed) { $0 },
@@ -166,7 +170,7 @@ nonisolated struct PrivacyModeTip: Tip {
     }
 }
 
-/// „Kacheln anordnen“ auf der Übersicht, erst nach dem Tipp zum Privatsphäre-Modus.
+/// „Kacheln anordnen“, erst nach dem Tipp zum Privatsphäre-Modus.
 nonisolated struct ArrangeCardsTip: Tip {
     static let dashboardOpened = Tips.Event(id: "dashboardOpened")
     @Parameter static var isPrivacyTipDone: Bool = false
@@ -183,6 +187,10 @@ nonisolated struct ArrangeCardsTip: Tip {
         Text(loc("Sortieren Sie die Kacheln der Übersicht oder blenden Sie einzelne aus."))
     }
 
+    var actions: [Action] {
+        [Action(id: "open", title: loc("Jetzt anordnen"))]
+    }
+
     var rules: [Rule] {
         [
             #Rule(SetupTip.$isAllowed) { $0 },
@@ -192,43 +200,68 @@ nonisolated struct ArrangeCardsTip: Tip {
     }
 }
 
-/// Ob TipKit einen Einrichtungs-Tipp gerade zeigen würde (Regeln erfüllt, nicht geschlossen).
-/// Beobachtet in `RootView`, damit die Kachel auf der Übersicht ohne eigene Aufgabe reagiert.
+/// Welche Tipps TipKit gerade zeigen würde (Regeln erfüllt, nicht geschlossen), nach Tipp-ID.
+/// Beobachtet in `RootView`, damit die Kacheln ohne eigene Aufgabe reagieren und ganz verschwinden können.
 @Observable
-final class SetupTipVisibility {
-    static let shared = SetupTipVisibility()
+final class TipVisibility {
+    static let shared = TipVisibility()
 
-    private(set) var displayable: Set<SetupStep> = []
+    private(set) var displayable: Set<String> = []
 
-    /// Je Schritt eine Beobachtung; endet mit der aufrufenden Aufgabe (`.task` in `RootView`).
+    func contains(_ tip: some Tip) -> Bool {
+        displayable.contains(tip.id)
+    }
+
+    /// Je Tipp eine Beobachtung; endet mit der aufrufenden Aufgabe (`.task` in `RootView`).
     func observe() async {
-        let tasks = SetupStep.allCases.map { step in
-            Task {
-                for await shouldDisplay in SetupTip(step).shouldDisplayUpdates {
-                    if shouldDisplay { displayable.insert(step) } else { displayable.remove(step) }
-                }
-            }
-        }
+        let tasks = SetupStep.allCases.map { track(SetupTip($0)) } + [track(PrivacyModeTip()), track(ArrangeCardsTip())]
         await withTaskCancellationHandler {
             for task in tasks { await task.value }
         } onCancel: {
             for task in tasks { task.cancel() }
         }
     }
+
+    private func track(_ tip: some Tip) -> Task<Void, Never> {
+        let id = tip.id
+        return Task {
+            for await shouldDisplay in tip.shouldDisplayUpdates {
+                if shouldDisplay { displayable.insert(id) } else { displayable.remove(id) }
+            }
+        }
+    }
 }
 
-/// Kachel der Übersicht mit dem offenen Einrichtungsschritt ab Schritt 2 (Schritt 1 zeigt der Klassen-Button):
-/// fest nach der Testphasen-Kachel, der Button öffnet die passende Seite, xmark schließt den Tipp.
-struct SetupTipCard: View {
+/// Tipp-Kachel der Übersicht, immer nur ein Tipp: zuerst der offene Einrichtungsschritt, dann Privatsphäre-Modus,
+/// dann „Kacheln anordnen“. Ohne Klasse (`schoolClass == nil`) nur Schritt 1 „Erste Klasse anlegen“ über dem
+/// Leerzustand. TipKit-Optik (xmark oben rechts, Button unter der Trennlinie) in der Form einer Kachel.
+struct DashboardTipCard: View {
     @Environment(AppModel.self) private var app
+    @Environment(AppSecurity.self) private var security
     @Environment(SchoolSettings.self) private var settings
     @Environment(\.device) private var device
     @Query private var classes: [SchoolClass]
     @Query private var holidays: [Holiday]
     @AppStorage(AppPreference.hasOpenedSchoolSettings) private var hasOpenedSchoolSettings = false
-    let schoolClass: SchoolClass
+    let schoolClass: SchoolClass?
+    var onArrange: () -> Void = {}
 
-    private var step: SetupStep? {
+    private enum Content {
+        case setup(SetupStep)
+        case privacy
+        case arrange
+    }
+
+    /// Schritt 1 sichtbar (für den Leerzustand der Übersicht, siehe `ClassScopedView`).
+    static func showsFirstClassTip(classes: [SchoolClass]) -> Bool {
+        classes.isEmpty && TipVisibility.shared.contains(SetupTip(.createClass))
+    }
+
+    private var content: Content? {
+        let visibility = TipVisibility.shared
+        guard let schoolClass else {
+            return Self.showsFirstClassTip(classes: classes) ? .setup(.createClass) : nil
+        }
         let state = SetupStep.State(
             classes: classes,
             selectedClass: schoolClass,
@@ -236,28 +269,45 @@ struct SetupTipCard: View {
             hasOpenedSchoolSettings: hasOpenedSchoolSettings,
             holidayCount: holidays.count
         )
-        guard let step = SetupStep.current(state), step != .createClass,
-              SetupTipVisibility.shared.displayable.contains(step) else { return nil }
-        return step
+        if let step = SetupStep.current(state), step != .createClass, visibility.contains(SetupTip(step)) {
+            return .setup(step)
+        }
+        if !schoolClass.students.isEmpty, visibility.contains(PrivacyModeTip()) { return .privacy }
+        if visibility.contains(ArrangeCardsTip()) { return .arrange }
+        return nil
     }
 
     var body: some View {
-        if let step {
-            // TipKit-Optik (xmark oben rechts, Button unter der Trennlinie) in der Form und Höhe einer Kachel.
-            TipView(SetupTip(step, image: Image(icon: step.icon))) { _ in
-                open(step)
+        switch content {
+        case .setup(let step):
+            card(SetupTip(step, image: Image(icon: step.icon))) { open(step) }
+        case .privacy:
+            card(PrivacyModeTip(image: Image(icon: .eyeClosed))) {
+                PrivacyModeTip().invalidate(reason: .actionPerformed)
+                if !security.isPrivacyModeOn { Task { await security.togglePrivacyMode() } }
             }
+        case .arrange:
+            card(ArrangeCardsTip(image: Image(icon: .editPencil))) {
+                ArrangeCardsTip().invalidate(reason: .actionPerformed)
+                onArrange()
+            }
+        case nil:
+            EmptyView()
+        }
+    }
+
+    private func card(_ tip: some Tip, action: @escaping () -> Void) -> some View {
+        TipView(tip) { _ in action() }
             .tipBackground(.clear)
             .frame(maxWidth: .infinity, minHeight: cardHeight, alignment: .top)
             .background(Color(.secondarySystemGroupedBackground), in: cardShape)
-        }
     }
 
     private func open(_ step: SetupStep) {
         switch step {
         case .createClass: app.isClassPickerPresented = true
         case .addStudents: app.open(.students)
-        case .createSchedule: app.openCalendar(focusing: schoolClass.id)
+        case .createSchedule: app.openCalendar(focusing: schoolClass?.id)
         case .schoolTimes, .importHolidays: app.openSchoolSettings()
         case .assignRoom: app.openRooms(isPhone: device.isPhone)
         }
@@ -268,23 +318,5 @@ enum AppTips {
     /// Einmal beim Start. Ein Fehler hier (z. B. doppelt konfiguriert) bedeutet nur: keine Tipps.
     static func configure() {
         try? Tips.configure([.displayFrequency(.immediate)])
-    }
-}
-
-extension View {
-    /// Popover-Tipp, nur wenn `tip` gesetzt ist. TipKit nimmt optionale Tipps erst ab iOS 18.4 an.
-    /// Tipp „Kacheln anordnen“ am Button der Übersicht; zählt dabei, wie oft die Übersicht geöffnet wurde.
-    func arrangeCardsTip(isEnabled: Bool) -> some View {
-        appPopoverTip(isEnabled ? ArrangeCardsTip(image: Image(icon: .editPencil)) : nil)
-            .onAppear { Task { await ArrangeCardsTip.dashboardOpened.donate() } }
-    }
-
-    @ViewBuilder
-    func appPopoverTip(_ tip: (some Tip)?) -> some View {
-        if let tip {
-            popoverTip(tip, arrowEdge: .top)
-        } else {
-            self
-        }
     }
 }

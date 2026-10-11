@@ -61,8 +61,7 @@ struct RoomsView: View {
                 message: loc("""
                     Legen Sie über + oben rechts einen Raum an und zeichnen Sie den Grundriss \
                     mit Tischen, Tafel, Tür und Fenstern.
-                    """),
-                symbol: AppTab.rooms.symbol
+                    """)
             )
             .background(Color(.systemGroupedBackground))
         } else {

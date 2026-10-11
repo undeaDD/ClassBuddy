@@ -100,13 +100,30 @@ nonisolated enum WeatherService {
     private static let cache = Cache()
     private static let maxAge: TimeInterval = 30 * 60
 
+    private static func cacheKey(street: String, postalCode: String, query: String) -> String {
+        [street, postalCode, query].joined(separator: "|")
+    }
+
+    /// Zuletzt geladenes Wetter ohne neue Anfrage (für Buddy), höchstens 2 Stunden alt; `nil`, solange die
+    /// Wetter-Kachel nichts geladen hat. So bleibt es dabei: Wetter wird nur für die sichtbare Wetter-Kachel abgefragt.
+    static func cachedSnapshot(for school: SchoolInfo) async -> Snapshot? {
+        guard let query = placeQuery(for: school) else { return nil }
+        let key = cacheKey(
+            street: school.street.trimmingCharacters(in: .whitespaces),
+            postalCode: school.postalCode.trimmingCharacters(in: .whitespaces),
+            query: query
+        )
+        guard let snapshot = await cache.snapshot(for: key), Date.now.timeIntervalSince(snapshot.fetchedAt) < 2 * 3600 else { return nil }
+        return snapshot
+    }
+
     /// Wetter laden (höchstens alle 30 Minuten neu, sonst aus dem Speicher).
     static func load(for school: SchoolInfo, federalStateName: String? = nil) async throws -> Snapshot {
         guard let query = placeQuery(for: school) else { throw WeatherError.noLocation }
         let postalCode = school.postalCode.trimmingCharacters(in: .whitespaces)
         let street = school.street.trimmingCharacters(in: .whitespaces)
         // Ganze Schuladresse als Schlüssel: andere Straße oder PLZ → neu laden.
-        let cacheKey = [street, postalCode, query].joined(separator: "|")
+        let cacheKey = cacheKey(street: street, postalCode: postalCode, query: query)
         if let cached = await cache.snapshot(for: cacheKey), Date.now.timeIntervalSince(cached.fetchedAt) < maxAge {
             return cached
         }
@@ -336,14 +353,24 @@ nonisolated enum WeatherService {
 /// (dessen eigene Beschreibung folgt der Systemsprache, nicht der App-Sprache).
 nonisolated struct WeatherCondition: Equatable, Sendable {
     let title: String
+    /// Regen, Niesel, Schauer oder Gewitter (Buddy hält dann einen Schirm).
+    let isRainy: Bool
 
     init(code: Int) {
         title = Self.titles.first { $0.codes.contains(code) }?.title ?? loc("Unbekannt")
+        isRainy = Self.rainyCodes.contains(code)
     }
 
     init(apple condition: WeatherKit.WeatherCondition) {
         title = Self.appleTitles.first { $0.conditions.contains(condition) }?.title ?? condition.description
+        isRainy = Self.rainyConditions.contains(condition)
     }
+
+    private static let rainyCodes: Set<Int> = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99]
+    private static let rainyConditions: Set<WeatherKit.WeatherCondition> = [
+        .drizzle, .freezingDrizzle, .freezingRain, .rain, .heavyRain, .sunShowers,
+        .thunderstorms, .isolatedThunderstorms, .scatteredThunderstorms, .strongStorms,
+    ]
 
     private static let appleTitles: [(conditions: Set<WeatherKit.WeatherCondition>, title: String)] = [
         ([.clear, .hot, .frigid], loc("Klar")),

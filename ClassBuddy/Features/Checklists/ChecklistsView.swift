@@ -19,7 +19,7 @@ struct ChecklistsView: View {
     @State private var pendingDeletion: Checklist?
 
     private var selectedClass: SchoolClass? {
-        classes.first { $0.id == app.selectedClassID }
+        classes.first { $0.id == app.selectedClassID && !$0.isDeleted }
     }
 
     var body: some View {
@@ -74,8 +74,7 @@ struct ChecklistsView: View {
         if groups.isEmpty {
             EmptyStateView(
                 title: loc("Noch keine Checklisten"),
-                message: loc("Legen Sie über + oben rechts eine Checkliste an, z. B. „Name in die Bücher eingetragen“."),
-                symbol: AppTab.checklists.symbol
+                message: loc("Legen Sie über + oben rechts eine Checkliste an, z. B. „Name in die Bücher eingetragen“.")
             )
             .background(Color(.systemGroupedBackground))
         } else {

@@ -39,8 +39,7 @@ struct AssessmentListView: View {
             if subjects.isEmpty {
                 EmptyStateView(
                     title: loc("Noch keine Leistungen"),
-                    message: loc("Legen Sie über + oben rechts eine Klassenarbeit, einen Test oder ein Referat an."),
-                    symbol: AppTab.notes.symbol
+                    message: loc("Legen Sie über + oben rechts eine Klassenarbeit, einen Test oder ein Referat an.")
                 )
             }
         }

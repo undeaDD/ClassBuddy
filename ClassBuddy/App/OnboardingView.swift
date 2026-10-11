@@ -33,7 +33,7 @@ struct OnboardingView: View {
 
     private let pages = [
         Page(
-            image: .book,
+            image: .mascotDefault,
             title: loc("Willkommen bei ClassBuddy"),
             text: loc("""
                 Verwalten Sie Klassen mit Fächern und Farben, pflegen Sie Ihre Schülerliste \
@@ -41,7 +41,7 @@ struct OnboardingView: View {
                 """)
         ),
         Page(
-            image: .shield,
+            image: .mascotDefend,
             title: loc("Sicher, offline, DSGVO-konform"),
             text: loc("""
                 Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, biometrisch geschützt. \
@@ -49,7 +49,7 @@ struct OnboardingView: View {
                 """)
         ),
         Page(
-            image: .heart,
+            image: .mascotFeedback,
             title: loc("Helfen Sie mit, ClassBuddy besser zu machen"),
             text: loc("""
                 Fehlt Ihnen etwas? Schreiben Sie mir über „Feedback senden“ in den Einstellungen. \
@@ -74,17 +74,17 @@ struct OnboardingView: View {
     private var purchasePage: Page {
         switch purchases.status {
         case .expired:
-            Page(image: .hourglass, title: loc("Die Testphase ist vorbei"), text: loc("""
+            Page(image: .mascotTrial, title: loc("Die Testphase ist vorbei"), text: loc("""
                 Ihre Daten liegen weiterhin auf diesem Gerät. Mit der Vollversion geht es genau dort weiter, \
                 einmalig und ohne Abo.
                 """))
         case .trial(let days):
-            Page(image: .hourglass, title: trialDaysText(days), text: loc("""
+            Page(image: .mascotTrial, title: trialDaysText(days), text: loc("""
                 Mit der Vollversion nutzen Sie ClassBuddy dauerhaft, einmalig und ohne Abo. \
                 Ihre Daten bleiben, wie sie sind.
                 """))
         default:
-            Page(image: .hourglass, title: loc("ClassBuddy kennenlernen"), text: loc("""
+            Page(image: .mascotTrial, title: loc("ClassBuddy kennenlernen"), text: loc("""
                 Testen Sie 30 Tage lang alle Funktionen kostenlos. Danach schalten Sie die Vollversion \
                 einmalig frei, ohne Abo.
                 """))
@@ -92,6 +92,14 @@ struct OnboardingView: View {
     }
 
     private var isLastPage: Bool { page == allPages.count - 1 }
+
+    /// Hell: etwas dunkler als der gruppierte Hintergrund, sonst verschwindet das cremeweiße Maskottchen darin.
+    /// Dunkel: wie gehabt.
+    private static let background = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? .systemGroupedBackground
+            : UIColor(red: 0.882, green: 0.890, blue: 0.918, alpha: 1)
+    })
     private var isOnPurchasePage: Bool { showsPurchasePage && isLastPage }
 
     /// Feste Zeilenzahl, damit Titel/Text/Button auf allen Seiten gleich stehen.
@@ -140,7 +148,7 @@ struct OnboardingView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .background(Color(.systemGroupedBackground))
+        .background(Self.background)
     }
 
     private var buttonBar: some View {
@@ -171,13 +179,11 @@ struct OnboardingView: View {
 
     private func pageView(_ page: Page) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Illustration mittig im oberen Bereich.
+            // Maskottchen mittig im oberen Bereich (freigestellt, mit eigenem Schatten).
             Image(page.image)
                 .resizable()
                 .scaledToFit()
                 .frame(maxWidth: device.isPhone ? 240 : 300)
-                .clipShape(.rect(cornerRadius: device.isPhone ? 44 : 56, style: .continuous))
-                .shadow(color: .black.opacity(0.18), radius: 16, y: 8)
                 .padding(.vertical, 24)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .accessibilityHidden(true)

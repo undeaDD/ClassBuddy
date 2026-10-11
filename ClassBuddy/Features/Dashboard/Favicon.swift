@@ -15,9 +15,18 @@ nonisolated enum FaviconStore {
         return directory.appending(path: "\(safe).png")
     }
 
+    /// Bereits gelesene Favicons im Speicher (Kacheln werden beim Anordnen und Scrollen oft neu aufgebaut).
+    nonisolated(unsafe) private static let memory = NSCache<NSString, UIImage>()
+
+    static func memoryImage(for host: String) -> UIImage? {
+        memory.object(forKey: host as NSString)
+    }
+
     static func cachedImage(for host: String) -> UIImage? {
-        guard let data = try? Data(contentsOf: cacheFile(for: host)) else { return nil }
-        return UIImage(data: data)
+        if let image = memoryImage(for: host) { return image }
+        guard let data = try? Data(contentsOf: cacheFile(for: host)), let image = UIImage(data: data) else { return nil }
+        memory.setObject(image, forKey: host as NSString)
+        return image
     }
 
     /// Favicon laden (Cache zuerst). `nil`, wenn nichts Brauchbares gefunden wurde.
@@ -106,7 +115,7 @@ struct FaviconView: View {
 
     var body: some View {
         Group {
-            if let image {
+            if let image = image ?? url?.host().flatMap(FaviconStore.memoryImage) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()

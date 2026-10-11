@@ -4,16 +4,14 @@ import UIKit
 
 /// Infos zur Installation und zum Gerät für die Einstellungen (Kopfbereich, Version).
 enum InstallInfo {
+    /// Nur drei Wege: App Store, TestFlight oder ein eigener Build aus Xcode (Sideloading gibt es nicht mehr).
     nonisolated enum Method: String, Sendable {
         case xcode = "Xcode"
-        case developer = "Entwickler-Signatur"
         case testFlight = "TestFlight"
         case appStore = "App Store"
 
-        /// Anzeige in der App-Sprache (Produktnamen bleiben).
-        var displayName: String {
-            self == .developer ? loc("Entwickler-Signatur") : rawValue
-        }
+        /// Produktnamen, in allen Sprachen gleich.
+        var displayName: String { rawValue }
     }
 
     /// Wie die App installiert wurde (best effort). Fragt bei Store-Builds StoreKit.
@@ -27,12 +25,10 @@ enum InstallInfo {
     }
 
     /// Reine Entscheidung (testbar):
-    /// - Debug-Builds kommen aus Xcode.
-    /// - Ein eingebettetes Provisioning-Profil ohne Store = Entwickler-/Ad-hoc-Signatur.
+    /// - Debug-Builds und Builds mit eingebettetem Provisioning-Profil (Release aus Xcode) = Xcode.
     /// - StoreKit-Umgebung „Sandbox“ = TestFlight, sonst App Store.
     static func method(isDebugBuild: Bool, hasProvisioningProfile: Bool, storeEnvironment: String?) -> Method {
-        if isDebugBuild { return .xcode }
-        if hasProvisioningProfile { return .developer }
+        if isDebugBuild || hasProvisioningProfile { return .xcode }
         if storeEnvironment == AppStore.Environment.sandbox.rawValue { return .testFlight }
         return .appStore
     }

@@ -48,8 +48,7 @@ struct ChecklistDetailView: View {
                         title: students.isEmpty ? loc("Noch keine Schüler") : loc("Keine Schüler in dieser Auswahl"),
                         message: students.isEmpty
                             ? loc("Die Klasse hat noch keine Schüler.")
-                            : (filter == .open ? loc("Alle Schüler sind abgehakt.") : loc("Noch niemand ist abgehakt.")),
-                        symbol: AppTab.students.symbol
+                            : (filter == .open ? loc("Alle Schüler sind abgehakt.") : loc("Noch niemand ist abgehakt."))
                     )
                     .frame(maxWidth: .infinity, minHeight: 320)
                 } else {

@@ -75,6 +75,14 @@ struct RootView: View {
                 }
             }
             .animation(.smooth(duration: 0.25), value: security.isLocked)
+            #if DEBUG
+            // Nur Debug: schwebender Maskottchen-Button unten rechts (Ausprobieren, öffnet das Debug-Menü).
+            .overlay(alignment: .bottomTrailing) {
+                if !security.isLocked, scenePhase == .active {
+                    DebugMascotButton(isPhone: Device(horizontalSizeClass: horizontalSizeClass).isPhone)
+                }
+            }
+            #endif
             // Toasts über allem, auch über der Sperre (z. B. Fehlermeldungen beim Entsperren).
             .overlay(alignment: .top) { ToastOverlay() }
             .task { RoomDemo.createIfNeeded(in: modelContext) }
@@ -105,7 +113,10 @@ struct RootView: View {
             .onChange(of: tipsAllowed, initial: true) { _, isAllowed in
                 SetupTip.isAllowed = isAllowed
             }
-            .task { await SetupTipVisibility.shared.observe() }
+            .task { await TipVisibility.shared.observe() }
+            .onChange(of: app.selectedTab, initial: true) { _, tab in
+                if tab == .dashboard { Task { await ArrangeCardsTip.dashboardOpened.donate() } }
+            }
             // „Kacheln anordnen“ erst nach dem Tipp zum Privatsphäre-Modus (nie zwei Popover gleichzeitig).
             .task {
                 for await status in PrivacyModeTip().statusUpdates {

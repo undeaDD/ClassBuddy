@@ -9,12 +9,14 @@ extension View {
     /// Unterseiten (Push) zeigen die Toolbar der Wurzel nicht.
     /// Seitenspezifische Buttons (`actions`) stehen links davon, optisch getrennt.
     /// Alles in einem Toolbar-Block, damit die Reihenfolge fest ist.
-    func appChrome<Actions: View>(tab: AppTab, @ViewBuilder actions: () -> Actions) -> some View {
-        modifier(AppChromeModifier(tab: tab, hasActions: true, actions: actions()))
+    /// `hidesPrivacyMode`: Privatsphäre-Button vorübergehend ausblenden (Übersicht beim Anordnen, dort sähe er
+    /// aus wie die Ein-/Ausblenden-Knöpfe der Kacheln).
+    func appChrome<Actions: View>(tab: AppTab, hidesPrivacyMode: Bool = false, @ViewBuilder actions: () -> Actions) -> some View {
+        modifier(AppChromeModifier(tab: tab, hasActions: true, hidesPrivacyMode: hidesPrivacyMode, actions: actions()))
     }
 
     func appChrome(tab: AppTab) -> some View {
-        modifier(AppChromeModifier(tab: tab, hasActions: false, actions: EmptyView()))
+        modifier(AppChromeModifier(tab: tab, hasActions: false, hidesPrivacyMode: false, actions: EmptyView()))
     }
 }
 
@@ -23,23 +25,11 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
     @Query private var classes: [SchoolClass]
     let tab: AppTab
     let hasActions: Bool
+    let hidesPrivacyMode: Bool
     let actions: Actions
 
     private var selectedClass: SchoolClass? {
-        classes.first { $0.id == app.selectedClassID }
-    }
-
-    /// Jeder Tab hat eigene Toolbar-Buttons: Tipps nur am Button des sichtbaren Tabs.
-    private var isVisibleTab: Bool { app.selectedTab == tab }
-
-    private var classTip: SetupTip? {
-        guard isVisibleTab, classes.isEmpty else { return nil }
-        return SetupTip(.createClass, image: Image(icon: SetupStep.createClass.icon))
-    }
-
-    private var privacyTip: PrivacyModeTip? {
-        guard isVisibleTab, selectedClass?.students.isEmpty == false else { return nil }
-        return PrivacyModeTip(image: Image(icon: .eyeClosed))
+        classes.first { $0.id == app.selectedClassID && !$0.isDeleted }
     }
 
     func body(content: Content) -> some View {
@@ -47,8 +37,6 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
             if tab.usesClassSelection {
                 ToolbarItem(placement: .topBarLeading) {
                     ClassPickerButton(selectedClass: selectedClass, tab: tab)
-                        // Eigene Ankerfläche: Der Button hat schon das Klassen-Popover.
-                        .background { Color.clear.appPopoverTip(classTip) }
                 }
                 .appSharedBackgroundHidden()
             }
@@ -63,13 +51,12 @@ private struct AppChromeModifier<Actions: View>: ViewModifier {
                 }
             }
 
-            if tab.showsPrivacyMode {
+            if tab.showsPrivacyMode, !hidesPrivacyMode {
                 if hasActions {
                     AppToolbarSpacer(placement: .topBarTrailing)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     PrivacyModeButton()
-                        .appPopoverTip(privacyTip)
                         .toolbarGroupBackground()
                 }
             }

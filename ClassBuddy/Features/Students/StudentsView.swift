@@ -17,7 +17,7 @@ struct StudentsView: View {
     @State private var studentPendingDeletion: Student?
 
     private var selectedClass: SchoolClass? {
-        classes.first { $0.id == app.selectedClassID }
+        classes.first { $0.id == app.selectedClassID && !$0.isDeleted }
     }
 
     /// Bearbeiten ist im Privatsphäre-Modus gesperrt.
@@ -67,8 +67,7 @@ struct StudentsView: View {
         if schoolClass.students.isEmpty {
             EmptyStateView(
                 title: loc("Noch keine Schüler"),
-                message: loc("Fügen Sie über + oben rechts die Schülerinnen und Schüler der \(schoolClass.title) hinzu."),
-                symbol: AppTab.students.symbol
+                message: loc("Fügen Sie über + oben rechts die Schülerinnen und Schüler der \(schoolClass.title) hinzu.")
             )
             .background(Color(.systemGroupedBackground))
         } else {

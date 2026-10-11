@@ -140,7 +140,7 @@ struct ImageCard: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: cardHeight)
                 .overlay {
-                    if let thumbnail {
+                    if let thumbnail = thumbnail ?? link.url.flatMap(DashboardImageCache.cachedThumbnail) {
                         Image(uiImage: thumbnail)
                             .resizable()
                             .scaledToFill()
@@ -160,7 +160,7 @@ struct ImageCard: View {
         .hoverEffect(.lift)
         .task(id: link.location) {
             guard let url = link.url else { return }
-            thumbnail = await Task.detached { Thumbnail.make(from: url, maxPixelSize: 900) }.value
+            thumbnail = await DashboardImageCache.thumbnail(for: url)
         }
     }
 

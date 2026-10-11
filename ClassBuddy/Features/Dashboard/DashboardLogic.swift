@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 /// Kommende Geburtstage einer Klasse (reine Berechnung, testbar).
 enum Birthdays {
@@ -134,5 +135,26 @@ enum DashboardText {
         if calendar.isDateInToday(date) { return "Heute" }
         if calendar.isDateInTomorrow(date) { return loc("Morgen") }
         return date.appDate
+    }
+}
+
+/// Gemessene Kachelgrößen für die Drag-Vorschau (sonst in Idealgröße statt Grid-Breite). Bewusst eine einfache
+/// Klasse statt `@State`-Dictionary: Jede Messung hätte sonst die ganze Übersicht neu aufgebaut, beim Start des
+/// Anordnen-Modus einmal je Kachel – das ruckelte stark. Gelesen wird erst beim Ziehen.
+final class CardSizes {
+    var values: [String: CGSize] = [:]
+}
+
+/// Runde Knöpfe (Ein-/Ausblenden, Entfernen) auf den Kacheln im Anordnen-Modus. Bewusst ohne Glas: Je Kachel zwei
+/// Glas-Knöpfe ließen SwiftUI die Glaseffekte beim Scrollen ständig neu anordnen (Instruments: ~180.000 Updates).
+struct ArrangeCardButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.body.weight(.semibold))
+            .frame(width: 34, height: 34)
+            .background(Color(.secondarySystemGroupedBackground), in: .circle)
+            .overlay { Circle().strokeBorder(Color(.separator), lineWidth: 0.5) }
+            .contentShape(.circle)
+            .scaleEffect(configuration.isPressed ? 0.9 : 1)
     }
 }

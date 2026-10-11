@@ -189,11 +189,11 @@ private struct SettingsHero: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            Image(.appIconPreview)
+            // Maskottchen statt App-Icon (freigestellt, eigener Schatten).
+            Image(.mascotHello)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 76, height: 76)
-                .shadow(color: .black.opacity(0.12), radius: 8, y: 3)
+                .frame(width: 84, height: 84)
                 // Kein endloses „Atmen“ mehr: die Animation in der Listenzelle ließ die App beim Scrollen einfrieren.
                 .accessibilityHidden(true)
 

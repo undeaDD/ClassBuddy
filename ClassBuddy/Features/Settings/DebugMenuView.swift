@@ -13,6 +13,8 @@ struct DebugMenuView: View {
     @Environment(PurchaseStore.self) private var purchases
     @Query private var classes: [SchoolClass]
 
+    @AppStorage(DebugMascotButton.storageKey) private var showsMascotButton = false
+    @AppStorage(BuddyDebugState.storageKey) private var buddyState: BuddyDebugState = .real
     @State private var isLockPreviewPresented = false
     @State private var isPrivacyCoverPresented = false
 
@@ -45,14 +47,42 @@ struct DebugMenuView: View {
             }
 
             Section {
+                Toggle(isOn: $showsMascotButton) {
+                    Label {
+                        Text("Maskottchen-Button")
+                    } icon: {
+                        Image(.mascotButton)
+                            .resizable()
+                            .scaledToFit()
+                    }
+                }
+            } header: {
+                Text("Oberfläche")
+            } footer: {
+                Text("Unten rechts über der Tab-Leiste, öffnet dieses Menü.")
+            }
+
+            Section {
+                Picker("Buddy-Zustand", selection: $buddyState) {
+                    ForEach(BuddyDebugState.allCases) { state in
+                        Text(verbatim: state.title).tag(state)
+                    }
+                }
+                .pickerStyle(.menu)
+            } header: {
+                Text("Buddy-Kachel")
+            } footer: {
+                Text("Gilt sofort auf der Übersicht und bleibt bis zum Zurückstellen auf „Echt“.")
+            }
+
+            Section {
                 Picker("Kauf-Status", selection: Bindable(purchases).simulatedStatus) {
-                    Text("Echt (StoreKit)").tag(PurchaseStatus?.none)
+                    Text("Echt").tag(PurchaseStatus?.none)
                     ForEach(PurchaseStatus.debugCases, id: \.debugKey) { status in
                         Text(status.debugTitle).tag(Optional(status))
                     }
                 }
-                .pickerStyle(.inline)
-                .labelsHidden()
+                .pickerStyle(.menu)
             } header: {
                 Text("Kauf-Status simulieren")
             } footer: {
@@ -81,8 +111,7 @@ struct DebugMenuView: View {
                 NavigationLink {
                     EmptyStateView(
                         title: loc("Keine Klasse ausgewählt"),
-                        message: loc("Legen Sie oben links Ihre erste Klasse an."),
-                        symbol: .custom(.userXmark)
+                        message: loc("Legen Sie oben links Ihre erste Klasse an.")
                     )
                     .hidesTabBar()
                 } label: {
@@ -91,8 +120,7 @@ struct DebugMenuView: View {
                 NavigationLink {
                     EmptyStateView(
                         title: loc("Noch keine Schüler"),
-                        message: loc("Fügen Sie über + oben rechts die Schülerinnen und Schüler der Klasse 7b hinzu."),
-                        symbol: AppTab.students.symbol
+                        message: loc("Fügen Sie über + oben rechts die Schülerinnen und Schüler der Klasse 7b hinzu.")
                     )
                     .hidesTabBar()
                 } label: {
@@ -101,8 +129,7 @@ struct DebugMenuView: View {
                 NavigationLink {
                     EmptyStateView(
                         title: AppTab.rooms.title,
-                        message: loc("Hier verwalten Sie bald Ihre Räume und deren Sitzordnungen."),
-                        symbol: AppTab.rooms.symbol
+                        message: loc("Hier verwalten Sie bald Ihre Räume und deren Sitzordnungen.")
                     )
                     .hidesTabBar()
                 } label: {
@@ -226,6 +253,50 @@ extension PurchaseStatus {
         case .trial(let days): "Testphase, \(trialDaysText(days).lowercased())"
         case .expired: "Abgelaufen"
         case .purchased: "Gekauft"
+        }
+    }
+}
+
+/// Schwebender Button unten rechts, nur das Maskottchen (ohne Glas, ohne Hintergrund). Öffnet das Debug-Menü.
+struct DebugMascotButton: View {
+    /// Schalter im Debug-Menü (Standard: aus).
+    static let storageKey = "debug.showsMascotButton"
+
+    let isPhone: Bool
+    @AppStorage(storageKey) private var isEnabled = false
+    @State private var isMenuPresented = false
+
+    var body: some View {
+        if isEnabled { button }
+    }
+
+    private var button: some View {
+        Button {
+            Haptics.tap()
+            isMenuPresented = true
+        } label: {
+            Image(.mascotButton)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 64, height: 64)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Debug-Menü")
+        // Über der Tab-Leiste (iPhone unten), auf dem iPad mit etwas Abstand zum Rand.
+        .padding(.trailing, 16)
+        .padding(.bottom, isPhone ? 90 : 24)
+        .sheet(isPresented: $isMenuPresented) {
+            NavigationStack {
+                DebugMenuView()
+                    .navigationTitle("Debug")
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button("Schließen", icon: .xmark) { isMenuPresented = false }
+                        }
+                    }
+            }
+            .softScrollEdges()
         }
     }
 }

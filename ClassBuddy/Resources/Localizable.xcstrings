@@ -1,549 +1,6 @@
 {
   "sourceLanguage" : "de",
   "strings" : {
-    "Passen Sie Schulbeginn, Stundenlänge und Pausen an Ihre Schule an." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Match the start of school, lesson length and breaks to your school."
-          }
-        }
-      }
-    },
-    "Weisen Sie Ihren Stunden einen Raum zu, dann öffnet die Stunde direkt den Sitzplan." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assign a room to your lessons, then the lesson opens the seating plan directly."
-          }
-        }
-      }
-    },
-    "Käufe wiederherstellen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restore purchases"
-          }
-        }
-      }
-    },
-    "Testphase läuft" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trial running"
-          }
-        }
-      }
-    },
-    "Testphase abgelaufen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trial expired"
-          }
-        }
-      }
-    },
-    "Die 30 Tage sind vorbei" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The 30 days are over"
-          }
-        }
-      }
-    },
-    "30 Tage kostenlos testen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Try free for 30 days"
-          }
-        }
-      }
-    },
-    "Alle Funktionen, endet automatisch" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All features, ends automatically"
-          }
-        }
-      }
-    },
-    "Vollversion kaufen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buy full version"
-          }
-        }
-      }
-    },
-    "Einmalig %@, kein Abo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "One-time %@, no subscription"
-          }
-        }
-      }
-    },
-    "Einmalig, kein Abo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "One-time, no subscription"
-          }
-        }
-      }
-    },
-    "Für diesen Apple Account wurden keine Käufe gefunden." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No purchases were found for this Apple Account."
-          }
-        }
-      }
-    },
-    "Der Kauf wartet noch auf eine Freigabe." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The purchase is still waiting for approval."
-          }
-        }
-      }
-    },
-    "Der App Store ist gerade nicht erreichbar. Bitte versuchen Sie es später noch einmal." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The App Store can't be reached right now. Please try again later."
-          }
-        }
-      }
-    },
-    "Noch 1 Tag" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1 day left"
-          }
-        }
-      }
-    },
-    "Noch %lld Tage" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld days left"
-          }
-        }
-      }
-    },
-    "Testphase" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trial"
-          }
-        }
-      }
-    },
-    "Vollversion freischalten" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unlock full version"
-          }
-        }
-      }
-    },
-    "Die Testphase ist vorbei" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your trial has ended"
-          }
-        }
-      }
-    },
-    "Ihre Daten liegen weiterhin auf diesem Gerät. Mit der Vollversion geht es genau dort weiter, einmalig und ohne Abo." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your data is still on this device. The full version picks up right where you left off, one-time and without a subscription."
-          }
-        }
-      }
-    },
-    "Mit der Vollversion nutzen Sie ClassBuddy dauerhaft, einmalig und ohne Abo. Ihre Daten bleiben, wie sie sind." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "With the full version you can keep using ClassBuddy, one-time and without a subscription. Your data stays as it is."
-          }
-        }
-      }
-    },
-    "ClassBuddy kennenlernen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Get to know ClassBuddy"
-          }
-        }
-      }
-    },
-    "Testen Sie 30 Tage lang alle Funktionen kostenlos. Danach schalten Sie die Vollversion einmalig frei, ohne Abo." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Try all features free for 30 days. After that, unlock the full version with a one-time purchase, no subscription."
-          }
-        }
-      }
-    },
-    "Kauf-Status" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Purchase status"
-          }
-        }
-      }
-    },
-    "Echt (StoreKit)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Real (StoreKit)"
-          }
-        }
-      }
-    },
-    "Kauf-Status simulieren" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Simulate purchase status"
-          }
-        }
-      }
-    },
-    "Bleibt bis zum Zurückstellen auf „Echt“. Testen und Kaufen schalten dann nur die Simulation weiter." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stays until switched back to “Real”. Trying and buying then only advance the simulation."
-          }
-        }
-      }
-    },
-    "Erste Klasse anlegen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create your first class"
-          }
-        }
-      }
-    },
-    "Tippen Sie hier, um Ihre erste Klasse mit Fächern und Farbe anzulegen." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tap here to create your first class with subjects and a color."
-          }
-        }
-      }
-    },
-    "Schülerliste anlegen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create the student list"
-          }
-        }
-      }
-    },
-    "Tragen Sie die Schüler dieser Klasse ein." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add the students of this class."
-          }
-        }
-      }
-    },
-    "Stundenplan anlegen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set up your timetable"
-          }
-        }
-      }
-    },
-    "Tragen Sie die Stunden dieser Klasse im Kalender ein." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add this class's lessons to the calendar."
-          }
-        }
-      }
-    },
-    "Stundenraster und Pausen einstellen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set lesson times and breaks"
-          }
-        }
-      }
-    },
-    "Raum zuweisen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assign a room"
-          }
-        }
-      }
-    },
-    "Ferien importieren" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import holidays"
-          }
-        }
-      }
-    },
-    "Importieren Sie die Ferien Ihres Bundeslands in den Schuleinstellungen." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import the school holidays for your state in the school settings."
-          }
-        }
-      }
-    },
-    "Zu den Schülern" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Go to students"
-          }
-        }
-      }
-    },
-    "Zum Kalender" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Go to calendar"
-          }
-        }
-      }
-    },
-    "Zu den Schuleinstellungen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Go to school settings"
-          }
-        }
-      }
-    },
-    "Zu den Räumen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Go to rooms"
-          }
-        }
-      }
-    },
-    "Privatsphäre-Modus" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Privacy mode"
-          }
-        }
-      }
-    },
-    "Blendet Namen und Notizen aus, zum Beispiel wenn Ihr Bildschirm per Beamer zu sehen ist." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hides names and notes, for example when your screen is shown on a projector."
-          }
-        }
-      }
-    },
-    "Sortieren Sie die Kacheln der Übersicht oder blenden Sie einzelne aus." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reorder the overview cards or hide individual ones."
-          }
-        }
-      }
-    },
-    "Tipps anzeigen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show tips"
-          }
-        }
-      }
-    },
-    "" : {
-
-    },
-    "Legen Sie über + oben rechts einen Raum an und zeichnen Sie den Grundriss mit Tischen, Tafel, Tür und Fenstern." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a room with + at the top right and draw its floor plan with tables, board, door and windows."
-          }
-        }
-      }
-    },
-    "Legen Sie über + oben rechts Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create your first class with + at the top right to assign students, lessons and cards."
-          }
-        }
-      }
-    },
-    "Tab-Leiste einblenden" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show tab bar"
-          }
-        }
-      }
-    },
-    "UI Minimieren verkleinert die Tab-Leiste beim Scrollen." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Minimize UI shrinks the tab bar while scrolling."
-          }
-        }
-      }
-    },
-    "Anrufen" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Call"
-          }
-        }
-      }
-    },
-    "E-Mail schreiben" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Send Email"
-          }
-        }
-      }
-    },
-    "fallend" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "falling"
-          }
-        }
-      }
-    },
-    "gleichbleibend" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "steady"
-          }
-        }
-      }
-    },
-    "steigend" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "rising"
-          }
-        }
-      }
-    },
     "–" : {
 
     },
@@ -1441,6 +898,16 @@
         }
       }
     },
+    "30 Tage kostenlos testen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try free for 30 days"
+          }
+        }
+      }
+    },
     "58 dB" : {
       "localizations" : {
         "en" : {
@@ -1615,6 +1082,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "All subjects"
+          }
+        }
+      }
+    },
+    "Alle Funktionen, endet automatisch" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All features, ends automatically"
           }
         }
       }
@@ -1913,6 +1390,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create"
+          }
+        }
+      }
+    },
+    "Anrufen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Call"
           }
         }
       }
@@ -2721,6 +2208,27 @@
         }
       }
     },
+    "Bleibt bis zum Zurückstellen auf „Echt“. Testen und Kaufen schalten dann nur die Simulation weiter." : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stays until switched back to “Real”. Trying and buying then only advance the simulation."
+          }
+        }
+      }
+    },
+    "Blendet Namen und Notizen aus, zum Beispiel wenn Ihr Bildschirm per Beamer zu sehen ist." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hides names and notes, for example when your screen is shown on a projector."
+          }
+        }
+      }
+    },
     "Brandenburg" : {
       "localizations" : {
         "en" : {
@@ -2747,6 +2255,56 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Book returned"
+          }
+        }
+      }
+    },
+    "Buddy freut sich" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buddy is happy"
+          }
+        }
+      }
+    },
+    "Buddy macht Pause" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buddy is taking a break"
+          }
+        }
+      }
+    },
+    "Buddy mag keinen Regen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buddy doesn't like the rain"
+          }
+        }
+      }
+    },
+    "Buddy passt im Unterricht auf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buddy is paying attention in class"
+          }
+        }
+      }
+    },
+    "Buddy schläft" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buddy is asleep"
           }
         }
       }
@@ -2887,6 +2445,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ClassBuddy is locked"
+          }
+        }
+      }
+    },
+    "ClassBuddy kennenlernen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get to know ClassBuddy"
           }
         }
       }
@@ -3195,12 +2763,32 @@
         }
       }
     },
+    "Der App Store ist gerade nicht erreichbar. Bitte versuchen Sie es später noch einmal." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The App Store can't be reached right now. Please try again later."
+          }
+        }
+      }
+    },
     "Der Dokumentenscanner ist auf diesem Gerät nicht verfügbar." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "The document scanner is not available on this device."
+          }
+        }
+      }
+    },
+    "Der Kauf wartet noch auf eine Freigabe." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The purchase is still waiting for approval."
           }
         }
       }
@@ -3251,6 +2839,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Charts"
+          }
+        }
+      }
+    },
+    "Die 30 Tage sind vorbei" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The 30 days are over"
           }
         }
       }
@@ -3331,6 +2929,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enter the grade for each student directly."
+          }
+        }
+      }
+    },
+    "Die Testphase ist vorbei" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your trial has ended"
           }
         }
       }
@@ -3485,6 +3093,27 @@
         }
       }
     },
+    "E-Mail schreiben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Email"
+          }
+        }
+      }
+    },
+    "Echt" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Real (StoreKit)"
+          }
+        }
+      }
+    },
     "Eigene Ausstattung" : {
       "localizations" : {
         "en" : {
@@ -3581,6 +3210,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A fortune cookie saying for the day, on device with Apple Intelligence – tap for a new one."
+          }
+        }
+      }
+    },
+    "Ein kleiner Begleiter, der durch die Kachel läuft und auf den Schultag reagiert. Antippen zum Freuen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A little companion that walks around the tile and reacts to the school day. Tap to make it happy."
           }
         }
       }
@@ -3685,6 +3324,26 @@
         }
       }
     },
+    "Einmalig %@, kein Abo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One-time %@, no subscription"
+          }
+        }
+      }
+    },
+    "Einmalig, kein Abo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One-time, no subscription"
+          }
+        }
+      }
+    },
     "Einpassen" : {
       "localizations" : {
         "en" : {
@@ -3701,6 +3360,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "One per class and subject"
+          }
+        }
+      }
+    },
+    "Einschalten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn on"
           }
         }
       }
@@ -3825,16 +3494,6 @@
         }
       }
     },
-    "Entwickler-Signatur" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Developer signing"
-          }
-        }
-      }
-    },
     "Entwicklung" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3893,6 +3552,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appearance"
+          }
+        }
+      }
+    },
+    "Erste Klasse anlegen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create your first class"
           }
         }
       }
@@ -4055,6 +3724,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Specialist room"
+          }
+        }
+      }
+    },
+    "fallend" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "falling"
           }
         }
       }
@@ -4245,6 +3924,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import school & public holidays"
+          }
+        }
+      }
+    },
+    "Ferien importieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import holidays"
           }
         }
       }
@@ -4567,6 +4256,16 @@
         }
       }
     },
+    "Für diesen Apple Account wurden keine Käufe gefunden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No purchases were found for this Apple Account."
+          }
+        }
+      }
+    },
     "Ganz nach Ihrem Geschmack" : {
       "localizations" : {
         "en" : {
@@ -4749,6 +4448,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Thunderstorm with hail"
+          }
+        }
+      }
+    },
+    "gleichbleibend" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "steady"
           }
         }
       }
@@ -5294,6 +5003,16 @@
         }
       }
     },
+    "Ihre Daten liegen weiterhin auf diesem Gerät. Mit der Vollversion geht es genau dort weiter, einmalig und ohne Abo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your data is still on this device. The full version picks up right where you left off, one-time and without a subscription."
+          }
+        }
+      }
+    },
     "Ihre Hauptfächer" : {
       "localizations" : {
         "en" : {
@@ -5361,6 +5080,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Import"
+          }
+        }
+      }
+    },
+    "Importieren Sie die Ferien Ihres Bundeslands in den Schuleinstellungen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import the school holidays for your state in the school settings."
           }
         }
       }
@@ -5601,6 +5330,16 @@
         }
       }
     },
+    "Jetzt anordnen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrange now"
+          }
+        }
+      }
+    },
     "Kachel bearbeiten" : {
       "localizations" : {
         "en" : {
@@ -5718,6 +5457,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Categories"
+          }
+        }
+      }
+    },
+    "Kauf-Status" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchase status"
+          }
+        }
+      }
+    },
+    "Kauf-Status simulieren" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simulate purchase status"
+          }
+        }
+      }
+    },
+    "Käufe wiederherstellen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore purchases"
           }
         }
       }
@@ -6287,6 +6058,16 @@
         }
       }
     },
+    "Läuft durch die Kachel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Walks around the tile"
+          }
+        }
+      }
+    },
     "Lautsprecher" : {
       "localizations" : {
         "en" : {
@@ -6360,11 +6141,22 @@
       }
     },
     "Legen Sie Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create your first class to assign students, lessons and cards."
+          }
+        }
+      }
+    },
+    "Legen Sie Ihre erste Klasse mit Fächern und Farbe an." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create your first class with subjects and a color."
           }
         }
       }
@@ -6405,6 +6197,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Create a class test, quiz or presentation with + at the top right."
+          }
+        }
+      }
+    },
+    "Legen Sie über + oben rechts einen Raum an und zeichnen Sie den Grundriss mit Tischen, Tafel, Tür und Fenstern." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create a room with + at the top right and draw its floor plan with tables, board, door and windows."
+          }
+        }
+      }
+    },
+    "Legen Sie über + oben rechts Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create your first class with + at the top right to assign students, lessons and cards."
           }
         }
       }
@@ -6540,6 +6352,7 @@
       }
     },
     "Letzte Quelle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6815,6 +6628,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "With the “Random pick” card"
+          }
+        }
+      }
+    },
+    "Mit der Vollversion nutzen Sie ClassBuddy dauerhaft, einmalig und ohne Abo. Ihre Daten bleiben, wie sie sind." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "With the full version you can keep using ClassBuddy, one-time and without a subscription. Your data stays as it is."
           }
         }
       }
@@ -7307,6 +7130,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Drizzle"
+          }
+        }
+      }
+    },
+    "Noch %lld Tage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld days left"
+          }
+        }
+      }
+    },
+    "Noch 1 Tag" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 day left"
           }
         }
       }
@@ -7886,6 +7729,16 @@
         }
       }
     },
+    "Passen Sie Schulbeginn, Stundenlänge und Pausen an Ihre Schule an." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Match the start of school, lesson length and breaks to your school."
+          }
+        }
+      }
+    },
     "Pause" : {
       "localizations" : {
         "en" : {
@@ -8068,6 +7921,16 @@
         }
       }
     },
+    "Privatsphäre-Modus" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy mode"
+          }
+        }
+      }
+    },
     "Privatsphäre-Modus an" : {
       "localizations" : {
         "en" : {
@@ -8215,6 +8078,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Add room"
+          }
+        }
+      }
+    },
+    "Raum zuweisen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assign a room"
           }
         }
       }
@@ -8521,6 +8394,7 @@
       }
     },
     "Schnellmenü schließen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8686,6 +8560,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Student data is protected."
+          }
+        }
+      }
+    },
+    "Schülerliste anlegen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create the student list"
           }
         }
       }
@@ -9048,6 +8932,16 @@
         }
       }
     },
+    "Sortieren Sie die Kacheln der Übersicht oder blenden Sie einzelne aus." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reorder the overview cards or hide individual ones."
+          }
+        }
+      }
+    },
     "Spalten" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9222,6 +9116,16 @@
         }
       }
     },
+    "steigend" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rising"
+          }
+        }
+      }
+    },
     "Stoppen" : {
       "localizations" : {
         "en" : {
@@ -9342,6 +9246,16 @@
         }
       }
     },
+    "Stundenplan anlegen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set up your timetable"
+          }
+        }
+      }
+    },
     "Stundenplan dieser Woche" : {
       "localizations" : {
         "en" : {
@@ -9358,6 +9272,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Period schedule"
+          }
+        }
+      }
+    },
+    "Stundenraster und Pausen einstellen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set lesson times and breaks"
           }
         }
       }
@@ -9399,6 +9323,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Open system settings"
+          }
+        }
+      }
+    },
+    "Tab-Leiste einblenden" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show tab bar"
           }
         }
       }
@@ -9720,6 +9654,46 @@
         }
       }
     },
+    "Testen Sie 30 Tage lang alle Funktionen kostenlos. Danach schalten Sie die Vollversion einmalig frei, ohne Abo." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try all features free for 30 days. After that, unlock the full version with a one-time purchase, no subscription."
+          }
+        }
+      }
+    },
+    "Testphase" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trial"
+          }
+        }
+      }
+    },
+    "Testphase abgelaufen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trial expired"
+          }
+        }
+      }
+    },
+    "Testphase läuft" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trial running"
+          }
+        }
+      }
+    },
     "Testraum 101" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9801,6 +9775,16 @@
         }
       }
     },
+    "Tipps anzeigen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show tips"
+          }
+        }
+      }
+    },
     "Tisch" : {
       "localizations" : {
         "en" : {
@@ -9869,6 +9853,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enter the grades yourself – the app doesn’t calculate anything."
+          }
+        }
+      }
+    },
+    "Tragen Sie die Schüler dieser Klasse ein." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the students of this class."
+          }
+        }
+      }
+    },
+    "Tragen Sie die Stunden dieser Klasse im Kalender ein." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add this class's lessons to the calendar."
           }
         }
       }
@@ -10013,6 +10017,16 @@
         }
       }
     },
+    "UI Minimieren verkleinert die Tab-Leiste beim Scrollen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimize UI shrinks the tab bar while scrolling."
+          }
+        }
+      }
+    },
     "Unbekannt" : {
       "localizations" : {
         "en" : {
@@ -10074,6 +10088,7 @@
       }
     },
     "Verbergen" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10185,6 +10200,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Discard"
+          }
+        }
+      }
+    },
+    "Vollversion freischalten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlock full version"
+          }
+        }
+      }
+    },
+    "Vollversion kaufen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buy full version"
           }
         }
       }
@@ -10426,6 +10461,16 @@
         }
       }
     },
+    "Weisen Sie Ihren Stunden einen Raum zu, dann öffnet die Stunde direkt den Sitzplan." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assign a room to your lessons, then the lesson opens the seating plan directly."
+          }
+        }
+      }
+    },
     "Weiter" : {
       "localizations" : {
         "en" : {
@@ -10579,6 +10624,7 @@
       }
     },
     "Wird beim nächsten Laden der Wetter-Kachel aktualisiert (höchstens alle 30 Minuten)." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10679,6 +10725,7 @@
       }
     },
     "Zeichnen Sie den Grundriss eines Raums mit Tischen, Tafel, Tür und Fenstern." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10704,6 +10751,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timed out – is the script running forever?"
+          }
+        }
+      }
+    },
+    "Zu den Räumen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to rooms"
+          }
+        }
+      }
+    },
+    "Zu den Schuleinstellungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to school settings"
+          }
+        }
+      }
+    },
+    "Zu den Schülern" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to students"
           }
         }
       }
@@ -10864,6 +10941,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Swipe left to remove."
+          }
+        }
+      }
+    },
+    "Zum Kalender" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to calendar"
           }
         }
       }

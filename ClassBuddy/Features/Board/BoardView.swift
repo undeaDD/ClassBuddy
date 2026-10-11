@@ -27,7 +27,7 @@ struct BoardView: View {
     @State private var preview: URL?
 
     private var selectedClass: SchoolClass? {
-        classes.first { $0.id == app.selectedClassID }
+        classes.first { $0.id == app.selectedClassID && !$0.isDeleted }
     }
 
     var body: some View {
@@ -78,8 +78,7 @@ struct BoardView: View {
         if schoolClass.subjects.isEmpty {
             EmptyStateView(
                 title: loc("Noch keine Fächer"),
-                message: loc("Tragen Sie für die \(schoolClass.title) Fächer ein, um Tafelbilder zu speichern."),
-                symbol: AppTab.board.symbol
+                message: loc("Tragen Sie für die \(schoolClass.title) Fächer ein, um Tafelbilder zu speichern.")
             )
             .background(Color(.systemGroupedBackground))
         } else if photos.isEmpty {
@@ -87,8 +86,7 @@ struct BoardView: View {
                 title: loc("Noch kein Tafelbild"),
                 message: loc(
                     "Scannen Sie die Tafel am Ende der Stunde über + oben rechts. Ein neues Foto ersetzt immer das letzte des Fachs."
-                ),
-                symbol: AppTab.board.symbol
+                )
             )
             .background(Color(.systemGroupedBackground))
         } else {

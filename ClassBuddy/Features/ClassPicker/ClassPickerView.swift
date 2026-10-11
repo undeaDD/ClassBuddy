@@ -37,8 +37,7 @@ struct ClassPickerView: View {
                         // Sheet über den ganzen Bildschirm: vollwertiger Leerzustand.
                         EmptyStateView(
                             title: "Noch keine Klassen",
-                            message: loc("Legen Sie über + oben rechts Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen."),
-                            symbol: .custom(.userXmark)
+                            message: loc("Legen Sie über + oben rechts Ihre erste Klasse an, um Schüler, Stunden und Kacheln zuzuordnen.")
                         )
                     } else {
                         Text("Noch keine Klassen")
@@ -181,16 +180,22 @@ struct ClassPickerView: View {
     }
 
     private func delete(_ schoolClass: SchoolClass) {
-        if app.selectedClassID == schoolClass.id { app.selectedClassID = nil }
-        // Kopierte Dokumente der Übersichts-Kacheln mit entfernen.
-        schoolClass.dashboardLinks.forEach(LinkFileStore.removeFile)
-        let title = schoolClass.title
-        modelContext.delete(schoolClass)
-        do {
-            try modelContext.save()
-            toasts.success(loc("\(title) gelöscht"))
-        } catch {
-            toasts.error(loc("Löschen fehlgeschlagen: \(error.localizedDescription)"))
+        let wasSelected = app.selectedClassID == schoolClass.id
+        if wasSelected { app.selectedClassID = nil }
+        Task {
+            // Erst löschen, wenn die Seiten der Klasse (z. B. Übersicht) verschwunden sind: Sonst lesen sie beim
+            // nächsten Update noch das gelöschte Objekt (Absturz „backing data was detached … dashboardHidden“).
+            if wasSelected { try? await Task.sleep(for: .milliseconds(350)) }
+            // Kopierte Dokumente der Übersichts-Kacheln mit entfernen.
+            schoolClass.dashboardLinks.forEach(LinkFileStore.removeFile)
+            let title = schoolClass.title
+            modelContext.delete(schoolClass)
+            do {
+                try modelContext.save()
+                toasts.success(loc("\(title) gelöscht"))
+            } catch {
+                toasts.error(loc("Löschen fehlgeschlagen: \(error.localizedDescription)"))
+            }
         }
     }
 }

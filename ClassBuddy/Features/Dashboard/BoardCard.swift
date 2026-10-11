@@ -27,7 +27,7 @@ struct LastBoardCard: View {
         if let photo = schoolClass.latestBoardPhoto {
             Button(action: Haptics.tapping { app.openBoard(subject: photo.subject) }) {
                 BoardImageCard(subject: SchoolClass.displayName(ofSubject: photo.subject), dateText: Self.dateText(photo.takenAt)) {
-                    if let thumbnail {
+                    if let thumbnail = thumbnail ?? DashboardImageCache.cachedBoard(photo.id) {
                         Image(uiImage: thumbnail)
                             .resizable()
                             .scaledToFill()
@@ -41,8 +41,7 @@ struct LastBoardCard: View {
             .hoverEffect(.lift)
             .accessibilityLabel(card.title)
             .task(id: photo.id) {
-                let data = photo.imageData
-                thumbnail = await Task.detached { BoardPhotoImage.thumbnail(from: data, maxPixelSize: 900) }.value
+                thumbnail = await DashboardImageCache.board(photo)
             }
         } else {
             StatCard(
@@ -97,5 +96,36 @@ struct BoardImageCard<Picture: View>: View {
         .padding(.vertical, 8)
         .background(.regularMaterial, in: .rect(cornerRadius: 14, style: .continuous))
         .padding(12)
+    }
+}
+
+/// Fertige Vorschaubilder der Übersicht im Speicher. Kacheln werden oft neu aufgebaut (Anordnen-Modus an/aus,
+/// Scrollen im Lazy-Grid); ohne Cache lud und dekodierte jede neue Kachel ihr Bild erneut, das Tafelbild sogar
+/// samt Foto-Daten aus der Datenbank auf dem Main Thread – der Anordnen-Modus ruckelte stark.
+enum DashboardImageCache {
+    nonisolated(unsafe) private static let images = NSCache<NSString, UIImage>()
+
+    static func cachedThumbnail(_ url: URL) -> UIImage? {
+        images.object(forKey: "file|\(url.path(percentEncoded: false))" as NSString)
+    }
+
+    static func thumbnail(for url: URL) async -> UIImage? {
+        if let cached = cachedThumbnail(url) { return cached }
+        let image = await Task.detached { Thumbnail.make(from: url, maxPixelSize: 900) }.value
+        if let image { images.setObject(image, forKey: "file|\(url.path(percentEncoded: false))" as NSString) }
+        return image
+    }
+
+    static func cachedBoard(_ id: UUID) -> UIImage? {
+        images.object(forKey: "board|\(id.uuidString)" as NSString)
+    }
+
+    /// Foto-Daten nur lesen, wenn das Bild noch nicht im Speicher liegt.
+    static func board(_ photo: BoardPhoto) async -> UIImage? {
+        if let cached = cachedBoard(photo.id) { return cached }
+        let data = photo.imageData
+        let image = await Task.detached { BoardPhotoImage.thumbnail(from: data, maxPixelSize: 900) }.value
+        if let image { images.setObject(image, forKey: "board|\(photo.id.uuidString)" as NSString) }
+        return image
     }
 }

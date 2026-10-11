@@ -368,3 +368,70 @@ extension RoomEditorTests {
         #expect(!model.canUndo)
     }
 }
+
+// MARK: - Ausschnitt, Werkzeuge, Demo-Raum
+
+extension RoomEditorTests {
+    @Test("Editor-Ausschnitt: Raum beim ersten Layout einpassen, Zoom um einen Punkt begrenzt, Raster hin und zurück")
+    func fitAndZoom() {
+        let model = RoomEditorModel(shapes: [RoomShape(kind: .outline, points: Self.rect(0, 0, 10, 6))])
+        model.bottomInset = 90
+        model.viewSize = CGSize(width: 600, height: 500)
+        // Raummitte (5, 3) liegt in der Mitte der sichtbaren Fläche (über der Toolbox).
+        let center = model.screenPoint(Self.p(5, 3))
+        #expect(abs(center.x - 300) < 0.5)
+        #expect(abs(center.y - (500 - 90) / 2) < 0.5)
+        #expect(model.zoom <= 2)
+
+        // Zoomen um einen festen Punkt: der Punkt bleibt stehen; Grenzen 0,25…4.
+        let focus = CGPoint(x: 200, y: 150)
+        let before = model.gridLocation(focus)
+        model.zoom(by: 1.5, around: focus)
+        let after = model.gridLocation(focus)
+        #expect(abs(before.x - after.x) < 0.0001 && abs(before.y - after.y) < 0.0001)
+        model.zoom(by: 100, around: focus)
+        #expect(model.zoom == RoomEditorModel.zoomRange.upperBound)
+        model.zoom(by: 0.0001, around: focus)
+        #expect(model.zoom == RoomEditorModel.zoomRange.lowerBound)
+
+        // Rasterpunkt → Bildschirm → wieder einrasten.
+        #expect(model.snap(model.screenPoint(Self.p(7, 2))) == Self.p(7, 2))
+
+        // Leerer Raum: Einpassen auf eine Standardfläche, ohne Größe passiert nichts.
+        let empty = RoomEditorModel(shapes: [])
+        empty.fit(animated: false)
+        #expect(empty.zoom == 1 && empty.pan == .zero)
+        empty.viewSize = CGSize(width: 400, height: 400)
+        #expect(empty.zoom > 0)
+    }
+
+    @Test("Werkzeuge: Titel und Icons vollständig, Radierer schaltet zum letzten Stift zurück")
+    func tools() {
+        let tools: [RoomTool] = [.move, .eraser] + RoomElementKind.allCases.map(RoomTool.pen)
+        for tool in tools {
+            #expect(!tool.title.isEmpty && !tool.shortTitle.isEmpty, "\(tool)")
+            _ = tool.image
+        }
+        #expect(RoomElementKind.allCases.allSatisfy { !$0.shortTitle.isEmpty })
+
+        let model = RoomEditorModel(shapes: [])
+        model.tool = .pen(.table)
+        model.toggleEraser()
+        #expect(model.tool == .eraser)
+        model.toggleEraser()
+        #expect(model.tool == .pen(.table))
+    }
+
+    @Test("Demo-Klassenzimmer zurücksetzen: legt es neu an bzw. setzt den Grundriss zurück")
+    func resetDemoRoom() throws {
+        let context = try Self.makeContext()
+        RoomDemo.reset(in: context)
+        let rooms = try context.fetch(FetchDescriptor<Room>())
+        #expect(rooms.count == 1)
+        let room = try #require(rooms.first)
+        #expect(!room.elements.isEmpty)
+        // Erneut zurücksetzen: kein zweiter Raum.
+        RoomDemo.reset(in: context)
+        #expect(try context.fetchCount(FetchDescriptor<Room>()) == 1)
+    }
+}

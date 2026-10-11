@@ -183,7 +183,7 @@ struct LogicTests {
 
     @Test("Installationsweg erkennen", arguments: [
         InstallCase(debug: true, profile: true, expected: .xcode),
-        InstallCase(profile: true, expected: .developer),
+        InstallCase(profile: true, expected: .xcode),
         InstallCase(environment: "Sandbox", expected: .testFlight),
         InstallCase(environment: "Production", expected: .appStore),
     ])
@@ -437,5 +437,40 @@ extension LogicTests {
         #expect(!PurchaseStatus.loading.requiresChoice && !PurchaseStatus.trial(daysLeft: 3).requiresChoice)
         #expect(PurchaseStatus.trial(daysLeft: 3).trialDaysLeft == 3 && PurchaseStatus.purchased.trialDaysLeft == nil)
         #expect(trialDaysText(1) == "Noch 1 Tag" && trialDaysText(23) == "Noch 23 Tage")
+    }
+}
+
+// MARK: - Buddy
+
+extension LogicTests {
+    @Test("Buddy: Stimmung, Szene und Zubehör aus Unterricht, Ferien, Regen und Uhrzeit")
+    @MainActor
+    func buddyContext() {
+        let lesson = BuddyContext(isLessonRunning: true)
+        #expect(lesson.mood == .alert && lesson.scene == .classroom && lesson.accessory == .none)
+
+        let breakTime = BuddyContext()
+        #expect(breakTime.mood == .relaxed && breakTime.scene == .outdoor)
+
+        let holiday = BuddyContext(isSchoolDay: false, isHoliday: true)
+        #expect(holiday.mood == .relaxed && holiday.scene == .beach && holiday.accessory == .sunglasses)
+
+        // Regen: sitzt still mit X-Augen, auch im Unterricht und in den Ferien; keine Sonnenbrille.
+        let rainyLesson = BuddyContext(isLessonRunning: true, isRaining: true)
+        #expect(rainyLesson.mood == .gloomy && rainyLesson.scene == .rain && rainyLesson.accessory == .none)
+        #expect(BuddyContext(isSchoolDay: false, isHoliday: true, isRaining: true).accessory == .none)
+        #expect(!BuddyMotion.pose(at: .now, mood: .gloomy, tappedAt: nil).isWalking)
+
+        // Nachts und am Wochenende schläft er, ohne Zubehör, auch bei Regen.
+        for context in [BuddyContext(isNight: true), BuddyContext(isSchoolDay: false, isRaining: true)] {
+            #expect(context.mood == .sleeping && context.scene == .night && context.accessory == .none)
+        }
+
+        // Beim Laufen bleibt er im Laufbereich, beim Schlafen steht er.
+        for second in stride(from: 0.0, to: 24, by: 0.5) {
+            let pose = BuddyMotion.pose(at: Date(timeIntervalSinceReferenceDate: second), mood: .relaxed, tappedAt: nil)
+            #expect((0.15...0.85).contains(pose.x))
+        }
+        #expect(!BuddyMotion.pose(at: .now, mood: .sleeping, tappedAt: nil).isWalking)
     }
 }

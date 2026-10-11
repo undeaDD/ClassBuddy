@@ -54,9 +54,12 @@ struct SecretariatCard: View {
             }
             .opacity(url == nil ? 0.35 : 1)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .foregroundStyle(.tint)
+            // Bewusst ohne Glas: zwei Glas-Knöpfe je Kachel kosteten beim Scrollen viele Layout-Durchläufe.
+            .background(.tint.opacity(0.12), in: .rect(cornerRadius: 20, style: .continuous))
+            .contentShape(.rect(cornerRadius: 20, style: .continuous))
         }
-        .appGlassButtonStyle()
-        .buttonBorderShape(.roundedRectangle(radius: 20))
+        .buttonStyle(.plain)
         .help(help)
         .accessibilityLabel(help)
         .accessibilityHint(url == nil ? loc("Noch nicht eingetragen") : "")

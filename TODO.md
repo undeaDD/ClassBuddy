@@ -34,6 +34,16 @@ ohne Familienfreigabe. Nach Ablauf ist nur die Kaufseite erreichbar, kein Export
 
 Kein Sideloading mehr: Workflow „Build IPA“, README-Abschnitt, AltStore-Erkennung und IPA im Release entfernt.
 
+## Widgets: Übersichts-Kacheln als Widget (geplant)
+
+Entscheidungen (11.10.2026): ein konfigurierbares Widget „ClassBuddy-Kachel“ (Kachel-Art und Klasse wählbar) neben
+„Jetzt & Als Nächstes“. Klasse „Automatisch“: Klasse der laufenden, sonst der nächsten Stunde heute, sonst die zuletzt
+gewählte. Widgets bekommen nur das Nötigste als Snapshot (App Group, kein SwiftData). Zahlen sind unkritisch; nur Kacheln
+mit Namen oder freiem Text werden auf dem Sperrbildschirm ausgeblendet (`privacySensitive`). Werkzeuge (Zufallsauswahl,
+Gruppen, Dokumente, Websites …) öffnen per Antippen die App direkt in der passenden Ansicht (URL-Schema nötig).
+Wetter: letzter Wert aus der App (noch offen, ob das Widget selbst abfragen soll). Nicht als Widget: Timer, Lautstärke,
+Buddy, Feedback.
+
 ## App-Store-Bilder
 
 - [ ] Geräterahmen (Ton-Look) liefern: `Marketing/Frames/` (iphone, ipad, duo; Format siehe README dort)
@@ -47,15 +57,23 @@ Kein Sideloading mehr: Workflow „Build IPA“, README-Abschnitt, AltStore-Erke
       Kaufseite mit „30 Tage kostenlos testen“ (hervorgehoben) und „Vollversion kaufen“, „Käufe wiederherstellen“;
       Hintergrund ohne Entscheidung → Einführung beginnt von vorn; abgelaufen → nur Kaufseite, Karte „Testphase abgelaufen“;
       Testphasen-Kachel zuerst auf der Übersicht, öffnet die Kaufseite mit xmark; iPad: App dahinter unscharf
+- [ ] Buddy-Kachel (Galerie › „Buddy“): läuft hin und her, blinzelt; Unterricht → Klassenzimmer, sonst draußen,
+      Ferien → Strand mit Sonnenbrille, Regen (nur wenn die Wetter-Kachel geladen hat) → Schirm, abends/Wochenende → schläft;
+      Antippen → Sprung mit Herzen; steht still beim Anordnen, im Privatsphäre-Modus und bei „Bewegung reduzieren“; Dunkelmodus
+- [ ] Einstellungen, Kopfbereich: Installationsweg nur noch „Xcode“, „TestFlight“ oder „App Store“; Maskottchen „Hallo“
+      statt App-Icon
+- [ ] Maskottchen: Einführung (Seite 1 Standard, 2 Schild, 3 Idee, Kaufseite Sanduhr), alle Leerzustände („Fragezeichen“,
+      iPhone 60 pt, iPad 80 pt), hell und dunkel; Debug-Build: schwebender Button unten rechts öffnet das Debug-Menü
 - [ ] Raum-Editor, Werkzeug „Maus“: Eckpunkte ziehen (Raum, Tisch, Tafel, Tür …), gemeinsame Ecken wandern mit,
       daneben verschiebt weiter den Ausschnitt; Rückgängig; zweiter Finger während des Ziehens bricht ab
 
 - [ ] iPhone Duo: komplette App durchtesten (Layout, Tab-Leiste, Übersicht, Sitzplan, Widget)
 - [ ] Demo-Raum aus Sicht der Lehrkraft (Tafel und Pult unten): wird beim Start jetzt umgestellt (falls unverändert),
       sonst Debug-Menü → „Demo-Klassenzimmer zurücksetzen“
-- [ ] Tipps (frisch installiert): Klassen-Button-Popover sauber am Button, Einrichtungs-Kette auf der Übersicht
-      (Schüler → Stundenplan → Schulzeiten → Raum → Ferien), „Zu den Schuleinstellungen“ auf dem iPhone (über „Mehr“),
-      Privatsphäre-Tipp nach 3 Starts, „Kacheln anordnen“ danach, Schalter „Tipps anzeigen“
+- [ ] Tipps (frisch installiert), alle als Kachel auf der Übersicht: ohne Klasse „Erste Klasse anlegen“ über dem
+      Leerzustand (xmark → Leerzustand wieder volle Höhe), dann Einrichtungs-Kette (Schüler → Stundenplan → Schulzeiten →
+      Raum → Ferien), „Zu den Schuleinstellungen“ auf dem iPhone (über „Mehr“), Privatsphäre-Tipp nach 3 Starts
+      („Einschalten“), „Kacheln anordnen“ danach („Jetzt anordnen“), Schalter „Tipps anzeigen“
 
 ## Später
 

@@ -2,26 +2,78 @@ import Foundation
 
 /// Ermittelt, welche Stunde an einem Tag in einem Slot stattfindet
 /// (Einzelstunde vor wöchentlicher Stunde, wöchentliche Stunden entfallen in Ferien).
+///
+/// Baut beim Erstellen einmal Nachschlage-Tabellen auf: Vorher durchsuchte jede Abfrage alle Stunden (jede
+/// Eigenschaft ein SwiftData-Zugriff). „Wochenstunden“ fragt 7 Tage × alle Slots ab – das kostete beim Erzeugen
+/// der Kachel über 100 ms und ließ die Übersicht beim Scrollen ruckeln.
 struct LessonSchedule {
     let lessons: [Lesson]
     let holidays: [Holiday]
     let slots: [LessonSlot]
 
     private let calendar = Calendar.school
+    /// Wöchentliche Stunden nach Wochentag (0 = Montag) und Slot; bei Dopplungen gilt die erste (wie bisher).
+    private let recurring: [RecurringKey: Lesson]
+    /// Einzelstunden nach Tagesbeginn und Slot.
+    private let single: [SingleKey: Lesson]
+    /// Ferien als Tagesbereiche (Tagesbeginn, wie `Holiday.contains`).
+    private let holidayDays: [HolidayDays]
+
+    private struct HolidayDays {
+        let start: Date
+        let end: Date
+        let holiday: Holiday
+    }
+
+    private struct RecurringKey: Hashable {
+        let weekday: Int
+        let slot: Int
+    }
+
+    private struct SingleKey: Hashable {
+        let day: Date
+        let slot: Int
+    }
+
+    init(lessons: [Lesson], holidays: [Holiday], slots: [LessonSlot]) {
+        self.lessons = lessons
+        self.holidays = holidays
+        self.slots = slots
+        var recurring: [RecurringKey: Lesson] = [:]
+        var single: [SingleKey: Lesson] = [:]
+        let calendar = Calendar.school
+        for lesson in lessons {
+            if lesson.isRecurring {
+                let key = RecurringKey(weekday: lesson.weekday, slot: lesson.slotIndex)
+                if recurring[key] == nil { recurring[key] = lesson }
+            } else if let date = lesson.date {
+                let key = SingleKey(day: calendar.startOfDay(for: date), slot: lesson.slotIndex)
+                if single[key] == nil { single[key] = lesson }
+            }
+        }
+        self.recurring = recurring
+        self.single = single
+        let dayCalendar = Calendar.current
+        holidayDays = holidays.map { holiday in
+            HolidayDays(
+                start: dayCalendar.startOfDay(for: holiday.startDate),
+                end: dayCalendar.startOfDay(for: holiday.endDate),
+                holiday: holiday
+            )
+        }
+    }
 
     func holiday(on date: Date) -> Holiday? {
-        holidays.first { $0.contains(date) }
+        let day = Calendar.current.startOfDay(for: date)
+        return holidayDays.first { $0.start <= day && day <= $0.end }?.holiday
     }
 
     func lesson(on date: Date, slotIndex: Int) -> Lesson? {
-        if let single = lessons.first(where: {
-            !$0.isRecurring && $0.slotIndex == slotIndex && $0.date.map { calendar.isDate($0, inSameDayAs: date) } == true
-        }) {
-            return single
+        if let lesson = single[SingleKey(day: calendar.startOfDay(for: date), slot: slotIndex)] {
+            return lesson
         }
         guard holiday(on: date) == nil else { return nil }
-        let weekday = calendar.mondayBasedWeekday(of: date)
-        return lessons.first { $0.isRecurring && $0.weekday == weekday && $0.slotIndex == slotIndex }
+        return recurring[RecurringKey(weekday: calendar.mondayBasedWeekday(of: date), slot: slotIndex)]
     }
 
     /// Nächste (noch nicht beendete) Stunde einer Klasse ab `now`, max. 8 Wochen voraus;

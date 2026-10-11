@@ -28,7 +28,7 @@ struct NotesView: View {
     }
 
     private var selectedClass: SchoolClass? {
-        classes.first { $0.id == app.selectedClassID }
+        classes.first { $0.id == app.selectedClassID && !$0.isDeleted }
     }
 
     var body: some View {
@@ -96,8 +96,7 @@ struct NotesView: View {
         if schoolClass.students.isEmpty {
             EmptyStateView(
                 title: loc("Noch keine Schüler"),
-                message: loc("Legen Sie im Tab „Schüler“ die Schülerinnen und Schüler der \(schoolClass.title) an."),
-                symbol: AppTab.notes.symbol
+                message: loc("Legen Sie im Tab „Schüler“ die Schülerinnen und Schüler der \(schoolClass.title) an.")
             )
             .background(Color(.systemGroupedBackground))
         } else {
@@ -164,8 +163,7 @@ struct StudentSubjectsView: View {
             if subjects.isEmpty {
                 EmptyStateView(
                     title: loc("Keine Fächer"),
-                    message: loc("Tragen Sie bei der Klasse die Fächer ein, die Sie dort unterrichten."),
-                    symbol: AppTab.notes.symbol
+                    message: loc("Tragen Sie bei der Klasse die Fächer ein, die Sie dort unterrichten.")
                 )
             }
         }

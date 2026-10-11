@@ -308,14 +308,12 @@ struct SeatingPlanView: View {
                 } else if schoolClass?.students.isEmpty ?? true {
                     EmptyStateView(
                         title: loc("Noch keine Schüler"),
-                        message: loc("Diese Klasse hat noch keine Schülerinnen und Schüler."),
-                        symbol: AppTab.students.symbol
+                        message: loc("Diese Klasse hat noch keine Schülerinnen und Schüler.")
                     )
                 } else {
                     EmptyStateView(
                         title: loc("Alle haben einen Platz"),
-                        message: loc("Über langes Drücken auf einen Schüler geben Sie seinen Platz wieder frei."),
-                        symbol: AppTab.students.symbol
+                        message: loc("Über langes Drücken auf einen Schüler geben Sie seinen Platz wieder frei.")
                     )
                 }
             }
@@ -465,7 +463,7 @@ enum SeatingPlanPDF {
 
     static var footer: some View {
         HStack(spacing: 8) {
-            Image(.appIconPreview)
+            Image(.mascotHello)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 18, height: 18)
