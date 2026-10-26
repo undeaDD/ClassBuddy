@@ -17,6 +17,7 @@
 		10F213227F4347ECBD6D665C /* RandomGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00038BB8AA848E7920A3FD1 /* RandomGroups.swift */; };
 		125D8EC22A8E701DD657483E /* collaborators.en.html in Resources */ = {isa = PBXBuildFile; fileRef = 00D91AF2928F4BA7AE559060 /* collaborators.en.html */; };
 		12C5344E306BEED40087F828 /* ClassBuddy.icon in Resources */ = {isa = PBXBuildFile; fileRef = 12C5344D306BEED40087F828 /* ClassBuddy.icon */; };
+		12C5344E306BEED40087F829 /* ClassBuddyClassic.icon in Resources */ = {isa = PBXBuildFile; fileRef = 12C5344D306BEED40087F829 /* ClassBuddyClassic.icon */; };
 		12CA6338306EF68700FA6331 /* ClassBuddy-InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 12CA6337306EF68700FA6331 /* ClassBuddy-InfoPlist.xcstrings */; };
 		141C1539DBBE13FC658F4DD1 /* WidgetSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427BECADB5D7AB2BB37D98DE /* WidgetSchedule.swift */; };
 		1658DD2C5217B26D0FBEF514 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D1542A53C4CB6A27D96639 /* Backup.swift */; };
@@ -113,6 +114,7 @@
 		AB615A72469E1F9D6A36271B /* InstallInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D43C96B5571D1D64D00F95F /* InstallInfo.swift */; };
 		ADA8E806D651637BB2A51229 /* AppAccent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A7DEF83E6763DF8BFA1644 /* AppAccent.swift */; };
 		B09A8EA517F947948285C56F /* ChecklistTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6203DC422D24348AFBCC0A3 /* ChecklistTests.swift */; };
+		B09A8EA517F947948285C570 /* LastCreatedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6203DC422D24348AFBCC0A4 /* LastCreatedTests.swift */; };
 		B1CF3953FA5B4C8671FBAFCD /* RoomValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD0D0822CA2BDB0B86407429 /* RoomValidation.swift */; };
 		B22BCDD80125192BC9E98904 /* PurchaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA95490E9EDDAD8E94432575 /* PurchaseStore.swift */; };
 		B2B3D7322C3EDF1D155A2949 /* AppTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC207FD7AA20E6D23483428B /* AppTips.swift */; };
@@ -131,6 +133,7 @@
 		C618365AA69460436ADDA4AE /* licenses.html in Resources */ = {isa = PBXBuildFile; fileRef = 08CDDAC168A4B064077741AF /* licenses.html */; };
 		C61F8C1DDBA3437CAE66A5C0 /* ChecklistCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1889581B6454E11A4615727 /* ChecklistCard.swift */; };
 		C90AE7627654FA715A2928C0 /* PersonFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22B00150D405734C85B655E /* PersonFields.swift */; };
+		C90AE7627654FA715A2928C1 /* LastCreated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22B00150D405734C85B655F /* LastCreated.swift */; };
 		CAC28EE70B7409F7BD7D9B12 /* BackupImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CAFCF358CAD39F2E3388BA0 /* BackupImport.swift */; };
 		CD9C68972632D01C856B41A8 /* TestDataAndIconPackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0AA9B2B39044B62B5604CF7 /* TestDataAndIconPackTests.swift */; };
 		CF8B035E3B96D2066F86EF0C /* ClassBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8737C4298AA78E18F6D25A7E /* ClassBadge.swift */; };
@@ -222,6 +225,7 @@
 		10776E2B9A9F45B6923AA74B /* BoardPhotoTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardPhotoTests.swift; sourceTree = "<group>"; };
 		12254EA830769F4400C03CC0 /* ClassBuddy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClassBuddy.entitlements; sourceTree = "<group>"; };
 		12C5344D306BEED40087F828 /* ClassBuddy.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ClassBuddy.icon; sourceTree = "<group>"; };
+		12C5344D306BEED40087F829 /* ClassBuddyClassic.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = ClassBuddyClassic.icon; sourceTree = "<group>"; };
 		12CA6337306EF68700FA6331 /* ClassBuddy-InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "ClassBuddy-InfoPlist.xcstrings"; sourceTree = "<group>"; };
 		143A287C3DE84C4084C99BCD /* BoardScanner.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BoardScanner.swift; sourceTree = "<group>"; };
 		1AF0AA061501603293957C0A /* DashboardLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardLogic.swift; sourceTree = "<group>"; };
@@ -315,6 +319,7 @@
 		9E06FA70F2A5B241F138BAD2 /* RoomEditorModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomEditorModel.swift; sourceTree = "<group>"; };
 		9E18F81ED8B116BD65317A33 /* ClassBuddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClassBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A22B00150D405734C85B655E /* PersonFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonFields.swift; sourceTree = "<group>"; };
+		A22B00150D405734C85B655F /* LastCreated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastCreated.swift; sourceTree = "<group>"; };
 		A496E9CD0C20BDF78BA147A7 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		A4C605ECD63BB4BB0DF812E2 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		A822325F87A549E4B231323D /* AssessmentTypesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssessmentTypesView.swift; sourceTree = "<group>"; };
@@ -357,6 +362,7 @@
 		D1B0057A9E3C4F21A8B6C004 /* WhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewView.swift; sourceTree = "<group>"; };
 		D41DC12A563B629FA7ADBEAC /* BackupCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupCells.swift; sourceTree = "<group>"; };
 		D6203DC422D24348AFBCC0A3 /* ChecklistTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChecklistTests.swift; sourceTree = "<group>"; };
+		D6203DC422D24348AFBCC0A4 /* LastCreatedTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LastCreatedTests.swift; sourceTree = "<group>"; };
 		D83FE09E05A6E59AB5E9A70A /* ScheduleWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScheduleWidget.swift; sourceTree = "<group>"; };
 		DA107252E42D4EE90421AB55 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DD9F1A24DC1A54F6781E2E94 /* RoomEditorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomEditorTests.swift; sourceTree = "<group>"; };
@@ -562,6 +568,7 @@
 				099A865195586613AAD8EE54 /* Legal */,
 				2B1F9ED4838514B91933B244 /* Assets.xcassets */,
 				12C5344D306BEED40087F828 /* ClassBuddy.icon */,
+				12C5344D306BEED40087F829 /* ClassBuddyClassic.icon */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -684,6 +691,7 @@
 				C45B842799400D6FDE2324EA /* IconPack.swift */,
 				C7D9072F12DEC822C6F30D7D /* IconTheme.swift */,
 				A22B00150D405734C85B655E /* PersonFields.swift */,
+				A22B00150D405734C85B655F /* LastCreated.swift */,
 				A496E9CD0C20BDF78BA147A7 /* Toast.swift */,
 				427BECADB5D7AB2BB37D98DE /* WidgetSchedule.swift */,
 				6FE70D274EA24E444259A6F5 /* OSCompatibility.swift */,
@@ -720,6 +728,7 @@
 				CC380103EAE34F99A4D2F116 /* StatsTests.swift */,
 				10776E2B9A9F45B6923AA74B /* BoardPhotoTests.swift */,
 				D6203DC422D24348AFBCC0A3 /* ChecklistTests.swift */,
+				D6203DC422D24348AFBCC0A4 /* LastCreatedTests.swift */,
 				24A73B331E0A4CFCBCF925ED /* StudentRecordTests.swift */,
 				6BB5BABFC5E649338AA8496E /* AssessmentTests.swift */,
 				58B56ADD01C0472D9635EA81 /* RecordExportTests.swift */,
@@ -896,6 +905,7 @@
 				F5339FA022624D2B38258A34 /* PrivacyInfo.xcprivacy in Resources */,
 				D56E6F223610F9BBBCF9A4C0 /* imprint.html in Resources */,
 				12C5344E306BEED40087F828 /* ClassBuddy.icon in Resources */,
+				12C5344E306BEED40087F829 /* ClassBuddyClassic.icon in Resources */,
 				2A74F484E493C6963307FDBA /* Assets.xcassets in Resources */,
 			);
 		};
@@ -934,6 +944,7 @@
 				1A791E268DE1748B1E1FFC5F /* AppSettingsView.swift in Sources */,
 				5D26B4A3FA4B978A27BA6AF6 /* DebugMenuView.swift in Sources */,
 				C90AE7627654FA715A2928C0 /* PersonFields.swift in Sources */,
+				C90AE7627654FA715A2928C1 /* LastCreated.swift in Sources */,
 				4BF6F893EF61E1C6E2FFA64E /* TeacherProfileView.swift in Sources */,
 				F56D5D0C83E6697E11CD3242 /* LinkEditorView.swift in Sources */,
 				095105AB524AA19F029B3D69 /* ScriptCard.swift in Sources */,
@@ -1049,6 +1060,7 @@
 				995A9BA93ECE41DE82E3AD27 /* StatsTests.swift in Sources */,
 				20CA42B8CAED4A84A8FE2745 /* BoardPhotoTests.swift in Sources */,
 				B09A8EA517F947948285C56F /* ChecklistTests.swift in Sources */,
+				B09A8EA517F947948285C570 /* LastCreatedTests.swift in Sources */,
 				E5D6AF340321447ABF5F33E6 /* StudentRecordTests.swift in Sources */,
 				6BE71DEDD6104800ACBD6DFF /* AssessmentTests.swift in Sources */,
 				6E4B9E8D974A4358ABE6FFC3 /* RecordExportTests.swift in Sources */,
@@ -1090,7 +1102,7 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = ClassBuddyWidgets/ClassBuddyWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClassBuddyWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
@@ -1168,7 +1180,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -1242,7 +1254,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1278,6 +1290,7 @@
 		71A69ED0CB444955D3CAED41 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = ClassBuddyClassic;
 				ASSETCATALOG_COMPILER_APPICON_NAME = ClassBuddy;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ClassBuddy/ClassBuddy.entitlements;
@@ -1312,6 +1325,7 @@
 		94FBFD73EB71B64867427343 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = ClassBuddyClassic;
 				ASSETCATALOG_COMPILER_APPICON_NAME = ClassBuddy;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = ClassBuddy/ClassBuddy.entitlements;
@@ -1368,7 +1382,7 @@
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = ClassBuddyWidgets/ClassBuddyWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClassBuddyWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";

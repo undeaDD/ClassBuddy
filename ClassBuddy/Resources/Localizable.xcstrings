@@ -1,6 +1,66 @@
 {
   "sourceLanguage" : "de",
   "strings" : {
+    "Zuletzt angelegt" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last created"
+          }
+        }
+      }
+    },
+    "Weitere anlegen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add more"
+          }
+        }
+      }
+    },
+    "Nach dem Anlegen bleibt das Formular für den nächsten Eintrag offen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After adding, the form stays open for the next entry."
+          }
+        }
+      }
+    },
+    "Buddy" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buddy"
+          }
+        }
+      }
+    },
+    "Klassisch" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classic"
+          }
+        }
+      }
+    },
+    "App-Icon" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App icon"
+          }
+        }
+      }
+    },
     "–" : {
 
     },

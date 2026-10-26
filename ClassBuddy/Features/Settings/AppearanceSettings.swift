@@ -18,6 +18,39 @@ struct AccentColorRow: View {
     }
 }
 
+/// App-Icon auf dem Home-Bildschirm: Buddy (Standard) oder das klassische Icon (`ClassBuddyClassic.icon`).
+struct AppIconRow: View {
+    /// Name des alternativen Icons (Build-Einstellung `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES`).
+    static let classicIconName = "ClassBuddyClassic"
+
+    @Environment(ToastCenter.self) private var toasts
+    @State private var selection = UIApplication.shared.alternateIconName
+
+    var body: some View {
+        Picker(selection: Binding(get: { selection }, set: change)) {
+            Text("Buddy").tag(String?.none)
+            Text("Klassisch").tag(Optional(Self.classicIconName))
+        } label: {
+            Label("App-Icon", icon: .app)
+        }
+        .pickerStyle(.menu)
+        .disabled(!UIApplication.shared.supportsAlternateIcons)
+    }
+
+    private func change(_ name: String?) {
+        guard name != selection else { return }
+        selection = name
+        Task {
+            do {
+                try await UIApplication.shared.setAlternateIconName(name)
+            } catch {
+                selection = UIApplication.shared.alternateIconName
+                toasts.error(error.localizedDescription)
+            }
+        }
+    }
+}
+
 /// Icon-Themes: eingebaut, SF Symbols und Pakete, die per URL geladen und lokal gespeichert werden
 /// (zip, siehe `scripts/build-icon-pack.sh`).
 /// Jede Zeile zeigt als Vorschau das Zahnrad im jeweiligen Stil; Pakete per Wischen entfernen.

@@ -172,6 +172,10 @@ struct EntryEditorView: View {
     @State private var notes: String
     @State private var classID: UUID?
     @State private var roomID: UUID?
+    /// Nach dem Anlegen offen bleiben (geleert) für den nächsten Termin.
+    @State private var keepOpen = false
+    @State private var lastCreated: String?
+    @FocusState private var isTitleFocused: Bool
 
     init(entry: CalendarEntry?, day: Date, startMinute: Int, isSheet: Bool = false, onSave: @escaping (Date) -> Void = { _ in }) {
         self.entry = entry
@@ -192,6 +196,7 @@ struct EntryEditorView: View {
                 Section {
                     Label {
                         TextField("Titel", text: $title)
+                            .focused($isTitleFocused)
                             .sensitive()
                     } icon: {
                         Image(icon: .label)
@@ -230,7 +235,14 @@ struct EntryEditorView: View {
                     Section {
                         Button("Termin löschen", role: .destructive, action: remove)
                     }
+                } else {
+                    KeepOpenSection(keepOpen: $keepOpen, lastCreated: lastCreated)
                 }
+            }
+            .onAppear {
+                guard entry == nil else { return }
+                isTitleFocused = true
+                lastCreated = LastCreated.calendarEntry(in: modelContext).map(LastCreated.displayTitle)
             }
             .navigationTitle(entry == nil ? "Neuer Termin" : "Termin")
             .navigationBarTitleDisplayMode(.inline)
@@ -247,7 +259,7 @@ struct EntryEditorView: View {
                 }
             }
         }
-        .editorPresentation(device, width: 380, height: entry == nil ? 468 : 538)
+        .editorPresentation(device, width: 380, height: entry == nil ? 600 : 538)
     }
 
     private var durationText: String {
@@ -270,7 +282,18 @@ struct EntryEditorView: View {
         target.room = rooms.first { $0.id == roomID }
         try? modelContext.save()
         onSave(start)
-        dismiss()
+        if entry == nil {
+            LastCreated.record(target.id, as: .calendarEntry)
+            lastCreated = LastCreated.displayTitle(of: target)
+        }
+        if entry == nil && keepOpen {
+            // Beginn, Dauer, Klasse und Raum bleiben für den nächsten Termin stehen.
+            title = ""
+            notes = ""
+            isTitleFocused = true
+        } else {
+            dismiss()
+        }
     }
 
     private func remove() {
@@ -286,6 +309,31 @@ struct CancelButton: View {
 
     var body: some View {
         Button("Abbrechen", icon: .xmark, role: .cancel) { dismiss() }
+    }
+}
+
+/// Letzter Abschnitt eines „Neu“-Formulars: „Weitere anlegen“ hält das Formular nach dem Anlegen offen
+/// (geleert, erstes Feld fokussiert), darüber der zuletzt angelegte Eintrag.
+struct KeepOpenSection: View {
+    @Binding var keepOpen: Bool
+    let lastCreated: String?
+
+    var body: some View {
+        Section {
+            if let lastCreated {
+                LabeledContent {
+                    Text(lastCreated)
+                        .sensitive()
+                } label: {
+                    Label("Zuletzt angelegt", icon: .toastSuccess)
+                }
+            }
+            Toggle(isOn: $keepOpen) {
+                Label("Weitere anlegen", icon: .duplicate)
+            }
+        } footer: {
+            Text("Nach dem Anlegen bleibt das Formular für den nächsten Eintrag offen.")
+        }
     }
 }
 

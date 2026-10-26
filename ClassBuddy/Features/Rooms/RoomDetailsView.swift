@@ -33,6 +33,10 @@ struct RoomDetailsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(SchoolSettings.self) private var settings
     @Binding var details: RoomDetails
+    /// Neuer Raum: Namensfeld beim Öffnen fokussieren.
+    var focusesName = false
+
+    @FocusState private var isNameFocused: Bool
 
     var body: some View {
         NavigationStack {
@@ -40,6 +44,7 @@ struct RoomDetailsView: View {
                 Section("Raum") {
                     Label {
                         TextField("Name (z. B. R 204)", text: $details.name)
+                            .focused($isNameFocused)
                             .sensitive()
                     } icon: {
                         Image(icon: .label)
@@ -97,6 +102,9 @@ struct RoomDetailsView: View {
                 }
             }
             .readableFormWidth()
+            .onAppear {
+                if focusesName { isNameFocused = true }
+            }
             .navigationTitle("Details")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

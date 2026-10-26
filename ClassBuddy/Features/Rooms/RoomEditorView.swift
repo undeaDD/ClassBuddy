@@ -89,7 +89,7 @@ struct RoomEditorView: View {
         }
         // Am NavigationStack statt am Inhalt: sonst übernimmt das Sheet das xmark „Verwerfen“ des Editors.
         .sheet(isPresented: $isDetailsPresented) {
-            RoomDetailsView(details: $details)
+            RoomDetailsView(details: $details, focusesName: room == nil && details.trimmedName.isEmpty)
                 .softScrollEdges()
         }
         .interactiveDismissDisabled(hasChanges)

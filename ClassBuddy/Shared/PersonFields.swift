@@ -4,11 +4,16 @@ import SwiftUI
 struct NameFields: View {
     @Binding var firstName: String
     @Binding var lastName: String
+    /// Fokus des Vornamens von außen (z. B. beim Anlegen); ohne Angabe ein eigener.
+    var firstNameFocus: FocusState<Bool>.Binding?
+
+    @FocusState private var ownFocus: Bool
 
     var body: some View {
         Label {
             TextField("Vorname", text: $firstName)
                 .textContentType(.givenName)
+                .focused(firstNameFocus ?? $ownFocus)
                 .sensitive()
         } icon: {
             Image(icon: .label)

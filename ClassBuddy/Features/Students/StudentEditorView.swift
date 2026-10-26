@@ -33,6 +33,10 @@ struct StudentEditorView: View {
     @State private var photoSelection: PhotosPickerItem?
     /// Gewähltes Foto, bevor der Ausschnitt feststeht.
     @State private var cropRequest: CropRequest?
+    /// Nach dem Anlegen offen bleiben (geleert) für den nächsten Schüler.
+    @State private var keepOpen = false
+    @State private var lastCreated: String?
+    @FocusState private var isFirstNameFocused: Bool
 
     private struct CropRequest: Identifiable {
         let id = UUID()
@@ -73,7 +77,7 @@ struct StudentEditorView: View {
                 }
 
                 Section("Name") {
-                    NameFields(firstName: $firstName, lastName: $lastName)
+                    NameFields(firstName: $firstName, lastName: $lastName, firstNameFocus: $isFirstNameFocused)
                 }
 
                 Section("Foto") {
@@ -102,8 +106,17 @@ struct StudentEditorView: View {
                         .lineLimit(4...12)
                         .sensitive()
                 }
+
+                if isNew {
+                    KeepOpenSection(keepOpen: $keepOpen, lastCreated: lastCreated)
+                }
             }
             .readableFormWidth()
+            .onAppear {
+                guard isNew else { return }
+                isFirstNameFocused = true
+                lastCreated = LastCreated.student(in: modelContext)?.fullName
+            }
             .onChange(of: photoSelection) { _, item in
                 guard let item else { return }
                 photoSelection = nil
@@ -141,13 +154,16 @@ struct StudentEditorView: View {
 
     /// Foto wählen bzw. ändern; das x entfernt es wieder (wie beim Geburtstag).
     private var photoRow: some View {
-        HStack {
+        // Titel und Icon vorab: Der Label-Closure von PhotosPicker ist @Sendable und nicht an den Main Actor gebunden.
+        let title = photo == nil ? loc("Foto auswählen") : loc("Foto ändern")
+        let icon = Image(icon: .image)
+        return HStack {
             PhotosPicker(selection: $photoSelection, matching: .images) {
                 Label {
-                    Text(photo == nil ? "Foto auswählen" : "Foto ändern")
+                    Text(title)
                         .foregroundStyle(Color.primary)
                 } icon: {
-                    Image(icon: .image)
+                    icon
                 }
             }
             Spacer()
@@ -179,7 +195,29 @@ struct StudentEditorView: View {
         student.otherContact = otherContact.trimmingCharacters(in: .whitespacesAndNewlines)
         student.photo = photo
         try? modelContext.save()
-        dismiss()
+        if isNew {
+            LastCreated.record(student.id, as: .student)
+            lastCreated = student.fullName
+        }
+        if isNew && keepOpen {
+            clearForm()
+        } else {
+            dismiss()
+        }
+    }
+
+    /// Leert das Formular für den nächsten Schüler und setzt den Fokus wieder auf den Vornamen.
+    private func clearForm() {
+        firstName = ""
+        lastName = ""
+        birthday = nil
+        gender = nil
+        notes = ""
+        phone = ""
+        email = ""
+        otherContact = ""
+        photo = nil
+        isFirstNameFocused = true
     }
 }
 

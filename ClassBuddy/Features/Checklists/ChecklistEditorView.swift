@@ -27,6 +27,10 @@ struct ChecklistEditorView: View {
     @State private var subject = ""
     @State private var hasDueDate = false
     @State private var dueDate = Calendar.school.date(byAdding: .day, value: 7, to: .now) ?? .now
+    /// Nach dem Anlegen offen bleiben (geleert) für die nächste Checkliste.
+    @State private var keepOpen = false
+    @State private var lastCreated: String?
+    @FocusState private var isTitleFocused: Bool
 
     private var schoolClass: SchoolClass? {
         switch route {
@@ -49,6 +53,7 @@ struct ChecklistEditorView: View {
                 Section {
                     Label {
                         TextField("Titel", text: $title)
+                            .focused($isTitleFocused)
                     } icon: {
                         Image(icon: .label)
                     }
@@ -104,6 +109,8 @@ struct ChecklistEditorView: View {
                             }
                         }
                     }
+
+                    KeepOpenSection(keepOpen: $keepOpen, lastCreated: lastCreated)
                 }
             }
             .readableFormWidth()
@@ -129,6 +136,8 @@ struct ChecklistEditorView: View {
         case .new(let schoolClass, let current):
             isGlobal = schoolClass.subjects.isEmpty
             subject = current ?? schoolClass.subjects.first ?? ""
+            isTitleFocused = true
+            lastCreated = LastCreated.checklist(in: modelContext)?.title
         case .edit(let checklist):
             title = checklist.title
             subtitle = checklist.subtitle
@@ -148,6 +157,7 @@ struct ChecklistEditorView: View {
             let checklist = Checklist(title: trimmedTitle, subtitle: cleanSubtitle, subject: scope, schoolClass: schoolClass)
             checklist.dueDate = due
             modelContext.insert(checklist)
+            LastCreated.record(checklist.id, as: .checklist)
         case .edit(let checklist):
             checklist.dueDate = due
             checklist.title = trimmedTitle
@@ -157,7 +167,15 @@ struct ChecklistEditorView: View {
         }
         do {
             try modelContext.save()
-            dismiss()
+            if isNew && keepOpen {
+                // Fach, Geltungsbereich und Enddatum bleiben für die nächste Checkliste stehen.
+                lastCreated = trimmedTitle
+                title = ""
+                subtitle = ""
+                isTitleFocused = true
+            } else {
+                dismiss()
+            }
         } catch {
             toasts.error(loc("Speichern fehlgeschlagen: \(error.localizedDescription)"))
         }

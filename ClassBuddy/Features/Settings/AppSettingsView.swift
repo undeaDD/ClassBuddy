@@ -187,6 +187,7 @@ struct AppSettingsView: View {
                 }
                 .pickerStyle(.menu)
                 AccentColorRow(selection: $accent)
+                AppIconRow()
                 Toggle(isOn: $hidesTabLabels) {
                     Label("Tab-Titel ausblenden", icon: .label)
                 }

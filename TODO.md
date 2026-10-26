@@ -74,6 +74,11 @@ Buddy, Feedback.
       Leerzustand (xmark → Leerzustand wieder volle Höhe), dann Einrichtungs-Kette (Schüler → Stundenplan → Schulzeiten →
       Raum → Ferien), „Zu den Schuleinstellungen“ auf dem iPhone (über „Mehr“), Privatsphäre-Tipp nach 3 Starts
       („Einschalten“), „Kacheln anordnen“ danach („Jetzt anordnen“), Schalter „Tipps anzeigen“
+- [ ] Neu-Formulare (Schüler, Checkliste, Termin): erstes Feld beim Öffnen fokussiert; Abschnitt unten mit
+      „Zuletzt angelegt“ (auch nach Schließen und Neustart, verschwindet wenn der Eintrag gelöscht wurde) und
+      „Weitere anlegen“ (Haken sichert, leert, fokussiert erneut); iPad: Termin-Popover hoch genug; neuer Raum: Name fokussiert
+- [ ] App-Icon (App-Einstellungen › Darstellung): „Buddy“ und „Klassisch“ wechseln, Home-Bildschirm prüfen
+- [ ] Maskottchen nach der Verkleinerung scharf: Einführung, Einstellungen-Kopf, Leerzustände, Debug-Button
 
 ## Später
 
