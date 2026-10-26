@@ -1,12 +1,13 @@
 import SwiftData
 import SwiftUI
 
-/// Klasse + Fach für einen Stunden-Slot, wöchentlich oder einmalig.
+/// Klasse + Fach für einen Stunden-Slot: einmalig (Vorgabe), jede oder jede zweite Woche, optional als Doppelstunde.
 /// iPad: Popover am Slot; iPhone: Sheet.
 struct LessonEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.device) private var device
+    @Environment(SchoolSettings.self) private var settings
     @Query(sort: [SortDescriptor(\SchoolClass.schoolYear, order: .reverse), SortDescriptor(\SchoolClass.shortName)])
     private var classes: [SchoolClass]
     @Query(sort: [SortDescriptor(\Room.sortIndex), SortDescriptor(\Room.name)]) private var rooms: [Room]
@@ -18,7 +19,8 @@ struct LessonEditorView: View {
 
     @State private var classID: UUID?
     @State private var subject: String
-    @State private var isRecurring: Bool
+    @State private var repetition: LessonRepetition
+    @State private var isDouble: Bool
     @State private var roomID: UUID?
 
     init(date: Date, weekday: Int, slot: LessonSlot, lesson: Lesson?) {
@@ -28,7 +30,8 @@ struct LessonEditorView: View {
         self.lesson = lesson
         _classID = State(initialValue: lesson?.schoolClass?.id)
         _subject = State(initialValue: lesson?.subject ?? "")
-        _isRecurring = State(initialValue: lesson?.isRecurring ?? true)
+        _repetition = State(initialValue: lesson?.repetition ?? .once)
+        _isDouble = State(initialValue: lesson?.isDouble ?? false)
         _roomID = State(initialValue: lesson?.room?.id)
     }
 
@@ -38,6 +41,22 @@ struct LessonEditorView: View {
 
     private var selectedRoom: Room? {
         rooms.first { $0.id == roomID }
+    }
+
+    /// Folgender Slot (für die Doppelstunde); `nil` in der letzten Stunde.
+    private var nextSlot: LessonSlot? {
+        settings.slots.first { $0.index == slot.index + 1 }
+    }
+
+    private var repetitionFooter: String {
+        let weekday = date.appFormatted(.dateTime.weekday(.wide))
+        let slots = isDouble && nextSlot != nil ? loc("\(slot.number). und \(slot.number + 1). Stunde") : loc("\(slot.number). Stunde")
+        let time = nextSlot.map { isDouble ? "\(slot.start.clockString)–\($0.end.clockString)" : slot.timeRange } ?? slot.timeRange
+        return switch repetition {
+        case .once: loc("Nur am \(weekday), \(date.appDate), \(slots)")
+        case .weekly: loc("Jeden \(weekday), \(slots) (\(time))")
+        case .everyOtherWeek: loc("Jeden zweiten \(weekday) ab \(date.appDate), \(slots) (\(time))")
+        }
     }
 
     var body: some View {
@@ -86,13 +105,17 @@ struct LessonEditorView: View {
                 }
 
                 Section {
-                    Toggle(isOn: $isRecurring) {
-                        Label("Jede Woche", icon: .number1Circle)
+                    Picker(selection: $repetition) {
+                        ForEach(LessonRepetition.allCases) { Text($0.title).tag($0) }
+                    } label: {
+                        Label("Wiederholung", icon: .number1Circle)
                     }
+                    Toggle(isOn: $isDouble) {
+                        Label("Doppelstunde", icon: .time)
+                    }
+                    .disabled(nextSlot == nil)
                 } footer: {
-                    Text(isRecurring
-                        ? loc("Jeden \(date.appFormatted(.dateTime.weekday(.wide))), \(slot.number). Stunde (\(slot.timeRange))")
-                        : loc("Nur am \(date.appFormatted(.dateTime.weekday(.wide))), \(date.appDate), \(slot.number). Stunde"))
+                    Text(repetitionFooter)
                 }
 
                 if lesson != nil {
@@ -123,7 +146,7 @@ struct LessonEditorView: View {
                 }
             }
         }
-        .editorPresentation(device, width: 380, height: lesson == nil ? 400 : 470)
+        .editorPresentation(device, width: 380, height: lesson == nil ? 450 : 520)
     }
 
     private func save() {
@@ -135,10 +158,12 @@ struct LessonEditorView: View {
         }()
         target.schoolClass = selectedClass
         target.subject = subject
-        target.isRecurring = isRecurring
+        target.repetition = repetition
+        target.isDouble = isDouble && nextSlot != nil
         target.weekday = weekday
         target.slotIndex = slot.index
-        target.date = isRecurring ? nil : Calendar.school.startOfDay(for: date)
+        // Einmalig: der Tag; alle 2 Wochen: Bezugswoche; jede Woche: ohne Datum.
+        target.date = repetition == .weekly ? nil : Calendar.school.startOfDay(for: date)
         target.room = selectedRoom
         try? modelContext.save()
         dismiss()
@@ -175,7 +200,12 @@ struct EntryEditorView: View {
     /// Nach dem Anlegen offen bleiben (geleert) für den nächsten Termin.
     @State private var keepOpen = false
     @State private var lastCreated: String?
-    @FocusState private var isTitleFocused: Bool
+    @FocusState private var focus: Field?
+
+    /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`).
+    private enum Field: Hashable {
+        case title, notes
+    }
 
     init(entry: CalendarEntry?, day: Date, startMinute: Int, isSheet: Bool = false, onSave: @escaping (Date) -> Void = { _ in }) {
         self.entry = entry
@@ -196,7 +226,7 @@ struct EntryEditorView: View {
                 Section {
                     Label {
                         TextField("Titel", text: $title)
-                            .focused($isTitleFocused)
+                            .tabOrder(.title, in: [.title, .notes], focus: $focus)
                             .sensitive()
                     } icon: {
                         Image(icon: .label)
@@ -229,6 +259,7 @@ struct EntryEditorView: View {
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                         .lineLimit(2...6)
+                        .tabOrder(.notes, in: [.title, .notes], focus: $focus)
                         .sensitive()
                 }
                 if entry != nil {
@@ -241,7 +272,7 @@ struct EntryEditorView: View {
             }
             .onAppear {
                 guard entry == nil else { return }
-                isTitleFocused = true
+                focus = .title
                 lastCreated = LastCreated.calendarEntry(in: modelContext).map(LastCreated.displayTitle)
             }
             .navigationTitle(entry == nil ? "Neuer Termin" : "Termin")
@@ -290,7 +321,7 @@ struct EntryEditorView: View {
             // Beginn, Dauer, Klasse und Raum bleiben für den nächsten Termin stehen.
             title = ""
             notes = ""
-            isTitleFocused = true
+            focus = .title
         } else {
             dismiss()
         }

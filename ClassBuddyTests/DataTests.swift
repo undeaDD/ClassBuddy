@@ -82,12 +82,67 @@ struct DataTests {
         #expect(schedule.lesson(on: Self.day(2026, 10, 5), slotIndex: 0)?.subject == "Mathe")
     }
 
+    @Test("Alle 2 Wochen: zwei Stunden teilen sich einen Slot im Wechsel")
+    func everyOtherWeek() throws {
+        let context = try Self.makeContext()
+        let schoolClass = SchoolClass(shortName: "7b")
+        context.insert(schoolClass)
+        let even = Lesson(
+            weekday: 0, slotIndex: 0, subject: "Mathe", isRecurring: true, date: Self.day(2026, 9, 28), schoolClass: schoolClass
+        )
+        even.weekInterval = 2
+        let odd = Lesson(
+            weekday: 0, slotIndex: 0, subject: "Physik", isRecurring: true, date: Self.day(2026, 10, 5), schoolClass: schoolClass
+        )
+        odd.weekInterval = 2
+        context.insert(even)
+        context.insert(odd)
+
+        let schedule = LessonSchedule(lessons: try context.fetch(FetchDescriptor<Lesson>()), holidays: [], slots: [])
+
+        #expect(schedule.lesson(on: Self.day(2026, 9, 28), slotIndex: 0)?.subject == "Mathe")
+        #expect(schedule.lesson(on: Self.day(2026, 10, 5), slotIndex: 0)?.subject == "Physik")
+        #expect(schedule.lesson(on: Self.day(2026, 10, 12), slotIndex: 0)?.subject == "Mathe")
+        #expect(schedule.lesson(on: Self.day(2026, 9, 21), slotIndex: 0)?.subject == "Physik")
+    }
+
+    @Test("Doppelstunde belegt auch den folgenden Slot, eine eigene Stunde dort hat Vorrang")
+    func doubleLesson() throws {
+        let context = try Self.makeContext()
+        let schoolClass = SchoolClass(shortName: "7b")
+        context.insert(schoolClass)
+        let double = Lesson(weekday: 0, slotIndex: 0, subject: "Mathe", isRecurring: true, date: nil, schoolClass: schoolClass)
+        double.slotCount = 2
+        context.insert(double)
+        context.insert(Lesson(
+            weekday: 0, slotIndex: 1, subject: "Vertretung", isRecurring: false, date: Self.day(2026, 10, 5), schoolClass: schoolClass
+        ))
+        let slots = SchoolSettings.Values().slots
+        let schedule = LessonSchedule(lessons: try context.fetch(FetchDescriptor<Lesson>()), holidays: [], slots: slots)
+        let monday = Self.day(2026, 9, 28)
+
+        #expect(schedule.lesson(on: monday, slotIndex: 1)?.subject == "Mathe")
+        #expect(schedule.isContinuation(on: monday, slotIndex: 1))
+        #expect(schedule.span(on: monday, slotIndex: 0) == 2)
+        #expect(schedule.end(on: monday, from: slots[0]) == slots[1].end)
+
+        let other = Self.day(2026, 10, 5)
+        #expect(schedule.lesson(on: other, slotIndex: 1)?.subject == "Vertretung")
+        #expect(schedule.span(on: other, slotIndex: 0) == 1)
+
+        // Nächste Stunde läuft bis zum Ende des zweiten Slots.
+        let during = try #require(Calendar.school.date(byAdding: .minute, value: slots[1].start + 5, to: monday))
+        let next = try #require(schedule.nextLesson(forClass: schoolClass.id, after: during))
+        #expect(next.start == Calendar.school.date(byAdding: .minute, value: slots[0].start, to: monday))
+    }
+
     // MARK: Export / Import
 
     @Test("Excel-Export und -Import ergeben dieselben Daten")
     func backupRoundTrip() throws {
         let source = try Self.makeContext()
         let schoolClass = SchoolClass(shortName: "7b", subjects: ["Mathematik", "Physik"], schoolYear: "2026/27", color: .green)
+        schoolClass.level = .upper
         source.insert(schoolClass)
         source.insert(Student(
             firstName: "Emma", lastName: "Schneider", birthday: Self.day(2014, 3, 1),
@@ -120,6 +175,7 @@ struct DataTests {
         #expect(importedClass.id == schoolClass.id)
         #expect(importedClass.subjects == ["Mathematik", "Physik"])
         #expect(importedClass.color == .green)
+        #expect(importedClass.level == .upper)
 
         let student = try #require(importedClass.students.first)
         #expect(student.fullName == "Emma Schneider")

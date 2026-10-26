@@ -129,6 +129,7 @@ struct ServicesTests {
         #expect(text.contains("25 %"))
         #expect(text.contains("? 25 %"))
         #expect(text.components(separatedBy: " · ").count == 3)
+        #expect(DashboardText.genderBreakdown([Student(firstName: "E", lastName: "E")]).isEmpty)
 
         #expect(DashboardText.relativeDay(.now) == "Heute")
         #expect(DashboardText.relativeDay(.now.addingTimeInterval(86_400)) == "Morgen")

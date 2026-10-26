@@ -96,6 +96,34 @@ enum HolidayImporter {
         return count
     }
 
+    /// Ab so vielen Monaten vor dem Ende der geladenen Schulferien warnt die Übersicht und lädt auf Antippen nach.
+    nonisolated static let refreshLeadMonths = 3
+
+    /// Ende der letzten geladenen Schulferien; `nil` ohne Schulferien.
+    static func loadedUntil(_ holidays: [Holiday]) -> Date? {
+        holidays.filter(\.isSchoolHoliday).map(\.endDate).max()
+    }
+
+    /// Die geladenen Schulferien enden in weniger als `refreshLeadMonths` Monaten.
+    nonisolated static func needsRefresh(loadedUntil: Date?, now: Date = .now) -> Bool {
+        guard let loadedUntil,
+              let threshold = Calendar.school.date(byAdding: .month, value: refreshLeadMonths, to: now)
+        else { return false }
+        return loadedUntil < threshold
+    }
+
+    /// Import für das gespeicherte Bundesland mit Zeitstempel und Meldung (Schuleinstellungen und Übersicht).
+    static func importAndReport(settings: SchoolSettings, context: ModelContext, toasts: ToastCenter) async {
+        guard let state = settings.values.federalState else { return }
+        do {
+            let count = try await importHolidays(for: state, into: context)
+            settings.values.holidaysImportedAt = .now
+            toasts.success(loc("\(count) Ferien und Feiertage importiert"))
+        } catch {
+            toasts.error(error.localizedDescription)
+        }
+    }
+
     private static func fetch(_ endpoint: String, stateCode: String, from: Date, to: Date) async throws -> [APIHoliday] {
         var components = URLComponents(string: "https://openholidaysapi.org/\(endpoint)")!
         components.queryItems = [

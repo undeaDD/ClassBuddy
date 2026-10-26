@@ -2,7 +2,8 @@ import Foundation
 import SwiftData
 
 /// Unterrichtsstunde im Kalender: Klasse + Fach in einem Stunden-Slot.
-/// Wöchentlich (`isRecurring`, gilt für `weekday`) oder einmalig (`date`).
+/// Wiederkehrend (`isRecurring`, gilt für `weekday` jede bzw. jede zweite Woche) oder einmalig (`date`).
+/// Als Doppelstunde belegt sie auch den folgenden Slot.
 /// Gebunden an die Stundennummer, nicht an Uhrzeiten – ändert sich das Raster,
 /// wandert die Stunde mit.
 @Model
@@ -13,7 +14,11 @@ final class Lesson {
     var slotIndex: Int
     var subject: String
     var isRecurring: Bool
-    /// Tagesbeginn des Termins bei einmaligen Stunden.
+    /// Wiederkehrende Stunden: alle wie viele Wochen (1 = jede, 2 = jede zweite).
+    var weekInterval: Int = 1
+    /// Belegte Slots ab `slotIndex` (2 = Doppelstunde).
+    var slotCount: Int = 1
+    /// Tagesbeginn des Termins bei einmaligen Stunden; bei „alle 2 Wochen“ ein Tag in einer der Wochen.
     var date: Date?
     var createdAt: Date
     var schoolClass: SchoolClass?
@@ -37,6 +42,37 @@ final class Lesson {
         self.date = date
         self.createdAt = .now
         self.schoolClass = schoolClass
+    }
+
+    var repetition: LessonRepetition {
+        get {
+            guard isRecurring else { return .once }
+            return weekInterval >= 2 ? .everyOtherWeek : .weekly
+        }
+        set {
+            isRecurring = newValue != .once
+            weekInterval = newValue == .everyOtherWeek ? 2 : 1
+        }
+    }
+
+    var isDouble: Bool {
+        get { slotCount >= 2 }
+        set { slotCount = newValue ? 2 : 1 }
+    }
+}
+
+/// Wiederholung einer Stunde im Stunden-Editor.
+nonisolated enum LessonRepetition: String, CaseIterable, Identifiable {
+    case once, weekly, everyOtherWeek
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .once: loc("Einmalig")
+        case .weekly: loc("Jede Woche")
+        case .everyOtherWeek: loc("Alle 2 Wochen")
+        }
     }
 }
 

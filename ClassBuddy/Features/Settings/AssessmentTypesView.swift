@@ -4,6 +4,17 @@ import SwiftUI
 /// Leistungsarten umbenennen, einem Bereich zuordnen, ausblenden, hinzufügen und löschen.
 struct AssessmentTypesView: View {
     @Environment(SchoolSettings.self) private var settings
+    @FocusState private var focus: Field?
+
+    /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`): Bereiche, dann Leistungsarten, ohne die Bereich-Menüs.
+    private enum Field: Hashable {
+        case area(AssessmentArea)
+        case type(UUID)
+    }
+
+    private var tabOrder: [Field] {
+        AssessmentArea.allCases.map(Field.area) + settings.values.assessmentTypes.map { .type($0.id) }
+    }
 
     var body: some View {
         @Bindable var settings = settings
@@ -17,6 +28,7 @@ struct AssessmentTypesView: View {
                             set: { settings.values.areaNames[area.rawValue] = $0.isEmpty ? nil : $0 }
                         )
                     )
+                    .tabOrder(.area(area), in: tabOrder, focus: $focus)
                 }
             } header: {
                 Text("Bereiche")
@@ -29,6 +41,7 @@ struct AssessmentTypesView: View {
                     HStack(spacing: 12) {
                         TextField("Name", text: $type.name)
                             .foregroundStyle(type.isHidden ? .secondary : .primary)
+                            .tabOrder(.type(type.id), in: tabOrder, focus: $focus)
                         Picker("Bereich", selection: $type.area) {
                             ForEach(AssessmentArea.allCases) { Text(settings.values.areaName($0)).tag($0) }
                         }

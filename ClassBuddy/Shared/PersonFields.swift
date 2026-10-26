@@ -1,19 +1,23 @@
 import SwiftUI
 
+/// Eingabefelder zu einer Person, für die Tab-Reihenfolge (`tabOrder`).
+enum PersonField: Hashable {
+    case firstName, lastName, phone, email, otherContact, notes
+}
+
 /// Vor- und Nachname, je mit Namens-Icon vorne.
 struct NameFields: View {
     @Binding var firstName: String
     @Binding var lastName: String
-    /// Fokus des Vornamens von außen (z. B. beim Anlegen); ohne Angabe ein eigener.
-    var firstNameFocus: FocusState<Bool>.Binding?
-
-    @FocusState private var ownFocus: Bool
+    /// Fokus des Formulars; `order` ist dessen Tab-Reihenfolge.
+    var focus: FocusState<PersonField?>.Binding
+    var order: [PersonField]
 
     var body: some View {
         Label {
             TextField("Vorname", text: $firstName)
                 .textContentType(.givenName)
-                .focused(firstNameFocus ?? $ownFocus)
+                .tabOrder(.firstName, in: order, focus: focus)
                 .sensitive()
         } icon: {
             Image(icon: .label)
@@ -21,6 +25,7 @@ struct NameFields: View {
         Label {
             TextField("Nachname", text: $lastName)
                 .textContentType(.familyName)
+                .tabOrder(.lastName, in: order, focus: focus)
                 .sensitive()
         } icon: {
             Image(icon: .label)
@@ -97,6 +102,19 @@ struct BirthdayField: View {
 }
 
 extension View {
+    /// Tab bzw. Umschalt-Tab (externe Tastatur) springt in `order` zum nächsten bzw. vorigen Eingabefeld (am Ende
+    /// wieder zum ersten). Sonst folgt Tab der Systemreihenfolge, die auch Fotowahl, Picker und Datumsfelder anspringt,
+    /// und mehrzeilige Felder fügen ein Tabulatorzeichen ein.
+    func tabOrder<Field: Hashable>(_ field: Field, in order: [Field], focus: FocusState<Field?>.Binding) -> some View {
+        focused(focus, equals: field)
+            .onKeyPress(.tab, phases: [.down, .repeat]) { press in
+                guard let index = order.firstIndex(of: field) else { return .ignored }
+                let step = press.modifiers.contains(.shift) ? order.count - 1 : 1
+                focus.wrappedValue = order[(index + step) % order.count]
+                return .handled
+            }
+    }
+
     /// Vollbild-Formulare: auf dem iPad mittig mit begrenzter Breite (eigener Hintergrund
     /// für die Ränder); auf dem iPhone unverändert mit dem Standard-Hintergrund des Formulars.
     func readableFormWidth() -> some View {

@@ -11014,6 +11014,240 @@
           }
         }
       }
+    },
+    "Ferientermine" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Holiday dates"
+          }
+        }
+      }
+    },
+    "Jetzt nachladen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reload now"
+          }
+        }
+      }
+    },
+    "Geladen bis %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loaded until %@"
+          }
+        }
+      }
+    },
+    "%lld Ferien und Feiertage" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld school and public holidays"
+          }
+        }
+      }
+    },
+    "bis %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "until %@"
+          }
+        }
+      }
+    },
+    "Stufe" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Level"
+          }
+        }
+      }
+    },
+    "Unterstufe" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lower school"
+          }
+        }
+      }
+    },
+    "Stunde entfernen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove lesson?"
+          }
+        }
+      }
+    },
+    "Termin entfernen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove event?"
+          }
+        }
+      }
+    },
+    "Die Stunde wird in allen Wochen entfernt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The lesson will be removed from every week."
+          }
+        }
+      }
+    },
+    "Einmalig" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Once"
+          }
+        }
+      }
+    },
+    "Alle 2 Wochen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every 2 weeks"
+          }
+        }
+      }
+    },
+    "Wiederholung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repeat"
+          }
+        }
+      }
+    },
+    "Doppelstunde" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Double lesson"
+          }
+        }
+      }
+    },
+    "%lld. und %lld. Stunde" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld. und %2$lld. Stunde"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "periods %1$lld and %2$lld"
+          }
+        }
+      }
+    },
+    "Nur am %@, %@, %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Nur am %1$@, %2$@, %3$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only on %1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "Jeden %@, %@ (%@)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Jeden %1$@, %2$@ (%3$@)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every %1$@, %2$@ (%3$@)"
+          }
+        }
+      }
+    },
+    "Jeden zweiten %@ ab %@, %@ (%@)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Jeden zweiten %1$@ ab %2$@, %3$@ (%4$@)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every other %1$@ from %2$@, %3$@ (%4$@)"
+          }
+        }
+      }
+    },
+    "Telefonnummer" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone number"
+          }
+        }
+      }
+    },
+    "E-Mail-Adresse" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Email address"
+          }
+        }
+      }
+    },
+    "Tragen Sie Telefonnummer und E-Mail-Adresse in der Schülerliste über „Bearbeiten“ ein." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the phone number and email address in the student list via Edit."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -86,7 +86,7 @@ struct StatsView: View {
         )
         StatCard(
             title: loc("Stunden pro Woche"),
-            value: "\(recurringLessons.count)",
+            value: "\(recurringLessons.reduce(0) { $0 + $1.slotCount })",
             detail: loc("\(weeklyMinutes / 60) h \(weeklyMinutes % 60) min Unterricht"),
             symbol: .custom(.time),
             isSensitive: false
@@ -142,7 +142,10 @@ struct StatsView: View {
     private var weeklyMinutes: Int {
         let slots = settings.slots
         return recurringLessons.reduce(0) { total, lesson in
-            total + (slots.first { $0.index == lesson.slotIndex }.map { $0.end - $0.start } ?? settings.values.lessonDuration)
+            // Doppelstunden: beide Slots zählen.
+            total + (lesson.slotIndex..<lesson.slotIndex + max(lesson.slotCount, 1)).reduce(0) { sum, index in
+                sum + (slots.first { $0.index == index }.map { $0.end - $0.start } ?? settings.values.lessonDuration)
+            }
         }
     }
 
@@ -289,7 +292,9 @@ private struct TimetableHeatmap: View {
     }
 
     var body: some View {
-        let counts = StatsLogic.heatmap(lessons.map { ($0.weekday, $0.slotIndex) })
+        let counts = StatsLogic.heatmap(lessons.flatMap { lesson in
+            (0..<max(lesson.slotCount, 1)).map { (lesson.weekday, lesson.slotIndex + $0) }
+        })
         let maxCount = max(counts.values.max() ?? 1, 1)
         let cells = weekdays.flatMap { day in
             (0..<max(slotCount, 1)).map { Cell(weekday: day, slot: $0, lessons: counts[.init(weekday: day, slot: $0)] ?? 0) }
@@ -328,7 +333,7 @@ private struct SubjectChart: View {
             let name = SchoolClass.displayName(ofSubject: lesson.subject)
             return name.isEmpty ? loc("Ohne Fach") : name
         }
-            .map { (subject: $0.key, count: $0.value.count) }
+            .map { (subject: $0.key, count: $0.value.reduce(0) { $0 + max($1.slotCount, 1) }) }
             .sorted { $0.count != $1.count ? $0.count > $1.count : $0.subject < $1.subject }
         let top = Array(counts.prefix(5))
         let rest = counts.dropFirst(5).reduce(0) { $0 + $1.count }

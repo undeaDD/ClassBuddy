@@ -39,6 +39,9 @@ struct CalendarView: View {
 
     static let phoneDayCount = 3
 
+    /// Oberste sichtbare Stunde: eine Stunde vor Schulbeginn.
+    private var startHour: Int { max(settings.values.dayStart / 60 - 1, 0) }
+
     private var days: [(weekday: Int, date: Date)] {
         if device.isPhone {
             return calendar.visibleDays(around: dayAnchor, count: Self.phoneDayCount, weekdays: settings.visibleWeekdays)
@@ -100,12 +103,18 @@ struct CalendarView: View {
                         }
                     }
                     .frame(height: Self.hourHeight * 24)
+                    // Antippen der Statusleiste würde nach 0 Uhr scrollen.
+                    .background(ScrollsToTopDisabler())
                 }
                 // Platz unter dem letzten Eintrag, damit die Blättern-Leiste nichts dauerhaft verdeckt.
                 // iPhone-Layout: nicht nötig – sie rutscht beim Runterscrollen in die Tab-Leiste.
                 .contentMargins(.bottom, device.isPhone ? 0 : 72, for: .scrollContent)
                 .onAppear {
-                    proxy.scrollTo(max(settings.values.dayStart / 60 - 1, 0), anchor: .top)
+                    proxy.scrollTo(startHour, anchor: .top)
+                }
+                // Kalender-Tab erneut angetippt: zum Schulbeginn statt ganz nach oben.
+                .onChange(of: app.calendarScrollToStartRequest) {
+                    withAnimation(.smooth) { proxy.scrollTo(startHour, anchor: .top) }
                 }
             }
         }
@@ -248,6 +257,22 @@ private extension View {
             appPresentationSizing(.fitted)
         } else {
             self
+        }
+    }
+}
+
+/// Schaltet `scrollsToTop` der umgebenden UIKit-Scroll-Ansicht ab (Antippen der Statusleiste).
+private struct ScrollsToTopDisabler: UIViewRepresentable {
+    func makeUIView(context: Context) -> Probe { Probe() }
+
+    func updateUIView(_ uiView: Probe, context: Context) {}
+
+    final class Probe: UIView {
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            var view = superview
+            while let current = view, !(current is UIScrollView) { view = current.superview }
+            (view as? UIScrollView)?.scrollsToTop = false
         }
     }
 }

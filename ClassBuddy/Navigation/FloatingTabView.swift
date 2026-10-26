@@ -137,10 +137,15 @@ struct FloatingTabView: View {
         }
     }
 
-    /// Aktiven Tab erneut antippen: aus einer Unterseite zurück zur Wurzel, sonst nach oben scrollen.
+    /// Aktiven Tab erneut antippen: aus einer Unterseite zurück zur Wurzel, sonst nach oben scrollen
+    /// (Kalender: zum Schulbeginn).
     private func reselect() {
         guard scroll.isShowingSubpage else {
-            scroll.scrollToTop()
+            if !isOnMore, app.selectedTab == .calendar {
+                app.requestCalendarScrollToStart()
+            } else {
+                scroll.scrollToTop()
+            }
             return
         }
         if isOnMore {

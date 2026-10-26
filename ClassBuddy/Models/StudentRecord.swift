@@ -426,7 +426,7 @@ extension LessonSchedule {
         var starts: [Date] = []
         for offset in 0..<days {
             guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { continue }
-            for slot in slots {
+            for slot in slots where !isContinuation(on: day, slotIndex: slot.index) {
                 guard let lesson = lesson(on: day, slotIndex: slot.index),
                       lesson.schoolClass?.id == classID, lesson.subject == subject,
                       let start = calendar.date(byAdding: .minute, value: slot.start, to: day), start <= now
@@ -437,13 +437,14 @@ extension LessonSchedule {
         return starts
     }
 
-    /// Laufende Stunde einer Klasse (Fach und Stunde im Raster).
+    /// Laufende Stunde einer Klasse (Fach und Stunde im Raster; bei Doppelstunden immer der erste Slot, damit
+    /// Fehlzeiten für beide Hälften gelten).
     func currentLesson(classID: UUID, now: Date = .now) -> (slotIndex: Int, subject: String)? {
         let calendar = Calendar.school
         let minute = calendar.component(.hour, from: now) * 60 + calendar.component(.minute, from: now)
         guard let slot = slots.first(where: { $0.start <= minute && minute < $0.end }),
               let lesson = lesson(on: now, slotIndex: slot.index), lesson.schoolClass?.id == classID
         else { return nil }
-        return (slot.index, lesson.subject)
+        return (isContinuation(on: now, slotIndex: slot.index) ? slot.index - 1 : slot.index, lesson.subject)
     }
 }

@@ -14,6 +14,8 @@ final class SchoolClass {
     /// Schuljahr, z. B. „2026/27“.
     var schoolYear: String
     var colorRaw: String
+    /// Unter- bzw. Oberstufe (`ClassLevel`); `nil` = keine Angabe.
+    var levelRaw: String?
     var createdAt: Date
 
     @Relationship(deleteRule: .cascade, inverse: \Student.schoolClass)
@@ -74,6 +76,12 @@ final class SchoolClass {
         self.schoolYear = schoolYear
         self.colorRaw = color.rawValue
         self.createdAt = createdAt
+    }
+
+    /// Unter- bzw. Oberstufe; `nil` = keine Angabe.
+    var level: ClassLevel? {
+        get { levelRaw.flatMap(ClassLevel.init(rawValue:)) }
+        set { levelRaw = newValue?.rawValue }
     }
 
     /// Vordefinierte Farbe (bei eigener Farbe: Blau als Rückfall).
@@ -181,6 +189,30 @@ nonisolated enum ClassColor: String, CaseIterable, Codable, Identifiable {
     }
 }
 
+// MARK: - Stufe
+
+/// Unter- oder Oberstufe einer Klasse, im Klassen-Editor gewählt (ohne Angabe: keine).
+/// Rohwerte stehen so in der Sicherung.
+nonisolated enum ClassLevel: String, Codable, CaseIterable, Identifiable {
+    case lower = "unterstufe"
+    case upper = "oberstufe"
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .lower: loc("Unterstufe")
+        case .upper: loc("Oberstufe")
+        }
+    }
+
+    /// Rohwert oder Titel (beliebige Schreibweise), sonst `nil`.
+    static func parse(_ text: String) -> ClassLevel? {
+        let lower = text.trimmingCharacters(in: .whitespaces).lowercased()
+        return allCases.first { $0.rawValue == lower || $0.title.lowercased() == lower }
+    }
+}
+
 // MARK: - Export
 
 extension SchoolClass {
@@ -191,6 +223,7 @@ extension SchoolClass {
         var subjects: [String]
         var schoolYear: String
         var color: String
+        var level: ClassLevel?
         var createdAt: Date
         var students: [Student.Snapshot]
     }
@@ -202,6 +235,7 @@ extension SchoolClass {
             subjects: subjects,
             schoolYear: schoolYear,
             color: colorRaw,
+            level: level,
             createdAt: createdAt,
             students: sortedStudents.map(\.snapshot)
         )

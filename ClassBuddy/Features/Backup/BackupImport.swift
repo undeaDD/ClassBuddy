@@ -120,6 +120,7 @@ extension Backup {
                 schoolClass.dashboardRemoved = Cell.parseList(row["Entfernte Kacheln"])
                 schoolClass.quickNote = row["Schnellnotiz"]
                 schoolClass.quickNoteEditedAt = Cell.parseDateTime(row["Schnellnotiz bearbeitet"])
+                schoolClass.level = ClassLevel.parse(row["Stufe"])
                 schoolClass.dashboardKnownCards = schoolClass.dashboardOrder + schoolClass.dashboardHidden + schoolClass.dashboardRemoved
                 context.insert(schoolClass)
                 classesByID[schoolClass.id] = schoolClass
@@ -162,15 +163,19 @@ extension Backup {
                 let isRecurring = Cell.parseBool(row["Wöchentlich"]) ?? true
                 let date = Cell.parseDate(row["Datum"])
                 guard isRecurring || date != nil else { continue }
+                // Ältere Sicherungen ohne die Spalten: jede Woche, Einzelstunde.
+                let weekInterval = min(max(Int(row["Alle n Wochen"]) ?? 1, 1), 2)
                 let lesson = Lesson(
                     id: UUID(uuidString: row["ID"]) ?? UUID(),
                     weekday: weekday,
                     slotIndex: number - 1,
                     subject: row["Fach"],
                     isRecurring: isRecurring,
-                    date: isRecurring ? nil : date,
+                    date: isRecurring && weekInterval == 1 ? nil : date,
                     schoolClass: schoolClass
                 )
+                lesson.weekInterval = isRecurring ? weekInterval : 1
+                lesson.slotCount = min(max(Int(row["Stunden"]) ?? 1, 1), 2)
                 context.insert(lesson)
                 lesson.room = UUID(uuidString: row["Raum-ID"]).flatMap { roomsByID[$0] }
                 summary.lessons += 1

@@ -36,10 +36,11 @@ struct WidgetScheduleSync: View {
         var result: [WidgetSchedule.Lesson] = []
         for offset in 0..<days {
             guard let day = calendar.date(byAdding: .day, value: offset, to: today) else { continue }
-            for slot in slots {
+            // Doppelstunden als ein Eintrag über beide Slots.
+            for slot in slots where !schedule.isContinuation(on: day, slotIndex: slot.index) {
                 guard let lesson = schedule.lesson(on: day, slotIndex: slot.index),
                       let start = calendar.date(byAdding: .minute, value: slot.start, to: day),
-                      let end = calendar.date(byAdding: .minute, value: slot.end, to: day),
+                      let end = calendar.date(byAdding: .minute, value: schedule.end(on: day, from: slot), to: day),
                       end > now
                 else { continue }
                 let rgb = RGB(lesson.schoolClass?.displayColor ?? .accentColor)

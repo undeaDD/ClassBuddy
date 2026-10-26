@@ -32,6 +32,7 @@ struct LinkEditorView: View {
     @State private var title: String
     /// Website-Adresse bzw. Name des Kurzbefehls.
     @State private var target: String
+    @FocusState private var focus: Field?
 
     init(route: LinkEditorRoute) {
         self.route = route
@@ -59,6 +60,18 @@ struct LinkEditorView: View {
         }
     }
 
+    /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`).
+    private enum Field: Hashable {
+        case title, target
+    }
+
+    private var tabOrder: [Field] {
+        switch route.kind {
+        case .website, .shortcut: [.title, .target]
+        case .file, .image, .script: [.title]
+        }
+    }
+
     private var navigationTitle: String {
         guard isNew else { return loc("Kachel bearbeiten") }
         return route.kind == .shortcut ? loc("Kurzbefehl hinzufügen") : loc("Website hinzufügen")
@@ -69,6 +82,7 @@ struct LinkEditorView: View {
             Form {
                 Section {
                     TextField("Titel", text: $title)
+                        .tabOrder(.title, in: tabOrder, focus: $focus)
                     targetField
                 } footer: {
                     footer
@@ -100,9 +114,11 @@ struct LinkEditorView: View {
                 .keyboardType(.URL)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
+                .tabOrder(.target, in: tabOrder, focus: $focus)
         case .shortcut:
             TextField("Name des Kurzbefehls", text: $target)
                 .autocorrectionDisabled()
+                .tabOrder(.target, in: tabOrder, focus: $focus)
             Button("Kurzbefehle-App öffnen", icon: .navArrowRight) {
                 if let url = URL(string: "shortcuts://") { openURL(url) }
             }

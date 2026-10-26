@@ -15,6 +15,8 @@ struct StudentsView: View {
     @State private var searchText = ""
     @State private var editorRoute: StudentEditorRoute?
     @State private var studentPendingDeletion: Student?
+    /// Direkt geöffneter Schüler (Kachel „Nächster Geburtstag“).
+    @State private var openStudent: Student?
 
     private var selectedClass: SchoolClass? {
         classes.first { $0.id == app.selectedClassID && !$0.isDeleted }
@@ -26,6 +28,7 @@ struct StudentsView: View {
     var body: some View {
         ClassScopedView { schoolClass in
             content(for: schoolClass)
+                .task(id: schoolClass.id) { openRequestedStudent(in: schoolClass) }
         }
         .navigationTitle(AppTab.students.title)
         .appNavigationSubtitle(selectedClass.map { loc("\($0.students.count) Schüler") } ?? "")
@@ -40,6 +43,13 @@ struct StudentsView: View {
         .fullScreenCover(item: $editorRoute) { route in
             StudentEditorView(route: route)
                 .softScrollEdges()
+        }
+        .navigationDestination(item: $openStudent) { student in
+            StudentSubjectsView(student: student)
+                .hidesTabBar()
+        }
+        .onChange(of: app.studentToOpen) {
+            if let selectedClass { openRequestedStudent(in: selectedClass) }
         }
         .confirmationDialog(
             "Schüler löschen?",
@@ -60,6 +70,12 @@ struct StudentsView: View {
                 studentPendingDeletion = nil
             }
         }
+    }
+
+    private func openRequestedStudent(in schoolClass: SchoolClass) {
+        guard let id = app.studentToOpen else { return }
+        app.studentToOpen = nil
+        openStudent = schoolClass.students.first { $0.id == id }
     }
 
     @ViewBuilder

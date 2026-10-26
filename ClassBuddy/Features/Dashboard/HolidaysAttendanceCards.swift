@@ -44,6 +44,65 @@ struct HolidaysCard: View {
     }
 }
 
+/// Hinweis-Kachel oben auf der Übersicht, sobald die geladenen Schulferien in weniger als drei Monaten enden.
+/// Antippen lädt die Ferien des Bundeslands neu (die API liefert jeweils die nächsten Jahre), danach verschwindet sie.
+struct HolidayRefreshCard: View {
+    @Environment(SchoolSettings.self) private var settings
+    @Environment(ToastCenter.self) private var toasts
+    @Environment(\.modelContext) private var modelContext
+    @Query private var holidays: [Holiday]
+    @State private var isLoading = false
+
+    var body: some View {
+        let loadedUntil = HolidayImporter.loadedUntil(holidays)
+        if settings.values.federalState != nil, let loadedUntil, HolidayImporter.needsRefresh(loadedUntil: loadedUntil) {
+            Button(action: Haptics.tapping(reload)) {
+                VStack(alignment: .leading, spacing: 12) {
+                    Label {
+                        Text("Ferientermine")
+                    } icon: {
+                        Image(icon: .cloudDownload)
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    Spacer(minLength: 0)
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 8) {
+                            Text("Jetzt nachladen")
+                                .font(.title2.weight(.bold))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.6)
+                            if isLoading {
+                                ProgressView()
+                            }
+                        }
+                        Text("Geladen bis \(loadedUntil.appDate)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                }
+                .padding(18)
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .frame(height: cardHeight, alignment: .topLeading)
+                .background(Color(.secondarySystemGroupedBackground), in: cardShape)
+                .contentShape(.hoverEffect, cardShape)
+            }
+            .buttonStyle(.plain)
+            .hoverEffect(.lift)
+            .disabled(isLoading)
+        }
+    }
+
+    private func reload() {
+        isLoading = true
+        Task {
+            await HolidayImporter.importAndReport(settings: settings, context: modelContext, toasts: toasts)
+            isLoading = false
+        }
+    }
+}
+
 /// Kachel „Anwesenheit“: wer heute in einer Stunde der Klasse fehlte oder zu spät kam (Erfassung im Sitzplan).
 /// Antippen öffnet den Sitzplan der laufenden bzw. nächsten Stunde mit Raum, sonst die Raumübersicht.
 struct AttendanceCard: View {

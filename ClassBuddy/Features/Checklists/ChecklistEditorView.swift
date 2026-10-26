@@ -30,7 +30,12 @@ struct ChecklistEditorView: View {
     /// Nach dem Anlegen offen bleiben (geleert) für die nächste Checkliste.
     @State private var keepOpen = false
     @State private var lastCreated: String?
-    @FocusState private var isTitleFocused: Bool
+    @FocusState private var focus: Field?
+
+    /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`).
+    private enum Field: Hashable {
+        case title, subtitle
+    }
 
     private var schoolClass: SchoolClass? {
         switch route {
@@ -53,12 +58,13 @@ struct ChecklistEditorView: View {
                 Section {
                     Label {
                         TextField("Titel", text: $title)
-                            .focused($isTitleFocused)
+                            .tabOrder(.title, in: [.title, .subtitle], focus: $focus)
                     } icon: {
                         Image(icon: .label)
                     }
                     Label {
                         TextField("Untertitel (optional)", text: $subtitle)
+                            .tabOrder(.subtitle, in: [.title, .subtitle], focus: $focus)
                     } icon: {
                         Image(icon: .label)
                     }
@@ -136,7 +142,7 @@ struct ChecklistEditorView: View {
         case .new(let schoolClass, let current):
             isGlobal = schoolClass.subjects.isEmpty
             subject = current ?? schoolClass.subjects.first ?? ""
-            isTitleFocused = true
+            focus = .title
             lastCreated = LastCreated.checklist(in: modelContext)?.title
         case .edit(let checklist):
             title = checklist.title
@@ -172,7 +178,7 @@ struct ChecklistEditorView: View {
                 lastCreated = trimmedTitle
                 title = ""
                 subtitle = ""
-                isTitleFocused = true
+                focus = .title
             } else {
                 dismiss()
             }

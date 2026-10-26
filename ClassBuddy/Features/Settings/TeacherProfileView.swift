@@ -5,13 +5,14 @@ import SwiftUI
 struct TeacherProfileView: View {
     @Environment(SchoolSettings.self) private var settings
     @Environment(AppSecurity.self) private var security
+    @FocusState private var focus: PersonField?
 
     var body: some View {
         @Bindable var settings = settings
         let teacher = $settings.values.teacher
         Form {
             Section {
-                NameFields(firstName: teacher.firstName, lastName: teacher.lastName)
+                NameFields(firstName: teacher.firstName, lastName: teacher.lastName, focus: $focus, order: [.firstName, .lastName])
             } header: {
                 Text("Name")
             } footer: {

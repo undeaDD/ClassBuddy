@@ -4,7 +4,8 @@ import SwiftUI
 /// Eine Tagesspalte (0–24 Uhr): Raster, Pausen, Stunden-Slots, Termine.
 /// - Tipp auf einen leeren Slot: Klasse + Fach festlegen.
 /// - Tipp auf eine Stunde: Räume-Tab (später: Raum mit Sitzplan der Klasse).
-/// - Langes Drücken auf Stunde/Termin: Menü mit Bearbeiten und Entfernen.
+/// - Langes Drücken auf Stunde/Termin: Menü mit Bearbeiten und Entfernen (mit Rückfrage).
+/// Doppelstunden erscheinen als ein Feld über beide Slots.
 /// - Tipp auf freie Fläche: neuer Termin (auf 15 Minuten gerundet).
 /// Im Privatsphäre-Modus nur lesend (keine Popover zum Anlegen/Bearbeiten).
 struct DayColumn: View {
@@ -24,6 +25,27 @@ struct DayColumn: View {
     @State private var selectedSlot: LessonSlot?
     @State private var newEntryMinute: Int?
     @State private var editingEntry: CalendarEntry?
+    @State private var pendingDeletion: PendingDeletion?
+
+    /// Über das Kontextmenü zum Entfernen gewählt, wartet auf die Rückfrage.
+    private enum PendingDeletion {
+        case lesson(Lesson)
+        case entry(CalendarEntry)
+
+        var title: String {
+            switch self {
+            case .lesson: loc("Stunde entfernen?")
+            case .entry: loc("Termin entfernen?")
+            }
+        }
+
+        var message: String {
+            switch self {
+            case .lesson(let lesson) where lesson.isRecurring: loc("Die Stunde wird in allen Wochen entfernt.")
+            case .lesson, .entry: loc("Das kann nicht rückgängig gemacht werden.")
+            }
+        }
+    }
 
     private let calendar = Calendar.school
     private var hourHeight: CGFloat { CalendarView.hourHeight }
@@ -49,8 +71,9 @@ struct DayColumn: View {
             backgroundLayers
 
             ForEach(settings.slots) { slot in
-                // In den Ferien nur belegte (Einzel-)Stunden zeigen.
-                if holiday == nil || schedule.lesson(on: date, slotIndex: slot.index) != nil {
+                // In den Ferien nur belegte (Einzel-)Stunden zeigen; zweite Hälfte einer Doppelstunde zeichnet die erste.
+                if holiday == nil || schedule.lesson(on: date, slotIndex: slot.index) != nil,
+                   !schedule.isContinuation(on: date, slotIndex: slot.index) {
                     slotView(slot)
                 }
             }
@@ -70,7 +93,23 @@ struct DayColumn: View {
                 selectedSlot = nil
                 newEntryMinute = nil
                 editingEntry = nil
+                pendingDeletion = nil
             }
+        }
+        .confirmationDialog(
+            pendingDeletion?.title ?? "",
+            isPresented: Binding(get: { pendingDeletion != nil }, set: { if !$0 { pendingDeletion = nil } }),
+            titleVisibility: .visible,
+            presenting: pendingDeletion
+        ) { deletion in
+            Button("Entfernen", role: .destructive) {
+                switch deletion {
+                case .lesson(let lesson): delete(lesson)
+                case .entry(let entry): delete(entry)
+                }
+            }
+        } message: { deletion in
+            Text(deletion.message)
         }
         .popover(
             isPresented: Binding(get: { newEntryMinute != nil }, set: { if !$0 { newEntryMinute = nil } }),
@@ -127,8 +166,8 @@ struct DayColumn: View {
     private func slotView(_ slot: LessonSlot) -> some View {
         let lesson = schedule.lesson(on: date, slotIndex: slot.index)
         let isDimmed = focusClassID != nil && lesson != nil && lesson?.schoolClass?.id != focusClassID
-        return SlotCell(slot: slot, lesson: lesson, isDimmed: isDimmed)
-            .frame(height: y(slot.end - slot.start))
+        return SlotCell(slot: slot, lesson: lesson, isDouble: schedule.span(on: date, slotIndex: slot.index) >= 2, isDimmed: isDimmed)
+            .frame(height: y(schedule.end(on: date, from: slot) - slot.start))
             .padding(.horizontal, 3)
             .onTapGesture {
                 if let lesson, let room = lesson.room {
@@ -142,7 +181,7 @@ struct DayColumn: View {
             .hoverEffect(.highlight)
             .contextMenu {
                 if canEdit, let lesson {
-                    editMenu(edit: { selectedSlot = slot }, remove: { delete(lesson) })
+                    editMenu(edit: { selectedSlot = slot }, remove: { pendingDeletion = .lesson(lesson) })
                 }
             }
             .popover(isPresented: Binding(
@@ -178,7 +217,7 @@ struct DayColumn: View {
             .hoverEffect(.lift)
             .contextMenu {
                 if canEdit {
-                    editMenu(edit: { editingEntry = entry }, remove: { delete(entry) })
+                    editMenu(edit: { editingEntry = entry }, remove: { pendingDeletion = .entry(entry) })
                 }
             }
             .popover(isPresented: Binding(
@@ -232,6 +271,8 @@ struct DayColumn: View {
 private struct SlotCell: View {
     let slot: LessonSlot
     let lesson: Lesson?
+    /// Doppelstunde über diesen und den folgenden Slot („1./2.“).
+    var isDouble = false
     var isDimmed = false
 
     var body: some View {
@@ -258,7 +299,7 @@ private struct SlotCell: View {
 
     private func filledCell(lesson: Lesson, schoolClass: SchoolClass, shape: RoundedRectangle) -> some View {
         let color = schoolClass.displayColor
-        let number = Text("\(slot.number).")
+        let number = Text(verbatim: isDouble ? "\(slot.number)./\(slot.number + 1)." : "\(slot.number).")
             .font(.caption2.weight(.semibold))
             .opacity(0.7)
         let subject = Text(SchoolClass.displayName(ofSubject: lesson.subject))

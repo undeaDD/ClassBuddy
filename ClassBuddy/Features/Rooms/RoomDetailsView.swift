@@ -36,7 +36,12 @@ struct RoomDetailsView: View {
     /// Neuer Raum: Namensfeld beim Öffnen fokussieren.
     var focusesName = false
 
-    @FocusState private var isNameFocused: Bool
+    @FocusState private var focus: Field?
+
+    /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`).
+    private enum Field: Hashable {
+        case name, subtitle
+    }
 
     var body: some View {
         NavigationStack {
@@ -44,13 +49,14 @@ struct RoomDetailsView: View {
                 Section("Raum") {
                     Label {
                         TextField("Name (z. B. R 204)", text: $details.name)
-                            .focused($isNameFocused)
+                            .tabOrder(.name, in: [.name, .subtitle], focus: $focus)
                             .sensitive()
                     } icon: {
                         Image(icon: .label)
                     }
                     Label {
                         TextField("Untertitel (z. B. Physikraum, 2. OG)", text: $details.subtitle)
+                            .tabOrder(.subtitle, in: [.name, .subtitle], focus: $focus)
                             .sensitive()
                     } icon: {
                         Image(icon: .label)
@@ -103,7 +109,7 @@ struct RoomDetailsView: View {
             }
             .readableFormWidth()
             .onAppear {
-                if focusesName { isNameFocused = true }
+                if focusesName { focus = .name }
             }
             .navigationTitle("Details")
             .navigationBarTitleDisplayMode(.inline)

@@ -342,6 +342,7 @@ extension DashboardView {
             if let days = purchases.status.trialDaysLeft {
                 TrialDashboardCard(daysLeft: days) { app.isPurchasePagePresented = true }
             }
+            HolidayRefreshCard()
             DashboardTipCard(schoolClass: schoolClass) { isArranging = true }
         }
         .allowsHitTesting(!isArranging)
@@ -394,7 +395,7 @@ extension DashboardView {
             StatCard(
                 title: card.title,
                 value: "\(schoolClass.students.count)",
-                detail: DashboardText.genderBreakdown(schoolClass.students),
+                detail: DashboardText.genderBreakdown(schoolClass.students).nonEmpty,
                 symbol: card.symbol
             ) {
                 app.open(.students)
@@ -488,7 +489,11 @@ extension DashboardView {
             detail: Birthdays.detail(for: upcoming),
             symbol: DashboardBuiltInCard.nextBirthday.symbol
         ) {
-            app.open(.students)
+            if let student = upcoming.first?.student {
+                app.openStudent(student.id)
+            } else {
+                app.open(.students)
+            }
         }
     }
 }

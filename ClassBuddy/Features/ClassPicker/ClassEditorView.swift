@@ -15,10 +15,12 @@ struct ClassEditorView: View {
     @State private var shortName: String
     @State private var subjects: [String]
     @State private var schoolYear: String
+    @State private var level: ClassLevel?
     /// Name einer `ClassColor` oder eigene Farbe als „#RRGGBB“.
     @State private var colorRaw: String
     /// Zuletzt gewählte eigene Farbe (letztes Farbfeld).
     @AppStorage("classEditor.lastCustomColor") private var lastCustomColor = "#9C6830"
+    @FocusState private var focus: Field?
 
     init(schoolClass: SchoolClass?, onSave: @escaping (SchoolClass) -> Void = { _ in }) {
         self.schoolClass = schoolClass
@@ -27,6 +29,12 @@ struct ClassEditorView: View {
         _subjects = State(initialValue: schoolClass?.subjects ?? [])
         _schoolYear = State(initialValue: schoolClass?.schoolYear ?? SchoolClass.currentSchoolYear)
         _colorRaw = State(initialValue: schoolClass?.colorRaw ?? ClassColor.blue.rawValue)
+        _level = State(initialValue: schoolClass?.level)
+    }
+
+    /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`).
+    private enum Field: Hashable {
+        case shortName, schoolYear
     }
 
     private var isNew: Bool { schoolClass == nil }
@@ -51,14 +59,22 @@ struct ClassEditorView: View {
                     Label {
                         TextField("Kürzel (z. B. 7b)", text: $shortName)
                             .textInputAutocapitalization(.never)
+                            .tabOrder(.shortName, in: [.shortName, .schoolYear], focus: $focus)
                     } icon: {
                         Image(icon: .label)
                     }
                     Label {
                         TextField("Schuljahr", text: $schoolYear)
+                            .tabOrder(.schoolYear, in: [.shortName, .schoolYear], focus: $focus)
                     } icon: {
                         Image(icon: .calendar)
                     }
+                    Picker("Stufe", selection: $level) {
+                        Text("Keine Angabe").tag(ClassLevel?.none)
+                        ForEach(ClassLevel.allCases) { Text($0.title).tag(Optional($0)) }
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
                 }
 
                 Section {
@@ -157,6 +173,7 @@ struct ClassEditorView: View {
         target.subjects = subjects
         target.schoolYear = schoolYear.trimmingCharacters(in: .whitespaces)
         target.colorRaw = colorRaw
+        target.level = level
         target.removeBoardPhotosOfRemovedSubjects(in: modelContext)
         target.removeChecklistsOfRemovedSubjects(in: modelContext)
         try? modelContext.save()

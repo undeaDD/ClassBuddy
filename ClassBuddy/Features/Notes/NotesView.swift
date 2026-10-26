@@ -174,7 +174,8 @@ struct StudentSubjectsView: View {
 }
 
 /// Foto/Initialen und voller Name, optional eine Zeile darunter (im Privatsphäre-Modus geschwärzt).
-/// Mit `showsContactButtons` rechts Anrufen und E-Mail (ausgegraut ohne Angabe bzw. im Privatsphäre-Modus).
+/// Mit `showsContactButtons` rechts Anrufen und E-Mail (ausgegraut ohne Angabe, dann erklärt Antippen, wo sie
+/// eingetragen wird; im Privatsphäre-Modus gesperrt).
 struct StudentNameRow: View {
     @Environment(AppSecurity.self) private var security
     @Environment(\.openURL) private var openURL
@@ -182,6 +183,9 @@ struct StudentNameRow: View {
     var size: CGFloat = 40
     var detail: String?
     var showsContactButtons = false
+
+    /// Fehlende Angabe angetippt → Hinweis.
+    @State private var missingField: String?
 
     var body: some View {
         HStack(spacing: 12) {
@@ -200,26 +204,38 @@ struct StudentNameRow: View {
             if showsContactButtons {
                 Spacer(minLength: 12)
                 HStack(spacing: 20) {
-                    contactButton(loc("Anrufen"), icon: .phone, url: ContactURL.phone(student.phone))
-                    contactButton(loc("E-Mail schreiben"), icon: .sendMail, url: ContactURL.mail(student.email))
+                    contactButton(loc("Anrufen"), field: loc("Telefonnummer"), icon: .phone, url: ContactURL.phone(student.phone))
+                    contactButton(
+                        loc("E-Mail schreiben"), field: loc("E-Mail-Adresse"), icon: .sendMail, url: ContactURL.mail(student.email)
+                    )
                 }
                 .padding(.trailing, 4)
             }
         }
+        .alert(
+            missingField.map { loc("\($0) fehlt") } ?? "",
+            isPresented: Binding(get: { missingField != nil }, set: { if !$0 { missingField = nil } })
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Tragen Sie Telefonnummer und E-Mail-Adresse in der Schülerliste über „Bearbeiten“ ein.")
+        }
     }
 
     /// Nur Symbol, ohne Glas; eigene Trefferfläche (die Zeile selbst ist nicht antippbar).
-    private func contactButton(_ title: String, icon: AppIcon, url: URL?) -> some View {
-        Button(action: Haptics.tapping { if let url { openURL(url) } }) {
+    private func contactButton(_ title: String, field: String, icon: AppIcon, url: URL?) -> some View {
+        Button(action: Haptics.tapping { if let url { openURL(url) } else { missingField = field } }) {
             Image(icon: icon)
                 .iconSize(24)
+                .opacity(url == nil ? 0.35 : 1)
                 .frame(minWidth: 44, minHeight: 44)
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .foregroundStyle(.tint)
-        .disabled(url == nil || security.isPrivacyModeOn)
+        .disabled(security.isPrivacyModeOn)
         .accessibilityLabel(title)
+        .accessibilityHint(url == nil ? loc("Noch nicht eingetragen") : "")
     }
 }
 

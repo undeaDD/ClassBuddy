@@ -5,7 +5,11 @@ import SwiftUI
 final class AppModel {
     var selectedTab: AppTab = .dashboard {
         didSet {
-            if oldValue != selectedTab { resetStack(of: oldValue) }
+            guard oldValue != selectedTab else { return }
+            resetStack(of: oldValue)
+            // Der Klassen-Fokus gilt nur für den Besuch, der ihn gesetzt hat (Kachel, Tipp); wer später über die
+            // Tab-Leiste zurückkommt, sieht wieder alle Klassen.
+            if oldValue == .calendar { calendarFocusClassID = nil }
         }
     }
 
@@ -20,11 +24,17 @@ final class AppModel {
     }
     var isClassPickerPresented = false
 
-    /// Optionaler Kalender-Fokus: nur Stunden dieser Klasse farbig, alle anderen neutral.
+    /// Optionaler Kalender-Fokus: nur Stunden dieser Klasse farbig, alle anderen neutral. Endet beim Verlassen des Tabs.
     var calendarFocusClassID: UUID?
     /// Angezeigter Tag im Kalender (iPad: dessen Woche, schmal: Mitte des 3-Tage-Fensters).
     /// Hier statt in `CalendarView`, damit auch das Blättern in der Tab-Leiste (iPhone) darauf zugreift.
     var calendarDate = Calendar.school.startOfDay(for: .now)
+    /// Kalender-Tab erneut angetippt: zum Schulbeginn statt nach 0 Uhr scrollen (`CalendarView`).
+    private(set) var calendarScrollToStartRequest = 0
+
+    func requestCalendarScrollToStart() {
+        calendarScrollToStartRequest += 1
+    }
 
     /// Offener Sitzplan (Vollbild über allem), z. B. nach Antippen einer Stunde mit Raum.
     var seatingPlan: SeatingPlanRoute?
@@ -49,7 +59,10 @@ final class AppModel {
     /// Die Tab-Leiste bleibt bei offenem Popover antippbar, und Popover-Schließen
     /// plus Tab-Wechsel im selben Moment bringt UIKit zum Absturz.
     func open(_ tab: AppTab) {
-        guard tab != selectedTab else { return }
+        guard tab != selectedTab else {
+            if tab == .calendar { requestCalendarScrollToStart() }
+            return
+        }
         guard isClassPickerPresented else {
             selectedTab = tab
             return
@@ -94,6 +107,14 @@ final class AppModel {
     func openChecklist(_ id: UUID) {
         checklistToOpen = id
         open(.checklists)
+    }
+
+    /// Schüler, den der Schüler-Tab beim nächsten Öffnen zeigen soll (Kachel „Nächster Geburtstag“).
+    var studentToOpen: UUID?
+
+    func openStudent(_ id: UUID) {
+        studentToOpen = id
+        open(.students)
     }
 
     /// Tafelbild-Tab mit einem bestimmten Fach öffnen.

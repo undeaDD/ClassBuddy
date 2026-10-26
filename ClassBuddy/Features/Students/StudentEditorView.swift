@@ -36,7 +36,7 @@ struct StudentEditorView: View {
     /// Nach dem Anlegen offen bleiben (geleert) für den nächsten Schüler.
     @State private var keepOpen = false
     @State private var lastCreated: String?
-    @FocusState private var isFirstNameFocused: Bool
+    @FocusState private var focus: PersonField?
 
     private struct CropRequest: Identifiable {
         let id = UUID()
@@ -56,6 +56,9 @@ struct StudentEditorView: View {
         _otherContact = State(initialValue: student?.otherContact ?? "")
         _photo = State(initialValue: student?.photo)
     }
+
+    /// Tab-Reihenfolge mit externer Tastatur: nur die Textfelder, Foto, Geschlecht und Geburtstag werden übersprungen.
+    private static let tabOrder: [PersonField] = [.firstName, .lastName, .phone, .email, .otherContact, .notes]
 
     private var isNew: Bool {
         if case .new = route { true } else { false }
@@ -77,7 +80,7 @@ struct StudentEditorView: View {
                 }
 
                 Section("Name") {
-                    NameFields(firstName: $firstName, lastName: $lastName, firstNameFocus: $isFirstNameFocused)
+                    NameFields(firstName: $firstName, lastName: $lastName, focus: $focus, order: Self.tabOrder)
                 }
 
                 Section("Foto") {
@@ -86,14 +89,17 @@ struct StudentEditorView: View {
 
                 Section("Kontakt") {
                     ContactField(title: "Telefon", text: $phone, icon: .phone)
+                        .tabOrder(.phone, in: Self.tabOrder, focus: $focus)
                         .keyboardType(.phonePad)
                         .textContentType(.telephoneNumber)
                     ContactField(title: "E-Mail", text: $email, icon: .sendMail)
+                        .tabOrder(.email, in: Self.tabOrder, focus: $focus)
                         .keyboardType(.emailAddress)
                         .textContentType(.emailAddress)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                     ContactField(title: "Sonstiges (z. B. Eltern)", text: $otherContact, icon: .notes)
+                        .tabOrder(.otherContact, in: Self.tabOrder, focus: $focus)
                 }
 
                 Section("Optional") {
@@ -104,6 +110,7 @@ struct StudentEditorView: View {
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                         .lineLimit(4...12)
+                        .tabOrder(.notes, in: Self.tabOrder, focus: $focus)
                         .sensitive()
                 }
 
@@ -114,7 +121,7 @@ struct StudentEditorView: View {
             .readableFormWidth()
             .onAppear {
                 guard isNew else { return }
-                isFirstNameFocused = true
+                focus = .firstName
                 lastCreated = LastCreated.student(in: modelContext)?.fullName
             }
             .onChange(of: photoSelection) { _, item in
@@ -217,7 +224,7 @@ struct StudentEditorView: View {
         email = ""
         otherContact = ""
         photo = nil
-        isFirstNameFocused = true
+        focus = .firstName
     }
 }
 

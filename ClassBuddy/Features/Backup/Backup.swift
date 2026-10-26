@@ -131,11 +131,13 @@ enum Backup {
             [
                 "ID", "Kürzel", "Fächer", "Schuljahr", "Farbe", "Erstellt",
                 "Kachel-Reihenfolge", "Ausgeblendete Kacheln", "Entfernte Kacheln", "Schnellnotiz", "Schnellnotiz bearbeitet",
+                "Stufe",
             ],
         ] + classes.map {
             [$0.id.uuidString, $0.shortName, Cell.list($0.subjects), $0.schoolYear, $0.colorRaw,
              Cell.dateTime($0.createdAt), Cell.list($0.dashboardOrder), Cell.list($0.dashboardHidden),
-             Cell.list($0.dashboardRemoved), $0.quickNote, $0.quickNoteEditedAt.map(Cell.dateTime) ?? ""]
+             Cell.list($0.dashboardRemoved), $0.quickNote, $0.quickNoteEditedAt.map(Cell.dateTime) ?? "",
+             $0.levelRaw ?? ""]
         })
     }
 
@@ -154,14 +156,15 @@ enum Backup {
 
     private static func lessonsSheet(_ classes: [SchoolClass]) -> XLSXSheet {
         XLSXSheet(name: Sheet.lessons, rows: [
-            ["ID", "Klassen-ID", "Klasse", "Wochentag", "Stunde", "Fach", "Wöchentlich", "Datum", "Raum-ID", "Raum"],
+            ["ID", "Klassen-ID", "Klasse", "Wochentag", "Stunde", "Fach", "Wöchentlich", "Datum", "Raum-ID", "Raum",
+             "Alle n Wochen", "Stunden"],
         ] + classes.flatMap { schoolClass in
             schoolClass.lessons
                 .sorted { ($0.weekday, $0.slotIndex) < ($1.weekday, $1.slotIndex) }
                 .map {
                     [$0.id.uuidString, schoolClass.id.uuidString, schoolClass.shortName, Cell.weekday($0.weekday),
                      "\($0.slotIndex + 1)", $0.subject, Cell.bool($0.isRecurring), Cell.date($0.date),
-                     $0.room?.id.uuidString ?? "", $0.room?.name ?? ""]
+                     $0.room?.id.uuidString ?? "", $0.room?.name ?? "", "\($0.weekInterval)", "\($0.slotCount)"]
                 }
         })
     }

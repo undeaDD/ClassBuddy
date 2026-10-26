@@ -28,6 +28,7 @@ struct AssessmentEditorView: View {
     @State private var date = Date.now
     @State private var usesPoints = false
     @State private var maxPointsText = ""
+    @FocusState private var focus: Field?
 
     private var schoolClass: SchoolClass? {
         switch route {
@@ -55,12 +56,20 @@ struct AssessmentEditorView: View {
         !title.trimmingCharacters(in: .whitespaces).isEmpty && !subject.isEmpty && (!usesPoints || maxPoints != nil)
     }
 
+    /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`).
+    private enum Field: Hashable {
+        case title, maxPoints
+    }
+
+    private var tabOrder: [Field] { usesPoints ? [.title, .maxPoints] : [.title] }
+
     var body: some View {
         NavigationStack {
             Form {
                 Section {
                     Label {
                         TextField("Titel (z. B. Klassenarbeit 2)", text: $title)
+                            .tabOrder(.title, in: tabOrder, focus: $focus)
                     } icon: {
                         Image(icon: .label)
                     }
@@ -95,6 +104,7 @@ struct AssessmentEditorView: View {
                     if usesPoints {
                         TextField("Höchstpunktzahl (z. B. 50)", text: $maxPointsText)
                             .keyboardType(.decimalPad)
+                            .tabOrder(.maxPoints, in: tabOrder, focus: $focus)
                     }
                 } footer: {
                     Text(usesPoints

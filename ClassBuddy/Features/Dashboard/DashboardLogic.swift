@@ -116,7 +116,8 @@ enum WeeklyWorkload {
 
 /// Texte der Übersichts-Kacheln.
 enum DashboardText {
-    /// „♀ 46 % · ♂ 46 % · ⚧ 8 %“ (Anteile gerundet; ohne Angabe als „?“).
+    /// „♀ 46 % · ♂ 46 % · ⚧ 8 %“ (Anteile gerundet; ohne Angabe als „?“, aber nur neben mindestens einem
+    /// Geschlecht: Hat niemand eins, bleibt die Zeile leer).
     static func genderBreakdown(_ students: [Student]) -> String {
         guard !students.isEmpty else { return loc("Noch keine Schüler") }
         let total = Double(students.count)
@@ -126,7 +127,7 @@ enum DashboardText {
             return loc("\(gender.symbol) \(Int((Double(count) / total * 100).rounded())) %")
         }
         let unknown = students.filter { $0.gender == nil }.count
-        if unknown > 0 { parts.append("? \(Int((Double(unknown) / total * 100).rounded())) %") }
+        if unknown > 0, !parts.isEmpty { parts.append("? \(Int((Double(unknown) / total * 100).rounded())) %") }
         return parts.joined(separator: " · ")
     }
 

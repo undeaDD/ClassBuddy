@@ -7,12 +7,18 @@ struct SchoolSettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ToastCenter.self) private var toasts
     @Environment(\.openURL) private var openURL
-    @Query(sort: \Holiday.startDate) private var holidays: [Holiday]
+    @Query private var holidays: [Holiday]
     @AppStorage(AppPreference.hasOpenedSchoolSettings) private var hasOpenedSchoolSettings = false
 
     @State private var isImporting = false
     /// Aus PLZ und Ort erkanntes Bundesland (Hinweis im Footer).
     @State private var detectedState: String?
+    @FocusState private var focus: Field?
+
+    /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`): nur die Adressfelder, die Schulform wird übersprungen.
+    private enum Field: Hashable, CaseIterable {
+        case name, website, street, postalCode, city, phone, email
+    }
 
     var body: some View {
         @Bindable var settings = settings
@@ -21,6 +27,7 @@ struct SchoolSettingsView: View {
             Section {
                 TextField("Name der Schule", text: school.name)
                     .textContentType(.organizationName)
+                    .tabOrder(.name, in: Field.allCases, focus: $focus)
                 Picker("Schulform", selection: $settings.values.schoolType) {
                     Text("Nicht festgelegt").tag(SchoolType?.none)
                     ForEach(SchoolType.allCases) { Text($0.title).tag(Optional($0)) }
@@ -31,6 +38,7 @@ struct SchoolSettingsView: View {
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                        .tabOrder(.website, in: Field.allCases, focus: $focus)
                     if let url = settings.values.school.websiteURL {
                         Button("Öffnen", icon: .navArrowRight) { openURL(url) }
                             .labelStyle(.iconOnly)
@@ -38,22 +46,27 @@ struct SchoolSettingsView: View {
                 }
                 TextField("Straße und Hausnummer", text: school.street)
                     .textContentType(.fullStreetAddress)
+                    .tabOrder(.street, in: Field.allCases, focus: $focus)
                 HStack {
                     TextField("PLZ", text: school.postalCode)
                         .textContentType(.postalCode)
                         .keyboardType(.numberPad)
+                        .tabOrder(.postalCode, in: Field.allCases, focus: $focus)
                         .frame(maxWidth: 100)
                     TextField("Ort", text: school.city)
                         .textContentType(.addressCity)
+                        .tabOrder(.city, in: Field.allCases, focus: $focus)
                 }
                 TextField("Telefon (Sekretariat)", text: school.phone)
                     .textContentType(.telephoneNumber)
                     .keyboardType(.phonePad)
+                    .tabOrder(.phone, in: Field.allCases, focus: $focus)
                 TextField("E-Mail (Sekretariat)", text: school.email)
                     .textContentType(.emailAddress)
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .tabOrder(.email, in: Field.allCases, focus: $focus)
             } header: {
                 Text("Schule")
             } footer: {
@@ -84,6 +97,9 @@ struct SchoolSettingsView: View {
 
                 Button("Pause hinzufügen", icon: .plus) {
                     let start = settings.slots.last?.end ?? settings.values.dayStart
+                    // Die Liste löst den Button beim Einfügen der Zeile darüber teils doppelt aus; eine zweite Pause
+                    // mit demselben Beginn wäre ohnehin sinnlos.
+                    guard !settings.values.breaks.contains(where: { $0.start == start }) else { return }
                     settings.values.breaks.append(BreakTime(start: start, duration: 15))
                 }
             } header: {
@@ -140,10 +156,11 @@ struct SchoolSettingsView: View {
                 }
                 .disabled(settings.values.federalState == nil || isImporting)
 
-                if !upcomingHolidays.isEmpty {
-                    ForEach(upcomingHolidays) { holiday in
-                        LabeledContent(holiday.name, value: dateRange(holiday))
-                    }
+                if !holidays.isEmpty {
+                    LabeledContent(
+                        loc("\(holidays.count) Ferien und Feiertage"),
+                        value: HolidayImporter.loadedUntil(holidays).map { loc("bis \($0.appDate)") } ?? ""
+                    )
                 }
             } header: {
                 Text("Ferien & Feiertage")
@@ -170,11 +187,6 @@ struct SchoolSettingsView: View {
         return text
     }
 
-    private var upcomingHolidays: [Holiday] {
-        let today = Calendar.school.startOfDay(for: .now)
-        return Array(holidays.filter { $0.endDate >= today }.prefix(6))
-    }
-
     private var importFooter: String {
         var parts = [loc("""
             Derzeit nur für deutsche Bundesländer. Quelle: OpenHolidays API (openholidaysapi.org). \
@@ -186,23 +198,10 @@ struct SchoolSettingsView: View {
         return parts.joined(separator: " ")
     }
 
-    private func dateRange(_ holiday: Holiday) -> String {
-        return Calendar.school.isDate(holiday.startDate, inSameDayAs: holiday.endDate)
-            ? holiday.startDate.appDate
-            : "\(holiday.startDate.appDate) – \(holiday.endDate.appDate)"
-    }
-
     private func importHolidays() async {
-        guard let state = settings.values.federalState else { return }
         isImporting = true
         defer { isImporting = false }
-        do {
-            let count = try await HolidayImporter.importHolidays(for: state, into: modelContext)
-            settings.values.holidaysImportedAt = .now
-            toasts.success(loc("\(count) Ferien und Feiertage importiert"))
-        } catch {
-            toasts.error(error.localizedDescription)
-        }
+        await HolidayImporter.importAndReport(settings: settings, context: modelContext, toasts: toasts)
     }
 
     /// Minuten seit Mitternacht ↔ Date (für DatePicker).
