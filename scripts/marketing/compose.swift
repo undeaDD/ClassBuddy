@@ -8,6 +8,9 @@
 //   build/AppStore/raw/<sprache>/<gerät>/<seite>[-dark].png   Roh-Screenshots (scripts/appstore-screenshots.sh)
 // Fehlt ein Asset, gibt es Ersatz: gezeichneter Rahmen, Verlauf, Systemschrift, beschrifteter Platzhalter.
 //
+// Mit WEB=1 stattdessen nur die Bilder für die Website: Gerät mit Screenshot, ohne Tafel, Text und Schatten,
+// durchsichtiger Hintergrund → site/screenshots/<sprache>[-dark]/<gerät>/<seite>.png (Seiten: `webScreens`).
+//
 // Ausgabe (ohne Alphakanal): build/AppStore/<sprache>[-dark]/
 //   header.png, search.png                     5244 × 2950
 //   iphone/NN-seite.png                        1206 × 2622 (Hochformat, 6,3″) – Tafel läuft als Panorama über alle Bilder
@@ -223,11 +226,12 @@ final class Canvas {
     let size: CGSize
     let context: CGContext
 
-    init(_ size: CGSize) {
+    init(_ size: CGSize, transparent: Bool = false) {
         self.size = size
         context = CGContext(
             data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: 8, bytesPerRow: 0,
-            space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+            space: CGColorSpace(name: CGColorSpace.sRGB)!,
+            bitmapInfo: (transparent ? CGImageAlphaInfo.premultipliedLast : CGImageAlphaInfo.noneSkipLast).rawValue
         )!
         context.interpolationQuality = .high
         context.translateBy(x: 0, y: size.height)
@@ -310,7 +314,7 @@ final class Canvas {
     /// Gerät samt Screenshot; `screenHeight` = Höhe des Bildschirms, oben mittig an `top` / `centerX`,
     /// um `degrees` um die Mitte des Bildschirms gedreht (Bezel und Screenshot gemeinsam).
     func device(_ device: Device, image: CGImage?, label: String, centerX: CGFloat, top: CGFloat, screenHeight: CGFloat,
-                degrees: CGFloat = 0) {
+                degrees: CGFloat = 0, shadow: Bool = true) {
         let frame = frames[device]
         let aspect = frame.map { $0.screen.width / $0.screen.height }
             ?? image.map { CGFloat($0.width) / CGFloat($0.height) } ?? device.placeholderAspect
@@ -328,11 +332,13 @@ final class Canvas {
             )
             // Schatten des Bezels (aus dessen Alphakanal) zuerst; der Screenshot deckt den inneren Teil ab,
             // danach der Bezel noch einmal ohne Schatten obenauf (deckt die eckigen Screenshot-Ecken ab).
-            context.saveGState()
-            context.setShadow(offset: CGSize(width: 0, height: frameRect.height * 0.02), blur: frameRect.height * 0.05,
-                              color: color("#000000", alpha: 0.55))
-            draw(frame.image, in: frameRect)
-            context.restoreGState()
+            if shadow {
+                context.saveGState()
+                context.setShadow(offset: CGSize(width: 0, height: frameRect.height * 0.02), blur: frameRect.height * 0.05,
+                                  color: color("#000000", alpha: 0.55))
+                draw(frame.image, in: frameRect)
+                context.restoreGState()
+            }
             screenContent(image, label: label, in: screen, radii: [0, 0, 0, 0], mask: frame.mask)
             draw(frame.image, in: frameRect)
         } else {
@@ -478,6 +484,38 @@ func storeImages(_ device: Device, _ language: String) throws {
         let name = String(format: "%02d-%@.png", index + 1, id)
         try canvas.save(output.appending(path: "\(folder(language))/\(device.rawValue)/\(name)"))
     }
+}
+
+/// Website: nur Gerät und Screenshot, ohne Drehung; den Schatten macht die Seite (CSS). Breite in Pixeln (2x-Displays).
+let webScreens = ["dashboard", "calendar", "notes", "checklists", "students"]
+
+func webImages(_ device: Device, _ language: String, width: CGFloat) throws {
+    guard let frame = frames[device] else {
+        print("  ✗ Bezel für \(device.rawValue) fehlt (Marketing/Assets), übersprungen")
+        return
+    }
+    let scale = width / CGFloat(frame.image.width)
+    let size = CGSize(width: width, height: (CGFloat(frame.image.height) * scale).rounded())
+    for id in webScreens {
+        let canvas = Canvas(size, transparent: true)
+        canvas.device(device, image: screenshot(device, id, language: language), label: id,
+                      centerX: frame.screen.midX * scale, top: frame.screen.minY * scale,
+                      screenHeight: frame.screen.height * scale, shadow: false)
+        try canvas.save(root.appending(path: "site/screenshots/\(folder(language))/\(device.rawValue)/\(id).png"))
+    }
+}
+
+if ProcessInfo.processInfo.environment["WEB"] == "1" {
+    for appearance in appearances {
+        isDark = appearance == "dark"
+        for language in languages {
+            print("▸ Website \(folder(language))")
+            try webImages(.ipad, language, width: 760)
+            try webImages(.iphone, language, width: 420)
+        }
+    }
+    print("✓ site/screenshots/")
+    exit(0)
 }
 
 print("▸ Bezels: " + (frames.isEmpty ? "keine (gezeichnete Rahmen)" : frames.keys.map(\.rawValue).sorted().joined(separator: ", ")))

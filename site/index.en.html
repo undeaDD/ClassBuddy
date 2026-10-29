@@ -3,107 +3,291 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ClassBuddy</title>
+<title>ClassBuddy · The digital companion for teachers</title>
+<meta name="description" content="Timetable, seating plans, assessments and checklists for teachers. Everything stays on your iPad or iPhone, protected by Face ID.">
+<meta property="og:title" content="ClassBuddy">
+<meta property="og:description" content="Your digital companion for everyday school life. Everything stays on your device, no account, no cloud.">
+<meta property="og:image" content="https://undeadd.github.io/ClassBuddy/app-icon.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#f2f2f7">
 <link rel="icon" href="app-icon.png">
-<style>
-  :root {
-    color-scheme: light dark;
-    --bg: #f2f2f7;
-    --card: #ffffff;
-    --text: #000000;
-    --secondary: #6d6d72;
-    --separator: rgba(60, 60, 67, 0.18);
-    --accent: #9c6830;
-    --pill: rgba(156, 104, 48, 0.12);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #000000;
-      --card: #1c1c1e;
-      --text: #ffffff;
-      --secondary: #98989f;
-      --separator: rgba(84, 84, 88, 0.6);
-      --accent: #cd9c5e;
-      --pill: rgba(205, 156, 94, 0.16);
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    padding: 20px 20px 40px;
-    background: var(--bg);
-    color: var(--text);
-    font: -apple-system-body;
-    -webkit-text-size-adjust: 100%;
-  }
-  main { max-width: 720px; margin: 0 auto; }
-  .intro { color: var(--secondary); font: -apple-system-subheadline; margin: 4px 16px 24px; line-height: 1.4; }
-  h2 {
-    font: -apple-system-footnote;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    color: var(--secondary);
-    margin: 28px 16px 8px;
-    font-weight: 400;
-  }
-  .card { background: var(--card); border-radius: 12px; overflow: hidden; }
-  .row { padding: 12px 16px; position: relative; }
-  .row + .row::before {
-    content: ""; position: absolute; top: 0; left: 16px; right: 0;
-    border-top: 0.5px solid var(--separator);
-  }
-  .row-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .name { font: -apple-system-headline; }
-  .pill {
-    font: -apple-system-caption1; font-weight: 600;
-    color: var(--accent); background: var(--pill);
-    padding: 2px 8px; border-radius: 999px;
-  }
-  .desc { color: var(--secondary); font: -apple-system-subheadline; margin-top: 4px; line-height: 1.4; }
-  a { color: var(--accent); text-decoration: none; }
-  details { margin-top: 8px; }
-  summary { color: var(--accent); font: -apple-system-subheadline; cursor: pointer; list-style: none; }
-  summary::-webkit-details-marker { display: none; }
-  summary::after { content: " ›"; }
-  details[open] summary::after { content: " ⌄"; }
-  pre {
-    white-space: pre-wrap; font: -apple-system-caption2; font-family: ui-monospace, Menlo, monospace;
-    color: var(--secondary); margin: 8px 0 0; line-height: 1.45;
-  }
-  .footnote { color: var(--secondary); font: -apple-system-footnote; margin: 8px 16px 0; line-height: 1.4; }
-  html, body { overflow-x: hidden; }
-  body { overflow-wrap: anywhere; word-break: normal; }
-  pre { max-width: 100%; overflow-x: hidden; overflow-wrap: anywhere; }
-  ul { margin: 6px 0 0; padding-left: 20px; }
-  li { margin: 4px 0; line-height: 1.4; }
-  .row p { margin: 6px 0 0; line-height: 1.45; }
-  .muted { color: var(--secondary); }
-  .ok { color: #34c759; font-weight: 600; }
-  .todo { color: #ff3b30; font-weight: 600; }
-  .hero { display: flex; align-items: center; gap: 16px; margin: 8px 16px 24px; }
-  .hero img { width: 76px; height: 76px; border-radius: 17px; box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
-  .hero h1 { margin: 0; font: -apple-system-title1; font-weight: 700; font-size: 28px; }
-  .hero p { margin: 4px 0 0; color: var(--secondary); line-height: 1.4; }
-  .lang { margin: 0 16px 16px; color: var(--secondary); font-size: 15px; }
-  a.rowlink { display: block; color: var(--text); text-decoration: none; }
-  a.rowlink .name::after { content: "›"; float: right; color: var(--secondary); }
-</style>
+<link rel="apple-touch-icon" href="app-icon.png">
+<link rel="alternate" hreflang="de" href="index.html">
+<script>
+  // Erscheinungsbild vor dem ersten Zeichnen setzen: gespeicherte Wahl, sonst System (ohne Wahl folgt die Seite dem System).
+  (function () {
+    var stored = null;
+    try { stored = localStorage.getItem("theme"); } catch (error) {}
+    var dark = stored ? stored === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+  })();
+</script>
+<link rel="stylesheet" href="landing.css">
 </head>
 <body>
-<main>
-  <div class="hero">
-    <img src="app-icon.png" alt="">
-    <div><h1>ClassBuddy</h1><p>Classes, students and timetable – stored locally on the device and protected with biometrics. For iPad and iPhone.</p></div>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img class="brand-mascot" src="images/mascot-default.png" alt="">ClassBuddy</a>
+    <div class="nav-links">
+      <a href="#funktionen">Features</a>
+      <a href="#bilder">Screenshots</a>
+      <a href="#download">Download</a>
+      <a href="#stimmen">Reviews</a>
+      <a href="#fragen">FAQ</a>
+    </div>
+    <div class="nav-tools">
+      <div class="menu" data-menu>
+        <button type="button" class="tool" aria-haspopup="true" aria-expanded="false" aria-label="Language">EN<img src="icons/nav-arrow-down.svg" alt=""></button>
+        <div class="menu-list" role="menu">
+          <a role="menuitem" href="index.html" hreflang="de" lang="de">Deutsch</a>
+          <a role="menuitem" href="index.en.html" hreflang="en" lang="en" aria-current="page">English</a>
+        </div>
+      </div>
+      <button type="button" class="tool icon-only" data-theme-toggle aria-label="Light or dark"><span class="light-only"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg></span><span class="dark-only"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span></button>
+    </div>
   </div>
-  <p class="lang"><a href="index.html">Deutsch</a> · English</p>
-  <div class="card">
-    <div class="row"><a class="rowlink" href="support.en.html"><div class="name">Support</div></a></div>
-    <div class="row"><a class="rowlink" href="privacy.en.html"><div class="name">Privacy Policy</div></a></div>
-    <div class="row"><a class="rowlink" href="imprint.en.html"><div class="name">Legal Notice</div></a></div>
-    <div class="row"><a class="rowlink" href="licenses.en.html"><div class="name">Licenses</div></a></div>
-    <div class="row"><a class="rowlink" href="collaborators.en.html"><div class="name">Contributors</div></a></div>
-    <div class="row"><a class="rowlink" href="https://github.com/undeaDD/ClassBuddy"><div class="name">Source code on GitHub</div></a></div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <div class="wordmark"><img class="light-only" src="app-icon.png" alt=""><img class="dark-only" src="app-icon-dark.png" alt=""><span>ClassBuddy</span></div>
+      <h1>Your digital companion for <span>school days</span></h1>
+      <div class="badges">
+        <a class="badge" href="#download"><img src="images/appstore-en-black.svg" alt="Download on the App Store"></a>
+        <a class="badge" href="#download"><img src="images/googleplay-en.png" alt="Get it on Google Play"></a>
+      </div>
+    </div>
+    <div class="stage">
+      <img class="device tablet light-only" src="screenshots/de/ipad/dashboard.png" alt="ClassBuddy on iPad: dashboard with cards" width="760" height="991"><img class="device tablet dark-only" src="screenshots/de-dark/ipad/dashboard.png" alt="ClassBuddy on iPad: dashboard with cards" width="760" height="991">
+      <img class="device phone light-only" src="screenshots/de/iphone/calendar.png" alt="ClassBuddy on iPhone: calendar" width="420" height="859"><img class="device phone dark-only" src="screenshots/de-dark/iphone/calendar.png" alt="ClassBuddy on iPhone: calendar" width="420" height="859">
+      <img class="mascot" src="images/mascot-default.png" alt="Buddy, the ClassBuddy mascot">
+    </div>
   </div>
-</main>
+</header>
+
+<section id="so-gehts">
+  <div class="wrap">
+    <div class="center reveal">
+      <span class="eyebrow">Ready in three steps</span>
+      <h2>Set up in a free period</h2>
+    </div>
+    <ol class="timeline">
+      <li class="reveal"><span class="node"></span><small>Step 1</small><h3>Create a class</h3><p>Short name, subjects and color, then the student list. With “Add more” it all goes in one go.</p></li>
+      <li class="reveal"><span class="node"></span><small>Step 2</small><h3>Enter your timetable</h3><p>Tap an empty period, choose class and subject, “Every week”. School holidays for your state come in with one import.</p></li>
+      <li class="reveal"><span class="node"></span><small>Step 3</small><h3>Fill the seating plan</h3><p>Draw the room, seat your students. From then on every lesson opens its seating plan directly.</p></li>
+    </ol>
+    <p class="lead center reveal">Explained step by step in the <a href="guide.en.html">guide</a>.</p>
+  </div>
+</section>
+
+<section id="funktionen">
+  <div class="wrap">
+    <div class="center reveal">
+      <span class="eyebrow">Features</span>
+      <h2>Everything you need in class</h2>
+      <p class="lead">Made for teachers at German schools and constantly improved, often straight from requests in the staff room.</p>
+    </div>
+    <div class="features">
+      <article class="feature reveal" style="--src: url(icons/home-alt.svg)">
+        <h3>Dashboard</h3>
+        <ul><li>Next lesson, current room, holiday countdown, weather at your school</li><li>Timer, random pick, groups and noise meter</li><li>Your own cards for websites, documents and shortcuts</li></ul>
+      </article>
+      <article class="feature reveal" style="--src: url(icons/calendar.svg)">
+        <h3>Timetable and calendar</h3>
+        <ul><li>Weekly and one-off lessons, double lessons, appointments</li><li>School and public holidays by import</li><li>“Now &amp; Next” widget with time remaining</li></ul>
+      </article>
+      <article class="feature reveal" style="--src: url(icons/floor-layout.svg)">
+        <h3>Rooms and seating plans</h3>
+        <ul><li>Draw the floor plan, even with angled tables</li><li>Seat students by tap or drag, or shuffle them</li><li>Seating plan as PDF</li></ul>
+      </article>
+      <article class="feature reveal" style="--src: url(icons/notes.svg)">
+        <h3>Assessments</h3>
+        <ul><li>Oral observations on your own scale, right from the seating plan</li><li>Exams and tests with grade distribution</li><li>Grade overview as PDF or Excel. The grading stays with you.</li></ul>
+      </article>
+      <article class="feature reveal" style="--src: url(icons/checkmark-on.svg)">
+        <h3>Checklists and attendance</h3>
+        <ul><li>Who handed in the parent letter? With progress and due date</li><li>Absences and late arrivals in a few taps</li></ul>
+      </article>
+      <article class="feature reveal" style="--src: url(icons/board.svg)">
+        <h3>Board photos</h3>
+        <ul><li>Scan the board at the end of the lesson</li><li>Filed per class and subject, ready for the next lesson</li></ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="datenschutz">
+  <div class="wrap">
+    <div class="board reveal">
+      <img class="mascot" src="images/mascot-defend.png" alt="">
+      <div>
+        <span class="eyebrow">Privacy first</span>
+        <h2>Your data stays in the classroom</h2>
+        <p class="lead">ClassBuddy has no server. What you enter only leaves your device when you export it yourself.</p>
+      </div>
+      <ul class="checks">
+        <li>No account, no tracking, no ads</li>
+        <li>All data stays local, encrypted with the device’s highest protection class</li>
+        <li>App lock with Face ID or Touch ID</li>
+        <li>Privacy mode hides names and grades, for example on a projector</li>
+        <li>Export and import as an Excel file</li>
+        <li>Source code publicly available</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="bilder">
+  <input class="gallery-input" type="radio" name="device" id="show-ipad" checked>
+  <input class="gallery-input" type="radio" name="device" id="show-iphone">
+  <div class="wrap center reveal">
+    <span class="eyebrow">Screenshots</span>
+    <h2>See ClassBuddy in action</h2>
+    <div class="tabs">
+      <label for="show-ipad">iPad</label>
+      <label for="show-iphone">iPhone</label>
+    </div>
+  </div>
+    <div class="gallery-wrap ipad">
+      <div class="gallery">
+        <figure style="--tilt: -2deg; --lift: 0px" tabindex="0" role="button" aria-label="Dashboard: Enlarge"><img class="device light-only" src="screenshots/de/ipad/dashboard.png" alt="Dashboard" width="760" height="991"><img class="device dark-only" src="screenshots/de-dark/ipad/dashboard.png" alt="Dashboard" width="760" height="991"></figure>
+        <figure style="--tilt: 1.5deg; --lift: 10px" tabindex="0" role="button" aria-label="Calendar: Enlarge"><img class="device light-only" src="screenshots/de/ipad/calendar.png" alt="Calendar" width="760" height="991"><img class="device dark-only" src="screenshots/de-dark/ipad/calendar.png" alt="Calendar" width="760" height="991"></figure>
+        <figure style="--tilt: -1deg; --lift: -6px" tabindex="0" role="button" aria-label="Assessments: Enlarge"><img class="device light-only" src="screenshots/de/ipad/notes.png" alt="Assessments" width="760" height="991"><img class="device dark-only" src="screenshots/de-dark/ipad/notes.png" alt="Assessments" width="760" height="991"></figure>
+        <figure style="--tilt: 2.2deg; --lift: 4px" tabindex="0" role="button" aria-label="Checklists: Enlarge"><img class="device light-only" src="screenshots/de/ipad/checklists.png" alt="Checklists" width="760" height="991"><img class="device dark-only" src="screenshots/de-dark/ipad/checklists.png" alt="Checklists" width="760" height="991"></figure>
+        <figure style="--tilt: -1.6deg; --lift: 8px" tabindex="0" role="button" aria-label="Students: Enlarge"><img class="device light-only" src="screenshots/de/ipad/students.png" alt="Students" width="760" height="991"><img class="device dark-only" src="screenshots/de-dark/ipad/students.png" alt="Students" width="760" height="991"></figure>
+      </div>
+      <div class="dots"><button type="button" aria-label="Screenshot 1"></button><button type="button" aria-label="Screenshot 2"></button><button type="button" aria-label="Screenshot 3"></button><button type="button" aria-label="Screenshot 4"></button><button type="button" aria-label="Screenshot 5"></button></div>
+    </div>
+    <div class="gallery-wrap iphone">
+      <div class="gallery">
+        <figure style="--tilt: -2deg; --lift: 0px" tabindex="0" role="button" aria-label="Dashboard: Enlarge"><img class="device light-only" src="screenshots/de/iphone/dashboard.png" alt="Dashboard" width="420" height="859"><img class="device dark-only" src="screenshots/de-dark/iphone/dashboard.png" alt="Dashboard" width="420" height="859"></figure>
+        <figure style="--tilt: 1.5deg; --lift: 10px" tabindex="0" role="button" aria-label="Calendar: Enlarge"><img class="device light-only" src="screenshots/de/iphone/calendar.png" alt="Calendar" width="420" height="859"><img class="device dark-only" src="screenshots/de-dark/iphone/calendar.png" alt="Calendar" width="420" height="859"></figure>
+        <figure style="--tilt: -1deg; --lift: -6px" tabindex="0" role="button" aria-label="Assessments: Enlarge"><img class="device light-only" src="screenshots/de/iphone/notes.png" alt="Assessments" width="420" height="859"><img class="device dark-only" src="screenshots/de-dark/iphone/notes.png" alt="Assessments" width="420" height="859"></figure>
+        <figure style="--tilt: 2.2deg; --lift: 4px" tabindex="0" role="button" aria-label="Checklists: Enlarge"><img class="device light-only" src="screenshots/de/iphone/checklists.png" alt="Checklists" width="420" height="859"><img class="device dark-only" src="screenshots/de-dark/iphone/checklists.png" alt="Checklists" width="420" height="859"></figure>
+        <figure style="--tilt: -1.6deg; --lift: 8px" tabindex="0" role="button" aria-label="Students: Enlarge"><img class="device light-only" src="screenshots/de/iphone/students.png" alt="Students" width="420" height="859"><img class="device dark-only" src="screenshots/de-dark/iphone/students.png" alt="Students" width="420" height="859"></figure>
+      </div>
+      <div class="dots"><button type="button" aria-label="Screenshot 1"></button><button type="button" aria-label="Screenshot 2"></button><button type="button" aria-label="Screenshot 3"></button><button type="button" aria-label="Screenshot 4"></button><button type="button" aria-label="Screenshot 5"></button></div>
+    </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="download reveal">
+      <img class="mascot" src="images/mascot-trial.png" alt="">
+      <div>
+        <span class="eyebrow">Download</span>
+        <h2>Try it free today</h2>
+        <p class="price"><b>Every feature free for 30 days</b>, then unlock the full version with a one-time purchase. No subscription, no automatic renewal.</p>
+        <div class="badges">
+        <a class="badge" href="#download"><img src="images/appstore-en-black.svg" alt="Download on the App Store"></a>
+        <a class="badge" href="#download"><img src="images/googleplay-en.png" alt="Get it on Google Play"></a>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stimmen">
+  <div class="wrap">
+    <div class="center reveal">
+      <span class="eyebrow">Reviews</span>
+      <h2>From the staff room</h2>
+    </div>
+  </div>
+  <div class="reviews">
+    <div class="reviews-track">
+      <figure class="review">
+        <div class="stars" aria-label="Rating: 0/5">☆☆☆☆☆</div>
+        <blockquote></blockquote>
+        <cite></cite>
+      </figure>
+      <figure class="review">
+        <div class="stars" aria-label="Rating: 0/5">☆☆☆☆☆</div>
+        <blockquote></blockquote>
+        <cite></cite>
+      </figure>
+      <figure class="review">
+        <div class="stars" aria-label="Rating: 0/5">☆☆☆☆☆</div>
+        <blockquote></blockquote>
+        <cite></cite>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="fragen">
+  <div class="wrap">
+    <div class="faq-head reveal">
+      <img class="mascot" src="images/mascot-feedback.png" alt="">
+      <div>
+        <span class="eyebrow">FAQ</span>
+        <h2>Frequently asked questions</h2>
+      </div>
+    </div>
+    <label class="faq-search reveal">
+      <img src="icons/search.svg" alt="">
+      <input type="search" placeholder="Search questions" aria-label="Search questions" autocomplete="off">
+    </label>
+    <div class="faq">
+      <details class="reveal"><summary>Where is my data stored?</summary><div class="answer"><p>Only on your device. There is no account and no ClassBuddy server, the developer has no access to your data. Details in the <a href="privacy.en.html">privacy policy</a>.</p></div></details>
+      <details class="reveal"><summary>Do I need an internet connection?</summary><div class="answer"><p>No. ClassBuddy works completely offline. Only the holiday import and the weather card briefly need a connection.</p></div></details>
+      <details class="reveal"><summary>May I store student data in ClassBuddy?</summary><div class="answer"><p>ClassBuddy is built for privacy-compliant use at German schools: everything stays local, encrypted and locked. Whether and which data you may process on a private device is up to your state and your school. More in the notes for teachers in the <a href="privacy.en.html">privacy policy</a>.</p></div></details>
+      <details class="reveal"><summary>How does the trial work?</summary><div class="answer"><p>You start the trial at the end of the introduction: every feature free for 30 days, no subscription and no automatic renewal. Afterwards you unlock the full version with a one-time purchase. If you decide not to buy, export your data before the trial ends.</p></div></details>
+      <details class="reveal"><summary>Which devices does ClassBuddy run on?</summary><div class="answer"><p>On iPad and iPhone with iPadOS and iOS 17.7 or later. An Android version is coming to Google Play.</p></div></details>
+      <details class="reveal"><summary>Can I manage several classes and subjects?</summary><div class="answer"><p>Yes, as many classes as you like, each with several subjects. Timetable, seating plans and assessments apply per class and subject.</p></div></details>
+      <details class="reveal"><summary>What if students look at my screen?</summary><div class="answer"><p>One tap on the eye at the top right turns on privacy mode: names, grades and notes are hidden, for example on a projector. Turning it off needs Face ID, Touch ID or your passcode.</p></div></details>
+      <details class="reveal"><summary>How do I back up my data or move to a new device?</summary><div class="answer"><p>Settings › App Settings › Export creates an Excel file with all your data. On the new device, import it in the same place.</p></div></details>
+      <details class="reveal"><summary>What happens to my data if I delete the app?</summary><div class="answer"><p>It is deleted together with the app, since there is no copy on a server. Export anything you want to keep first.</p></div></details>
+      <details class="reveal"><summary>Does ClassBuddy calculate grades?</summary><div class="answer"><p>No. ClassBuddy keeps observations and assessments organized, the grading stays with you.</p></div></details>
+      <details class="reveal"><summary>Is there a guide?</summary><div class="answer"><p>Yes, the <a href="guide.en.html">guide</a> explains the setup step by step. You also find it in the app under Settings.</p></div></details>
+      <details class="reveal"><summary>Are there codes for our school?</summary><div class="answer"><p>Yes. Schools and departments are welcome to request full version codes in larger quantities, through one of the feedback options in the app or by <a href="mailto:dominic.drees@live.de">email</a>.</p></div></details>
+    </div>
+    <p class="faq-empty" hidden>No matching question. Feel free to write to us through one of the feedback options in the app.</p>
+    <p class="lead center">More answers on the <a href="support.en.html">support page</a>.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#top"><img class="brand-icon light-only" src="app-icon.png" alt=""><img class="brand-icon dark-only" src="app-icon-dark.png" alt="">ClassBuddy</a>
+        <p class="muted">The digital companion for teachers. Made in Germany, for everyday school life.</p>
+      </div>
+      <div>
+        <h4>App</h4>
+        <ul>
+          <li><a href="guide.en.html">Guide</a></li>
+          <li><a href="support.en.html">Support</a></li>
+          <li><a href="#fragen">FAQ</a></li>
+          <li><a href="https://github.com/undeaDD/ClassBuddy">Source code on GitHub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="privacy.en.html">Privacy</a></li>
+          <li><a href="imprint.en.html">Legal notice</a></li>
+          <li><a href="licenses.en.html">Licenses</a></li>
+          <li><a href="collaborators.en.html">Contributors</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="legal">© 2026 Dominic Drees · <a href="https://devsforge.de">Devsforge.de</a></p>
+  </div>
+</footer>
+
+<dialog class="lightbox" aria-label="See ClassBuddy in action">
+  <img alt="">
+  <button type="button" class="lb-close" aria-label="Close"><img src="icons/xmark.svg" alt=""></button>
+  <button type="button" class="lb-prev" aria-label="Previous screenshot"><img src="icons/nav-arrow-left.svg" alt=""></button>
+  <button type="button" class="lb-next" aria-label="Next screenshot"><img src="icons/nav-arrow-right.svg" alt=""></button>
+</dialog>
+
+<a class="to-top" href="#top" aria-label="Back to top"><img src="icons/nav-arrow-up.svg" alt=""></a>
+
+<script src="landing.js"></script>
 </body>
 </html>

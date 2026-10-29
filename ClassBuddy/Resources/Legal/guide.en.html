@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Guide</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #000000;
+    --secondary: #6d6d72;
+    --separator: rgba(60, 60, 67, 0.18);
+    --accent: #9c6830;
+    --pill: rgba(156, 104, 48, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --text: #ffffff;
+      --secondary: #98989f;
+      --separator: rgba(84, 84, 88, 0.6);
+      --accent: #cd9c5e;
+      --pill: rgba(205, 156, 94, 0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
+  body {
+    margin: 0;
+    padding: 20px 20px 40px;
+    background: var(--bg);
+    color: var(--text);
+    font: -apple-system-body;
+    -webkit-text-size-adjust: 100%;
+    overflow-wrap: anywhere;
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  .intro { color: var(--secondary); font: -apple-system-subheadline; margin: 4px 16px 24px; line-height: 1.4; }
+  h2 {
+    font: -apple-system-footnote;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--secondary);
+    margin: 28px 16px 8px;
+    font-weight: 400;
+  }
+  .card { background: var(--card); border-radius: 12px; overflow: hidden; }
+  .row { padding: 12px 16px; position: relative; }
+  .row + .row::before {
+    content: ""; position: absolute; top: 0; left: 16px; right: 0;
+    border-top: 0.5px solid var(--separator);
+  }
+  .row-head { display: flex; align-items: baseline; gap: 8px; }
+  .step {
+    flex: none;
+    font: -apple-system-caption1; font-weight: 700;
+    color: var(--accent); background: var(--pill);
+    min-width: 22px; padding: 2px 6px; border-radius: 999px; text-align: center;
+  }
+  .name { font: -apple-system-headline; }
+  ul { margin: 6px 0 0; padding-left: 20px; color: var(--secondary); font: -apple-system-subheadline; }
+  li { margin: 4px 0; line-height: 1.4; }
+  b { color: var(--text); font-weight: 600; }
+  .footnote { color: var(--secondary); font: -apple-system-footnote; margin: 8px 16px 0; line-height: 1.4; }
+</style>
+</head>
+<body>
+<main>
+  <p class="intro">From an empty app to your first seating plan in a few steps. The order is a suggestion, every step also works later. On iPhone, Rooms, Board, Checklists, Assessments and Settings are under <b>More</b>.</p>
+
+  <h2>Setup</h2>
+  <div class="card">
+    <div class="row">
+      <div class="row-head"><span class="step">1</span><span class="name">Set up your school</span></div>
+      <ul>
+        <li><b>Settings › School Settings</b>: under <b>School day</b> set start, end and period length, under <b>Breaks</b> each break with start and duration (<b>Add break</b>).</li>
+        <li>The <b>Period schedule</b> below is calculated from these values.</li>
+        <li>Under <b>School &amp; Public Holidays</b> choose your <b>Federal state</b>, then <b>Import school &amp; public holidays</b>.</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="step">2</span><span class="name">Create a class with subjects</span></div>
+      <ul>
+        <li>Tap the class button at the top left, then <b>+</b> (<b>New class</b>).</li>
+        <li>Enter a short name (e.g. 7b), school year and level, under <b>Subjects</b> use <b>Add subject</b> for every subject you teach in this class, and pick a color. <b>Create</b>.</li>
+        <li>The same button switches classes later. Every page always shows the selected class.</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="step">3</span><span class="name">Add students</span></div>
+      <ul>
+        <li><b>Students</b> tab › <b>+</b>. A name is enough, photo, contact and birthday are optional.</li>
+        <li>For a whole class turn on <b>Add more</b>: after <b>Create</b> the form stays open, ready for the next name.</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="step">4</span><span class="name">Enter your timetable</span></div>
+      <ul>
+        <li><b>Calendar</b> tab: tap an empty period, choose class and subject, usually <b>Every week</b> under <b>Repeat</b>. If needed, <b>Double lesson</b> and a <b>Room</b>. <b>Save</b>.</li>
+        <li>Page with the arrows at the bottom or by swiping left and right, <b>Today</b> jumps back.</li>
+        <li>Long press a lesson: <b>Edit</b> or <b>Remove</b>.</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="step">5</span><span class="name">Draw a room</span></div>
+      <ul>
+        <li><b>Rooms</b> tab › <b>+</b>. With <b>Room</b>, tap the outline point by point until you are back at the start.</li>
+        <li>With <b>Table</b>, draw every seat as its own area. To split a large table, use <b>Table</b> to draw a line from one table edge across to the other.</li>
+        <li>Add <b>Desk</b>, <b>Board</b>, <b>Door</b> and <b>Window</b>. <b>Pointer</b> moves corners, <b>Eraser</b> removes.</li>
+        <li>Give it a name under <b>Details</b>, then <b>Save</b>. In the calendar, assign this room to your lessons.</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="step">6</span><span class="name">Fill the seating plan</span></div>
+      <ul>
+        <li>In the calendar, tap a lesson with a room and the class's seating plan opens. For appointments without a room, the app asks for one first.</li>
+        <li>Tap a free table and choose a student. On iPad you can also drag from the list beside it.</li>
+        <li>Press and hold a student and drag to another table to swap seats. <b>More</b> › <b>Shuffle seats</b> reseats everyone.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>In class</h2>
+  <div class="card">
+    <div class="row">
+      <div class="row-head"><span class="step">7</span><span class="name">Quick ratings</span></div>
+      <ul>
+        <li>Tap a student in the seating plan: a rating, <b>Homework missing</b>, <b>Absent</b>, <b>Late</b> or <b>Note …</b> with one tap, <b>Undo</b> takes it back.</li>
+        <li>Everything goes into the lesson's subject and shows up under <b>Students</b> › name › subject (Oral, Assessments, Absences).</li>
+        <li>Tests and exams: <b>Assessments</b> tab › <b>Assessments</b> › <b>+</b>.</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="step">8</span><span class="name">Appointments, checklists, board</span></div>
+      <ul>
+        <li>Appointment: tap a free spot in the calendar or <b>+</b> (<b>New appointment</b>), optionally with class and room.</li>
+        <li><b>Checklists</b> tab: for example, tick off consent forms per student.</li>
+        <li><b>Board</b> tab: take a photo of the board, it belongs to the lesson's subject.</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="step">9</span><span class="name">Customize the dashboard</span></div>
+      <ul>
+        <li>Last card <b>Add card</b>: tools like random pick, groups or timer, your own images, documents, websites and shortcuts.</li>
+        <li><b>Arrange cards</b>: drag, hide or remove cards, then <b>Done</b>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Protect your data</h2>
+  <div class="card">
+    <div class="row">
+      <div class="row-head"><span class="step">10</span><span class="name">Privacy and lock</span></div>
+      <ul>
+        <li>The eye at the top right turns on <b>Privacy mode</b>: names, grades and notes are hidden, for example on a projector. Turning it off needs Face ID, Touch ID or your passcode.</li>
+        <li><b>Settings › App Settings › App Lock</b>: the app asks for Face ID or Touch ID when it opens.</li>
+      </ul>
+    </div>
+    <div class="row">
+      <div class="row-head"><span class="step">11</span><span class="name">Back up regularly</span></div>
+      <ul>
+        <li><b>Settings › App Settings › Export &amp; Import › Export</b> saves everything as an Excel file, for example in Files.</li>
+        <li><b>Import</b> restores a backup and replaces all data. Documents and photos are not in the file.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="footnote">Questions or ideas? Reach the developer directly through one of the feedback options in the app.</p>
+</main>
+</body>
+</html>
