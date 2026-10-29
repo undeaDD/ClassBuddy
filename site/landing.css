@@ -145,9 +145,15 @@ h2 { font-size: clamp(26px, 3.6vw, 36px); margin: 10px 0 8px; letter-spacing: -0
 
 /* Store-Buttons: beide Bilder ohne eigenen Rand (Google-Play-Bild zugeschnitten), gleiche Höhe = gleich groß */
 .badges { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.badge { display: inline-block; transition: transform 0.2s; }
+/* Einheitliche Form: eigener Rahmen und Radius, die Bilder leicht vergrößert und beschnitten, damit ihre eigenen,
+   unterschiedlich runden Ränder verschwinden und keine Linie halb abgeschnitten wird */
+.badge {
+  position: relative; display: inline-block; height: 48px; border-radius: 10px; overflow: hidden; background: #000;
+  transition: transform 0.2s;
+}
+.badge::after { content: ""; position: absolute; inset: 0; border: 1px solid #a6a6a6; border-radius: inherit; pointer-events: none; }
 .badge:hover { transform: translateY(-2px); }
-.badge img { height: 48px; width: auto; }
+.badge img { height: 48px; width: auto; transform: scale(1.08); }
 
 /* Zeitstrahl */
 .timeline { list-style: none; margin: 40px 0 28px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; position: relative; }
@@ -289,12 +295,20 @@ h2 { font-size: clamp(26px, 3.6vw, 36px); margin: 10px 0 8px; letter-spacing: -0
 .faq details.is-open { box-shadow: var(--shadow), 0 0 0 1.5px var(--pill); }
 .faq summary { cursor: pointer; list-style: none; font-weight: 700; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .faq summary::-webkit-details-marker { display: none; }
+/* Plus aus zwei Balken (statt Schriftzeichen), damit es sich genau um die Mitte dreht */
 .faq summary::after {
-  content: "+"; flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%;
-  background: var(--pill); color: var(--accent); font-size: 20px; line-height: 1;
-  transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1), background 0.25s, color 0.25s;
+  --bar: var(--accent);
+  content: ""; flex: none; width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(var(--bar), var(--bar)) center / 12px 2px no-repeat,
+              linear-gradient(var(--bar), var(--bar)) center / 2px 12px no-repeat, var(--pill);
+  transition: transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1), background-color 0.25s;
 }
-.faq details.is-open summary::after { transform: rotate(135deg); background: var(--accent); color: var(--accent-text); }
+.faq details.is-open summary::after {
+  --bar: var(--accent-text);
+  transform: rotate(135deg);
+  background: linear-gradient(var(--bar), var(--bar)) center / 12px 2px no-repeat,
+              linear-gradient(var(--bar), var(--bar)) center / 2px 12px no-repeat, var(--accent);
+}
 .faq .answer { overflow: hidden; }
 .faq p { margin: 0; padding-bottom: 16px; color: var(--secondary); }
 

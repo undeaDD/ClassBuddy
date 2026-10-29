@@ -256,7 +256,8 @@ def page(lang: str) -> str:
 <meta name="description" content="{T['description'][lang]}">
 <meta property="og:title" content="ClassBuddy">
 <meta property="og:description" content="{T['og'][lang]}">
-<meta property="og:image" content="https://undeadd.github.io/ClassBuddy/app-icon.png">
+<meta property="og:image" content="https://classbuddy.devsforge.de/app-icon.png">
+<link rel="canonical" href="https://classbuddy.devsforge.de/{T['file'][lang] if lang == 'en' else ''}">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#f2f2f7">
 <link rel="icon" href="app-icon.png">
