@@ -89,6 +89,17 @@ struct CellParsingTests {
         #expect(Cell.list(["A", "B"]) == "A; B")
     }
 
+    @Test("Raumpunkte: ganze Rasterschritte wie bisher, Zwischenpunkte als Dezimalzahl, zu fein ungültig")
+    func roomPoints() {
+        let points = [GridPoint(3, -2), GridPoint(eighths: 12, 4), GridPoint(eighths: -3, 9)]
+        let text = Backup.Cell.points(points)
+        #expect(text == "3,-2; 1.5,0.5; -0.375,1.125")
+        #expect(Backup.Cell.parsePoints(text) == points)
+        #expect(Backup.Cell.parsePoints("1,2; 3 , 4") == [GridPoint(1, 2), GridPoint(3, 4)])
+        #expect(Backup.Cell.parsePoints("1.1,2") == nil)
+        #expect(Backup.Cell.parsePoints("1,2; x,3") == nil)
+    }
+
     @Test("Tabelle: Zugriff per Spaltenname, leere Zeilen werden übersprungen")
     func table() {
         let table = Backup.Table([["Name", " Alter "], ["Emma", "12"], ["", ""], ["Leon"]])

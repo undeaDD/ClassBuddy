@@ -3,7 +3,8 @@ import SwiftUI
 
 /// Eine Tagesspalte (0–24 Uhr): Raster, Pausen, Stunden-Slots, Termine.
 /// - Tipp auf einen leeren Slot: Klasse + Fach festlegen.
-/// - Tipp auf eine Stunde: Räume-Tab (später: Raum mit Sitzplan der Klasse).
+/// - Tipp auf eine Stunde: Sitzplan ihres Raums, ohne Raum der Räume-Tab.
+/// - Tipp auf einen Termin: Sitzplan seines Raums (Klasse des Termins, sonst die ausgewählte); ohne Raum erst Raum wählen.
 /// - Langes Drücken auf Stunde/Termin: Menü mit Bearbeiten und Entfernen (mit Rückfrage).
 /// Doppelstunden erscheinen als ein Feld über beide Slots.
 /// - Tipp auf freie Fläche: neuer Termin (auf 15 Minuten gerundet).
@@ -26,6 +27,10 @@ struct DayColumn: View {
     @State private var newEntryMinute: Int?
     @State private var editingEntry: CalendarEntry?
     @State private var pendingDeletion: PendingDeletion?
+    /// Termin ohne Raum angetippt: Raum wählen, am Termin merken, dann Sitzplan.
+    @State private var roomChoiceEntry: CalendarEntry?
+    @Query(sort: \Room.name) private var rooms: [Room]
+    @Query private var classes: [SchoolClass]
 
     /// Über das Kontextmenü zum Entfernen gewählt, wartet auf die Rückfrage.
     private enum PendingDeletion {
@@ -208,11 +213,31 @@ struct DayColumn: View {
             .frame(height: y(duration))
             .padding(.leading, 12)
             .padding(.trailing, 3)
-            // Antippen: mit Raum → Sitzplan (ohne Klasse leer); Bearbeiten per langem Drücken.
+            // Antippen: mit Raum → Sitzplan, ohne Raum → Raum wählen; Bearbeiten per langem Drücken.
             .onTapGesture {
                 if let room = entry.room {
-                    app.openSeatingPlan(room: room, schoolClass: entry.schoolClass)
+                    app.openSeatingPlan(room: room, schoolClass: seatingClass(for: entry))
+                } else if canEdit {
+                    if rooms.isEmpty {
+                        app.openRooms(isPhone: device.isPhone)
+                    } else {
+                        roomChoiceEntry = entry
+                    }
                 }
+            }
+            .confirmationDialog(
+                "Raum wählen",
+                isPresented: Binding(
+                    get: { roomChoiceEntry?.id == entry.id },
+                    set: { if !$0 { roomChoiceEntry = nil } }
+                ),
+                titleVisibility: .visible
+            ) {
+                ForEach(rooms) { room in
+                    Button(room.name) { assign(room, to: entry) }
+                }
+            } message: {
+                Text(roomChoiceMessage(for: entry))
             }
             .hoverEffect(.lift)
             .contextMenu {
@@ -249,6 +274,26 @@ struct DayColumn: View {
     private func editMenu(edit: @escaping () -> Void, remove: @escaping () -> Void) -> some View {
         Button("Bearbeiten", icon: .editPencil, action: edit)
         Button("Entfernen", destructiveIcon: .trash, action: remove)
+    }
+
+    // MARK: Raum für Termine
+
+    /// Sitzordnung der Klasse des Termins, sonst der ausgewählten Klasse.
+    private func seatingClass(for entry: CalendarEntry) -> SchoolClass? {
+        entry.schoolClass ?? classes.first { $0.id == app.selectedClassID }
+    }
+
+    private func roomChoiceMessage(for entry: CalendarEntry) -> String {
+        if let schoolClass = seatingClass(for: entry) {
+            return loc("Termine haben kein Fach. Der Raum wird am Termin gespeichert und zeigt die Sitzordnung von \(schoolClass.title).")
+        }
+        return loc("Termine haben kein Fach. Der Raum wird am Termin gespeichert.")
+    }
+
+    private func assign(_ room: Room, to entry: CalendarEntry) {
+        entry.room = room
+        try? modelContext.save()
+        app.openSeatingPlan(room: room, schoolClass: seatingClass(for: entry))
     }
 
     private func delete(_ model: some PersistentModel) {

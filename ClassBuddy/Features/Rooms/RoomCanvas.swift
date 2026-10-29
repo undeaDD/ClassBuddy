@@ -1,7 +1,8 @@
 import SwiftUI
 import UIKit
 
-/// Zeichenfläche des Raum-Editors: unendliches Punktraster, Raumelemente, Vorschau der nächsten Strecke.
+/// Zeichenfläche des Raum-Editors: unendliches Punktraster (beim Zeichnen plus Kantenmitten), Raumelemente,
+/// Vorschau der nächsten Strecke.
 /// Gesten kommen aus `RoomCanvasGestures` (UIKit), weil SwiftUI Finger nicht zählen kann.
 struct RoomCanvas: View {
     let model: RoomEditorModel
@@ -32,6 +33,7 @@ struct RoomCanvas: View {
         let anchor: GridPoint?
         let hover: GridPoint?
         let moving: GridPoint?
+        let midpoints: [GridPoint]
 
         init(model: RoomEditorModel) {
             shapes = model.shapes
@@ -44,10 +46,12 @@ struct RoomCanvas: View {
             anchor = model.anchor
             hover = model.hoverPoint
             moving = model.movingPoint
+            midpoints = model.edgeMidpoints
         }
 
         func screenPoint(_ point: GridPoint) -> CGPoint {
-            CGPoint(x: CGFloat(point.x) * spacing + pan.width, y: CGFloat(point.y) * spacing + pan.height)
+            let vector = RoomGeometry.vector(point)
+            return CGPoint(x: CGFloat(vector.x) * spacing + pan.width, y: CGFloat(vector.y) * spacing + pan.height)
         }
 
         func draw(in context: GraphicsContext, size: CGSize) {
@@ -71,6 +75,16 @@ struct RoomCanvas: View {
                 }
             }
             context.fill(dots, with: .color(.secondary.opacity(0.6)))
+            // Kantenmitten (nur beim Zeichnen): etwas größer und in der Stiftfarbe, damit sie als Extra-Punkte auffallen.
+            let midpointRadius = min(max(spacing * 0.09, 2), 3.5)
+            var midpointDots = Path()
+            for point in midpoints {
+                let center = screenPoint(point)
+                midpointDots.addEllipse(in: CGRect(
+                    x: center.x - midpointRadius, y: center.y - midpointRadius, width: midpointRadius * 2, height: midpointRadius * 2
+                ))
+            }
+            context.fill(midpointDots, with: .color(color.opacity(0.8)))
         }
 
         private func drawDrafts(in context: GraphicsContext, lineWidth: CGFloat) {

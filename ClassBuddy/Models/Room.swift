@@ -77,7 +77,8 @@ final class Room {
     /// Ersetzt die Elemente durch `shapes` (normalisiert). Elemente mit gleicher ID, Art und gleichen Punkten
     /// behalten ihre Sitzplatz-Zuordnungen; geänderte verlieren sie, entfernte werden gelöscht.
     func replaceElements(with shapes: [RoomShape], in context: ModelContext) {
-        let offset = RoomGeometry.roomBounds(shapes)?.min ?? .zero
+        // Auf einen Rasterpunkt verschieben, damit das Raster unter dem Raum gleich bleibt.
+        let offset = RoomGeometry.roomBounds(shapes)?.min.gridFloor ?? .zero
         let existing = Dictionary(elements.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let kept = RoomElementSync.unchangedIDs(old: self.shapes, new: shapes)
         var result: [RoomElement] = []
@@ -195,20 +196,75 @@ nonisolated enum RoomElementSync {
     }
 }
 
-/// Rasterpunkt: geräteunabhängig, nur ganze Zahlen.
-nonisolated struct GridPoint: Codable, Hashable, Sendable {
+/// Rasterpunkt: geräteunabhängig und exakt. Fast immer ein Punkt des Rasters; Kantenmitten aus dem Raum-Editor
+/// liegen genau dazwischen (Hälfte, Viertel, Achtel). Darum zählen `x` und `y` in Achteln eines Rasterschritts,
+/// als ganze Zahlen: Geometrie rechnet exakt, nichts wird gerundet, gemeinsame Kanten schließen lückenlos.
+nonisolated struct GridPoint: Hashable, Sendable {
+    /// Achtel je Rasterschritt.
+    static let subdivisions = 8
+
+    /// In Achteln eines Rasterschritts.
     var x: Int
     var y: Int
 
+    /// Punkt des Rasters (ganze Rasterschritte).
     init(_ x: Int, _ y: Int) {
+        self.init(eighths: x * Self.subdivisions, y * Self.subdivisions)
+    }
+
+    init(eighths x: Int, _ y: Int) {
         self.x = x
         self.y = y
     }
 
     static let zero = GridPoint(0, 0)
 
-    static func + (lhs: GridPoint, rhs: GridPoint) -> GridPoint { GridPoint(lhs.x + rhs.x, lhs.y + rhs.y) }
-    static func - (lhs: GridPoint, rhs: GridPoint) -> GridPoint { GridPoint(lhs.x - rhs.x, lhs.y - rhs.y) }
+    /// Liegt auf einem Punkt des Rasters.
+    var isOnGrid: Bool { x.isMultiple(of: Self.subdivisions) && y.isMultiple(of: Self.subdivisions) }
+
+    /// Nächster Rasterpunkt links oberhalb (oder der Punkt selbst).
+    var gridFloor: GridPoint {
+        GridPoint(Int(floor(Double(x) / Double(Self.subdivisions))), Int(floor(Double(y) / Double(Self.subdivisions))))
+    }
+
+    /// Genaue Mitte zwischen zwei Punkten; `nil`, wenn sie feiner als ein Achtel wäre.
+    static func midpoint(_ first: GridPoint, _ second: GridPoint) -> GridPoint? {
+        let sumX = first.x + second.x, sumY = first.y + second.y
+        guard sumX.isMultiple(of: 2), sumY.isMultiple(of: 2) else { return nil }
+        return GridPoint(eighths: sumX / 2, sumY / 2)
+    }
+
+    static func + (lhs: GridPoint, rhs: GridPoint) -> GridPoint { GridPoint(eighths: lhs.x + rhs.x, lhs.y + rhs.y) }
+    static func - (lhs: GridPoint, rhs: GridPoint) -> GridPoint { GridPoint(eighths: lhs.x - rhs.x, lhs.y - rhs.y) }
+}
+
+/// Gespeichert wie bisher als ganze Rasterschritte `x`/`y`; nur Punkte zwischen dem Raster haben zusätzlich
+/// `fx`/`fy` (Achtel 1 bis 7). Rasterpunkte und gespeicherte Räume älterer Versionen bleiben damit unverändert.
+extension GridPoint: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case x, y
+        case fractionX = "fx"
+        case fractionY = "fy"
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let fractionX = try container.decodeIfPresent(Int.self, forKey: .fractionX) ?? 0
+        let fractionY = try container.decodeIfPresent(Int.self, forKey: .fractionY) ?? 0
+        self.init(
+            eighths: try container.decode(Int.self, forKey: .x) * Self.subdivisions + fractionX,
+            try container.decode(Int.self, forKey: .y) * Self.subdivisions + fractionY
+        )
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        let floor = gridFloor
+        try container.encode(floor.x / Self.subdivisions, forKey: .x)
+        try container.encode(floor.y / Self.subdivisions, forKey: .y)
+        if x != floor.x { try container.encode(x - floor.x, forKey: .fractionX) }
+        if y != floor.y { try container.encode(y - floor.y, forKey: .fractionY) }
+    }
 }
 
 nonisolated enum RoomCategory: String, CaseIterable, Codable, Identifiable, Sendable {

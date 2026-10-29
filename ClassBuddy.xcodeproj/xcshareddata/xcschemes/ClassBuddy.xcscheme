@@ -72,12 +72,12 @@
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
-      <MetalAPIValidationSettings
-         isEnabled = "No">
-      </MetalAPIValidationSettings>
       <StoreKitConfigurationFileReference
          identifier = "../../Config/ClassBuddy.storekit">
       </StoreKitConfigurationFileReference>
+      <MetalAPIValidationSettings
+         isEnabled = "No">
+      </MetalAPIValidationSettings>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

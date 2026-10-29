@@ -153,6 +153,16 @@ final class RoomEditorModel {
         if case .pen(let kind) = tool { kind } else { nil }
     }
 
+    /// Zusätzliche Fangpunkte beim Zeichnen: die Mitte jeder Kante, damit Trennlinien auch schräge Tische genau
+    /// mittig teilen. Nur, wo die Mitte kein Rasterpunkt ist (dann gilt der) und sich exakt darstellen lässt.
+    var edgeMidpoints: [GridPoint] {
+        guard drawingKind != nil else { return [] }
+        var seen = Set<GridPoint>()
+        return shapes.flatMap { RoomGeometry.segments($0.points) }
+            .compactMap { GridPoint.midpoint($0.0, $0.1) }
+            .filter { !$0.isOnGrid && seen.insert($0).inserted }
+    }
+
     // MARK: Zeichnen
 
     /// Strecke von `start` nach `end` mit dem aktuellen Stift.
@@ -362,7 +372,8 @@ final class RoomEditorModel {
     var spacing: CGFloat { Self.gridSpacing * zoom }
 
     func screenPoint(_ point: GridPoint) -> CGPoint {
-        CGPoint(x: CGFloat(point.x) * spacing + pan.width, y: CGFloat(point.y) * spacing + pan.height)
+        let vector = RoomGeometry.vector(point)
+        return CGPoint(x: CGFloat(vector.x) * spacing + pan.width, y: CGFloat(vector.y) * spacing + pan.height)
     }
 
     /// Bildschirmposition → Rasterkoordinaten (ungerundet).
@@ -370,8 +381,15 @@ final class RoomEditorModel {
         RoomGeometry.Vector(Double((point.x - pan.width) / spacing), Double((point.y - pan.height) / spacing))
     }
 
+    /// Nächster Rasterpunkt bzw. (beim Zeichnen) nächste Kantenmitte, falls die näher liegt.
     func snap(_ point: CGPoint) -> GridPoint {
-        RoomGeometry.snap(CGPoint(x: point.x - pan.width, y: point.y - pan.height), spacing: spacing)
+        let grid = RoomGeometry.snap(CGPoint(x: point.x - pan.width, y: point.y - pan.height), spacing: spacing)
+        let location = gridLocation(point)
+        func distance(_ candidate: GridPoint) -> Double { simd_distance(RoomGeometry.vector(candidate), location) }
+        guard let midpoint = edgeMidpoints.min(by: { distance($0) < distance($1) }), distance(midpoint) < distance(grid) else {
+            return grid
+        }
+        return midpoint
     }
 
     /// Zoomen um einen festen Punkt (Mitte der Finger).
@@ -386,12 +404,13 @@ final class RoomEditorModel {
     func fit(animated: Bool = true) {
         guard viewSize.width > 0, viewSize.height > 0 else { return }
         let bounds = RoomGeometry.bounds(of: shapes.flatMap(\.points)) ?? (GridPoint(0, 0), GridPoint(18, 14))
-        let width = CGFloat(max(bounds.max.x - bounds.min.x, 4))
-        let height = CGFloat(max(bounds.max.y - bounds.min.y, 4))
+        let minimum = RoomGeometry.vector(bounds.min), extent = RoomGeometry.vector(bounds.max) - minimum
+        let width = CGFloat(max(extent.x, 4))
+        let height = CGFloat(max(extent.y, 4))
         let available = CGSize(width: viewSize.width - 64, height: viewSize.height - 64 - bottomInset)
         let newZoom = min(max(min(available.width / width, available.height / height) / Self.gridSpacing, Self.zoomRange.lowerBound), 2)
         let spacing = Self.gridSpacing * newZoom
-        let center = CGPoint(x: CGFloat(bounds.min.x) + width / 2, y: CGFloat(bounds.min.y) + height / 2)
+        let center = CGPoint(x: CGFloat(minimum.x) + width / 2, y: CGFloat(minimum.y) + height / 2)
         let update = {
             self.zoom = newZoom
             self.pan = CGSize(

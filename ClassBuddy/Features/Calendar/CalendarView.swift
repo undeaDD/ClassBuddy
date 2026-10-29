@@ -5,7 +5,7 @@ import SwiftUI
 /// Unterrichtsstunden (Klasse + Fach), freie Termine, Ferien/Feiertage.
 /// Optional auf eine Klasse fokussiert (`AppModel.calendarFocusClassID`):
 /// dann sind nur deren Stunden farbig, alle anderen neutral.
-/// Schmale Ansicht (iPhone): gleitendes 3-Tage-Fenster. Blättern immer unten als schwebende Glas-Leiste.
+/// Schmale Ansicht (iPhone): gleitendes 3-Tage-Fenster. Blättern unten als schwebende Glas-Leiste oder per Wischen.
 struct CalendarView: View {
     @Environment(AppModel.self) private var app
     @Environment(SchoolSettings.self) private var settings
@@ -103,8 +103,10 @@ struct CalendarView: View {
                         }
                     }
                     .frame(height: Self.hourHeight * 24)
-                    // Antippen der Statusleiste würde nach 0 Uhr scrollen.
-                    .background(ScrollsToTopDisabler())
+                    // Antippen der Statusleiste würde nach 0 Uhr scrollen; waagerecht wischen blättert wie die Pfeile.
+                    .background(CalendarScrollViewBridge { pages in
+                        withAnimation(.smooth) { CalendarPager.move(by: pages, app: app, settings: settings, device: device) }
+                    })
                 }
                 // Platz unter dem letzten Eintrag, damit die Blättern-Leiste nichts dauerhaft verdeckt.
                 // iPhone-Layout: nicht nötig – sie rutscht beim Runterscrollen in die Tab-Leiste.
@@ -243,6 +245,12 @@ struct CalendarPager: View {
     }
 
     private func move(by pages: Int) {
+        Self.move(by: pages, app: app, settings: settings, device: device)
+    }
+
+    /// Seiten vor (+) oder zurück (−); auch für das Wischen im Kalender.
+    static func move(by pages: Int, app: AppModel, settings: SchoolSettings, device: Device) {
+        let calendar = Calendar.school
         app.calendarDate = device.isPhone
             ? calendar.addingVisibleDays(pages * CalendarView.phoneDayCount, to: app.calendarDate, weekdays: settings.visibleWeekdays)
             : calendar.date(byAdding: .weekOfYear, value: pages, to: app.calendarDate) ?? app.calendarDate
@@ -261,18 +269,47 @@ private extension View {
     }
 }
 
-/// Schaltet `scrollsToTop` der umgebenden UIKit-Scroll-Ansicht ab (Antippen der Statusleiste).
-private struct ScrollsToTopDisabler: UIViewRepresentable {
+/// Greift auf die umgebende UIKit-Scroll-Ansicht zu: `scrollsToTop` aus (Antippen der Statusleiste) und
+/// Wischen nach links/rechts (`onSwipe(+1)` bzw. `-1`). Wisch-Erkenner statt SwiftUI-`DragGesture`, damit das
+/// senkrechte Scrollen unverändert bleibt; sie laufen gleichzeitig mit dem Scrollen und Antippen.
+private struct CalendarScrollViewBridge: UIViewRepresentable {
+    let onSwipe: (Int) -> Void
+
     func makeUIView(context: Context) -> Probe { Probe() }
 
-    func updateUIView(_ uiView: Probe, context: Context) {}
+    func updateUIView(_ uiView: Probe, context: Context) {
+        uiView.onSwipe = onSwipe
+    }
 
-    final class Probe: UIView {
+    final class Probe: UIView, UIGestureRecognizerDelegate {
+        var onSwipe: (Int) -> Void = { _ in }
+        private var recognizers: [UISwipeGestureRecognizer] = []
+
         override func didMoveToWindow() {
             super.didMoveToWindow()
             var view = superview
             while let current = view, !(current is UIScrollView) { view = current.superview }
-            (view as? UIScrollView)?.scrollsToTop = false
+            guard let scrollView = view as? UIScrollView else { return }
+            scrollView.scrollsToTop = false
+            guard recognizers.isEmpty else { return }
+            recognizers = [UISwipeGestureRecognizer.Direction.left, .right].map { direction in
+                let recognizer = UISwipeGestureRecognizer(target: self, action: #selector(swiped))
+                recognizer.direction = direction
+                recognizer.delegate = self
+                scrollView.addGestureRecognizer(recognizer)
+                return recognizer
+            }
+        }
+
+        @objc private func swiped(_ recognizer: UISwipeGestureRecognizer) {
+            onSwipe(recognizer.direction == .left ? 1 : -1)
+        }
+
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer,
+            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
+        ) -> Bool {
+            true
         }
     }
 }

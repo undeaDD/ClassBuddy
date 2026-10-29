@@ -5,7 +5,7 @@ import CoreGraphics
 import Foundation
 
 /// Reine Geometrie auf dem Punktraster: Einrasten, Schnitt, Punkt-in-Polygon, Teilen, Normalisieren.
-/// Orientierungstests rechnen exakt mit ganzen Zahlen; nur Teilstrecken-Mittelpunkte brauchen `Double`.
+/// Orientierungstests rechnen exakt mit ganzen Zahlen (Achtel, siehe `GridPoint`); `Vector` ist in Rasterschritten.
 nonisolated enum RoomGeometry {
     typealias Vector = SIMD2<Double>
 
@@ -24,7 +24,8 @@ nonisolated enum RoomGeometry {
     }
 
     static func position(of point: GridPoint, spacing: CGFloat) -> CGPoint {
-        CGPoint(x: CGFloat(point.x) * spacing, y: CGFloat(point.y) * spacing)
+        let position = vector(point)
+        return CGPoint(x: CGFloat(position.x) * spacing, y: CGFloat(position.y) * spacing)
     }
 
     // MARK: Grundlagen
@@ -65,7 +66,10 @@ nonisolated enum RoomGeometry {
             && cross(a, b, c).signum() * cross(a, b, d).signum() < 0
     }
 
-    static func vector(_ p: GridPoint) -> Vector { Vector(Double(p.x), Double(p.y)) }
+    /// Position in Rasterschritten (Kantenmitten mit Nachkommastellen).
+    static func vector(_ p: GridPoint) -> Vector {
+        Vector(Double(p.x), Double(p.y)) / Double(GridPoint.subdivisions)
+    }
 
     private static func isOnSegment(_ p: Vector, _ a: GridPoint, _ b: GridPoint) -> Bool {
         let a = vector(a), b = vector(b)
@@ -88,6 +92,20 @@ nonisolated enum RoomGeometry {
             let closest = a + ab * t
             return ((p - closest) * (p - closest)).sum().squareRoot()
         }.min() ?? .infinity
+    }
+
+    /// Breite der Fläche auf der waagerechten Linie durch `p` (Abschnitt, in dem `p` liegt), z. B. für Namen auf
+    /// schrägen Tischen; `nil`, wenn `p` nicht innen liegt.
+    static func horizontalWidth(at p: Vector, in ring: [GridPoint]) -> Double? {
+        let crossings = segments(ring).compactMap { a, b -> Double? in
+            let a = vector(a), b = vector(b)
+            guard (a.y > p.y) != (b.y > p.y) else { return nil }
+            return a.x + (p.y - a.y) / (b.y - a.y) * (b.x - a.x)
+        }.sorted()
+        return stride(from: 0, to: crossings.count - 1, by: 2)
+            .map { (crossings[$0], crossings[$0 + 1]) }
+            .first { $0.0 <= p.x && p.x <= $0.1 }
+            .map { $0.1 - $0.0 }
     }
 
     // MARK: Punkt in Polygon
@@ -209,7 +227,10 @@ nonisolated enum RoomGeometry {
     static func bounds(of points: [GridPoint]) -> (min: GridPoint, max: GridPoint)? {
         guard let first = points.first else { return nil }
         return points.reduce((first, first)) { result, p in
-            (GridPoint(min(result.0.x, p.x), min(result.0.y, p.y)), GridPoint(max(result.1.x, p.x), max(result.1.y, p.y)))
+            (
+                GridPoint(eighths: min(result.0.x, p.x), min(result.0.y, p.y)),
+                GridPoint(eighths: max(result.1.x, p.x), max(result.1.y, p.y))
+            )
         }
     }
 
@@ -219,9 +240,10 @@ nonisolated enum RoomGeometry {
         return bounds(of: outline.isEmpty ? shapes.flatMap(\.points) : outline)
     }
 
-    /// Verschiebt alle Punkte so, dass die linke obere Ecke des Raums bei 0/0 liegt.
+    /// Verschiebt alle Punkte so, dass die linke obere Ecke des Raums bei 0/0 liegt (bzw. beim Rasterpunkt davor,
+    /// falls sie zwischen dem Raster liegt; das Raster bleibt so unter dem Raum).
     static func normalized(_ shapes: [RoomShape]) -> [RoomShape] {
-        guard let origin = roomBounds(shapes)?.min, origin != .zero else { return shapes }
+        guard let origin = roomBounds(shapes)?.min.gridFloor, origin != .zero else { return shapes }
         return shapes.map { shape in
             var shape = shape
             shape.points = shape.points.map { $0 - origin }

@@ -75,13 +75,15 @@ enum RoomDrawing {
     /// Abbildung, die die Raumgrenzen mittig und seitentreu in `size` einpasst.
     static func fitting(_ shapes: [RoomShape], in size: CGSize, padding: CGFloat) -> (scale: CGFloat, map: (GridPoint) -> CGPoint)? {
         guard let bounds = RoomGeometry.roomBounds(shapes) else { return nil }
-        let width = CGFloat(max(bounds.max.x - bounds.min.x, 1))
-        let height = CGFloat(max(bounds.max.y - bounds.min.y, 1))
+        let minimum = RoomGeometry.vector(bounds.min), extent = RoomGeometry.vector(bounds.max) - minimum
+        let width = CGFloat(max(extent.x, 1))
+        let height = CGFloat(max(extent.y, 1))
         let scale = max(min((size.width - 2 * padding) / width, (size.height - 2 * padding) / height), 0.1)
         let originX = (size.width - width * scale) / 2
         let originY = (size.height - height * scale) / 2
         return (scale, { point in
-            CGPoint(x: originX + CGFloat(point.x - bounds.min.x) * scale, y: originY + CGFloat(point.y - bounds.min.y) * scale)
+            let offset = RoomGeometry.vector(point) - minimum
+            return CGPoint(x: originX + CGFloat(offset.x) * scale, y: originY + CGFloat(offset.y) * scale)
         })
     }
 }

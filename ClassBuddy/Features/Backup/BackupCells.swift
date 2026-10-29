@@ -86,20 +86,35 @@ extension Backup {
         }
         static func list(_ values: [String]) -> String { values.joined(separator: "; ") }
 
-        /// Rasterpunkte als „x,y; x,y; …“.
+        /// Rasterpunkte als „x,y; x,y; …“ in Rasterschritten; Punkte zwischen dem Raster mit Punkt als
+        /// Dezimaltrenner („2.5,3“, Achtel sind als Dezimalzahl exakt).
         static func points(_ points: [GridPoint]) -> String {
-            points.map { "\($0.x),\($0.y)" }.joined(separator: "; ")
+            points.map { "\(coordinate($0.x)),\(coordinate($0.y))" }.joined(separator: "; ")
         }
 
-        /// Liest „x,y; x,y“ (auch mit Leerzeichen); `nil`, wenn ein Punkt ungültig ist.
+        private static func coordinate(_ eighths: Int) -> String {
+            eighths.isMultiple(of: GridPoint.subdivisions)
+                ? String(eighths / GridPoint.subdivisions)
+                : String(Double(eighths) / Double(GridPoint.subdivisions))
+        }
+
+        /// Liest „x,y; x,y“ (auch mit Leerzeichen); `nil`, wenn ein Punkt ungültig ist oder feiner als ein Achtel.
         static func parsePoints(_ text: String) -> [GridPoint]? {
             let parts = parseList(text)
             let points = parts.compactMap { part -> GridPoint? in
-                let numbers = part.split(separator: ",").map { Int($0.trimmingCharacters(in: .whitespaces)) }
+                let numbers = part.split(separator: ",").map { parseCoordinate($0.trimmingCharacters(in: .whitespaces)) }
                 guard numbers.count == 2, let x = numbers[0], let y = numbers[1] else { return nil }
-                return GridPoint(x, y)
+                return GridPoint(eighths: x, y)
             }
             return points.count == parts.count ? points : nil
+        }
+
+        /// Rasterschritte → Achtel; nur ganze Achtel.
+        private static func parseCoordinate(_ text: String) -> Int? {
+            if let whole = Int(text) { return whole * GridPoint.subdivisions }
+            guard let value = Double(text), value.isFinite else { return nil }
+            let eighths = value * Double(GridPoint.subdivisions)
+            return eighths == eighths.rounded() ? Int(eighths) : nil
         }
 
         static func parseRoomCategory(_ text: String) -> RoomCategory {

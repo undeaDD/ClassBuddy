@@ -21,7 +21,7 @@ enum AppTab: String, CaseIterable, Identifiable, Hashable, Codable {
     var title: String {
         switch self {
         case .dashboard: loc("Übersicht")
-        case .calendar: "Kalender"
+        case .calendar: loc("Kalender")
         case .students: loc("Schüler")
         case .rooms: loc("Räume")
         case .board: loc("Tafelbild")

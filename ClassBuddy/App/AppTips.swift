@@ -114,18 +114,16 @@ extension SchoolSettings.Values {
     }
 }
 
-/// Tipp zu einem Einrichtungsschritt. Das Bild kommt aus der View (Icon-Theme ist an den Main Actor gebunden).
+/// Tipp zu einem Einrichtungsschritt.
 nonisolated struct SetupTip: Tip {
     /// Tipps überhaupt erlaubt: Einstellung an, Einführung erledigt, App entsperrt und im Vordergrund.
     /// Gilt für alle Tipps der App, gesetzt in `RootView`.
     @Parameter static var isAllowed: Bool = false
 
     let step: SetupStep
-    var image: Image?
 
-    init(_ step: SetupStep, image: Image? = nil) {
+    init(_ step: SetupStep) {
         self.step = step
-        self.image = image
     }
 
     var id: String { "setup.\(step.rawValue)" }
@@ -146,20 +144,17 @@ nonisolated struct SetupTip: Tip {
 nonisolated struct PrivacyModeTip: Tip {
     static let appOpened = Tips.Event(id: "appOpened")
 
-    var image: Image?
-
-    init(image: Image? = nil) {
-        self.image = image
+    static var titleText: String { loc("Privatsphäre-Modus") }
+    static var messageText: String {
+        loc("Blendet Namen und Notizen aus, zum Beispiel wenn Ihr Bildschirm per Beamer zu sehen ist.")
     }
+    static var actionTitle: String { loc("Einschalten") }
 
-    var title: Text { Text(loc("Privatsphäre-Modus")) }
-
-    var message: Text? {
-        Text(loc("Blendet Namen und Notizen aus, zum Beispiel wenn Ihr Bildschirm per Beamer zu sehen ist."))
-    }
+    var title: Text { Text(Self.titleText) }
+    var message: Text? { Text(Self.messageText) }
 
     var actions: [Action] {
-        [Action(id: "open", title: loc("Einschalten"))]
+        [Action(id: "open", title: Self.actionTitle)]
     }
 
     var rules: [Rule] {
@@ -175,20 +170,15 @@ nonisolated struct ArrangeCardsTip: Tip {
     static let dashboardOpened = Tips.Event(id: "dashboardOpened")
     @Parameter static var isPrivacyTipDone: Bool = false
 
-    var image: Image?
+    static var titleText: String { loc("Kacheln anordnen") }
+    static var messageText: String { loc("Sortieren Sie die Kacheln der Übersicht oder blenden Sie einzelne aus.") }
+    static var actionTitle: String { loc("Jetzt anordnen") }
 
-    init(image: Image? = nil) {
-        self.image = image
-    }
-
-    var title: Text { Text(loc("Kacheln anordnen")) }
-
-    var message: Text? {
-        Text(loc("Sortieren Sie die Kacheln der Übersicht oder blenden Sie einzelne aus."))
-    }
+    var title: Text { Text(Self.titleText) }
+    var message: Text? { Text(Self.messageText) }
 
     var actions: [Action] {
-        [Action(id: "open", title: loc("Jetzt anordnen"))]
+        [Action(id: "open", title: Self.actionTitle)]
     }
 
     var rules: [Rule] {
@@ -234,7 +224,7 @@ final class TipVisibility {
 
 /// Tipp-Kachel der Übersicht, immer nur ein Tipp: zuerst der offene Einrichtungsschritt, dann Privatsphäre-Modus,
 /// dann „Kacheln anordnen“. Ohne Klasse (`schoolClass == nil`) nur Schritt 1 „Erste Klasse anlegen“ über dem
-/// Leerzustand. TipKit-Optik (xmark oben rechts, Button unter der Trennlinie) in der Form einer Kachel.
+/// Leerzustand. Eigenes Layout statt `TipView`, damit die Kachel so hoch ist wie alle anderen (`cardHeight`).
 struct DashboardTipCard: View {
     @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
@@ -250,6 +240,14 @@ struct DashboardTipCard: View {
         case setup(SetupStep)
         case privacy
         case arrange
+    }
+
+    /// Inhalt einer Tipp-Kachel (bei `TipView` aus dem Tipp selbst).
+    private struct TipText {
+        let icon: AppIcon
+        let title: String
+        let message: String
+        let action: String?
     }
 
     /// Schritt 1 sichtbar (für den Leerzustand der Übersicht, siehe `ClassScopedView`).
@@ -280,14 +278,22 @@ struct DashboardTipCard: View {
     var body: some View {
         switch content {
         case .setup(let step):
-            card(SetupTip(step, image: Image(icon: step.icon))) { open(step) }
+            card(SetupTip(step), TipText(icon: step.icon, title: step.title, message: step.message, action: step.actionTitle)) {
+                open(step)
+            }
         case .privacy:
-            card(PrivacyModeTip(image: Image(icon: .eyeClosed))) {
+            card(PrivacyModeTip(), TipText(
+                icon: .eyeClosed, title: PrivacyModeTip.titleText,
+                message: PrivacyModeTip.messageText, action: PrivacyModeTip.actionTitle
+            )) {
                 PrivacyModeTip().invalidate(reason: .actionPerformed)
                 if !security.isPrivacyModeOn { Task { await security.togglePrivacyMode() } }
             }
         case .arrange:
-            card(ArrangeCardsTip(image: Image(icon: .editPencil))) {
+            card(ArrangeCardsTip(), TipText(
+                icon: .editPencil, title: ArrangeCardsTip.titleText,
+                message: ArrangeCardsTip.messageText, action: ArrangeCardsTip.actionTitle
+            )) {
                 ArrangeCardsTip().invalidate(reason: .actionPerformed)
                 onArrange()
             }
@@ -296,11 +302,51 @@ struct DashboardTipCard: View {
         }
     }
 
-    private func card(_ tip: some Tip, action: @escaping () -> Void) -> some View {
-        TipView(tip) { _ in action() }
-            .tipBackground(.clear)
-            .frame(maxWidth: .infinity, minHeight: cardHeight, alignment: .top)
-            .background(Color(.secondarySystemGroupedBackground), in: cardShape)
+    /// Kopf mit Icon, Titel und xmark (schließt den Tipp wie bei `TipView`), darunter der Text (bei Platzmangel
+    /// kleiner), unten der Button.
+    private func card(_ tip: some Tip, _ text: TipText, action: @escaping () -> Void) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .top, spacing: 8) {
+                Label {
+                    Text(text.title)
+                } icon: {
+                    Image(icon: text.icon)
+                        .foregroundStyle(.tint)
+                }
+                .font(.headline)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                Spacer(minLength: 0)
+                Button("Tipp schließen", icon: .xmark) {
+                    tip.invalidate(reason: .tipClosed)
+                }
+                .labelStyle(.iconOnly)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .frame(width: 26, height: 26)
+                .background(Color(.tertiarySystemFill), in: .circle)
+                .buttonStyle(.plain)
+            }
+            Text(text.message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .lineLimit(3)
+                .minimumScaleFactor(0.75)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+            if let actionTitle = text.action {
+                Button(action: Haptics.tapping(action)) {
+                    Text(actionTitle)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .controlSize(.small)
+            }
+        }
+        .cardStyle(padding: 16)
     }
 
     private func open(_ step: SetupStep) {

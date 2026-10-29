@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11B535ECA81B6B60735932EB /* guide.en.html in Resources */ = {isa = PBXBuildFile; fileRef = B01A7A40CCD243652E727AF4 /* guide.en.html */; };
+		A630002196970305A0E80956 /* guide.html in Resources */ = {isa = PBXBuildFile; fileRef = 30F10A4A0BF4DF0796F1B12D /* guide.html */; };
 		0016BF948735B154AC48FB94 /* XLSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = B520560E0BF66558DE32A34D /* XLSX.swift */; };
 		01CE987455CBFB4360537259 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82B7B56D4973387936A0E06B /* Weather.swift */; };
 		041EDD8E52FC9A70B471C5CD /* AppTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6AB5A47C4368067847CE31 /* AppTabView.swift */; };
@@ -208,6 +210,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B01A7A40CCD243652E727AF4 /* guide.en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = guide.en.html; sourceTree = "<group>"; };
+		30F10A4A0BF4DF0796F1B12D /* guide.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = guide.html; sourceTree = "<group>"; };
 		00D91AF2928F4BA7AE559060 /* collaborators.en.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = collaborators.en.html; sourceTree = "<group>"; };
 		01177F72296400A8CB8AE65D /* CalendarModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarModels.swift; sourceTree = "<group>"; };
 		0435A57BE11AE60FC2049F9F /* ServicesTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ServicesTests.swift; sourceTree = "<group>"; };
@@ -420,6 +424,8 @@
 				C178880D75ED2AE4F6900431 /* privacy.en.html */,
 				432AD3F8D6771586F8F77F14 /* imprint.html */,
 				AAD0D0EDACEC968C90E954A0 /* imprint.en.html */,
+				B01A7A40CCD243652E727AF4 /* guide.en.html */,
+				30F10A4A0BF4DF0796F1B12D /* guide.html */,
 			);
 			path = Legal;
 			sourceTree = "<group>";
@@ -897,6 +903,8 @@
 				BC3CB0BACAA2B5408624C01E /* licenses.en.html in Resources */,
 				12CA6338306EF68700FA6331 /* ClassBuddy-InfoPlist.xcstrings in Resources */,
 				FAAF7A0795378633507F3435 /* privacy.en.html in Resources */,
+				11B535ECA81B6B60735932EB /* guide.en.html in Resources */,
+				A630002196970305A0E80956 /* guide.html in Resources */,
 				67B9ACC28CED548EDC1D5082 /* imprint.en.html in Resources */,
 				D681876EF0CC6C1120CCFC91 /* Localizable.xcstrings in Resources */,
 				BA4A668A8072B3A5A6DE9FA3 /* collaborators.html in Resources */,

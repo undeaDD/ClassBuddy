@@ -45,6 +45,12 @@ struct SettingsView: View {
 
             Section("Aktionen") {
                 NavigationLink {
+                    LegalDocumentView(document: .guide)
+                        .hidesTabBar()
+                } label: {
+                    Label(LegalDocument.guide.title, symbol: LegalDocument.guide.symbol)
+                }
+                NavigationLink {
                     StatsView()
                         .hidesTabBar()
                 } label: {
@@ -87,7 +93,7 @@ struct SettingsView: View {
             #endif
 
             Section("Rechtliches") {
-                ForEach(LegalDocument.allCases) { document in
+                ForEach(LegalDocument.legal) { document in
                     NavigationLink {
                         LegalDocumentView(document: document)
                             .hidesTabBar()
@@ -332,12 +338,16 @@ struct SettingsActionLabel: View {
     }
 }
 
-/// Lokale HTML-Dateien in `Resources/Legal`.
+/// Lokale HTML-Dateien in `Resources/Legal`: Rechtstexte und die Anleitung.
 nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
     case imprint
     case privacy
     case licenses
     case collaborators
+    case guide
+
+    /// Abschnitt „Rechtliches“ (die Anleitung steht unter „Aktionen“).
+    static let legal: [LegalDocument] = [.imprint, .privacy, .licenses, .collaborators]
 
     var id: String { rawValue }
 
@@ -347,6 +357,7 @@ nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
         case .privacy: loc("Datenschutz")
         case .licenses: loc("Lizenzen")
         case .collaborators: loc("Mitwirkende")
+        case .guide: loc("Anleitung")
         }
     }
 
@@ -362,7 +373,7 @@ nonisolated enum LegalDocument: String, CaseIterable, Identifiable {
 
 @MainActor
 extension LegalDocument {
-    var symbol: AppSymbol { .custom(.link) }
+    var symbol: AppSymbol { .custom(self == .guide ? .bookOpen : .link) }
 }
 
 /// Lokale HTML-Seite; Links nach außen öffnen in Safari statt in der App.

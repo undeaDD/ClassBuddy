@@ -40,6 +40,70 @@ struct RoomTests {
         #expect(RoomGeometry.locate(Self.p(5, 1), in: shape) == .outside)
     }
 
+    @Test("Kantenmitte: exakt in Achteln, Rasterpunkt erkannt, zu fein ergibt nil")
+    func midpoints() throws {
+        let half = try #require(GridPoint.midpoint(Self.p(0, 0), Self.p(3, 1)))
+        #expect(half == GridPoint(eighths: 12, 4) && !half.isOnGrid)
+        #expect(RoomGeometry.vector(half) == [1.5, 0.5])
+        #expect(GridPoint.midpoint(Self.p(0, 0), Self.p(2, 4)) == Self.p(1, 2))
+        #expect(GridPoint.midpoint(Self.p(0, 0), Self.p(2, 4))?.isOnGrid == true)
+        // Mitte von Mitte bis zum Achtel, danach nicht mehr.
+        let quarter = try #require(GridPoint.midpoint(Self.p(0, 0), half))
+        let eighth = try #require(GridPoint.midpoint(Self.p(0, 0), quarter))
+        #expect(eighth == GridPoint(eighths: 3, 1))
+        #expect(GridPoint.midpoint(Self.p(0, 0), eighth) == nil)
+        #expect(GridPoint(eighths: -3, 12).gridFloor == Self.p(-1, 1))
+    }
+
+    @Test("Speicherformat: Rasterpunkte wie bisher, Zwischenpunkte mit Achteln, alte Daten lesbar")
+    func gridPointCoding() throws {
+        let points = [Self.p(3, -2), GridPoint(eighths: 20, -3), GridPoint(eighths: -12, 7)]
+        let data = try JSONEncoder().encode(points)
+        #expect(try JSONDecoder().decode([GridPoint].self, from: data) == points)
+        let whole = try JSONSerialization.jsonObject(with: JSONEncoder().encode(Self.p(3, -2))) as? [String: Int]
+        #expect(whole == ["x": 3, "y": -2])
+        let old = Data(#"[{"x":4,"y":5}]"#.utf8)
+        #expect(try JSONDecoder().decode([GridPoint].self, from: old) == [Self.p(4, 5)])
+    }
+
+    @Test("Schräger Tisch an Kantenmitten geteilt: Teile schließen lückenlos an den Mitten an")
+    func splitAtMidpoints() throws {
+        // Raute: Kanten schräg, ihre Mitten liegen zwischen den Rasterpunkten.
+        let diamond = [Self.p(3, 0), Self.p(6, 1), Self.p(3, 2), Self.p(0, 1), Self.p(3, 0)]
+        let start = try #require(GridPoint.midpoint(Self.p(3, 0), Self.p(6, 1)))
+        let end = try #require(GridPoint.midpoint(Self.p(3, 2), Self.p(0, 1)))
+        let result = try #require(RoomGeometry.split(diamond, along: [start, end]))
+        #expect(result.first.contains(start) && result.first.contains(end))
+        #expect(result.second.contains(start) && result.second.contains(end))
+        // Zusammen genau die Fläche der Raute.
+        let area = abs(RoomGeometry.doubleArea(result.first)) + abs(RoomGeometry.doubleArea(result.second))
+        #expect(area == abs(RoomGeometry.doubleArea(diamond)))
+    }
+
+    @Test("Normalisieren mit Ecke zwischen dem Raster: Verschiebung nur um ganze Rasterschritte")
+    func normalizingKeepsGrid() {
+        let outline = RoomShape(kind: .outline, points: [
+            GridPoint(eighths: 12, 4), Self.p(6, 1), Self.p(6, 5), Self.p(2, 5), GridPoint(eighths: 12, 4),
+        ])
+        let result = RoomGeometry.normalized([outline])
+        #expect(result[0].points.first == GridPoint(eighths: 4, 4))
+        #expect(result[0].points[1] == Self.p(5, 1))
+    }
+
+    @Test("Breite auf einer waagerechten Linie: Rechteck, Raute, L-Form, außen")
+    func horizontalWidth() {
+        #expect(RoomGeometry.horizontalWidth(at: [2, 1], in: Self.rect(0, 0, 4, 2)) == 4)
+        // Raute (schräger Tisch): in der Mitte am breitesten, weiter oben schmaler.
+        let diamond = [Self.p(2, 0), Self.p(4, 2), Self.p(2, 4), Self.p(0, 2), Self.p(2, 0)]
+        #expect(RoomGeometry.horizontalWidth(at: [2, 2], in: diamond) == 4)
+        #expect(RoomGeometry.horizontalWidth(at: [2, 1], in: diamond) == 2)
+        // U-Form: nur der Abschnitt, in dem der Punkt liegt.
+        let shape = [Self.p(0, 0), Self.p(1, 0), Self.p(1, 2), Self.p(2, 2), Self.p(2, 0), Self.p(3, 0),
+                     Self.p(3, 3), Self.p(0, 3), Self.p(0, 0)]
+        #expect(RoomGeometry.horizontalWidth(at: [0.5, 1], in: shape) == 1)
+        #expect(RoomGeometry.horizontalWidth(at: [1.5, 1], in: shape) == nil)
+    }
+
     @Test("Schnitte: echte Kreuzung, Berührung, kollinear")
     func intersections() {
         #expect(RoomGeometry.crossesProperly(Self.p(0, 0), Self.p(2, 2), Self.p(0, 2), Self.p(2, 0)))

@@ -69,7 +69,7 @@ struct ClassPickerButton: View {
         .buttonStyle(.plain)
         // Ohne Schatten: die Navigationsleiste schneidet ihn vor iOS 26 unten ab.
         .appGlassEffect(.regular.tint(selectedClass?.displayColor ?? accent).interactive(), in: .circle, fallbackShadow: false)
-        .accessibilityLabel(selectedClass.map { loc("\($0.title), Klasse wechseln") } ?? "Klasse auswählen")
+        .accessibilityLabel(selectedClass.map { loc("\($0.title), Klasse wechseln") } ?? loc("Klasse auswählen"))
         .popover(isPresented: isPickerPresented, arrowEdge: .top) {
             ClassPickerView()
                 .softScrollEdges()

@@ -11248,6 +11248,66 @@
           }
         }
       }
+    },
+    "Tipp schließen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close tip"
+          }
+        }
+      }
+    },
+    "Raum wählen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose room"
+          }
+        }
+      }
+    },
+    "Termine haben kein Fach. Der Raum wird am Termin gespeichert und zeigt die Sitzordnung von %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Events have no subject. The room is saved with the event and shows the seating of %@."
+          }
+        }
+      }
+    },
+    "Termine haben kein Fach. Der Raum wird am Termin gespeichert." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Events have no subject. The room is saved with the event."
+          }
+        }
+      }
+    },
+    "Klasse auswählen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose class"
+          }
+        }
+      }
+    },
+    "Anleitung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guide"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

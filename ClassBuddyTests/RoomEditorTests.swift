@@ -141,6 +141,22 @@ struct RoomEditorTests {
         #expect(abs(before.x - after.x) < 1e-9 && abs(before.y - after.y) < 1e-9)
     }
 
+    @Test("Beim Zeichnen rasten Kantenmitten ein, außer sie sind ohnehin Rasterpunkte; mit der Maus nicht")
+    func midpointSnapping() {
+        // Schräger Tisch (Mitte der Kante 0/0–3/1 liegt bei 1,5/0,5) und gerader (Mitte 4/0 ist ein Rasterpunkt).
+        let table = RoomShape(kind: .table, points: [Self.p(0, 0), Self.p(3, 1), Self.p(0, 2), Self.p(0, 0)])
+        let straight = RoomShape(kind: .table, points: Self.rect(3, -1, 2, 2))
+        let model = RoomEditorModel(shapes: [table, straight])
+        let spacing = RoomEditorModel.gridSpacing
+        let nearMidpoint = CGPoint(x: 1.45 * spacing, y: 0.55 * spacing)
+        #expect(model.snap(nearMidpoint) == Self.p(1, 1))
+        model.tool = .pen(.table)
+        #expect(model.edgeMidpoints.contains(GridPoint(eighths: 12, 4)))
+        #expect(model.edgeMidpoints.allSatisfy { !$0.isOnGrid })
+        #expect(model.snap(nearMidpoint) == GridPoint(eighths: 12, 4))
+        #expect(model.snap(CGPoint(x: 1.05 * spacing, y: 0.95 * spacing)) == Self.p(1, 1))
+    }
+
     // MARK: Abgleich beim Speichern
 
     @Test("Geänderte und entfernte Tische verlieren ihre Zuordnung, unveränderte nicht")

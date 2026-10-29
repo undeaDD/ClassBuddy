@@ -64,7 +64,7 @@ struct SeatingPlanFloor: View {
                     if let teacher, let desk = deskPlacement(transform: transform) {
                         SeatLabel(
                             initials: teacher.initials, photo: nil, gender: teacher.gender,
-                            name: teacher.fullName.isEmpty ? loc("Lehrkraft") : teacher.fullName, tableSize: desk.size
+                            name: teacher.fullName.isEmpty ? loc("Lehrkraft") : teacher.fullName, fit: desk.fit
                         )
                         .allowsHitTesting(false)
                         .environment(\.avatarCutout, cutout(on: .desk))
@@ -107,34 +107,47 @@ struct SeatingPlanFloor: View {
         let table: UUID
         let student: Student
         let center: CGPoint
-        let size: CGSize
+        let fit: SeatFit
     }
 
+    /// Alle Schüler gleich groß: Kreis nach dem engsten Tisch des Raums (auch freie Tische, damit sich die Größe
+    /// beim Umsetzen nicht ändert). Nur die Breite für den Namen gilt je Tisch.
     private func seats(transform: SeatingPlanTransform) -> [Seat] {
-        shapes.compactMap { shape in
-            guard shape.kind == .table, let student = occupants[shape.id],
-                  let placement = Self.placement(of: shape, transform: transform) else { return nil }
-            return Seat(table: shape.id, student: student, center: placement.center, size: placement.size)
+        let tables = shapes.filter { $0.kind == .table }
+        let space = tables.compactMap { Self.layout(of: $0)?.space }.min()
+        return tables.compactMap { shape in
+            guard let student = occupants[shape.id], let space, let layout = Self.layout(of: shape) else { return nil }
+            let fit = SeatFit(space: space * transform.scale, width: layout.width * transform.scale)
+            return Seat(table: shape.id, student: student, center: transform.point(layout.center), fit: fit)
         }
     }
 
-    private func deskPlacement(transform: SeatingPlanTransform) -> (center: CGPoint, size: CGSize)? {
-        shapes.first { $0.kind == .desk }.flatMap { Self.placement(of: $0, transform: transform) }
+    private func deskPlacement(transform: SeatingPlanTransform) -> (center: CGPoint, fit: SeatFit)? {
+        guard let desk = shapes.first(where: { $0.kind == .desk }), let layout = Self.layout(of: desk) else { return nil }
+        return (transform.point(layout.center), SeatFit(space: layout.space * transform.scale, width: layout.width * transform.scale))
     }
 
-    /// Mittelpunkt (Schwerpunkt) und Größe einer Fläche auf dem Bildschirm.
-    private static func placement(of shape: RoomShape, transform: SeatingPlanTransform) -> (center: CGPoint, size: CGSize)? {
-        guard let centroid = RoomGeometry.centroid(of: shape.points), let bounds = RoomGeometry.bounds(of: shape.points) else { return nil }
-        let size = CGSize(
-            width: CGFloat(bounds.max.x - bounds.min.x) * transform.scale,
-            height: CGFloat(bounds.max.y - bounds.min.y) * transform.scale
-        )
-        return (transform.point(centroid), size)
+    /// Platz einer Fläche in Rastereinheiten. Anders als das umschließende Rechteck bleibt er bei schrägen Tischen
+    /// so klein, wie der Tisch wirklich ist.
+    private struct Layout {
+        /// Schwerpunkt der Fläche.
+        let center: RoomGeometry.Vector
+        /// Doppelter Abstand vom Schwerpunkt zum nächsten Rand (Platz für den Kreis; bei Rechtecken die kürzere Seite).
+        let space: Double
+        /// Breite der Fläche auf Höhe des Schwerpunkts (Platz für den Namen).
+        let width: Double
+    }
+
+    private static func layout(of shape: RoomShape) -> Layout? {
+        guard let centroid = RoomGeometry.centroid(of: shape.points) else { return nil }
+        let space = 2 * RoomGeometry.distance(from: centroid, to: shape.points)
+        let width = RoomGeometry.horizontalWidth(at: centroid, in: shape.points) ?? space
+        return Layout(center: centroid, space: space, width: width)
     }
 
     @ViewBuilder
     private func seatView(_ seat: Seat) -> some View {
-        let label = SeatLabel(student: seat.student, tableSize: seat.size)
+        let label = SeatLabel(student: seat.student, fit: seat.fit)
             .opacity(dimmed.contains(seat.table) ? 0.35 : 1)
         if let actions {
             label
@@ -164,28 +177,34 @@ struct SeatActions {
     let clear: (UUID) -> Void
 }
 
+/// Platz für eine Person auf dem Bildschirm: `space` bestimmt Kreis und Schrift, `width` die Breite des Namens.
+private struct SeatFit {
+    let space: CGFloat
+    let width: CGFloat
+}
+
 /// Person auf einem Tisch bzw. Pult: Kreis wie in der Schülerliste, darunter der volle Name.
 private struct SeatLabel: View {
     let initials: String
     let photo: Data?
     let gender: Gender?
     let name: String
-    let tableSize: CGSize
+    let fit: SeatFit
 
-    init(student: Student, tableSize: CGSize) {
-        self.init(initials: student.initials, photo: student.photo, gender: student.gender, name: student.fullName, tableSize: tableSize)
+    init(student: Student, fit: SeatFit) {
+        self.init(initials: student.initials, photo: student.photo, gender: student.gender, name: student.fullName, fit: fit)
     }
 
-    init(initials: String, photo: Data?, gender: Gender?, name: String, tableSize: CGSize) {
+    init(initials: String, photo: Data?, gender: Gender?, name: String, fit: SeatFit) {
         self.initials = initials
         self.photo = photo
         self.gender = gender
         self.name = name
-        self.tableSize = tableSize
+        self.fit = fit
     }
 
     var body: some View {
-        let diameter = min(max(min(tableSize.width, tableSize.height) * 0.5, 14), 72)
+        let diameter = min(max(fit.space * 0.5, 14), 72)
         VStack(spacing: diameter * 0.1) {
             StudentAvatar(initials: initials, photo: photo, gender: gender, size: diameter)
             Text(name)
@@ -196,7 +215,7 @@ private struct SeatLabel: View {
                 // Namen (auch der Lehrkraft) im Privatsphäre-Modus schwärzen.
                 .sensitive()
         }
-        .frame(width: max(tableSize.width - 4, diameter * 1.6))
+        .frame(width: max(fit.width - 4, diameter * 1.6))
     }
 }
 
