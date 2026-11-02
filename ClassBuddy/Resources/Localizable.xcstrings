@@ -11308,6 +11308,46 @@
           }
         }
       }
+    },
+    "Ohne Angabe" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not specified"
+          }
+        }
+      }
+    },
+    "Ohne Geburtstag" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No birthday"
+          }
+        }
+      }
+    },
+    "Sortieren nach" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort by"
+          }
+        }
+      }
+    },
+    "Sortiert nach %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sorted by %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
