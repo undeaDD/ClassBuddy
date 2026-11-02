@@ -52,6 +52,15 @@ extension SyncEntry: Codable {
     }
 }
 
+/// Was ein Gerät hat: Änderungszeit je Eintrag und Löschzeit je gelöschtem Eintrag, Schlüssel „Typ/ID“.
+/// Zwei Geräte tauschen zuerst das aus und schicken sich dann nur, was beim anderen fehlt oder älter ist.
+struct SyncManifest: Codable, Equatable {
+    var entries: [String: Date] = [:]
+    var deletions: [String: Date] = [:]
+
+    static func key(_ type: String, _ id: String) -> String { "\(type)/\(id)" }
+}
+
 struct SyncDeletion: Codable, Equatable {
     var type: String
     var id: String
@@ -107,12 +116,52 @@ enum SyncEngine {
     // MARK: Schreiben
 
     static func makePackage(since: Date?, in context: ModelContext, appVersion: String = AppInfo.version) throws -> SyncPackage {
+        try makePackage(
+            in: context, appVersion: appVersion, since: since,
+            includesEntry: { _, _, lastModified in since.map { lastModified > $0 } ?? true },
+            includesDeletion: { _, deletedAt in since.map { deletedAt > $0 } ?? true }
+        )
+    }
+
+    static func manifest(in context: ModelContext) throws -> SyncManifest {
+        var manifest = SyncManifest()
+        for type in recordTypes {
+            for (id, lastModified) in try type.stamps(in: context) {
+                manifest.entries[SyncManifest.key(type.syncRecordType, id)] = lastModified
+            }
+        }
+        for deletion in try context.fetch(FetchDescriptor<DeletedRecord>()) {
+            let key = SyncManifest.key(deletion.recordType, deletion.recordID)
+            manifest.deletions[key] = max(manifest.deletions[key] ?? .distantPast, deletion.deletedAt)
+        }
+        return manifest
+    }
+
+    /// Alles, was beim anderen Gerät (laut `manifest`) fehlt oder älter ist; nichts, was es inzwischen gelöscht hat.
+    static func makePackage(
+        for manifest: SyncManifest, in context: ModelContext, appVersion: String = AppInfo.version
+    ) throws -> SyncPackage {
+        try makePackage(
+            in: context, appVersion: appVersion, since: nil,
+            includesEntry: { type, id, lastModified in
+                let key = SyncManifest.key(type, id)
+                if let deleted = manifest.deletions[key], deleted >= lastModified { return false }
+                return manifest.entries[key].map { lastModified > $0 } ?? true
+            },
+            includesDeletion: { key, deletedAt in manifest.deletions[key].map { deletedAt > $0 } ?? true }
+        )
+    }
+
+    private static func makePackage(
+        in context: ModelContext, appVersion: String, since: Date?,
+        includesEntry: (String, String, Date) -> Bool, includesDeletion: (String, Date) -> Bool
+    ) throws -> SyncPackage {
         var entries: [SyncEntry] = []
         for type in recordTypes {
-            entries += try type.entries(since: since, in: context)
+            entries += try type.entries(in: context) { includesEntry(type.syncRecordType, $0, $1) }
         }
         let deletions = try context.fetch(FetchDescriptor<DeletedRecord>())
-            .filter { deletion in since.map { deletion.deletedAt > $0 } ?? true }
+            .filter { includesDeletion(SyncManifest.key($0.recordType, $0.recordID), $0.deletedAt) }
             .map { SyncDeletion(type: $0.recordType, id: $0.recordID, deletedAt: $0.deletedAt) }
         var files: [String: Data] = [:]
         for entry in entries where entry.type == DashboardLink.syncRecordType {
@@ -198,10 +247,15 @@ extension SyncCodable {
         try Payload(from: decoder)
     }
 
-    static func entries(since: Date?, in context: ModelContext) throws -> [SyncEntry] {
+    /// Einträge, für die `includes(syncID, lastModified)` zutrifft.
+    static func entries(in context: ModelContext, where includes: (String, Date) -> Bool) throws -> [SyncEntry] {
         try context.fetch(FetchDescriptor<Self>())
-            .filter { record in since.map { record.lastModified > $0 } ?? true }
+            .filter { includes($0.syncID, $0.lastModified) }
             .map { SyncEntry(type: syncRecordType, id: $0.syncID, lastModified: $0.lastModified, payload: $0.payload) }
+    }
+
+    static func stamps(in context: ModelContext) throws -> [(String, Date)] {
+        try context.fetch(FetchDescriptor<Self>()).map { ($0.syncID, $0.lastModified) }
     }
 
     static func registerAll(in context: ModelContext, references: SyncReferences) throws {

@@ -127,6 +127,38 @@ struct SyncTests {
         #expect(package.entries.isEmpty && package.deletions.isEmpty)
     }
 
+    @Test("Abgleich über das Manifest: nur Fehlendes und Neueres, in beide Richtungen und über ein drittes Gerät")
+    func manifestExchange() throws {
+        let deviceA = try Self.makeDevice(), deviceB = try Self.makeDevice(), deviceC = try Self.makeDevice()
+        func exchange(_ first: ModelContext, _ second: ModelContext) throws {
+            let toSecond = try SyncEngine.makePackage(for: SyncEngine.manifest(in: second), in: first, appVersion: Self.version)
+            let toFirst = try SyncEngine.makePackage(for: SyncEngine.manifest(in: first), in: second, appVersion: Self.version)
+            try SyncEngine.apply(toSecond, in: second, appVersion: Self.version)
+            try SyncEngine.apply(toFirst, in: first, appVersion: Self.version)
+        }
+        deviceA.insert(Student(firstName: "Emma", lastName: "A"))
+        try deviceA.save()
+        deviceB.insert(Student(firstName: "Ben", lastName: "B"))
+        try deviceB.save()
+        try exchange(deviceA, deviceB)
+        #expect(Set(try deviceA.fetch(FetchDescriptor<Student>()).map(\.firstName)) == ["Emma", "Ben"])
+        #expect(Set(try deviceB.fetch(FetchDescriptor<Student>()).map(\.firstName)) == ["Emma", "Ben"])
+        // Nichts mehr offen: das nächste Paket ist leer.
+        let empty = try SyncEngine.makePackage(for: SyncEngine.manifest(in: deviceB), in: deviceA, appVersion: Self.version)
+        #expect(empty.entries.isEmpty && empty.deletions.isEmpty)
+
+        // B gibt beides an C weiter, obwohl C nie mit A verbunden war.
+        try exchange(deviceB, deviceC)
+        #expect(Set(try deviceC.fetch(FetchDescriptor<Student>()).map(\.firstName)) == ["Emma", "Ben"])
+        // Eine Löschung auf C kommt über B bei A an.
+        let emmaOnC = try #require(try deviceC.fetch(FetchDescriptor<Student>()).first { $0.firstName == "Emma" })
+        deviceC.delete(emmaOnC)
+        try deviceC.save()
+        try exchange(deviceC, deviceB)
+        try exchange(deviceB, deviceA)
+        #expect(try deviceA.fetch(FetchDescriptor<Student>()).map(\.firstName) == ["Ben"])
+    }
+
     @Test("Andere App-Version wird abgelehnt")
     func versionMismatch() throws {
         let deviceA = try Self.makeDevice(), deviceB = try Self.makeDevice()
