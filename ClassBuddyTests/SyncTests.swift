@@ -14,6 +14,9 @@ struct SyncTests {
         SyncTracking.start()
     }
 
+    /// Container festhalten: Ein Kontext ohne seinen Container stürzt beim nächsten Zugriff ab.
+    private static var containers: [ModelContainer] = []
+
     private static func makeDevice() throws -> ModelContext {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, Lesson.self, CalendarEntry.self, Holiday.self, DashboardLink.self,
@@ -22,6 +25,7 @@ struct SyncTests {
             PeriodGrade.self, DeletedRecord.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
+        containers.append(container)
         return container.mainContext
     }
 

@@ -12,6 +12,9 @@ struct RoomTests {
 
     private static func p(_ x: Int, _ y: Int) -> GridPoint { GridPoint(x, y) }
 
+    /// `doubleArea` rechnet in Achteln je Richtung.
+    private static let eighthsSquared = GridPoint.subdivisions * GridPoint.subdivisions
+
     /// Geschlossenes Rechteck von (x, y) mit Breite und Höhe.
     private static func rect(_ x: Int, _ y: Int, _ width: Int, _ height: Int) -> [GridPoint] {
         [p(x, y), p(x + width, y), p(x + width, y + height), p(x, y + height), p(x, y)]
@@ -144,7 +147,8 @@ struct RoomTests {
     @Test("Tisch teilen: gerade Linie von Kante zu Kante ergibt zwei angrenzende Tische")
     func splitStraight() throws {
         let result = try #require(RoomGeometry.split(Self.rect(0, 0, 4, 2), along: [Self.p(2, 0), Self.p(2, 2)]))
-        let areas = [result.first, result.second].map { abs(RoomGeometry.doubleArea($0)) }
+        // Doppelte Fläche in Rasterschritten (intern Achtel, darum durch 8 × 8).
+        let areas = [result.first, result.second].map { abs(RoomGeometry.doubleArea($0)) / Self.eighthsSquared }
         #expect(areas == [8, 8])
         let tables = [result.first, result.second].map { RoomShape(kind: .table, points: $0) }
         #expect(RoomValidation.isValid([Self.outline] + tables))
@@ -153,7 +157,7 @@ struct RoomTests {
     @Test("Tisch teilen: Knick-Linie und Start in einer Ecke")
     func splitBent() throws {
         let result = try #require(RoomGeometry.split(Self.rect(0, 0, 4, 4), along: [Self.p(0, 0), Self.p(2, 2), Self.p(4, 2)]))
-        let areas = Set([result.first, result.second].map { abs(RoomGeometry.doubleArea($0)) })
+        let areas = Set([result.first, result.second].map { abs(RoomGeometry.doubleArea($0)) / Self.eighthsSquared })
         #expect(areas == [12, 20])
     }
 
