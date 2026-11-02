@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftUI
 import UIKit
 
@@ -210,5 +211,68 @@ private struct CropGestures: UIViewRepresentable {
         @objc private func handleDoubleTap() {
             onDoubleTap()
         }
+    }
+}
+
+/// Zeile „Foto auswählen“ bzw. „Foto ändern“ für Profilfotos (Schüler, Lehrkraft): Menü „Fotos“ oder „Dateien“,
+/// danach der Ausschnitt (`PhotoCropView`); das x entfernt das Foto wieder (wie beim Geburtstag).
+struct ProfilePhotoRow: View {
+    @Binding var photo: Data?
+
+    @State private var photoSelection: PhotosPickerItem?
+    @State private var isPhotoPickerPresented = false
+    @State private var isFileImporterPresented = false
+    /// Gewähltes Foto, bevor der Ausschnitt feststeht.
+    @State private var cropRequest: CropRequest?
+
+    private struct CropRequest: Identifiable {
+        let id = UUID()
+        let image: UIImage
+    }
+
+    var body: some View {
+        HStack {
+            Menu {
+                Button("Aus „Fotos“", icon: .image) { isPhotoPickerPresented = true }
+                Button("Aus „Dateien“", icon: .page) { isFileImporterPresented = true }
+            } label: {
+                Label {
+                    Text(photo == nil ? loc("Foto auswählen") : loc("Foto ändern"))
+                        .foregroundStyle(Color.primary)
+                } icon: {
+                    Image(icon: .image)
+                }
+            }
+            Spacer()
+            if photo != nil {
+                Button("Foto entfernen", icon: .xmark) { photo = nil }
+                    .labelStyle(.iconOnly)
+                    .foregroundStyle(.tint)
+                    .buttonStyle(.borderless)
+            }
+        }
+        .photosPicker(isPresented: $isPhotoPickerPresented, selection: $photoSelection, matching: .images)
+        .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.image]) { result in
+            guard let url = try? result.get() else { return }
+            let accessing = url.startAccessingSecurityScopedResource()
+            defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+            if let data = try? Data(contentsOf: url) { requestCrop(of: data) }
+        }
+        .onChange(of: photoSelection) { _, item in
+            guard let item else { return }
+            photoSelection = nil
+            Task {
+                if let data = try? await item.loadTransferable(type: Data.self) { requestCrop(of: data) }
+            }
+        }
+        .fullScreenCover(item: $cropRequest) { request in
+            PhotoCropView(image: request.image) { photo = $0 }
+        }
+    }
+
+    /// Für den Zuschnitt auf 2048 px verkleinern, große Fotos bleiben so flüssig.
+    private func requestCrop(of data: Data) {
+        guard let prepared = StudentPhoto.prepare(data, maxPixel: 2048), let image = UIImage(data: prepared) else { return }
+        cropRequest = CropRequest(image: image)
     }
 }

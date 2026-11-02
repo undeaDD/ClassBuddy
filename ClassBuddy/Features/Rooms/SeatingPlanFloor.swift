@@ -63,7 +63,7 @@ struct SeatingPlanFloor: View {
                     }
                     if let teacher, let desk = deskPlacement(transform: transform) {
                         SeatLabel(
-                            initials: teacher.initials, photo: nil, gender: teacher.gender,
+                            initials: teacher.initials, photo: teacher.photo, gender: teacher.gender,
                             name: teacher.fullName.isEmpty ? loc("Lehrkraft") : teacher.fullName, fit: desk.fit
                         )
                         .allowsHitTesting(false)

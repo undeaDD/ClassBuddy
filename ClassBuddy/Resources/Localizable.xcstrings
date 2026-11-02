@@ -11348,6 +11348,16 @@
           }
         }
       }
+    },
+    "Erscheint im Sitzplan am Lehrerpult, im Privatsphäre-Modus unscharf." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shown at the teacher’s desk in seating plans, blurred in privacy mode."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

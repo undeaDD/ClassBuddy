@@ -67,22 +67,29 @@ struct QuickRatingBar: View {
         }
     }
 
+    /// Großes Foto mittig zwischen Schließen und Details (gut erkennbar, wer gemeint ist), der Name darunter.
     private var header: some View {
-        HStack(spacing: 12) {
-            Button("Schließen", icon: .xmark, role: .appClose, action: onClose)
-                .labelStyle(.iconOnly)
-                .appGlassButtonStyle()
-                .buttonBorderShape(.circle)
-            StudentAvatar(student: student, size: 40)
-            Text(student.fullName)
-                .font(.headline)
-                .lineLimit(1)
-                .sensitive()
-            Spacer(minLength: 8)
-            Button("Details", action: onOpenRecord)
-                .font(.subheadline.weight(.medium))
-                .appGlassButtonStyle()
-                .buttonBorderShape(.capsule)
+        ZStack(alignment: .top) {
+            HStack {
+                Button("Schließen", icon: .xmark, role: .appClose, action: onClose)
+                    .labelStyle(.iconOnly)
+                    .appGlassButtonStyle()
+                    .buttonBorderShape(.circle)
+                Spacer(minLength: 8)
+                Button("Details", action: onOpenRecord)
+                    .font(.subheadline.weight(.medium))
+                    .appGlassButtonStyle()
+                    .buttonBorderShape(.capsule)
+            }
+            VStack(spacing: 8) {
+                StudentAvatar(student: student, size: device.isPhone ? 92 : 108)
+                Text(student.fullName)
+                    .font(.title3.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .sensitive()
+            }
+            .padding(.horizontal, 96)
         }
     }
 

@@ -146,6 +146,8 @@ struct TeacherProfile: Codable, Equatable {
     var gender: Gender?
     /// Hauptfächer – stehen im Fächer-Picker der Klassen oben.
     var subjects: [String] = []
+    /// Profilfoto (quadratisches JPEG wie bei Schülern), im Sitzplan am Lehrerpult.
+    var photo: Data?
 
     var fullName: String {
         [firstName, lastName].filter { !$0.isEmpty }.joined(separator: " ")
@@ -162,6 +164,7 @@ extension TeacherProfile {
         birthday = try container.decodeIfPresent(Date.self, forKey: .birthday)
         gender = try container.decodeIfPresent(Gender.self, forKey: .gender)
         subjects = try container.decodeIfPresent([String].self, forKey: .subjects) ?? []
+        photo = try container.decodeIfPresent(Data.self, forKey: .photo)
     }
 }
 

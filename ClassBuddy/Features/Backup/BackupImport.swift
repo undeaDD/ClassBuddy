@@ -433,7 +433,9 @@ extension Backup {
             values.teacher = TeacherProfile(
                 firstName: profile["Vorname"], lastName: profile["Nachname"],
                 birthday: Cell.parseDate(profile["Geburtstag"]), gender: Cell.parseGender(profile["Geschlecht"]),
-                subjects: Cell.parseList(profile["Hauptfächer"])
+                subjects: Cell.parseList(profile["Hauptfächer"]),
+                // Fotos stehen nicht in der Tabelle: das vorhandene behalten (wie bei Schülern).
+                photo: values.teacher.photo
             )
         }
         let app = workbook[Sheet.app].map(KeyValues.init)

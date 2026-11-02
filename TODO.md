@@ -9,7 +9,6 @@ Vorschläge (Iconoir für den eingebauten Satz / Font Awesome Duotone fürs Pake
 - [ ] „Bewertung einstellen“ (bisher `settings`): `star` / `star-half-stroke`
 - [ ] „Eingetroffen um“ (bisher `timer`): `log-in` / `door-open`
 - [ ] „Notensystem“ (bisher `graduation-cap`): `numbered-list` / `list-ol`
-- [ ] Sortier-Leiste der Schülerliste (bisher SF Symbol `arrow.up.arrow.down`)
 - [ ] Kaufseite und Testphasen-Kachel (bisher SF Symbols): Testphase `hourglass` / `hourglass-half`,
       Vollversion `badge-check` / `badge-check`
 
@@ -120,8 +119,11 @@ Geräte-Bilder: `WEB=1 scripts/appstore-images.sh` → `site/screenshots/`. Work
       zoomen“ zoomt sofort
 - [ ] Foto auswählen öffnet ein Menü „Aus „Fotos““ / „Aus „Dateien““, beide führen zum Ausschnitt
 - [ ] Schüler-Detailseite: Bearbeiten-Knopf oben rechts (im Privatsphäre-Modus gesperrt, schließt sich beim Einschalten)
-- [ ] Schülerliste: schwebende Leiste unten „Sortiert nach …“, Menü Vorname / Nachname / Geschlecht / Geburtstag
+- [ ] Schülerliste: schwebende Leiste unten (Filter-Symbol und gewählte Sortierung), Menü Vorname / Nachname / Geschlecht / Geburtstag
       (Abschnitte: Buchstaben, Geschlechter, Monate), Wahl bleibt nach Neustart; Index rechts passt; iPad und iPhone
+- [ ] Mein Profil › Foto (Fotos oder Dateien, Ausschnitt wie bei Schülern); Sitzplan zeigt das Foto am Lehrerpult
+      (unscharf im Privatsphäre-Modus), darunter den Namen aus dem Profil; auch im Sitzplan-PDF
+- [ ] Sitzplan › Schüler antippen: großes Foto mittig zwischen „Schließen“ und „Details“, Name darunter (iPhone, iPad)
 - [ ] Anleitung: größere Schrift, Buddy oben, kurzer Kopftext, ohne „Daten schützen“ (Deutsch und Englisch)
 - [ ] Tipp-Kachel genauso hoch wie die anderen Kacheln (iPad schmale Spalte, iPhone, große Schrift): Titel, Text
       (wird bei Platzmangel kleiner), Button unten, xmark schließt den Tipp; auch „Erste Klasse anlegen“ über dem Leerzustand

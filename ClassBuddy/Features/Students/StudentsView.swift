@@ -377,9 +377,10 @@ private struct StudentSortBar: View {
                 }
             }
         } label: {
-            // Vorläufig SF Symbol, bis ein eigenes Icon gewählt ist.
-            Label(loc("Sortiert nach \(sort.title)"), systemImage: "arrow.up.arrow.down")
+            Label(sort.title, systemImage: "line.3.horizontal.decrease")
+                .labelStyle(.titleAndIcon)
                 .fontWeight(.semibold)
+                .accessibilityLabel(loc("Sortiert nach \(sort.title)"))
         }
         .buttonStyle(.plain)
         .foregroundStyle(.tint)

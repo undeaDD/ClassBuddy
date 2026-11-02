@@ -20,6 +20,14 @@ struct TeacherProfileView: View {
             }
 
             Section {
+                ProfilePhotoRow(photo: teacher.photo)
+            } header: {
+                Text("Foto")
+            } footer: {
+                Text("Erscheint im Sitzplan am Lehrerpult, im Privatsphäre-Modus unscharf.")
+            }
+
+            Section {
                 NavigationLink {
                     SubjectPickerView(subjects: teacher.subjects, title: loc("Hauptfächer"))
                         .hidesTabBar()
