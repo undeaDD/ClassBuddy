@@ -331,6 +331,8 @@ private struct BackupSection: View {
         do {
             let result = try Backup.import(data, context: modelContext, currentSettings: settings.values)
             settings.values = result.settings.values
+            // Ältere Backups: Bewertung je Fach in eigene Bewertung der Klasse übernehmen.
+            SubjectSettings.migrate(school: settings.values, in: modelContext)
             if let imported = result.settings.appearance { appearance = imported }
             if let imported = result.settings.accent { accent = imported }
             if let imported = result.settings.iconTheme { IconManager.shared.theme = imported }

@@ -25,6 +25,12 @@ final class SchoolSettings {
         var holidaysImportedAt: Date?
         var school = SchoolInfo()
         var teacher = TeacherProfile()
+        /// Bewertung je Stufe (Schlüssel `SchoolStage.rawValue`); fehlt eine Stufe, gilt die Vorgabe der App.
+        var recordChoices: [String: RecordChoice] = [:]
+
+        nonisolated var stageChoices: [SchoolStage: RecordChoice] {
+            Dictionary(uniqueKeysWithValues: recordChoices.compactMap { key, value in SchoolStage(rawValue: key).map { ($0, value) } })
+        }
 
         init() {}
 
@@ -45,6 +51,7 @@ final class SchoolSettings {
             holidaysImportedAt = try container.decodeIfPresent(Date.self, forKey: .holidaysImportedAt)
             school = try container.decodeIfPresent(SchoolInfo.self, forKey: .school) ?? defaults.school
             teacher = try container.decodeIfPresent(TeacherProfile.self, forKey: .teacher) ?? defaults.teacher
+            recordChoices = try container.decodeIfPresent([String: RecordChoice].self, forKey: .recordChoices) ?? [:]
         }
     }
 

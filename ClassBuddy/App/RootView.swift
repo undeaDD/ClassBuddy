@@ -106,6 +106,8 @@ struct RootView: View {
                     security.lock()
                     localSync.stop()
                 case .active:
+                    // Frühere Bewertungs-Einstellungen je Fach übernehmen (jetzt je Stufe bzw. Klasse), einmalig.
+                    SubjectSettings.migrateOnce(school: settings.values, in: modelContext)
                     // Auf gekoppelte Geräte warten, solange die App offen ist (lokaler Sync).
                     localSync.start(context: modelContext, deviceName: LocalSyncService.deviceName(teacher: settings.values.teacher))
                     Task { await security.sceneDidBecomeActive() }

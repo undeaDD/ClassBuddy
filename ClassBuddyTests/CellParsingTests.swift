@@ -100,6 +100,14 @@ struct CellParsingTests {
         #expect(Backup.Cell.parsePoints("1,2; x,3") == nil)
     }
 
+    @Test("Bewertung je Stufe: Schreiben und Lesen, Unvollständiges ungültig")
+    func recordChoice() {
+        let choice = RecordChoice(scale: .thumbs, gradeSystem: .points, hasWrittenWork: false)
+        #expect(Backup.Cell.parseRecordChoice(Backup.Cell.recordChoice(choice)) == choice)
+        #expect(Backup.Cell.parseRecordChoice("") == nil)
+        #expect(Backup.Cell.parseRecordChoice("thumbs; points") == nil)
+    }
+
     @Test("Tabelle: Zugriff per Spaltenname, leere Zeilen werden übersprungen")
     func table() {
         let table = Backup.Table([["Name", " Alter "], ["Emma", "12"], ["", ""], ["Leon"]])

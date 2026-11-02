@@ -66,6 +66,17 @@ extension Backup {
 
         static func bool(_ value: Bool) -> String { value ? "ja" : "nein" }
 
+        static func recordChoice(_ choice: RecordChoice) -> String {
+            list([choice.scale.rawValue, choice.gradeSystem.rawValue, bool(choice.hasWrittenWork)])
+        }
+
+        static func parseRecordChoice(_ text: String) -> RecordChoice? {
+            let parts = parseList(text)
+            guard parts.count == 3, let scale = ObservationScale(rawValue: parts[0]), let system = GradeSystem(rawValue: parts[1]),
+                  let written = parseBool(parts[2]) else { return nil }
+            return RecordChoice(scale: scale, gradeSystem: system, hasWrittenWork: written)
+        }
+
         static func linkKind(_ kind: DashboardLink.Kind) -> String {
             switch kind {
             case .file: "Dokument"

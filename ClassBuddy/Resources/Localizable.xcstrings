@@ -11628,6 +11628,126 @@
           }
         }
       }
+    },
+    "Skala und Noten" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scale and grades"
+          }
+        }
+      }
+    },
+    "Eigene Bewertung" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Own grading"
+          }
+        }
+      }
+    },
+    "Vorgabe wiederherstellen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore default"
+          }
+        }
+      }
+    },
+    "Vorgabe der Schule für %@: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "School default for %@: %@."
+          }
+        }
+      }
+    },
+    "Gilt nur für diese Klasse, statt der Vorgabe der Schule." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies only to this class, instead of the school default."
+          }
+        }
+      }
+    },
+    "Gilt für alle Klassen der Stufe; die Stufe ergibt sich aus der Schulform und der Klassenbezeichnung. Einzelne Klassen können in ihren Einstellungen eine eigene Bewertung haben." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applies to all classes of the stage; the stage follows from the school type and the class name. Individual classes can have their own grading in their settings."
+          }
+        }
+      }
+    },
+    "Skala und Noten gelten je Stufe; einzelne Klassen können eine eigene Bewertung haben." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scale and grades apply per stage; individual classes can have their own grading."
+          }
+        }
+      }
+    },
+    "Verlauf (letzte %lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trend (last %lld)"
+          }
+        }
+      }
+    },
+    "Verlauf der Bewertungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rating trend"
+          }
+        }
+      }
+    },
+    "Neutral" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neutral"
+          }
+        }
+      }
+    },
+    "Nr." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No."
+          }
+        }
+      }
+    },
+    "Beiträge" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contributions"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

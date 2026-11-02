@@ -71,6 +71,7 @@
 		638EE913F976A9CA04B0A285 /* ClassBuddyWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4D119C259D095F06FBFC93CB /* ClassBuddyWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		67B9ACC28CED548EDC1D5082 /* imprint.en.html in Resources */ = {isa = PBXBuildFile; fileRef = AAD0D0EDACEC968C90E954A0 /* imprint.en.html */; };
 		68D7DCDC539506352813CF13 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450ACB39C614C506C434D15 /* Room.swift */; };
+		06B42AFC0443A42268DCCADB /* RecordSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B986554456A712314F2937F /* RecordSettings.swift */; };
 		7E71C33B24FD8AB12593976C /* LocalSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = B199A4B8AFB65077A83E0942 /* LocalSync.swift */; };
 		B7CCC55D3F9398CA9CFAC147 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0748D6BB4C27E0B91FA8224 /* SyncEngine.swift */; };
 		36A349B7546B6E92D97F132E /* SyncPayloadsRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A120530CA021DD976386E /* SyncPayloadsRecords.swift */; };
@@ -270,6 +271,7 @@
 		42DD38C88C554AF092211F02 /* NotesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
 		432AD3F8D6771586F8F77F14 /* imprint.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = imprint.html; sourceTree = "<group>"; };
 		4450ACB39C614C506C434D15 /* Room.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
+		2B986554456A712314F2937F /* RecordSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordSettings.swift; sourceTree = "<group>"; };
 		B199A4B8AFB65077A83E0942 /* LocalSync.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocalSync.swift; sourceTree = "<group>"; };
 		E0748D6BB4C27E0B91FA8224 /* SyncEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		CC6A120530CA021DD976386E /* SyncPayloadsRecords.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncPayloadsRecords.swift; sourceTree = "<group>"; };
@@ -512,6 +514,7 @@
 				4A00941CE162C824F95B7E8F /* Student.swift */,
 				25255560972480F461747B91 /* SchoolClass.swift */,
 				4450ACB39C614C506C434D15 /* Room.swift */,
+				2B986554456A712314F2937F /* RecordSettings.swift */,
 				B199A4B8AFB65077A83E0942 /* LocalSync.swift */,
 				E0748D6BB4C27E0B91FA8224 /* SyncEngine.swift */,
 				CC6A120530CA021DD976386E /* SyncPayloadsRecords.swift */,
@@ -1020,6 +1023,7 @@
 				FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */,
 				9CFB32BA7C1FF3D07DAE9AD2 /* Sensitive.swift in Sources */,
 				68D7DCDC539506352813CF13 /* Room.swift in Sources */,
+				06B42AFC0443A42268DCCADB /* RecordSettings.swift in Sources */,
 				7E71C33B24FD8AB12593976C /* LocalSync.swift in Sources */,
 				B7CCC55D3F9398CA9CFAC147 /* SyncEngine.swift in Sources */,
 				36A349B7546B6E92D97F132E /* SyncPayloadsRecords.swift in Sources */,

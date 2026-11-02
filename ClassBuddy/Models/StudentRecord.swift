@@ -166,55 +166,6 @@ final class SubjectSettings {
     }
 }
 
-/// Werte der Einstellungen (gespeichert oder Vorgabe).
-nonisolated struct RecordSettings: Equatable {
-    var scale: ObservationScale
-    var gradeSystem: GradeSystem
-    var hasWrittenWork: Bool
-    var stage: SchoolStage
-
-    /// Vorgaben: Grundschule Smileys (1–2) bzw. − o +, Sek. I 7 Stufen mit Noten, Oberstufe 7 Stufen mit Punkten.
-    static func defaults(className: String, schoolType: SchoolType?) -> RecordSettings {
-        let stage = SchoolStage.detect(className: className, schoolType: schoolType)
-        switch stage {
-        case .primary:
-            let early = SchoolStage.isEarlyPrimary(className: className)
-            return RecordSettings(
-                scale: early ? .smileys : .threeStep, gradeSystem: early ? .none : .grades, hasWrittenWork: !early, stage: stage
-            )
-        case .secondary:
-            return RecordSettings(scale: .sevenStep, gradeSystem: .grades, hasWrittenWork: true, stage: stage)
-        case .upper:
-            return RecordSettings(scale: .sevenStep, gradeSystem: .points, hasWrittenWork: true, stage: stage)
-        }
-    }
-}
-
-extension SchoolClass {
-    func recordSettings(for subject: String, schoolType: SchoolType?) -> RecordSettings {
-        var values = RecordSettings.defaults(className: shortName, schoolType: schoolType)
-        if let stored = subjectSettings.first(where: { $0.subject == subject }) {
-            values.scale = stored.scale
-            values.gradeSystem = stored.gradeSystem
-            values.hasWrittenWork = stored.hasWrittenWork
-        }
-        return values
-    }
-
-    func setRecordSettings(_ values: RecordSettings, for subject: String, in context: ModelContext) {
-        if let stored = subjectSettings.first(where: { $0.subject == subject }) {
-            stored.scale = values.scale
-            stored.gradeSystem = values.gradeSystem
-            stored.hasWrittenWork = values.hasWrittenWork
-        } else {
-            context.insert(SubjectSettings(
-                subject: subject, scale: values.scale, gradeSystem: values.gradeSystem,
-                hasWrittenWork: values.hasWrittenWork, schoolClass: self
-            ))
-        }
-    }
-}
-
 // MARK: - Beobachtungen
 
 /// Eine Beobachtung im Unterricht: Bewertung auf der Skala, ein Ereignis (HA / Material fehlt) oder nur eine Notiz.

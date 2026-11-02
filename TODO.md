@@ -94,6 +94,14 @@ Geräte-Bilder: `WEB=1 scripts/appstore-images.sh` → `site/screenshots/`. Work
       Gerät „Jetzt synchronisieren“; Fotos, Tafelbilder, Dokument-Kacheln kommen mit; Kopplung entfernen
 - [ ] „Export & Import“ liegt jetzt unter Daten & Sync (App-Einstellungen ohne), funktioniert wie vorher
 
+- [ ] Bewertung: Schuleinstellungen › Bewertungen › „Skala und Noten“ je Stufe der Schulform (Vorgabe wiederherstellen);
+      Klasse bearbeiten › „Eigene Bewertung“; Schülerakte-Menü ohne „Bewertung einstellen“, ohne Skala-Fußzeile.
+      Nach dem Update: Klassen mit anderer genutzter Skala haben sie als eigene Bewertung (Testerdaten!); auch nach Import
+- [ ] Neue Beobachtung: „Weitere anlegen“ (Notiz wird geleert, Art/Wert/Datum bleiben) und „Zuletzt angelegt“
+- [ ] Verlauf: Schüler › Fächer zeigen kleinen Verlauf der letzten 20 Bewertungen, Fach-Seite großen Verlauf über den
+      Kacheln; alle Skalen (7 Stufen, − o +, Daumen, Smileys auf einer Achse), „+1“ als Balken je Tag; unscharf im
+      Privatsphäre-Modus
+
 ## Später
 
 - [ ] Fehlzeiten-Merkliste: offen → entschuldigt / unentschuldigt, offene Fehlzeiten bleiben in den folgenden Stunden sichtbar,

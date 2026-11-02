@@ -155,9 +155,16 @@ struct StudentSubjectsView: View {
                         StudentRecordView(student: student, subject: subject)
                             .hidesTabBar()
                     } label: {
-                        LabeledContent(SchoolClass.displayName(ofSubject: subject)) {
-                            Text(StudentRecordFormat.count(student.observations(in: subject).count))
+                        let observations = student.observations(in: subject)
+                        VStack(alignment: .leading, spacing: 6) {
+                            LabeledContent(SchoolClass.displayName(ofSubject: subject)) {
+                                Text(StudentRecordFormat.count(observations.count))
+                            }
+                            // Kleiner Verlauf der letzten Bewertungen (leer ohne mindestens zwei).
+                            ObservationTrendChart(observations: observations, isCompact: true)
+                                .frame(height: observations.contains { $0.kind == .rating } ? 40 : 0)
                         }
+                        .padding(.vertical, 4)
                     }
                 }
             }

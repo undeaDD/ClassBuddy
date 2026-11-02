@@ -16,6 +16,8 @@ struct ClassEditorView: View {
     @State private var subjects: [String]
     @State private var schoolYear: String
     @State private var level: ClassLevel?
+    /// Eigene Bewertung dieser Klasse; `nil` = Vorgabe der Schule für die Stufe.
+    @State private var recordOverride: RecordChoice?
     /// Name einer `ClassColor` oder eigene Farbe als „#RRGGBB“.
     @State private var colorRaw: String
     /// Zuletzt gewählte eigene Farbe (letztes Farbfeld).
@@ -30,6 +32,14 @@ struct ClassEditorView: View {
         _schoolYear = State(initialValue: schoolClass?.schoolYear ?? SchoolClass.currentSchoolYear)
         _colorRaw = State(initialValue: schoolClass?.colorRaw ?? ClassColor.blue.rawValue)
         _level = State(initialValue: schoolClass?.level)
+        _recordOverride = State(initialValue: schoolClass?.recordOverride)
+    }
+
+    /// Vorgabe der Schule für die Stufe dieser Klasse (ergibt sich aus dem Kürzel).
+    private var schoolDefault: RecordSettings {
+        RecordSettings.defaults(
+            className: shortName, schoolType: settings.values.schoolType, stageChoices: settings.values.stageChoices
+        )
     }
 
     /// Tab-Reihenfolge mit externer Tastatur (`tabOrder`).
@@ -94,6 +104,8 @@ struct ClassEditorView: View {
                 } footer: {
                     Text("Zum Entfernen nach links wischen.")
                 }
+
+                recordSection
 
                 Section("Farbe") {
                     // Bricht auf schmalen Bildschirmen in mehrere Zeilen um.
@@ -163,6 +175,39 @@ struct ClassEditorView: View {
         .accessibilityAddTraits(isCustomColor ? .isSelected : [])
     }
 
+    private var recordSection: some View {
+        Section {
+            Toggle(isOn: Binding(
+                get: { recordOverride != nil },
+                set: { recordOverride = $0 ? schoolDefault.choice : nil }
+            )) {
+                Label("Eigene Bewertung", icon: .settings)
+            }
+            if recordOverride != nil {
+                NavigationLink {
+                    Form {
+                        RecordChoiceSections(choice: Binding(
+                            get: { recordOverride ?? schoolDefault.choice },
+                            set: { recordOverride = $0 }
+                        ))
+                    }
+                    .navigationTitle("Bewertung")
+                } label: {
+                    LabeledContent("Skala und Noten") {
+                        Text((recordOverride ?? schoolDefault.choice).scale.title)
+                            .lineLimit(1)
+                    }
+                }
+            }
+        } header: {
+            Text("Bewertung")
+        } footer: {
+            Text(recordOverride == nil
+                ? loc("Vorgabe der Schule für \(schoolDefault.stage.title): \(schoolDefault.scale.title).")
+                : loc("Gilt nur für diese Klasse, statt der Vorgabe der Schule."))
+        }
+    }
+
     private func save() {
         let target = schoolClass ?? {
             let newClass = SchoolClass(shortName: "")
@@ -174,6 +219,7 @@ struct ClassEditorView: View {
         target.schoolYear = schoolYear.trimmingCharacters(in: .whitespaces)
         target.colorRaw = colorRaw
         target.level = level
+        target.setRecordOverride(recordOverride, in: modelContext)
         target.removeBoardPhotosOfRemovedSubjects(in: modelContext)
         target.removeChecklistsOfRemovedSubjects(in: modelContext)
         try? modelContext.save()

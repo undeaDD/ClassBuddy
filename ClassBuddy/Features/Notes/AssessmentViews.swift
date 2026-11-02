@@ -58,7 +58,7 @@ struct AssessmentListView: View {
     }
 
     private func system(for subject: String) -> GradeSystem {
-        schoolClass.recordSettings(for: subject, schoolType: schoolSettings.values.schoolType).gradeSystem
+        schoolClass.recordSettings(school: schoolSettings.values).gradeSystem
     }
 }
 
@@ -99,7 +99,7 @@ struct AssessmentDetailView: View {
     @State private var editorRoute: AssessmentEditorRoute?
 
     private var system: GradeSystem {
-        assessment.schoolClass?.recordSettings(for: assessment.subject, schoolType: schoolSettings.values.schoolType).gradeSystem ?? .grades
+        assessment.schoolClass?.recordSettings(school: schoolSettings.values).gradeSystem ?? .grades
     }
 
     private var students: [Student] { assessment.schoolClass?.sortedStudents ?? [] }

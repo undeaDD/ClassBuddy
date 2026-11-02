@@ -121,6 +121,12 @@ struct SchoolSettingsView: View {
 
             Section {
                 NavigationLink {
+                    SchoolRecordSettingsView()
+                        .hidesTabBar()
+                } label: {
+                    Label("Skala und Noten", icon: .settings)
+                }
+                NavigationLink {
                     AssessmentTypesView()
                         .hidesTabBar()
                 } label: {
@@ -129,7 +135,7 @@ struct SchoolSettingsView: View {
             } header: {
                 Text("Bewertungen")
             } footer: {
-                Text("Skala und Notensystem stellen Sie je Klasse und Fach in der Schülerakte ein.")
+                Text("Skala und Noten gelten je Stufe; einzelne Klassen können eine eigene Bewertung haben.")
             }
 
             Section("Kalender") {

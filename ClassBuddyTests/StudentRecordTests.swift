@@ -38,17 +38,57 @@ struct StudentRecordTests {
         #expect(RecordSettings.defaults(className: "Q2", schoolType: nil).gradeSystem == .points)
     }
 
-    @Test("Einstellungen je Klasse + Fach überschreiben die Vorgaben")
-    func settingsPerSubject() throws {
+    @Test("Bewertung: Vorgabe der Stufe, Wahl der Schule je Stufe, eigene Bewertung der Klasse")
+    func settingsPerStageAndClass() throws {
         let context = try Self.context()
         let schoolClass = SchoolClass(shortName: "7b", subjects: ["Mathematik", "Deutsch"])
+        let upperClass = SchoolClass(shortName: "Q1")
         context.insert(schoolClass)
-        var values = schoolClass.recordSettings(for: "Mathematik", schoolType: nil)
-        values.scale = .threeStep
-        schoolClass.setRecordSettings(values, for: "Mathematik", in: context)
+        context.insert(upperClass)
+        var school = SchoolSettings.Values()
+        school.schoolType = .grammar
+        #expect(schoolClass.recordSettings(school: school).scale == .sevenStep)
+        #expect(upperClass.recordSettings(school: school).gradeSystem == .points)
+
+        // Schule: Sek. I mit Daumen, Oberstufe bleibt bei der Vorgabe.
+        school.recordChoices[SchoolStage.secondary.rawValue] = RecordChoice(scale: .thumbs, gradeSystem: .grades, hasWrittenWork: true)
+        #expect(schoolClass.recordSettings(school: school).scale == .thumbs)
+        #expect(upperClass.recordSettings(school: school).scale == .sevenStep)
+
+        // Klasse: eigene Bewertung, entfernen führt zurück zur Vorgabe der Schule.
+        schoolClass.setRecordOverride(RecordChoice(scale: .counter, gradeSystem: .none, hasWrittenWork: false), in: context)
         try context.save()
-        #expect(schoolClass.recordSettings(for: "Mathematik", schoolType: nil).scale == .threeStep)
-        #expect(schoolClass.recordSettings(for: "Deutsch", schoolType: nil).scale == .sevenStep)
+        #expect(schoolClass.recordSettings(school: school).scale == .counter)
+        schoolClass.setRecordOverride(nil, in: context)
+        try context.save()
+        #expect(schoolClass.recordSettings(school: school).scale == .thumbs)
+        #expect(SchoolStage.stages(of: .grammar) == [.secondary, .upper])
+    }
+
+    @Test("Übernahme: genutzte Skala wird eigene Bewertung der Klasse, alte Einstellungen je Fach verschwinden")
+    func migrateUsedScale() throws {
+        let context = try Self.context()
+        var school = SchoolSettings.Values()
+        school.schoolType = .grammar
+        let thumbsClass = SchoolClass(shortName: "7b", subjects: ["Mathematik"])
+        let defaultClass = SchoolClass(shortName: "8a", subjects: ["Deutsch"])
+        context.insert(thumbsClass)
+        context.insert(defaultClass)
+        let emma = Student(firstName: "Emma", lastName: "S", schoolClass: thumbsClass)
+        let ben = Student(firstName: "Ben", lastName: "A", schoolClass: defaultClass)
+        context.insert(emma)
+        context.insert(ben)
+        context.insert(StudentObservation(subject: "Mathematik", kind: .rating, scale: .thumbs, value: 1, student: emma))
+        context.insert(StudentObservation(subject: "Deutsch", kind: .rating, scale: .sevenStep, value: 2, student: ben))
+        context.insert(SubjectSettings(
+            subject: "Mathematik", scale: .thumbs, gradeSystem: .points, hasWrittenWork: false, schoolClass: thumbsClass
+        ))
+        try context.save()
+
+        SubjectSettings.migrate(school: school, in: context)
+        #expect(thumbsClass.recordOverride == RecordChoice(scale: .thumbs, gradeSystem: .points, hasWrittenWork: false))
+        #expect(defaultClass.recordOverride == nil)
+        #expect(thumbsClass.subjectSettings.allSatisfy { $0.subject.isEmpty })
     }
 
     @Test("Skalen: Beschriftung und Ton")
@@ -121,9 +161,7 @@ struct StudentRecordTests {
             subject: "Mathematik", slotIndex: 2, kind: .rating, scale: .sevenStep, value: 2, student: student
         ))
         context.insert(Absence(subject: "Mathematik", day: .now, slotIndex: 2, kind: .late, arrivedAt: .now, student: student))
-        var values = schoolClass.recordSettings(for: "Mathematik", schoolType: nil)
-        values.scale = .counter
-        schoolClass.setRecordSettings(values, for: "Mathematik", in: context)
+        schoolClass.setRecordOverride(RecordChoice(scale: .counter, gradeSystem: .grades, hasWrittenWork: true), in: context)
         try context.save()
 
         let data = try Backup.export(
@@ -136,6 +174,6 @@ struct StudentRecordTests {
         #expect(imported.observations.first?.label == "+ +")
         #expect(imported.observations.first?.slotIndex == 2)
         #expect(imported.absences.first?.kind == .late)
-        #expect(imported.schoolClass?.recordSettings(for: "Mathematik", schoolType: nil).scale == .counter)
+        #expect(imported.schoolClass?.recordSettings(school: SchoolSettings.Values()).scale == .counter)
     }
 }

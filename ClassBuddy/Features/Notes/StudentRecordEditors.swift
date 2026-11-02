@@ -28,6 +28,9 @@ struct ObservationEditorView: View {
     @State private var date = Date.now
     @State private var slotIndex = -1
     @State private var note = ""
+    /// Nach dem Anlegen offen bleiben (geleert) für die nächste Beobachtung.
+    @State private var keepOpen = false
+    @State private var lastCreated: String?
 
     private var isNew: Bool {
         if case .new = route { return true }
@@ -86,6 +89,9 @@ struct ObservationEditorView: View {
                         .lineLimit(2...6)
                         .sensitive()
                 }
+                if isNew {
+                    KeepOpenSection(keepOpen: $keepOpen, lastCreated: lastCreated)
+                }
             }
             .navigationTitle(isNew ? "Neue Beobachtung" : "Beobachtung bearbeiten")
             .navigationBarTitleDisplayMode(.inline)
@@ -105,10 +111,16 @@ struct ObservationEditorView: View {
         .onAppear(perform: load)
     }
 
+    /// „+ + · 03.11., 10:15“ (Bewertung bzw. Art und wann).
+    private static func summary(of observation: StudentObservation) -> String {
+        "\(observation.label) · \(observation.date.appFormatted(.dateTime.day().month().hour().minute()))"
+    }
+
     private func load() {
         switch route {
-        case .new:
+        case .new(let student, let subject):
             value = activeScale.options.first { $0.value == 0 }?.value ?? activeScale.options.last?.value ?? 0
+            lastCreated = student.observations(in: subject).max { $0.createdAt < $1.createdAt }.map(Self.summary)
         case .edit(let observation):
             kind = observation.kind
             value = observation.value
@@ -122,16 +134,25 @@ struct ObservationEditorView: View {
         let cleanNote = note.trimmingCharacters(in: .whitespacesAndNewlines)
         switch route {
         case .new(let student, let subject):
-            modelContext.insert(StudentObservation(
+            let observation = StudentObservation(
                 subject: subject, date: date, slotIndex: slotIndex, kind: kind, scale: activeScale, value: value, note: cleanNote,
                 student: student
-            ))
+            )
+            modelContext.insert(observation)
             FunStat.observations.increment()
+            try? modelContext.save()
+            if keepOpen {
+                // Gesichert: Notiz leeren, Art, Wert, Datum und Stunde für die nächste behalten.
+                lastCreated = Self.summary(of: observation)
+                note = ""
+                Haptics.notify(.success)
+                return
+            }
         case .edit(let observation):
             observation.update(kind: kind, scale: activeScale, value: value, note: cleanNote, date: date)
             observation.slotIndex = slotIndex
+            try? modelContext.save()
         }
-        try? modelContext.save()
         dismiss()
     }
 }
@@ -242,66 +263,86 @@ struct AbsenceEditorView: View {
     }
 }
 
-/// Bewertung einer Klasse in einem Fach: Skala für Beobachtungen, Notensystem, schriftliche Arbeiten.
-struct RecordSettingsView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Environment(SchoolSettings.self) private var schoolSettings
-    let schoolClass: SchoolClass
-    let subject: String
-
-    @State private var values = RecordSettings(scale: .sevenStep, gradeSystem: .grades, hasWrittenWork: true, stage: .secondary)
+/// Skala für Beobachtungen, Notensystem und schriftliche Arbeiten (Schuleinstellungen je Stufe, eigene Bewertung einer Klasse).
+struct RecordChoiceSections: View {
+    @Binding var choice: RecordChoice
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Picker("Skala", selection: $values.scale) {
-                        ForEach(ObservationScale.allCases) { Text($0.title).tag($0) }
-                    }
-                    .pickerStyle(.inline)
-                    .labelsHidden()
-                } header: {
-                    Text("Beobachtungen im Unterricht")
-                } footer: {
-                    Text("Bisherige Beobachtungen behalten ihre Skala.")
-                }
-                Section {
-                    Picker(selection: $values.gradeSystem) {
-                        ForEach(GradeSystem.allCases) { Text($0.title).tag($0) }
-                    } label: {
-                        Label("Notensystem", icon: .graduationCap)
-                    }
-                    Toggle(isOn: $values.hasWrittenWork) {
-                        Label("Schriftliche Arbeiten", icon: .page)
-                    }
-                } header: {
-                    Text("Noten")
-                } footer: {
-                    Text(loc("""
-                        Vorgaben für \(values.stage.title) (aus „\(schoolClass.shortName)“ und der Schulform in den Schuleinstellungen). \
-                        Gilt nur für \(schoolClass.title) in \(SchoolClass.displayName(ofSubject: subject)).
-                        """))
-                }
+        Section {
+            Picker("Skala", selection: $choice.scale) {
+                ForEach(ObservationScale.allCases) { Text($0.title).tag($0) }
             }
-            .navigationTitle("Bewertung")
-            .appNavigationSubtitle(SchoolClass.displayName(ofSubject: subject))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    CancelButton()
-                        .toolbarGroupBackground()
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    ConfirmButton(title: loc("Sichern")) {
-                        schoolClass.setRecordSettings(values, for: subject, in: modelContext)
-                        try? modelContext.save()
-                        dismiss()
+            .pickerStyle(.inline)
+            .labelsHidden()
+        } header: {
+            Text("Beobachtungen im Unterricht")
+        } footer: {
+            Text("Bisherige Beobachtungen behalten ihre Skala.")
+        }
+        Section("Noten") {
+            Picker(selection: $choice.gradeSystem) {
+                ForEach(GradeSystem.allCases) { Text($0.title).tag($0) }
+            } label: {
+                Label("Notensystem", icon: .graduationCap)
+            }
+            Toggle(isOn: $choice.hasWrittenWork) {
+                Label("Schriftliche Arbeiten", icon: .page)
+            }
+        }
+    }
+}
+
+/// Schuleinstellungen › Bewertung: je Stufe der Schulform Skala und Noten (Vorgabe der App oder eigene Wahl).
+struct SchoolRecordSettingsView: View {
+    @Environment(SchoolSettings.self) private var settings
+
+    var body: some View {
+        Form {
+            Section {
+                ForEach(SchoolStage.stages(of: settings.values.schoolType), id: \.self) { stage in
+                    NavigationLink {
+                        StageRecordSettingsView(stage: stage)
+                            .hidesTabBar()
+                    } label: {
+                        LabeledContent {
+                            Text(choice(for: stage).scale.title)
+                                .lineLimit(1)
+                        } label: {
+                            Label(stage.title, icon: .settings)
+                        }
                     }
-                        .toolbarGroupBackground(prominent: true)
+                }
+            } footer: {
+                Text(loc("""
+                    Gilt für alle Klassen der Stufe; die Stufe ergibt sich aus der Schulform und der Klassenbezeichnung. \
+                    Einzelne Klassen können in ihren Einstellungen eine eigene Bewertung haben.
+                    """))
+            }
+        }
+        .navigationTitle("Bewertung")
+    }
+
+    private func choice(for stage: SchoolStage) -> RecordChoice {
+        settings.values.stageChoices[stage] ?? stage.builtInChoice
+    }
+}
+
+private struct StageRecordSettingsView: View {
+    @Environment(SchoolSettings.self) private var settings
+    let stage: SchoolStage
+
+    var body: some View {
+        Form {
+            RecordChoiceSections(choice: Binding(
+                get: { settings.values.stageChoices[stage] ?? stage.builtInChoice },
+                set: { settings.values.recordChoices[stage.rawValue] = $0 == stage.builtInChoice ? nil : $0 }
+            ))
+            if settings.values.recordChoices[stage.rawValue] != nil {
+                Section {
+                    Button("Vorgabe wiederherstellen") { settings.values.recordChoices[stage.rawValue] = nil }
                 }
             }
         }
-        .onAppear { values = schoolClass.recordSettings(for: subject, schoolType: schoolSettings.values.schoolType) }
+        .navigationTitle(stage.title)
     }
 }

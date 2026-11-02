@@ -43,7 +43,7 @@ struct AssessmentEditorView: View {
     }
 
     private var hasWrittenWork: Bool {
-        schoolClass?.recordSettings(for: subject, schoolType: schoolSettings.values.schoolType).hasWrittenWork ?? true
+        schoolClass?.recordSettings(school: schoolSettings.values).hasWrittenWork ?? true
     }
 
     private var types: [AssessmentType] { schoolSettings.values.selectableTypes(hasWrittenWork: hasWrittenWork) }

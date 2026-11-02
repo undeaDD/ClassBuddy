@@ -268,6 +268,10 @@ enum Backup {
             XLSXSheet(name: Sheet.app, rows: [
                 ["Schlüssel", "Wert"],
                 ["Schulform", settings.schoolType?.rawValue ?? ""],
+            ] + SchoolStage.allCases.map { stage in
+                // „Bewertung secondary“ = „Skala; Notensystem; schriftlich ja/nein“ (leer = Vorgabe der App).
+                ["Bewertung \(stage.rawValue)", settings.stageChoices[stage].map(Cell.recordChoice) ?? ""]
+            } + [
                 ["Bereich schriftlich", settings.areaNames[AssessmentArea.written.rawValue] ?? ""],
                 ["Bereich sonstige", settings.areaNames[AssessmentArea.other.rawValue] ?? ""],
                 ["Erscheinungsbild", appearance.title],

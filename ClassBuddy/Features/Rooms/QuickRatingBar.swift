@@ -19,7 +19,7 @@ struct QuickRatingBar: View {
     @State private var noteText = ""
 
     private var settings: RecordSettings {
-        student.schoolClass?.recordSettings(for: lesson.subject, schoolType: schoolSettings.values.schoolType)
+        student.schoolClass?.recordSettings(school: schoolSettings.values)
             ?? RecordSettings.defaults(className: "", schoolType: nil)
     }
 

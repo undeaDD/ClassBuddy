@@ -450,6 +450,9 @@ extension Backup {
         }
         if let type = app.flatMap({ SchoolType(rawValue: $0["Schulform"]) }) { values.schoolType = type }
         if let app {
+            values.recordChoices = Dictionary(uniqueKeysWithValues: SchoolStage.allCases.compactMap { stage in
+                Cell.parseRecordChoice(app["Bewertung \(stage.rawValue)"]).map { (stage.rawValue, $0) }
+            })
             values.areaNames = [
                 AssessmentArea.written.rawValue: app["Bereich schriftlich"], AssessmentArea.other.rawValue: app["Bereich sonstige"],
             ].filter { !$0.value.isEmpty }

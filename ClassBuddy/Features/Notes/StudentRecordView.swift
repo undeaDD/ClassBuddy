@@ -1,3 +1,4 @@
+import Charts
 import QuickLook
 import SwiftData
 import SwiftUI
@@ -28,11 +29,10 @@ struct StudentRecordView: View {
     @State private var segment: Segment = .oral
     @State private var observationRoute: ObservationEditorRoute?
     @State private var absenceRoute: AbsenceEditorRoute?
-    @State private var isSettingsPresented = false
     @State private var pdfPreview: URL?
 
     private var settings: RecordSettings {
-        student.schoolClass?.recordSettings(for: subject, schoolType: schoolSettings.values.schoolType)
+        student.schoolClass?.recordSettings(school: schoolSettings.values)
             ?? RecordSettings.defaults(className: "", schoolType: nil)
     }
 
@@ -76,18 +76,12 @@ struct StudentRecordView: View {
         .sheet(item: $absenceRoute) { route in
             AbsenceEditorView(route: route, slots: schoolSettings.slots)
         }
-        .sheet(isPresented: $isSettingsPresented) {
-            if let schoolClass = student.schoolClass {
-                RecordSettingsView(schoolClass: schoolClass, subject: subject)
-            }
-        }
         .quickLookPreview($pdfPreview)
         .onChange(of: security.isPrivacyModeOn) { _, isOn in
             if isOn {
                 pdfPreview = nil
                 observationRoute = nil
                 absenceRoute = nil
-                isSettingsPresented = false
             }
         }
     }
@@ -101,7 +95,6 @@ struct StudentRecordView: View {
                 Divider()
                 // Vorschau (Quick Look): dort sichern, drucken oder teilen.
                 Button("Als PDF exportieren", icon: .page) { pdfPreview = StudentRecordPDF.make(student: student, subject: subject) }
-                Button("Bewertung einstellen", icon: .settings) { isSettingsPresented = true }
             } label: {
                 Label("Hinzufügen", icon: .plus)
             }
@@ -120,6 +113,15 @@ struct StudentRecordView: View {
     @ViewBuilder
     private var oralSections: some View {
         let ratings = observations.filter { $0.kind == .rating }
+        if ratings.count >= 2 || ratings.contains(where: { $0.scale == .counter }) {
+            Section {
+                ObservationTrendChart(observations: observations)
+                    .frame(height: 130)
+                    .padding(.vertical, 6)
+            } header: {
+                Text(loc("Verlauf (letzte \(ObservationTrendChart.limit))"))
+            }
+        }
         Section {
             HStack(spacing: 8) {
                 metric(loc("Beobachtungen"), value: "\(observations.count)")
@@ -128,8 +130,6 @@ struct StudentRecordView: View {
             }
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
-        } footer: {
-            Text(loc("Skala: \(settings.scale.title)"))
         }
         if observations.isEmpty {
             Section {
@@ -374,5 +374,114 @@ struct ScaleOptionLabel: View {
                 Text(option.label)
             }
         }
+    }
+}
+
+// MARK: - Verlauf
+
+extension StudentObservation {
+    /// Bewertung auf einer gemeinsamen Achse von −1 (negativ) bis +1 (positiv), unabhängig von der Skala;
+    /// `nil` für Ereignisse, Notizen und gezählte Beiträge („+1“ hat keine Richtung).
+    var trendValue: Double? {
+        guard kind == .rating else { return nil }
+        switch scale {
+        case .sevenStep: return Double(value) / 3
+        case .threeStep, .thumbs, .smileys: return Double(max(-1, min(1, value)))
+        case .counter: return nil
+        }
+    }
+}
+
+/// Verlauf der letzten Bewertungen (älteste links). Mit gezählten Beiträgen („+1“): Beiträge je Tag als Balken.
+/// Ohne Bewertungen nichts. Im Privatsphäre-Modus unscharf.
+struct ObservationTrendChart: View {
+    let observations: [StudentObservation]
+    /// Klein in der Fächerliste, ohne Achsen.
+    var isCompact = false
+
+    static let limit = 20
+
+    private struct Point: Identifiable {
+        let id: Int
+        let value: Double
+
+        var color: Color { value > 0 ? .green : value < 0 ? .red : .gray }
+    }
+
+    private struct DayCount: Identifiable {
+        let id: Date
+        let count: Int
+    }
+
+    private var points: [Point] {
+        let ratings = observations.compactMap { observation in observation.trendValue.map { (observation.date, $0) } }
+            .sorted { $0.0 < $1.0 }
+            .suffix(Self.limit)
+        return ratings.enumerated().map { Point(id: $0.offset, value: $0.element.1) }
+    }
+
+    /// Beiträge je Tag (nur Skala „+1“), die letzten Tage mit Beiträgen.
+    private var counts: [DayCount] {
+        let counted = observations.filter { $0.kind == .rating && $0.scale == .counter }
+        let byDay = Dictionary(grouping: counted) { Calendar.current.startOfDay(for: $0.date) }
+        return byDay.map { DayCount(id: $0.key, count: $0.value.count) }.sorted { $0.id < $1.id }.suffix(Self.limit / 2)
+    }
+
+    var body: some View {
+        let points = points
+        Group {
+            if points.count >= 2 {
+                trend(points)
+            } else if points.isEmpty, !counts.isEmpty {
+                contributions
+            }
+        }
+        .sensitiveBlur(radius: 8)
+        .accessibilityElement()
+        .accessibilityLabel(loc("Verlauf der Bewertungen"))
+    }
+
+    private func trend(_ points: [Point]) -> some View {
+        Chart {
+            RuleMark(y: .value("Neutral", 0))
+                .foregroundStyle(.secondary.opacity(0.4))
+                .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
+            ForEach(points) { point in
+                LineMark(x: .value("Nr.", point.id), y: .value("Bewertung", point.value))
+                    .interpolationMethod(.monotone)
+                    .foregroundStyle(.tint)
+                PointMark(x: .value("Nr.", point.id), y: .value("Bewertung", point.value))
+                    .symbolSize(isCompact ? 14 : 30)
+                    .foregroundStyle(point.color)
+            }
+        }
+        .chartYScale(domain: -1.15...1.15)
+        .chartXScale(domain: -0.4...(Double(points.count - 1) + 0.4))
+        .chartXAxis(.hidden)
+        .chartYAxis { yAxis }
+    }
+
+    @AxisContentBuilder
+    private var yAxis: some AxisContent {
+        if !isCompact {
+            AxisMarks(values: [-1.0, 0.0, 1.0]) { value in
+                AxisGridLine()
+                AxisValueLabel { Text(Self.axisLabel(value.as(Double.self) ?? 0)) }
+            }
+        }
+    }
+
+    private static func axisLabel(_ value: Double) -> String {
+        value > 0 ? "+" : value < 0 ? "−" : "o"
+    }
+
+    private var contributions: some View {
+        Chart(counts) { item in
+            BarMark(x: .value("Tag", item.id, unit: .day), y: .value("Beiträge", item.count))
+                .foregroundStyle(.green.gradient)
+                .cornerRadius(3)
+        }
+        .chartXAxis(isCompact ? .hidden : .automatic)
+        .chartYAxis(isCompact ? .hidden : .automatic)
     }
 }
