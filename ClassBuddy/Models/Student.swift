@@ -6,6 +6,7 @@ import UIKit
 @Model
 final class Student {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var firstName: String
     var lastName: String
     var birthday: Date?

@@ -16,6 +16,7 @@ struct ClassBuddyApp: App {
 
     init() {
         AppTips.configure()
+        SyncTracking.start()
     }
 
     var body: some Scene {
@@ -39,12 +40,12 @@ struct ClassBuddyApp: App {
                     HomeScreenAction.register()
                 }
         }
-        // Rein lokale Speicherung, kein iCloud-Sync.
+        // Lokale Speicherung; `lastModified` und `DeletedRecord` bereiten den Abgleich zwischen Geräten vor (`SyncTracking`).
         .modelContainer(for: [
             SchoolClass.self, Student.self, Lesson.self, CalendarEntry.self, Holiday.self, DashboardLink.self,
             Room.self, RoomElement.self, SeatAssignment.self, BoardPhoto.self,
             Checklist.self, ChecklistCheck.self, SubjectSettings.self, StudentObservation.self, Absence.self,
-            Assessment.self, AssessmentResult.self, PeriodGrade.self,
+            Assessment.self, AssessmentResult.self, PeriodGrade.self, DeletedRecord.self,
         ])
     }
 }

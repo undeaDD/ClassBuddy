@@ -136,6 +136,7 @@ nonisolated enum GradeSystem: String, Codable, CaseIterable, Identifiable {
 @Model
 final class SubjectSettings {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var subject: String
     var scaleRaw: String
     var gradeSystemRaw: String
@@ -235,6 +236,7 @@ final class StudentObservation {
     }
 
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var subject: String
     var date: Date
     /// Stunde im Raster (-1 = ohne Stunde).
@@ -321,6 +323,7 @@ final class Absence {
     }
 
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var subject: String
     /// Tagesbeginn.
     var day: Date

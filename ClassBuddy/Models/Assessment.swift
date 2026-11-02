@@ -135,6 +135,7 @@ nonisolated enum GradingKey {
 @Model
 final class Assessment {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var subject: String
     var title: String
     /// Name der Leistungsart zum Zeitpunkt des Anlegens (bleibt erhalten, wenn die Art umbenannt wird).
@@ -192,6 +193,7 @@ final class Assessment {
 @Model
 final class AssessmentResult {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var grade: String
     var rawPoints: Double?
     var isMissing: Bool
@@ -260,6 +262,7 @@ nonisolated enum GradeScope: String, Codable, CaseIterable, Identifiable {
 @Model
 final class PeriodGrade {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var subject: String
     var schoolYear: String
     var periodRaw: String

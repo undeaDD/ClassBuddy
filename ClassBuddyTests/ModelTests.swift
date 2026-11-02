@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 import Testing
 @testable import ClassBuddy
 
@@ -24,6 +25,50 @@ struct ModelTests {
     ])
     func sectionLetter(firstName: String, expected: String) {
         #expect(Student(firstName: firstName, lastName: "").sectionLetter == expected)
+    }
+
+    @Test("Sortierung der Schülerliste: Nachname, Geschlecht, Geburtstag")
+    func studentSorting() {
+        let calendar = Calendar(identifier: .gregorian)
+        let emma = Student(firstName: "Emma", lastName: "Zander",
+                           birthday: calendar.date(from: DateComponents(year: 2014, month: 3, day: 9)), gender: .female)
+        let ben = Student(firstName: "Ben", lastName: "Adler",
+                          birthday: calendar.date(from: DateComponents(year: 2013, month: 3, day: 2)), gender: .male)
+        let lea = Student(firstName: "Lea", lastName: "Adler")
+        let students = [emma, ben, lea]
+        let byLastName = StudentSort.lastName.sections(for: students)
+        #expect(byLastName.map(\.title) == ["A", "Z"])
+        #expect(byLastName[0].students.map(\.firstName) == ["Ben", "Lea"])
+        #expect(StudentSort.gender.sections(for: students).map(\.title) == ["Weiblich", "Männlich", "Ohne Angabe"])
+        let byBirthday = StudentSort.birthday.sections(for: students)
+        #expect(byBirthday.map(\.title) == ["März", "Ohne Geburtstag"])
+        #expect(byBirthday[0].students.map(\.firstName) == ["Ben", "Emma"])
+    }
+
+    // MARK: Sync-Grundlage
+
+    @Test("Sichern stempelt lastModified, Löschen hinterlässt einen DeletedRecord")
+    @MainActor
+    func syncTracking() throws {
+        SyncTracking.start()
+        let container = try ModelContainer(
+            for: SchoolClass.self, Student.self, DeletedRecord.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = container.mainContext
+        let student = Student(firstName: "Emma", lastName: "Schneider")
+        context.insert(student)
+        #expect(student.lastModified == .distantPast)
+        let before = Date.now
+        try context.save()
+        #expect(student.lastModified >= before)
+
+        let id = student.id.uuidString
+        context.delete(student)
+        try context.save()
+        let deleted = try context.fetch(FetchDescriptor<DeletedRecord>())
+        #expect(deleted.map(\.recordType) == ["Student"])
+        #expect(deleted.map(\.recordID) == [id])
     }
 
     @Test("Alter aus dem Geburtstag")

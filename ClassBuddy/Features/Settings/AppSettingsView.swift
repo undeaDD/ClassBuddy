@@ -396,6 +396,9 @@ enum LocalDataStore {
             DashboardLink.self, CalendarEntry.self, Holiday.self, SchoolClass.self, RoomElement.self, Room.self
         )
         try context.save()
+        // „Lokal“ löschen: keine Löschungen für andere Geräte hinterlassen (`SyncTracking` legt sie beim Sichern an).
+        try context.deleteEach(DeletedRecord.self)
+        try context.save()
         try? FileManager.default.removeItem(at: LinkFileStore.directory)
         FaviconStore.removeAll()
     }

@@ -7,6 +7,7 @@ import SwiftUI
 @Model
 final class SchoolClass {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     /// Kurzbezeichnung im Kreis, z. B. „7b“ oder „Q1“.
     var shortName: String
     /// Fächer, die du in dieser Klasse unterrichtest (Reihenfolge = Anzeige).

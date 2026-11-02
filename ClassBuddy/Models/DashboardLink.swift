@@ -19,6 +19,7 @@ final class DashboardLink {
     }
 
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var title: String
     var kindRaw: String
     /// Website: absolute URL. Dokument: Pfad relativ zu `LinkFileStore.directory`.

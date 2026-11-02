@@ -9,6 +9,7 @@ import UniformTypeIdentifiers
 @Model
 final class BoardPhoto {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var subject: String
     var takenAt: Date
     @Attribute(.externalStorage) var imageData: Data

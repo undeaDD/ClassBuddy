@@ -6,6 +6,7 @@ import SwiftData
 @Model
 final class Room {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     /// Kurzname, z. B. „R 204“.
     var name: String
     /// Zusatz, z. B. „Physikraum, 2. OG“.
@@ -137,6 +138,7 @@ final class Room {
 final class RoomElement {
     /// Stabil über das Normalisieren hinweg – daran hängt später die Sitzplatz-Zuordnung.
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var kindRaw: String
     var points: [GridPoint] = []
     /// Zeichenreihenfolge (SwiftData-Beziehungen sind ungeordnet).
@@ -164,6 +166,7 @@ final class RoomElement {
 @Model
 final class SeatAssignment {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var element: RoomElement?
     var student: Student?
     var createdAt: Date

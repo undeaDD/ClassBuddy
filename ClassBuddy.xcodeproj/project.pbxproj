@@ -69,6 +69,7 @@
 		638EE913F976A9CA04B0A285 /* ClassBuddyWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 4D119C259D095F06FBFC93CB /* ClassBuddyWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		67B9ACC28CED548EDC1D5082 /* imprint.en.html in Resources */ = {isa = PBXBuildFile; fileRef = AAD0D0EDACEC968C90E954A0 /* imprint.en.html */; };
 		68D7DCDC539506352813CF13 /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4450ACB39C614C506C434D15 /* Room.swift */; };
+		65C08AC814925D52DB9D76F8 /* SyncTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A205E5FF5613E83310F25C /* SyncTracking.swift */; };
 		6B408FEA6BB24C56B7B7C062 /* SeatingPlanFloor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBCC92EC98264194BCC06D21 /* SeatingPlanFloor.swift */; };
 		6BE71DEDD6104800ACBD6DFF /* AssessmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB5BABFC5E649338AA8496E /* AssessmentTests.swift */; };
 		6E4B9E8D974A4358ABE6FFC3 /* RecordExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B56ADD01C0472D9635EA81 /* RecordExportTests.swift */; };
@@ -262,6 +263,7 @@
 		42DD38C88C554AF092211F02 /* NotesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
 		432AD3F8D6771586F8F77F14 /* imprint.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = imprint.html; sourceTree = "<group>"; };
 		4450ACB39C614C506C434D15 /* Room.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
+		D3A205E5FF5613E83310F25C /* SyncTracking.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncTracking.swift; sourceTree = "<group>"; };
 		48F186EF7D56450A90B59860 /* AssessmentViews.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AssessmentViews.swift; sourceTree = "<group>"; };
 		4A00941CE162C824F95B7E8F /* Student.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
 		4D119C259D095F06FBFC93CB /* ClassBuddyWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClassBuddyWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -498,6 +500,7 @@
 				4A00941CE162C824F95B7E8F /* Student.swift */,
 				25255560972480F461747B91 /* SchoolClass.swift */,
 				4450ACB39C614C506C434D15 /* Room.swift */,
+				D3A205E5FF5613E83310F25C /* SyncTracking.swift */,
 				1B37FAA8B2E54702A353EB61 /* BoardPhoto.swift */,
 				BDB85DBA3DA24F6DBAA1C943 /* Checklist.swift */,
 				EE8D223D3D9C4324A4A5D83E /* StudentRecord.swift */,
@@ -998,6 +1001,7 @@
 				FC55AFFD8D405D00B12C5465 /* SchoolClass.swift in Sources */,
 				9CFB32BA7C1FF3D07DAE9AD2 /* Sensitive.swift in Sources */,
 				68D7DCDC539506352813CF13 /* Room.swift in Sources */,
+				65C08AC814925D52DB9D76F8 /* SyncTracking.swift in Sources */,
 				A5BD44FFFB3D43569EE79F83 /* BoardPhoto.swift in Sources */,
 				B64EF759B05843DF9E9AA861 /* Checklist.swift in Sources */,
 				D9ED2350D196474D86046ADC /* StudentRecord.swift in Sources */,

@@ -9,6 +9,7 @@ import SwiftData
 @Model
 final class Lesson {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     /// 0 = Montag … 6 = Sonntag
     var weekday: Int
     var slotIndex: Int
@@ -81,6 +82,7 @@ nonisolated enum LessonRepetition: String, CaseIterable, Identifiable {
 @Model
 final class CalendarEntry {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var title: String
     var start: Date
     var end: Date
@@ -103,6 +105,7 @@ final class CalendarEntry {
 @Model
 final class Holiday {
     @Attribute(.unique) var id: String
+    var lastModified: Date = Date.distantPast
     var name: String
     var startDate: Date
     var endDate: Date

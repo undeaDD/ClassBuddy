@@ -6,6 +6,7 @@ import SwiftData
 @Model
 final class Checklist {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var title: String
     var subtitle: String
     /// Leer = für alle Fächer der Klasse.
@@ -56,6 +57,7 @@ final class Checklist {
 @Model
 final class ChecklistCheck {
     @Attribute(.unique) var id: UUID
+    var lastModified: Date = Date.distantPast
     var checkedAt: Date
     var checklist: Checklist?
     var student: Student?
