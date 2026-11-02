@@ -22,10 +22,10 @@ struct SettingsView: View {
 
             Section {
                 NavigationLink {
-                    TeacherProfileView()
+                    AppSettingsView()
                         .hidesTabBar()
                 } label: {
-                    Label("Mein Profil", icon: .userCircle)
+                    Label("App-Einstellungen", icon: .app)
                 }
                 NavigationLink {
                     SchoolSettingsView()
@@ -34,17 +34,10 @@ struct SettingsView: View {
                     Label("Schuleinstellungen", icon: .bank)
                 }
                 NavigationLink {
-                    DataSyncView()
+                    TeacherProfileView()
                         .hidesTabBar()
                 } label: {
-                    // Vorläufig SF Symbol, bis ein eigenes Icon gewählt ist.
-                    Label("Daten & Sync", systemImage: "arrow.triangle.2.circlepath")
-                }
-                NavigationLink {
-                    AppSettingsView()
-                        .hidesTabBar()
-                } label: {
-                    Label("App-Einstellungen", icon: .app)
+                    Label("Mein Profil", icon: .userCircle)
                 }
             } header: {
                 Text("Kategorien")

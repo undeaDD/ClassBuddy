@@ -102,7 +102,7 @@ struct QuickRatingBar: View {
                 Button {
                     save(kind: .rating, value: option.value)
                 } label: {
-                    ScaleOptionLabel(option: option, iconSize: 26)
+                    ScaleOptionLabel(option: option, iconSize: 26, stacked: settings.scale == .sevenStep && device.isPhone)
                         .font(.title3.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)

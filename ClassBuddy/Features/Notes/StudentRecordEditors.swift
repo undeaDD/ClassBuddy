@@ -18,6 +18,7 @@ enum ObservationEditorRoute: Identifiable {
 struct ObservationEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.device) private var device
     let route: ObservationEditorRoute
     /// Skala für neue Beobachtungen (bestehende behalten ihre).
     let scale: ObservationScale
@@ -56,7 +57,7 @@ struct ObservationEditorView: View {
                                 Button {
                                     value = option.value
                                 } label: {
-                                    ScaleOptionLabel(option: option, iconSize: 22)
+                                    ScaleOptionLabel(option: option, iconSize: 22, stacked: activeScale == .sevenStep && device.isPhone)
                                         .font(.headline)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.5)

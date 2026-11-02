@@ -223,6 +223,13 @@ struct AppSettingsView: View {
                 } label: {
                     Label("Belegter Speicher", icon: .data)
                 }
+                NavigationLink {
+                    DataSyncView()
+                        .hidesTabBar()
+                } label: {
+                    // Vorläufig SF Symbol, bis ein eigenes Icon gewählt ist.
+                    Label("Daten & Sync", systemImage: "arrow.triangle.2.circlepath")
+                }
                 Button(role: .destructive) {
                     isDeleteConfirmationPresented = true
                 } label: {

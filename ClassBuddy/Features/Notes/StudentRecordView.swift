@@ -352,6 +352,8 @@ enum StudentRecordFormat {
 struct ScaleOptionLabel: View {
     let option: ObservationScale.Option
     var iconSize: CGFloat = 24
+    /// „− − −“, „− −“, „+ +“ … übereinander (iPhone, 7 Stufen): dann alle Knöpfe einer Skala gleich.
+    var stacked = false
 
     var body: some View {
         if let icon = option.icon {
@@ -360,16 +362,12 @@ struct ScaleOptionLabel: View {
                 .accessibilityLabel(option.label)
         } else {
             let parts = option.label.split(separator: " ").map(String.init)
-            if parts.count > 1 {
-                // „− − −“ bis „+ + +“: nebeneinander, wenn es passt, sonst übereinander (schmale Knöpfe auf dem iPhone).
-                ViewThatFits(in: .horizontal) {
-                    Text(option.label).fixedSize()
-                    VStack(spacing: -6) {
-                        ForEach(parts.indices, id: \.self) { Text(parts[$0]) }
-                    }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(option.label)
+            if stacked, parts.count > 1 {
+                VStack(spacing: -6) {
+                    ForEach(parts.indices, id: \.self) { Text(parts[$0]) }
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(option.label)
             } else {
                 Text(option.label)
             }
