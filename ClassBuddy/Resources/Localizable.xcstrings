@@ -3908,16 +3908,6 @@
         }
       }
     },
-    "Fehlt Ihnen etwas? Schreiben Sie mir über „Feedback senden“ in den Einstellungen. Gefällt Ihnen die App, freue ich mich über eine Empfehlung oder einen Kaffee." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Missing something? Write to me via “Send feedback” in the settings. If you like the app, I would appreciate a recommendation or a coffee."
-          }
-        }
-      }
-    },
     "Fehlzeit bearbeiten" : {
       "localizations" : {
         "en" : {
@@ -11355,6 +11345,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shown at the teacher’s desk in seating plans, blurred in privacy mode."
+          }
+        }
+      }
+    },
+    "Fehlt Ihnen etwas? Schreiben Sie mir über einen der Feedback-Wege in der App. Gefällt Ihnen die App, freue ich mich über eine Empfehlung oder einen Kaffee." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing something? Write to me through one of the feedback options in the app. If you like the app, I would appreciate a recommendation or a coffee."
           }
         }
       }

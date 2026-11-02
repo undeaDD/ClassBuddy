@@ -27,6 +27,7 @@ struct OnboardingView: View {
 
     private struct Page {
         let image: ImageResource
+        var motion: MascotMotion = .float
         let title: String
         let text: String
     }
@@ -42,6 +43,7 @@ struct OnboardingView: View {
         ),
         Page(
             image: .mascotDefend,
+            motion: .breathe,
             title: loc("Sicher, offline, DSGVO-konform"),
             text: loc("""
                 Kein Konto, keine Cloud: Alles bleibt offline auf diesem Gerät, biometrisch geschützt. \
@@ -50,9 +52,10 @@ struct OnboardingView: View {
         ),
         Page(
             image: .mascotFeedback,
+            motion: .sway,
             title: loc("Helfen Sie mit, ClassBuddy besser zu machen"),
             text: loc("""
-                Fehlt Ihnen etwas? Schreiben Sie mir über „Feedback senden“ in den Einstellungen. \
+                Fehlt Ihnen etwas? Schreiben Sie mir über einen der Feedback-Wege in der App. \
                 Gefällt Ihnen die App, freue ich mich über eine Empfehlung oder einen Kaffee.
                 """)
         ),
@@ -74,17 +77,17 @@ struct OnboardingView: View {
     private var purchasePage: Page {
         switch purchases.status {
         case .expired:
-            Page(image: .mascotTrial, title: loc("Die Testphase ist vorbei"), text: loc("""
+            Page(image: .mascotTrial, motion: .rock, title: loc("Die Testphase ist vorbei"), text: loc("""
                 Ihre Daten liegen weiterhin auf diesem Gerät. Mit der Vollversion geht es genau dort weiter, \
                 einmalig und ohne Abo.
                 """))
         case .trial(let days):
-            Page(image: .mascotTrial, title: trialDaysText(days), text: loc("""
+            Page(image: .mascotTrial, motion: .rock, title: trialDaysText(days), text: loc("""
                 Mit der Vollversion nutzen Sie ClassBuddy dauerhaft, einmalig und ohne Abo. \
                 Ihre Daten bleiben, wie sie sind.
                 """))
         default:
-            Page(image: .mascotTrial, title: loc("ClassBuddy kennenlernen"), text: loc("""
+            Page(image: .mascotTrial, motion: .rock, title: loc("ClassBuddy kennenlernen"), text: loc("""
                 Testen Sie 30 Tage lang alle Funktionen kostenlos. Danach schalten Sie die Vollversion \
                 einmalig frei, ohne Abo.
                 """))
@@ -183,6 +186,7 @@ struct OnboardingView: View {
             Image(page.image)
                 .resizable()
                 .scaledToFit()
+                .mascotMotion(page.motion)
                 .frame(maxWidth: device.isPhone ? 240 : 300)
                 .padding(.vertical, 24)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -222,4 +226,48 @@ struct OnboardingView: View {
 #Preview {
     OnboardingView {}
         .environment(PurchaseStore())
+}
+
+/// Kleine, ruhige Dauerbewegung der Maskottchen (ganzes Bild); aus bei „Bewegung reduzieren“.
+enum MascotMotion {
+    /// Schweben auf und ab, leicht geneigt.
+    case float
+    /// Langsames Atmen (etwas größer und wieder kleiner).
+    case breathe
+    /// Seitliches Wiegen um die Füße.
+    case sway
+    /// Hin- und Herwiegen (Sanduhr und Schlüssel).
+    case rock
+}
+
+extension View {
+    func mascotMotion(_ motion: MascotMotion) -> some View {
+        modifier(MascotMotionModifier(motion: motion))
+    }
+}
+
+private struct MascotMotionModifier: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let motion: MascotMotion
+
+    func body(content: Content) -> some View {
+        if reduceMotion {
+            content
+        } else {
+            content.phaseAnimator([false, true]) { view, phase in
+                switch motion {
+                case .float:
+                    view.offset(y: phase ? -10 : 2).rotationEffect(.degrees(phase ? -2 : 1))
+                case .breathe:
+                    view.scaleEffect(phase ? 1.04 : 0.98, anchor: .bottom)
+                case .sway:
+                    view.rotationEffect(.degrees(phase ? 3 : -3), anchor: .bottom)
+                case .rock:
+                    view.rotationEffect(.degrees(phase ? -4 : 4), anchor: .bottom).offset(y: phase ? -4 : 0)
+                }
+            } animation: { _ in
+                .easeInOut(duration: motion == .breathe ? 2.2 : 1.8)
+            }
+        }
+    }
 }
