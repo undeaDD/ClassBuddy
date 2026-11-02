@@ -32,7 +32,8 @@ final class DeletedRecord {
 
 /// Beobachtet alle Sicherungen: vorher `lastModified` setzen, danach Löschungen als `DeletedRecord` festhalten
 /// (Einfügen während des Sicherns verträgt SwiftData nicht, darum erst danach mit einer zweiten Sicherung).
-/// Die App hat nur den Haupt-Kontext, die Benachrichtigungen kommen also auf dem Main Thread.
+/// Nur Sicherungen auf dem Main Thread aus dem eigenen Container (mit `DeletedRecord`): Die App hat nur den
+/// Haupt-Kontext, andere SwiftData-Stores im Prozess (TipKit sichert im Hintergrund) bleiben unberührt.
 enum SyncTracking {
     private static var observers: [any NSObjectProtocol] = []
     private static var pendingDeletions: [(type: String, id: String)] = []
@@ -45,14 +46,21 @@ enum SyncTracking {
         let center = NotificationCenter.default
         observers = [
             center.addObserver(forName: ModelContext.willSave, object: nil, queue: nil) { notification in
+                guard Thread.isMainThread else { return }
                 nonisolated(unsafe) let context = notification.object as? ModelContext
-                MainActor.assumeIsolated { if let context { willSave(context) } }
+                MainActor.assumeIsolated { if let context, isTracked(context) { willSave(context) } }
             },
             center.addObserver(forName: ModelContext.didSave, object: nil, queue: nil) { notification in
+                guard Thread.isMainThread else { return }
                 nonisolated(unsafe) let context = notification.object as? ModelContext
-                MainActor.assumeIsolated { if let context { didSave(context) } }
+                MainActor.assumeIsolated { if let context, isTracked(context) { didSave(context) } }
             },
         ]
+    }
+
+    /// Container mit dieser Tabelle: der App-Store (nicht TipKit; in Tests nur Container, die sie mitbringen).
+    private static func isTracked(_ context: ModelContext) -> Bool {
+        context.container.schema.entities.contains { $0.name == String(describing: DeletedRecord.self) }
     }
 
     private static func willSave(_ context: ModelContext) {
@@ -70,8 +78,6 @@ enum SyncTracking {
         guard !pendingDeletions.isEmpty else { return }
         let deletions = pendingDeletions
         pendingDeletions = []
-        // Container ohne diese Tabelle (z. B. in Tests mit wenigen Modellen): nichts festhalten.
-        guard context.container.schema.entities.contains(where: { $0.name == String(describing: DeletedRecord.self) }) else { return }
         for deletion in deletions {
             context.insert(DeletedRecord(recordType: deletion.type, recordID: deletion.id))
         }

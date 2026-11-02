@@ -75,48 +75,7 @@ Geräte-Bilder: `WEB=1 scripts/appstore-images.sh` → `site/screenshots/`. Work
 
 ## Manuell testen (iPhone und iPad)
 
-- [ ] Kaufen (lokal, Debug-Menü „Kauf-Status simulieren“ oder StoreKit-Datei): Einführung ohne xmark und ohne Wegwischen,
-      Kaufseite mit „30 Tage kostenlos testen“ (hervorgehoben) und „Vollversion kaufen“, „Käufe wiederherstellen“;
-      Hintergrund ohne Entscheidung → Einführung beginnt von vorn; abgelaufen → nur Kaufseite, Karte „Testphase abgelaufen“;
-      Testphasen-Kachel zuerst auf der Übersicht, öffnet die Kaufseite mit xmark; iPad: App dahinter unscharf
-- [ ] Buddy-Kachel (Galerie › „Buddy“): läuft hin und her, blinzelt; Unterricht → Klassenzimmer, sonst draußen,
-      Ferien → Strand mit Sonnenbrille, Regen (nur wenn die Wetter-Kachel geladen hat) → Schirm, abends/Wochenende → schläft;
-      Antippen → Sprung mit Herzen; steht still beim Anordnen, im Privatsphäre-Modus und bei „Bewegung reduzieren“; Dunkelmodus
-- [ ] Einstellungen, Kopfbereich: Installationsweg nur noch „Xcode“, „TestFlight“ oder „App Store“; Maskottchen „Hallo“
-      statt App-Icon
-- [ ] Maskottchen: Einführung (Seite 1 Standard, 2 Schild, 3 Idee, Kaufseite Sanduhr), alle Leerzustände („Fragezeichen“,
-      iPhone 60 pt, iPad 80 pt), hell und dunkel; Debug-Build: schwebender Button unten rechts öffnet das Debug-Menü
-- [ ] Raum-Editor, Werkzeug „Maus“: Eckpunkte ziehen (Raum, Tisch, Tafel, Tür …), gemeinsame Ecken wandern mit,
-      daneben verschiebt weiter den Ausschnitt; Rückgängig; zweiter Finger während des Ziehens bricht ab
-
 - [ ] iPhone Duo: komplette App durchtesten (Layout, Tab-Leiste, Übersicht, Sitzplan, Widget)
-- [ ] Demo-Raum aus Sicht der Lehrkraft (Tafel und Pult unten): wird beim Start jetzt umgestellt (falls unverändert),
-      sonst Debug-Menü → „Demo-Klassenzimmer zurücksetzen“
-- [ ] Tipps (frisch installiert), alle als Kachel auf der Übersicht: ohne Klasse „Erste Klasse anlegen“ über dem
-      Leerzustand (xmark → Leerzustand wieder volle Höhe), dann Einrichtungs-Kette (Schüler → Stundenplan → Schulzeiten →
-      Raum → Ferien), „Zu den Schuleinstellungen“ auf dem iPhone (über „Mehr“), Privatsphäre-Tipp nach 3 Starts
-      („Einschalten“), „Kacheln anordnen“ danach („Jetzt anordnen“), Schalter „Tipps anzeigen“
-- [ ] Neu-Formulare (Schüler, Checkliste, Termin): erstes Feld beim Öffnen fokussiert; Abschnitt unten mit
-      „Zuletzt angelegt“ (auch nach Schließen und Neustart, verschwindet wenn der Eintrag gelöscht wurde) und
-      „Weitere anlegen“ (Haken sichert, leert, fokussiert erneut); iPad: Termin-Popover hoch genug; neuer Raum: Name fokussiert
-- [ ] App-Icon (App-Einstellungen › Darstellung): „Buddy“ und „Klassisch“ wechseln, Home-Bildschirm prüfen
-- [ ] Maskottchen nach der Verkleinerung scharf: Einführung, Einstellungen-Kopf, Leerzustände, Debug-Button
-- [ ] Sitzplan: alle Schüler gleich groß, auch auf schrägen und geteilten Tischen (z. B. Sechseck in vier Teile);
-      Namen passen in die Tischbreite; Lehrkraft am Pult; PDF-Export
-- [ ] Raum-Editor, Kantenmitten: mit Stift (Raum, Tisch …) erscheinen auf schrägen Kanten farbige Extra-Punkte in der
-      Mitte (nicht, wenn die Mitte ein normaler Rasterpunkt ist, nicht mit Maus oder Radierer); Trennlinie von Mitte zu
-      Mitte teilt den Tisch ohne Lücke; erneut teilen (Mitte einer Mitte); Speichern, Raum neu öffnen, Sitzplan und
-      Excel-Export/-Import (Punkte wie „1.5,0.5“); vorhandene Räume unverändert
-- [ ] Kalender: waagerecht wischen blättert (iPhone 3 Tage, iPad eine Woche), senkrechtes Scrollen und Antippen
-      unverändert
-- [ ] Termin ohne Raum antippen: „Raum wählen“ mit Hinweis (kein Fach), Raum bleibt am Termin, Sitzplan der Klasse des
-      Termins bzw. der ausgewählten Klasse; ohne Räume öffnet „Räume“; im Privatsphäre-Modus keine Rückfrage
-- [ ] Einstellungen › „Anleitung“ (Buch-Icon): Deutsch und Englisch, hell und dunkel, eigene Akzentfarbe
-- [ ] Englisch: Kalender-Tab heißt „Calendar“, VoiceOver am Klassen-Button „Choose class“
-- [ ] Foto-Ausschnitt (Schüler › Foto auswählen), iPad und iPhone, auch drehen: ganzes Foto sichtbar, außerhalb des
-      Kreises nur abgedunkelt; zwei Finger zoomen um ihre Mitte, ein Finger verschiebt, doppelt tippen setzt zurück;
-      Ergebnis zeigt genau den Kreis-Ausschnitt; Folge „zoomen, verschieben, loslassen, einmal tippen, zwei Finger
-      zoomen“ zoomt sofort
 - [ ] Foto auswählen öffnet ein Menü „Aus „Fotos““ / „Aus „Dateien““, beide führen zum Ausschnitt
 - [ ] Schüler-Detailseite: Bearbeiten-Knopf oben rechts (im Privatsphäre-Modus gesperrt, schließt sich beim Einschalten)
 - [ ] Schülerliste: schwebende Leiste unten (Filter-Symbol und gewählte Sortierung), Menü Vorname / Nachname / Geschlecht / Geburtstag
@@ -124,9 +83,6 @@ Geräte-Bilder: `WEB=1 scripts/appstore-images.sh` → `site/screenshots/`. Work
 - [ ] Mein Profil › Foto (Fotos oder Dateien, Ausschnitt wie bei Schülern); Sitzplan zeigt das Foto am Lehrerpult
       (unscharf im Privatsphäre-Modus), darunter den Namen aus dem Profil; auch im Sitzplan-PDF
 - [ ] Sitzplan › Schüler antippen: großes Foto mittig zwischen „Schließen“ und „Details“, Name darunter (iPhone, iPad)
-- [ ] Anleitung: größere Schrift, Buddy oben, kurzer Kopftext, ohne „Daten schützen“ (Deutsch und Englisch)
-- [ ] Tipp-Kachel genauso hoch wie die anderen Kacheln (iPad schmale Spalte, iPhone, große Schrift): Titel, Text
-      (wird bei Platzmangel kleiner), Button unten, xmark schließt den Tipp; auch „Erste Klasse anlegen“ über dem Leerzustand
 
 ## Später
 
