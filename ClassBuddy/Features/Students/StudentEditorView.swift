@@ -31,6 +31,8 @@ struct StudentEditorView: View {
     @State private var otherContact: String
     @State private var photo: Data?
     @State private var photoSelection: PhotosPickerItem?
+    @State private var isPhotoPickerPresented = false
+    @State private var isFileImporterPresented = false
     /// Gewähltes Foto, bevor der Ausschnitt feststeht.
     @State private var cropRequest: CropRequest?
     /// Nach dem Anlegen offen bleiben (geleert) für den nächsten Schüler.
@@ -124,16 +126,18 @@ struct StudentEditorView: View {
                 focus = .firstName
                 lastCreated = LastCreated.student(in: modelContext)?.fullName
             }
+            .photosPicker(isPresented: $isPhotoPickerPresented, selection: $photoSelection, matching: .images)
+            .fileImporter(isPresented: $isFileImporterPresented, allowedContentTypes: [.image]) { result in
+                guard let url = try? result.get() else { return }
+                let accessing = url.startAccessingSecurityScopedResource()
+                defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+                if let data = try? Data(contentsOf: url) { requestCrop(of: data) }
+            }
             .onChange(of: photoSelection) { _, item in
                 guard let item else { return }
                 photoSelection = nil
                 Task {
-                    // Für den Zuschnitt auf 2048 px verkleinern – große Fotos bleiben so flüssig.
-                    guard let data = try? await item.loadTransferable(type: Data.self),
-                          let prepared = StudentPhoto.prepare(data, maxPixel: 2048),
-                          let image = UIImage(data: prepared)
-                    else { return }
-                    cropRequest = CropRequest(image: image)
+                    if let data = try? await item.loadTransferable(type: Data.self) { requestCrop(of: data) }
                 }
             }
             .fullScreenCover(item: $cropRequest) { request in
@@ -159,18 +163,24 @@ struct StudentEditorView: View {
         [firstName.first, lastName.first].compactMap { $0 }.map(String.init).joined()
     }
 
-    /// Foto wählen bzw. ändern; das x entfernt es wieder (wie beim Geburtstag).
+    /// Für den Zuschnitt auf 2048 px verkleinern, große Fotos bleiben so flüssig.
+    private func requestCrop(of data: Data) {
+        guard let prepared = StudentPhoto.prepare(data, maxPixel: 2048), let image = UIImage(data: prepared) else { return }
+        cropRequest = CropRequest(image: image)
+    }
+
+    /// Foto wählen bzw. ändern (aus „Fotos“ oder „Dateien“); das x entfernt es wieder (wie beim Geburtstag).
     private var photoRow: some View {
-        // Titel und Icon vorab: Der Label-Closure von PhotosPicker ist @Sendable und nicht an den Main Actor gebunden.
-        let title = photo == nil ? loc("Foto auswählen") : loc("Foto ändern")
-        let icon = Image(icon: .image)
-        return HStack {
-            PhotosPicker(selection: $photoSelection, matching: .images) {
+        HStack {
+            Menu {
+                Button("Aus „Fotos“", icon: .image) { isPhotoPickerPresented = true }
+                Button("Aus „Dateien“", icon: .page) { isFileImporterPresented = true }
+            } label: {
                 Label {
-                    Text(title)
+                    Text(photo == nil ? loc("Foto auswählen") : loc("Foto ändern"))
                         .foregroundStyle(Color.primary)
                 } icon: {
-                    icon
+                    Image(icon: .image)
                 }
             }
             Spacer()

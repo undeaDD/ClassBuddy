@@ -9,17 +9,9 @@ Vorschläge (Iconoir für den eingebauten Satz / Font Awesome Duotone fürs Pake
 - [ ] „Bewertung einstellen“ (bisher `settings`): `star` / `star-half-stroke`
 - [ ] „Eingetroffen um“ (bisher `timer`): `log-in` / `door-open`
 - [ ] „Notensystem“ (bisher `graduation-cap`): `numbered-list` / `list-ol`
+- [ ] Sortier-Leiste der Schülerliste (bisher SF Symbol `arrow.up.arrow.down`)
 - [ ] Kaufseite und Testphasen-Kachel (bisher SF Symbols): Testphase `hourglass` / `hourglass-half`,
       Vollversion `badge-check` / `badge-check`
-
-## Testphase per In-App-Kauf
-
-Umgesetzt (10.10.2026): `PurchaseStore` (StoreKit 2), Kaufseite als letzte Seite der Einführung, Testphasen-Kachel,
-Debug-Menü „Kauf-Status simulieren“, `Config/ClassBuddy.storekit` (im Schema eingetragen), Datenschutz und Support-Seite.
-Produkte: `de.devsforge.ClassBuddy.full` (4,99 €) und `de.devsforge.ClassBuddy.trial` (0 €), beide „Nicht-verbrauchbar“,
-ohne Familienfreigabe. Nach Ablauf ist nur die Kaufseite erreichbar, kein Export. TestFlight nutzt automatisch die Sandbox.
-
-Kein Sideloading mehr: Workflow „Build IPA“, README-Abschnitt, AltStore-Erkennung und IPA im Release entfernt.
 
 ## Sync und Teilen (geplant)
 
@@ -124,7 +116,13 @@ Geräte-Bilder: `WEB=1 scripts/appstore-images.sh` → `site/screenshots/`. Work
 - [ ] Englisch: Kalender-Tab heißt „Calendar“, VoiceOver am Klassen-Button „Choose class“
 - [ ] Foto-Ausschnitt (Schüler › Foto auswählen), iPad und iPhone, auch drehen: ganzes Foto sichtbar, außerhalb des
       Kreises nur abgedunkelt; zwei Finger zoomen um ihre Mitte, ein Finger verschiebt, doppelt tippen setzt zurück;
-      Ergebnis zeigt genau den Kreis-Ausschnitt
+      Ergebnis zeigt genau den Kreis-Ausschnitt; Folge „zoomen, verschieben, loslassen, einmal tippen, zwei Finger
+      zoomen“ zoomt sofort
+- [ ] Foto auswählen öffnet ein Menü „Aus „Fotos““ / „Aus „Dateien““, beide führen zum Ausschnitt
+- [ ] Schüler-Detailseite: Bearbeiten-Knopf oben rechts (im Privatsphäre-Modus gesperrt, schließt sich beim Einschalten)
+- [ ] Schülerliste: schwebende Leiste unten „Sortiert nach …“, Menü Vorname / Nachname / Geschlecht / Geburtstag
+      (Abschnitte: Buchstaben, Geschlechter, Monate), Wahl bleibt nach Neustart; Index rechts passt; iPad und iPhone
+- [ ] Anleitung: größere Schrift, Buddy oben, kurzer Kopftext, ohne „Daten schützen“ (Deutsch und Englisch)
 - [ ] Tipp-Kachel genauso hoch wie die anderen Kacheln (iPad schmale Spalte, iPhone, große Schrift): Titel, Text
       (wird bei Platzmangel kleiner), Button unten, xmark schließt den Tipp; auch „Erste Klasse anlegen“ über dem Leerzustand
 

@@ -6,7 +6,8 @@ import UIKit
 /// Ergebnis: quadratisches JPEG über `onCrop`.
 ///
 /// Zoom und Verschiebung sind relativ zum Kreis gespeichert (Verschiebung in Kreisdurchmessern), damit Drehen oder
-/// Größenänderungen des Fensters (iPad) den gewählten Ausschnitt nicht verändern.
+/// Größenänderungen des Fensters (iPad) den gewählten Ausschnitt nicht verändern. Gesten über UIKit (`CropGestures`):
+/// Sie melden schrittweise Änderungen, SwiftUI-Gesten blieben nach Tippen-und-Zoomen-Folgen teils hängen.
 struct PhotoCropView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -17,8 +18,6 @@ struct PhotoCropView: View {
     @State private var scale: CGFloat = 1
     /// Bildmitte relativ zur Kreismitte, in Kreisdurchmessern.
     @State private var offset: CGSize = .zero
-    /// Zustand zu Beginn der laufenden Geste.
-    @State private var gestureStart: (scale: CGFloat, offset: CGSize)?
 
     private static let maxScale: CGFloat = 8
     private static let margin: CGFloat = 24
@@ -72,13 +71,22 @@ struct PhotoCropView: View {
         }
         .frame(width: size.width, height: size.height)
         .clipped()
-        .contentShape(.rect)
-        .gesture(moveAndZoom(center: center, diameter: diameter))
-        .onTapGesture(count: 2) {
-            withAnimation(.smooth) {
-                scale = 1
-                offset = .zero
-            }
+        .overlay {
+            CropGestures(
+                onPan: { translation in
+                    offset = clamped(
+                        CGSize(width: offset.width + translation.width / diameter, height: offset.height + translation.height / diameter),
+                        scale: scale
+                    )
+                },
+                onPinch: { factor, location in zoom(by: factor, at: location, center: center, diameter: diameter) },
+                onDoubleTap: {
+                    withAnimation(.smooth) {
+                        scale = 1
+                        offset = .zero
+                    }
+                }
+            )
         }
         .accessibilityLabel("Fotoausschnitt")
         .accessibilityHint("Mit zwei Fingern zoomen, mit einem Finger verschieben, doppelt tippen zum Zurücksetzen.")
@@ -86,30 +94,19 @@ struct PhotoCropView: View {
 
     // MARK: Gesten
 
-    /// Verschieben und Zoomen in einer Geste: Zoom um den Punkt zwischen den Fingern (dieser Bildpunkt bleibt unter
-    /// den Fingern), dazu die Verschiebung des Fingers.
-    private func moveAndZoom(center: CGPoint, diameter: CGFloat) -> some Gesture {
-        DragGesture(minimumDistance: 2)
-            .simultaneously(with: MagnifyGesture())
-            .onChanged { value in
-                let start = gestureStart ?? (scale, offset)
-                gestureStart = start
-                let magnification = value.second?.magnification ?? 1
-                let newScale = min(max(start.scale * magnification, 1), Self.maxScale)
-                let factor = newScale / start.scale
-                let anchorPoint = value.second?.startLocation ?? value.first?.startLocation ?? center
-                let anchor = CGSize(width: (anchorPoint.x - center.x) / diameter, height: (anchorPoint.y - center.y) / diameter)
-                let translation = value.first?.translation ?? .zero
-                scale = newScale
-                offset = clamped(
-                    CGSize(
-                        width: anchor.width + (start.offset.width - anchor.width) * factor + translation.width / diameter,
-                        height: anchor.height + (start.offset.height - anchor.height) * factor + translation.height / diameter
-                    ),
-                    scale: newScale
-                )
-            }
-            .onEnded { _ in gestureStart = nil }
+    /// Zoom um den Punkt zwischen den Fingern: Dieser Bildpunkt bleibt unter den Fingern.
+    private func zoom(by factor: CGFloat, at location: CGPoint, center: CGPoint, diameter: CGFloat) {
+        let newScale = min(max(scale * factor, 1), Self.maxScale)
+        let applied = newScale / scale
+        let anchor = CGSize(width: (location.x - center.x) / diameter, height: (location.y - center.y) / diameter)
+        scale = newScale
+        offset = clamped(
+            CGSize(
+                width: anchor.width + (offset.width - anchor.width) * applied,
+                height: anchor.height + (offset.height - anchor.height) * applied
+            ),
+            scale: newScale
+        )
     }
 
     // MARK: Geometrie
@@ -148,5 +145,70 @@ struct PhotoCropView: View {
         }
         if let data = cropped.jpegData(compressionQuality: 0.8) { onCrop(data) }
         dismiss()
+    }
+}
+
+/// Gesten-Ebene des Zuschnitts: ein oder zwei Finger verschieben, zwei Finger zoomen (gleichzeitig), doppelt tippen.
+/// Meldet nur die Änderung seit dem letzten Aufruf.
+private struct CropGestures: UIViewRepresentable {
+    let onPan: (CGSize) -> Void
+    let onPinch: (CGFloat, CGPoint) -> Void
+    let onDoubleTap: () -> Void
+
+    func makeUIView(context: Context) -> GestureView {
+        GestureView()
+    }
+
+    func updateUIView(_ view: GestureView, context: Context) {
+        view.onPan = onPan
+        view.onPinch = onPinch
+        view.onDoubleTap = onDoubleTap
+    }
+
+    final class GestureView: UIView, UIGestureRecognizerDelegate {
+        var onPan: (CGSize) -> Void = { _ in }
+        var onPinch: (CGFloat, CGPoint) -> Void = { _, _ in }
+        var onDoubleTap: () -> Void = {}
+
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            backgroundColor = .clear
+            isMultipleTouchEnabled = true
+            let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
+            pan.maximumNumberOfTouches = 2
+            pan.delegate = self
+            addGestureRecognizer(pan)
+            let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch))
+            pinch.delegate = self
+            addGestureRecognizer(pinch)
+            let doubleTap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap))
+            doubleTap.numberOfTapsRequired = 2
+            addGestureRecognizer(doubleTap)
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+        func gestureRecognizer(_ gesture: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer) -> Bool {
+            true
+        }
+
+        @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
+            guard gesture.state == .changed else { return }
+            let translation = gesture.translation(in: self)
+            gesture.setTranslation(.zero, in: self)
+            onPan(CGSize(width: translation.x, height: translation.y))
+        }
+
+        @objc private func handlePinch(_ gesture: UIPinchGestureRecognizer) {
+            guard gesture.state == .changed, gesture.numberOfTouches >= 2 else { return }
+            let factor = gesture.scale
+            gesture.scale = 1
+            onPinch(factor, gesture.location(in: self))
+        }
+
+        @objc private func handleDoubleTap() {
+            onDoubleTap()
+        }
     }
 }

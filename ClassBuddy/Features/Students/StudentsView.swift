@@ -2,15 +2,17 @@ import CoreText
 import SwiftData
 import SwiftUI
 
-/// Schülerliste der ausgewählten Klasse: alphabetisch nach Vornamen gruppiert,
-/// durchsuchbar. Im Privatsphäre-Modus nur lesend.
+/// Schülerliste der ausgewählten Klasse: sortiert und gruppiert nach Vorname, Nachname, Geschlecht oder Geburtstag
+/// (schwebende Leiste unten), durchsuchbar. Im Privatsphäre-Modus nur lesend.
 struct StudentsView: View {
     @Environment(\.appAccent) private var accent
     @Environment(AppModel.self) private var app
     @Environment(AppSecurity.self) private var security
     @Environment(\.modelContext) private var modelContext
     @Environment(ToastCenter.self) private var toasts
+    @Environment(\.device) private var device
     @Query private var classes: [SchoolClass]
+    @AppStorage(AppPreference.studentSort) private var sort: StudentSort = .firstName
 
     @State private var searchText = ""
     @State private var editorRoute: StudentEditorRoute?
@@ -87,24 +89,27 @@ struct StudentsView: View {
             )
             .background(Color(.systemGroupedBackground))
         } else {
-            let sections = StudentLetterSection.sections(for: filtered(schoolClass.students))
+            let sections = sort.sections(for: filtered(schoolClass.students))
             List {
-                ForEach(sections, id: \.letter) { section in
-                    Section(section.letter) {
+                ForEach(sections, id: \.title) { section in
+                    Section(section.title) {
                         ForEach(section.students) { student in
                             row(for: student)
                         }
                     }
-                    .appSectionIndexLabel(section.letter)
+                    .appSectionIndexLabel(section.indexLabel)
                 }
             }
             .appSectionIndexVisible()
+            // Platz unter dem letzten Schüler, damit die Sortier-Leiste nichts dauerhaft verdeckt (wie im Kalender).
+            .contentMargins(.bottom, device.isPhone ? 0 : 72, for: .scrollContent)
             .searchable(text: $searchText, prompt: "Schüler suchen")
             .overlay {
                 if sections.isEmpty {
                     SearchEmptyStateView(text: searchText)
                 }
             }
+            .floatingBottomBar { StudentSortBar(sort: $sort) }
         }
     }
 
@@ -285,6 +290,102 @@ extension Gender {
         case .male: .blue
         case .diverse: .purple
         }
+    }
+}
+
+/// Sortierung der Schülerliste; bestimmt auch die Abschnitte.
+enum StudentSort: String, CaseIterable, Identifiable {
+    case firstName, lastName, gender, birthday
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .firstName: loc("Vorname")
+        case .lastName: loc("Nachname")
+        case .gender: loc("Geschlecht")
+        case .birthday: loc("Geburtstag")
+        }
+    }
+
+    func sections(for students: [Student]) -> [StudentListSection] {
+        switch self {
+        case .firstName:
+            return StudentLetterSection.sections(for: students).map {
+                StudentListSection(title: $0.letter, indexLabel: $0.letter, students: $0.students)
+            }
+        case .lastName:
+            let sorted = students.sorted { Self.compare($0.lastName, $0.firstName, $1.lastName, $1.firstName) }
+            let grouped = Dictionary(grouping: sorted) { Student.sectionLetter(of: $0.lastName.isEmpty ? $0.firstName : $0.lastName) }
+            return grouped.keys
+                .sorted { $0 == "#" ? false : $1 == "#" ? true : $0 < $1 }
+                .map { StudentListSection(title: $0, indexLabel: $0, students: grouped[$0] ?? []) }
+        case .gender:
+            let byName = students.sorted { Self.compare($0.firstName, $0.lastName, $1.firstName, $1.lastName) }
+            let groups: [(String, [Student])] = Gender.allCases.map { gender in
+                (gender.displayTitle, byName.filter { $0.gender == gender })
+            } + [(loc("Ohne Angabe"), byName.filter { $0.gender == nil })]
+            return groups.filter { !$0.1.isEmpty }.map { title, students in
+                StudentListSection(title: title, indexLabel: String(title.prefix(1)), students: students)
+            }
+        case .birthday:
+            let calendar = Calendar.current
+            func dayOfYear(_ student: Student) -> (Int, Int) {
+                guard let birthday = student.birthday else { return (13, 0) }
+                return (calendar.component(.month, from: birthday), calendar.component(.day, from: birthday))
+            }
+            let sorted = students.sorted { first, second in
+                let (firstDay, secondDay) = (dayOfYear(first), dayOfYear(second))
+                return firstDay != secondDay
+                    ? firstDay < secondDay
+                    : Self.compare(first.firstName, first.lastName, second.firstName, second.lastName)
+            }
+            var names = Calendar.current
+            names.locale = AppLanguage.current.locale
+            let months = names.standaloneMonthSymbols
+            let grouped = Dictionary(grouping: sorted) { dayOfYear($0).0 }
+            return grouped.keys.sorted().map { month in
+                let title = month <= 12 ? months[month - 1] : loc("Ohne Geburtstag")
+                return StudentListSection(title: title, indexLabel: String(title.prefix(3)), students: grouped[month] ?? [])
+            }
+        }
+    }
+
+    /// Erst nach dem ersten, dann nach dem zweiten Namen.
+    private static func compare(_ first: String, _ second: String, _ otherFirst: String, _ otherSecond: String) -> Bool {
+        let order = first.localizedStandardCompare(otherFirst)
+        return order == .orderedSame ? second.localizedStandardCompare(otherSecond) == .orderedAscending : order == .orderedAscending
+    }
+}
+
+/// Abschnitt der Schülerliste mit Kürzel für den Schnell-Index rechts.
+struct StudentListSection {
+    let title: String
+    let indexLabel: String
+    let students: [Student]
+}
+
+/// Schwebende Leiste unten (wie „Heute“ im Kalender): Sortierung als Menü.
+private struct StudentSortBar: View {
+    @Binding var sort: StudentSort
+
+    var body: some View {
+        Menu {
+            Picker("Sortieren nach", selection: $sort) {
+                ForEach(StudentSort.allCases) { option in
+                    Text(option.title).tag(option)
+                }
+            }
+        } label: {
+            // Vorläufig SF Symbol, bis ein eigenes Icon gewählt ist.
+            Label(loc("Sortiert nach \(sort.title)"), systemImage: "arrow.up.arrow.down")
+                .fontWeight(.semibold)
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.tint)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+        .appGlassEffect(.regular.interactive(), in: .capsule)
     }
 }
 

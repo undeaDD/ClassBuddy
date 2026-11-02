@@ -59,6 +59,8 @@ enum AppPreference {
     static let hapticFeedback = "app.hapticFeedback"
     /// Tab beim App-Start (Standard: Übersicht).
     static let startTab = "app.startTab"
+    /// Sortierung der Schülerliste (Standard: Vorname).
+    static let studentSort = "students.sort"
     /// Timer-Ende nur mit Vibration statt Ton (nur iPhone, Standard: aus).
     static let timerVibratesOnly = "app.timerVibratesOnly"
     /// iPad: Tab-Leiste wie auf dem iPhone statt oben zentrierter Leiste mit Sidebar (Standard: aus).

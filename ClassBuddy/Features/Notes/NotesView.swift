@@ -137,7 +137,10 @@ struct NotesView: View {
 
 /// Fächer eines Schülers (= Fächer seiner Klasse) → Notizen je Fach.
 struct StudentSubjectsView: View {
+    @Environment(AppSecurity.self) private var security
     let student: Student
+
+    @State private var isEditorPresented = false
 
     private var subjects: [String] { student.schoolClass?.subjects ?? [] }
 
@@ -169,7 +172,26 @@ struct StudentSubjectsView: View {
         }
         .navigationTitle(AppTab.notes.title)
         .navigationBarTitleDisplayMode(.inline)
-        .privacyModeToolbar()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Bearbeiten", icon: .editPencil) { isEditorPresented = true }
+                    .disabled(security.isPrivacyModeOn)
+                    .toolbarGroupBackground()
+            }
+            AppToolbarSpacer(placement: .topBarTrailing)
+            ToolbarItem(placement: .topBarTrailing) {
+                PrivacyModeButton()
+                    .toolbarGroupBackground()
+            }
+        }
+        .fullScreenCover(isPresented: $isEditorPresented) {
+            StudentEditorView(route: .edit(student))
+                .softScrollEdges()
+        }
+        // Privatsphäre-Modus an → Bearbeiten sofort schließen.
+        .onChange(of: security.isPrivacyModeOn) { _, isOn in
+            if isOn { isEditorPresented = false }
+        }
     }
 }
 
@@ -242,16 +264,4 @@ struct StudentNameRow: View {
 extension Student {
     /// Anzahl Beobachtungen über alle Fächer.
     var noteCount: Int { observations.count }
-}
-
-extension View {
-    /// Privatsphäre-Modus rechts außen – für Unterseiten mit Schülerdaten (die Tab-Toolbar gilt dort nicht).
-    func privacyModeToolbar() -> some View {
-        toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                PrivacyModeButton()
-                    .toolbarGroupBackground()
-            }
-        }
-    }
 }

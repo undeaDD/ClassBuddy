@@ -77,7 +77,12 @@ final class Student {
 
     /// Anfangsbuchstabe des Vornamens für die alphabetischen Abschnitte.
     var sectionLetter: String {
-        guard let first = firstName.first ?? lastName.first else { return "#" }
+        Self.sectionLetter(of: firstName.isEmpty ? lastName : firstName)
+    }
+
+    /// Großer Anfangsbuchstabe ohne Akzent, „#“ wenn es keiner ist.
+    static func sectionLetter(of name: String) -> String {
+        guard let first = name.first else { return "#" }
         let letter = String(first).folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current).uppercased()
         return letter.first?.isLetter == true ? letter : "#"
     }
