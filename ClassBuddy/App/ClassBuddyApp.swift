@@ -11,6 +11,7 @@ struct ClassBuddyApp: App {
     @State private var toasts = ToastCenter()
     @State private var timer = ClassTimer()
     @State private var purchases = PurchaseStore()
+    @State private var localSync = LocalSyncService()
     @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
     @AppStorage(AppAccent.storageKey) private var accent = AppAccent.defaultValue
 
@@ -35,6 +36,7 @@ struct ClassBuddyApp: App {
                 .environment(toasts)
                 .environment(timer)
                 .environment(purchases)
+                .environment(localSync)
                 .onAppear {
                     timer.onFinish = { [toasts] in toasts.success(loc("Timer abgelaufen")) }
                     HomeScreenAction.register()

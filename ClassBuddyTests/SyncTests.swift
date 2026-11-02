@@ -159,6 +159,17 @@ struct SyncTests {
         #expect(try deviceA.fetch(FetchDescriptor<Student>()).map(\.firstName) == ["Ben"])
     }
 
+    @Test("Kopplungscode: Text hin und zurück, fremde oder kaputte Codes werden abgelehnt")
+    func pairingCode() throws {
+        let code = PairingCode.make(name: "iPad von Dominic")
+        #expect(code.secret.count == 32)
+        #expect(PairingCode(text: code.text) == code)
+        #expect(PairingCode(text: "https://example.com") == nil)
+        #expect(PairingCode(text: "classbuddy-pair:kaputt") == nil)
+        let weak = PairingCode(id: UUID().uuidString, secret: Data([1, 2, 3]), name: "x")
+        #expect(PairingCode(text: weak.text) == nil)
+    }
+
     @Test("Andere App-Version wird abgelehnt")
     func versionMismatch() throws {
         let deviceA = try Self.makeDevice(), deviceB = try Self.makeDevice()

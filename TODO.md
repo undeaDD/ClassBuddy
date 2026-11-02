@@ -11,6 +11,8 @@ Vorschläge (Iconoir für den eingebauten Satz / Font Awesome Duotone fürs Pake
 - [ ] „Notensystem“ (bisher `graduation-cap`): `numbered-list` / `list-ol`
 - [ ] Kaufseite und Testphasen-Kachel (bisher SF Symbols): Testphase `hourglass` / `hourglass-half`,
       Vollversion `badge-check` / `badge-check`
+- [ ] „Daten & Sync“ (bisher SF Symbols): Einstellungen-Zeile `arrow.triangle.2.circlepath`, „Gerät koppeln“ `qrcode`,
+      gekoppeltes Gerät `ipad.and.iphone`
 
 ## Sync und Teilen (geplant)
 
@@ -29,16 +31,15 @@ Version: Sync und Teilen nur bei gleicher App-Version + Build. Lokal per Handsch
 die Version des neuesten Geräts, Geräte mit anderer Version pausieren mit Hinweis „ClassBuddy auf allen Geräten
 aktualisieren“; Paket-Dateien mit anderer Version werden abgelehnt.
 
-- [ ] Schema v2 mit `VersionedSchema` + Migration: `.unique` raus (Dubletten über `id`), Standardwerte für alle Felder,
-      Beziehungen optional, `updatedAt` und Lösch-Markierungen
-- [ ] Sync-Kern unabhängig vom Transport: Änderungsprotokoll, Zusammenführen, Paketformat (Dokument-Dateien, Tafelfotos,
-      Einstellungen aus UserDefaults), Versionsprüfung
-- [ ] Lokaler Transport: Kopplung, „Jetzt synchronisieren“, Teilen an Gerät in der Nähe, Paket als Datei;
-      Info.plist `NSLocalNetworkUsageDescription` + `NSBonjourServices`
+Umgesetzt (02./03.11.2026): `lastModified` an allen Modellen + `DeletedRecord` (`SyncTracking`), Sync-Kern
+(`SyncEngine`, `SyncPayloads*`: Manifest-Austausch, Pakete, neuerer Stand gewinnt), lokaler Sync (`LocalSync.swift`:
+QR-Kopplung, Bonjour + TLS mit gemeinsamem Schlüssel, „Jetzt synchronisieren“), Seite „Daten & Sync“ mit Export & Import.
+
+- [ ] Einstellungen (UserDefaults: Schule, Schultag, Pausen, Profil …) mit abgleichen (eigener Eintrag mit Zeitstempel)
+- [ ] Teilen an Kollegen: Gesamtpaket an ein Gerät in der Nähe oder als Datei (AirDrop/Mail), Empfänger ersetzt alles
 - [ ] iCloud: `CKSyncEngine`, Dateien als `CKAsset`, Einstellungen als eigener Eintrag
 - [ ] Cloud-Ordner: Ordnerwahl, verschlüsselte Änderungsdateien je Gerät, Zusammenführen beim Öffnen
-- [ ] Neue Einstellungsseite „Daten & Sync“: Sync (lokal, iCloud, Cloud-Ordner; Status, letzter Sync, gekoppelte Geräte),
-      Teilen, und „Export & Import“ aus den App-Einstellungen hierher verschieben; Privatsphäre-Button
+- [ ] „Daten & Sync“ ergänzen: iCloud, Cloud-Ordner, Teilen
 - [ ] Ein Daten-Passwort für Excel-Backup und Sync: sicheres Textfeld auf „Daten & Sync“ (Auge zum Anzeigen, Kopieren,
       Neu erzeugen), im Schlüsselbund gespeichert. Beim ersten Start zufällig erzeugt (gut lesbar, z. B. 4 × 5 Zeichen),
       jederzeit änderbar. Lokale Kopplung übernimmt das Passwort des anderen Geräts; Cloud-Ordner mit anderem Passwort →
@@ -86,6 +87,12 @@ Geräte-Bilder: `WEB=1 scripts/appstore-images.sh` → `site/screenshots/`. Work
 
 - [ ] Sitzplan › Schüler antippen, Skala 7 Stufen auf dem iPhone: „− − −“ bis „+ + +“ stehen übereinander, Knöpfe
       etwas höher und gleich hoch; auf dem iPad nebeneinander; ebenso in „Neue Beobachtung“
+
+- [ ] Lokaler Sync (iPhone + iPad, gleiches WLAN, beide mit diesem Build): Einstellungen › Daten & Sync › Gerät koppeln,
+      ein Gerät „Code zeigen“, das andere „Code scannen“ → Abfrage „Lokales Netzwerk“ erlauben, erster Abgleich läuft
+      sofort (Meldung mit Anzahl neu/aktualisiert/gelöscht). Danach: etwas ändern, löschen, neu anlegen, auf dem anderen
+      Gerät „Jetzt synchronisieren“; Fotos, Tafelbilder, Dokument-Kacheln kommen mit; Kopplung entfernen
+- [ ] „Export & Import“ liegt jetzt unter Daten & Sync (App-Einstellungen ohne), funktioniert wie vorher
 
 ## Später
 

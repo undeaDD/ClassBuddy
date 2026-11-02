@@ -34,6 +34,13 @@ struct SettingsView: View {
                     Label("Schuleinstellungen", icon: .bank)
                 }
                 NavigationLink {
+                    DataSyncView()
+                        .hidesTabBar()
+                } label: {
+                    // Vorläufig SF Symbol, bis ein eigenes Icon gewählt ist.
+                    Label("Daten & Sync", systemImage: "arrow.triangle.2.circlepath")
+                }
+                NavigationLink {
                     AppSettingsView()
                         .hidesTabBar()
                 } label: {

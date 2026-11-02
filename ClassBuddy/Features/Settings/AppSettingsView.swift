@@ -107,17 +107,9 @@ struct AppSettingsView: View {
 
     @State private var dataSize: Int64?
     @State private var isDeleteConfirmationPresented = false
-    @State private var exportFile: SpreadsheetFile?
-    @State private var isExporterPresented = false
-    @State private var isImporterPresented = false
-    @State private var pendingImport: Data?
 
     private static var deleteInfo: String {
         loc("Löscht alle Inhalte und Einstellungen. App-Sperre und Darstellung bleiben.")
-    }
-
-    private static var transferInfo: String {
-        loc("Excel-Datei, bearbeitbar in Excel oder Numbers. Ein Import ersetzt alle Daten; Dokumente und Fotos fehlen.")
     }
 
     private var appLockBinding: Binding<Bool> {
@@ -222,22 +214,6 @@ struct AppSettingsView: View {
             }
 
             Section {
-                Button(action: export) {
-                    SettingsActionLabel(title: loc("Exportieren"), icon: .shareIos)
-                }
-                Button {
-                    isImporterPresented = true
-                } label: {
-                    SettingsActionLabel(title: loc("Importieren"), icon: .import)
-                }
-            } header: {
-                Text("Export & Import")
-            } footer: {
-                Text(Self.transferInfo)
-            }
-            .disabled(security.isPrivacyModeOn)
-
-            Section {
                 LabeledContent {
                     if let dataSize {
                         Text(dataSize.formatted(.byteCount(style: .file)))
@@ -272,78 +248,6 @@ struct AppSettingsView: View {
         } message: {
             Text("Das kann nicht rückgängig gemacht werden. Exportieren Sie vorher, was Sie behalten möchten.")
         }
-        .fileExporter(
-            isPresented: $isExporterPresented,
-            document: exportFile,
-            contentType: .xlsx,
-            defaultFilename: "ClassBuddy-Export-\(Date.now.formatted(.iso8601.year().month().day()))"
-        ) { result in
-            if case .failure(let error) = result {
-                toasts.error(loc("Export fehlgeschlagen: \(error.localizedDescription)"))
-            } else {
-                toasts.success(loc("Export gespeichert"))
-            }
-        }
-        .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: [.xlsx]) { result in
-            do {
-                let url = try result.get()
-                let accessing = url.startAccessingSecurityScopedResource()
-                defer { if accessing { url.stopAccessingSecurityScopedResource() } }
-                pendingImport = try Data(contentsOf: url)
-            } catch {
-                toasts.error(loc("Datei konnte nicht gelesen werden: \(error.localizedDescription)"))
-            }
-        }
-        .confirmationDialog(
-            "Daten importieren?",
-            isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
-            titleVisibility: .visible
-        ) {
-            Button("Importieren und ersetzen", role: .destructive) {
-                let data = pendingImport
-                Task { await importData(data) }
-            }
-        } message: {
-            Text("Alle Klassen, Schüler, Stunden, Termine, Kacheln, Ferien und Räume werden durch den Inhalt der Datei ersetzt.")
-        }
-    }
-
-    private func export() {
-        do {
-            let data = try Backup.export(context: modelContext, settings: settings.values, appearance: appearance)
-            exportFile = SpreadsheetFile(data: data)
-            isExporterPresented = true
-        } catch {
-            toasts.error(loc("Export fehlgeschlagen: \(error.localizedDescription)"))
-        }
-    }
-
-    private func importData(_ data: Data?) async {
-        pendingImport = nil
-        guard let data, await security.confirmDestructiveAction(reason: loc("Daten importieren und ersetzen")) else { return }
-        do {
-            let result = try Backup.import(data, context: modelContext, currentSettings: settings.values)
-            settings.values = result.settings.values
-            if let imported = result.settings.appearance { appearance = imported }
-            if let imported = result.settings.accent { accent = imported }
-            if let imported = result.settings.iconTheme { IconManager.shared.theme = imported }
-            for (stat, value) in result.settings.funStats ?? [:] { stat.set(value) }
-            if let imported = result.settings.language, imported != language {
-                AppLanguage.current = imported
-                language = imported
-            }
-            // Ausgewählte Klasse behalten, wenn es sie noch gibt.
-            let classIDs = try modelContext.fetch(FetchDescriptor<SchoolClass>()).map(\.id)
-            if let selected = app.selectedClassID, !classIDs.contains(selected) {
-                app.selectedClassID = classIDs.first
-            }
-            app.calendarFocusClassID = nil
-            toasts.success(result.summary.text)
-        } catch {
-            modelContext.rollback()
-            toasts.error(loc("Import fehlgeschlagen: \(error.localizedDescription)"))
-        }
-        await refreshDataSize()
     }
 
     private func refreshDataSize() async {

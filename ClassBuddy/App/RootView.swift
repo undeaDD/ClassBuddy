@@ -17,6 +17,7 @@ struct RootView: View {
     private let homeScreenActions = HomeScreenActionCenter.shared
     @Environment(AppModel.self) private var app
     @Environment(\.modelContext) private var modelContext
+    @Environment(LocalSyncService.self) private var localSync
     #if DEBUG
     @Environment(SchoolSettings.self) private var settings
     #endif
@@ -101,8 +102,12 @@ struct RootView: View {
             }
             .onChange(of: scenePhase, initial: true) { _, phase in
                 switch phase {
-                case .background: security.lock()
+                case .background:
+                    security.lock()
+                    localSync.stop()
                 case .active:
+                    // Auf gekoppelte Geräte warten, solange die App offen ist (lokaler Sync).
+                    localSync.start(context: modelContext, deviceName: LocalSyncService.deviceName(teacher: settings.values.teacher))
                     Task { await security.sceneDidBecomeActive() }
                     // Tageszähler der Testphase und Ablauf aktuell halten.
                     Task { await purchases.load() }

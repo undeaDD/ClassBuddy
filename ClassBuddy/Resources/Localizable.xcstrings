@@ -11358,6 +11358,276 @@
           }
         }
       }
+    },
+    "Gerät koppeln" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pair device"
+          }
+        }
+      }
+    },
+    "Geräte in der Nähe" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nearby devices"
+          }
+        }
+      }
+    },
+    "Daten & Sync" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data & Sync"
+          }
+        }
+      }
+    },
+    "Kopplung entfernen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove pairing?"
+          }
+        }
+      }
+    },
+    "Jetzt synchronisieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync now"
+          }
+        }
+      }
+    },
+    "Noch nicht abgeglichen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not synced yet"
+          }
+        }
+      }
+    },
+    "Zuletzt %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last synced %@"
+          }
+        }
+      }
+    },
+    "Koppeln" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pair"
+          }
+        }
+      }
+    },
+    "Code zeigen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show code"
+          }
+        }
+      }
+    },
+    "Code scannen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan code"
+          }
+        }
+      }
+    },
+    "Gleiche ab …" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syncing …"
+          }
+        }
+      }
+    },
+    "Kamera nicht verfügbar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera not available"
+          }
+        }
+      }
+    },
+    "Scannen Sie den Code mit dem anderen Gerät." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan the code with the other device."
+          }
+        }
+      }
+    },
+    "Richten Sie die Kamera auf den Code des anderen Geräts." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point the camera at the other device’s code."
+          }
+        }
+      }
+    },
+    "Öffnen Sie auf dem anderen Gerät Einstellungen › Daten & Sync › Gerät koppeln › Code scannen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On the other device, open Settings › Data & Sync › Pair device › Scan code."
+          }
+        }
+      }
+    },
+    "Kopplungscode" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pairing code"
+          }
+        }
+      }
+    },
+    "anderem Gerät" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "other device"
+          }
+        }
+      }
+    },
+    "Verbindung unterbrochen: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection lost: %@"
+          }
+        }
+      }
+    },
+    "Verbindung unterbrochen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection lost."
+          }
+        }
+      }
+    },
+    "Die Daten des anderen Geräts konnten nicht gelesen werden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The other device’s data could not be read."
+          }
+        }
+      }
+    },
+    "%@ wurde nicht gefunden. Ist ClassBuddy dort geöffnet und im selben WLAN?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ was not found. Is ClassBuddy open there and on the same Wi-Fi?"
+          }
+        }
+      }
+    },
+    "Mit %@ abgeglichen, alles war schon aktuell." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synced with %@, everything was already up to date."
+          }
+        }
+      }
+    },
+    "Mit %@ abgeglichen: %lld neu, %lld aktualisiert, %lld gelöscht." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synced with %@: %lld new, %lld updated, %lld deleted."
+          }
+        }
+      }
+    },
+    "Das andere Gerät hat ClassBuddy %@, dieses %@. Bitte ClassBuddy auf allen Geräten aktualisieren." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The other device has ClassBuddy %@, this one %@. Please update ClassBuddy on all devices."
+          }
+        }
+      }
+    },
+    "Dieses Paket stammt aus einer anderen ClassBuddy-Version. Bitte ClassBuddy auf allen Geräten aktualisieren." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This package comes from a different ClassBuddy version. Please update ClassBuddy on all devices."
+          }
+        }
+      }
+    },
+    "Gleicht Ihre eigenen Geräte direkt über das WLAN ab, ohne Server und ohne Internet. ClassBuddy muss auf beiden Geräten geöffnet sein, beide brauchen dieselbe App-Version." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Syncs your own devices directly over Wi-Fi, without a server or internet. ClassBuddy must be open on both devices, and both need the same app version."
+          }
+        }
+      }
+    },
+    "Die Daten bleiben auf beiden Geräten. Zum erneuten Abgleich mit %@ muss neu gekoppelt werden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The data stays on both devices. To sync with %@ again, pair them again."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

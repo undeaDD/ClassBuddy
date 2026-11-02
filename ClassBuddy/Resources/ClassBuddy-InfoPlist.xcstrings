@@ -44,13 +44,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Die Kamera scannt das Tafelbild am Ende der Stunde. Das Foto bleibt auf diesem Gerät."
+            "value" : "Die Kamera scannt das Tafelbild am Ende der Stunde und den Kopplungscode eines anderen Geräts. Fotos bleiben auf diesem Gerät."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The camera scans the board at the end of the lesson. The photo stays on this device."
+            "value" : "The camera scans the board at the end of the lesson and the pairing code of another device. Photos stay on this device."
           }
         }
       }
@@ -87,6 +87,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "The microphone only measures the noise level in the room for the noise traffic light. Nothing is recorded or stored."
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClassBuddy gleicht Ihre gekoppelten Geräte direkt im WLAN ab, ohne Server."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClassBuddy syncs your paired devices directly over Wi-Fi, without a server."
           }
         }
       }
