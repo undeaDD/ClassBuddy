@@ -359,7 +359,20 @@ struct ScaleOptionLabel: View {
                 .iconSize(iconSize)
                 .accessibilityLabel(option.label)
         } else {
-            Text(option.label)
+            let parts = option.label.split(separator: " ").map(String.init)
+            if parts.count > 1 {
+                // „− − −“ bis „+ + +“: nebeneinander, wenn es passt, sonst übereinander (schmale Knöpfe auf dem iPhone).
+                ViewThatFits(in: .horizontal) {
+                    Text(option.label).fixedSize()
+                    VStack(spacing: -6) {
+                        ForEach(parts.indices, id: \.self) { Text(parts[$0]) }
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(option.label)
+                }
+            } else {
+                Text(option.label)
+            }
         }
     }
 }

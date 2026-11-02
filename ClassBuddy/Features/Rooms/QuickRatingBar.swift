@@ -95,6 +95,8 @@ struct QuickRatingBar: View {
 
     private var scaleButtons: some View {
         let options = settings.scale.options
+        // iPhone, 7 Stufen: „− − −“ steht übereinander, dafür etwas höhere Knöpfe (alle gleich hoch).
+        let height: CGFloat = settings.scale == .sevenStep && device.isPhone ? 68 : 52
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: options.count), spacing: 8) {
             ForEach(options, id: \.value) { option in
                 Button {
@@ -104,7 +106,7 @@ struct QuickRatingBar: View {
                         .font(.title3.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
-                        .frame(maxWidth: .infinity, minHeight: 52)
+                        .frame(maxWidth: .infinity, minHeight: height)
                 }
                 .buttonStyle(RatingButtonStyle(tone: settings.scale == .counter ? .positive : ObservationScale.tone(of: option.value)))
             }

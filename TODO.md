@@ -84,6 +84,9 @@ Geräte-Bilder: `WEB=1 scripts/appstore-images.sh` → `site/screenshots/`. Work
       (unscharf im Privatsphäre-Modus), darunter den Namen aus dem Profil; auch im Sitzplan-PDF
 - [ ] Sitzplan › Schüler antippen: großes Foto mittig zwischen „Schließen“ und „Details“, Name darunter (iPhone, iPad)
 
+- [ ] Sitzplan › Schüler antippen, Skala 7 Stufen auf dem iPhone: „− − −“ bis „+ + +“ stehen übereinander, Knöpfe
+      etwas höher und gleich hoch; auf dem iPad nebeneinander; ebenso in „Neue Beobachtung“
+
 ## Später
 
 - [ ] Fehlzeiten-Merkliste: offen → entschuldigt / unentschuldigt, offene Fehlzeiten bleiben in den folgenden Stunden sichtbar,

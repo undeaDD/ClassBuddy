@@ -57,7 +57,7 @@ struct ObservationEditorView: View {
                                         .font(.headline)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.5)
-                                        .frame(maxWidth: .infinity, minHeight: 44)
+                                        .frame(maxWidth: .infinity, minHeight: 44, maxHeight: .infinity)
                                 }
                                 // Gleiche Farben wie in der Schnell-Leiste: rot negativ, grau neutral, grün positiv.
                                 .buttonStyle(RatingButtonStyle(
@@ -66,6 +66,8 @@ struct ObservationEditorView: View {
                                 ))
                             }
                         }
+                        // Alle gleich hoch, auch wenn „− − −“ übereinander steht.
+                        .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 Section {
