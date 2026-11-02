@@ -122,6 +122,9 @@ Geräte-Bilder: `WEB=1 scripts/appstore-images.sh` → `site/screenshots/`. Work
       Termins bzw. der ausgewählten Klasse; ohne Räume öffnet „Räume“; im Privatsphäre-Modus keine Rückfrage
 - [ ] Einstellungen › „Anleitung“ (Buch-Icon): Deutsch und Englisch, hell und dunkel, eigene Akzentfarbe
 - [ ] Englisch: Kalender-Tab heißt „Calendar“, VoiceOver am Klassen-Button „Choose class“
+- [ ] Foto-Ausschnitt (Schüler › Foto auswählen), iPad und iPhone, auch drehen: ganzes Foto sichtbar, außerhalb des
+      Kreises nur abgedunkelt; zwei Finger zoomen um ihre Mitte, ein Finger verschiebt, doppelt tippen setzt zurück;
+      Ergebnis zeigt genau den Kreis-Ausschnitt
 - [ ] Tipp-Kachel genauso hoch wie die anderen Kacheln (iPad schmale Spalte, iPhone, große Schrift): Titel, Text
       (wird bei Platzmangel kleiner), Button unten, xmark schließt den Tipp; auch „Erste Klasse anlegen“ über dem Leerzustand
 
