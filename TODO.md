@@ -12,14 +12,6 @@ Vorschläge (Iconoir für den eingebauten Satz / Font Awesome Duotone fürs Pake
 - [ ] Kaufseite und Testphasen-Kachel (bisher SF Symbols): Testphase `hourglass` / `hourglass-half`,
       Vollversion `badge-check` / `badge-check`
 
-## App Store Connect (du)
-
-- [ ] Beschreibung, letzter Satz ersetzen durch: „Fragen oder Wünsche? Schreiben Sie uns über einen der Feedback-Wege
-      direkt in der App.“ (mehrere Wege, keinen einzelnen nennen)
-- [ ] Test-Informationen (TestFlight) ersetzen, Text siehe Chat vom 29.10.2026 (kein „Fehler“, keine Menünamen)
-- [ ] URLs auf die eigene Domain: Support `https://classbuddy.devsforge.de/support.html`, Marketing
-      `https://classbuddy.devsforge.de/`, Datenschutz `https://classbuddy.devsforge.de/privacy.html`
-
 ## Testphase per In-App-Kauf
 
 Umgesetzt (10.10.2026): `PurchaseStore` (StoreKit 2), Kaufseite als letzte Seite der Einführung, Testphasen-Kachel,
