@@ -27,10 +27,14 @@ struct RemoteSyncReport: Equatable {
 
 enum RemoteSync {
     /// Eigener Stand als verschlüsselte Datei.
-    static func ownFile(in context: ModelContext, settings: SchoolSettings, deviceName: String, password: String) throws -> Data {
+    /// Lesen aus der Datenbank auf dem Main Thread, Verschlüsseln (PBKDF2, AES) im Hintergrund.
+    static func ownFile(
+        in context: ModelContext, settings: SchoolSettings, deviceName: String, password: String
+    ) async throws -> Data {
         var package = try SyncEngine.makePackage(since: nil, in: context, settings: settings)
         package.deviceName = deviceName
-        return try DataCrypto.seal(JSONEncoder().encode(package), password: password)
+        let json = try JSONEncoder().encode(package)
+        return try await Task.detached { try DataCrypto.seal(json, password: password) }.value
     }
 
     /// Fingerabdruck des eigenen Stands: Nur bei Änderungen muss die Datei neu geschrieben werden.
@@ -44,12 +48,18 @@ enum RemoteSync {
     }
 
     /// Dateien der anderen Geräte übernehmen; eigene (gleiche Geräte-ID) werden übersprungen.
-    static func merge(_ files: [Data], in context: ModelContext, settings: SchoolSettings, password: String) -> RemoteSyncReport {
+    /// Entschlüsseln im Hintergrund, Übernehmen auf dem Main Thread (SwiftData).
+    static func merge(
+        _ files: [Data], in context: ModelContext, settings: SchoolSettings, password: String
+    ) async -> RemoteSyncReport {
+        let opened = await Task.detached {
+            files.map { file in Result { try DataCrypto.open(file, password: password) } }
+        }.value
         var report = RemoteSyncReport()
         var wrongPassword = 0
-        for file in files {
+        for file in opened {
             do {
-                let json = try DataCrypto.open(file, password: password)
+                let json = try file.get()
                 let package = try JSONDecoder().decode(SyncPackage.self, from: json)
                 guard package.deviceID != SyncEngine.deviceID else { continue }
                 let result = try SyncEngine.apply(package, in: context, settings: settings)
@@ -152,8 +162,8 @@ final class CloudFolderSync {
         let ownName = "ClassBuddy-\(SyncEngine.deviceID.prefix(8)).\(Self.fileExtension)"
         do {
             let files = try await Task.detached { try Self.readFiles(in: folder, except: ownName) }.value
-            let report = RemoteSync.merge(files, in: context, settings: settings, password: password)
-            let own = try RemoteSync.ownFile(in: context, settings: settings, deviceName: deviceName, password: password)
+            let report = await RemoteSync.merge(files, in: context, settings: settings, password: password)
+            let own = try await RemoteSync.ownFile(in: context, settings: settings, deviceName: deviceName, password: password)
             try await Task.detached { try Self.write(own, to: folder.appending(path: ownName)) }.value
             lastSync = .now
             UserDefaults.standard.set(lastSync, forKey: Self.lastSyncKey)
@@ -257,11 +267,11 @@ final class ICloudSync {
 
             let password = DataPassword.current
             let files = try await fetchFiles(from: database)
-            let report = RemoteSync.merge(files, in: context, settings: settings, password: password)
+            let report = await RemoteSync.merge(files, in: context, settings: settings, password: password)
 
             let fingerprint = try RemoteSync.fingerprint(in: context, settings: settings, password: password)
             if fingerprint != UserDefaults.standard.string(forKey: Self.fingerprintKey) {
-                let own = try RemoteSync.ownFile(in: context, settings: settings, deviceName: deviceName, password: password)
+                let own = try await RemoteSync.ownFile(in: context, settings: settings, deviceName: deviceName, password: password)
                 try await upload(own, deviceName: deviceName, to: database)
                 UserDefaults.standard.set(fingerprint, forKey: Self.fingerprintKey)
             }

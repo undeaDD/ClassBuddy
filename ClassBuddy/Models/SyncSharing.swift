@@ -31,7 +31,10 @@ extension SyncEngine {
     /// Wirft `DataCrypto.CryptoError.wrongPassword`, wenn das Passwort nicht passt.
     static func decodeShare(_ data: Data, password: String = DataPassword.current) throws -> SyncPackage {
         guard DataCrypto.isSealed(data) else { throw SyncError.unreadableShare }
-        let json = try DataCrypto.open(data, password: password)
+        return try decodeShareJSON(DataCrypto.open(data, password: password))
+    }
+
+    static func decodeShareJSON(_ json: Data) throws -> SyncPackage {
         do {
             return try JSONDecoder().decode(SyncPackage.self, from: json)
         } catch {
@@ -127,15 +130,19 @@ struct SharedPackageImport: ViewModifier {
 
     @State private var enteredPassword = ""
 
-    static func load(_ url: URL) throws -> PendingSharedPackage {
+    static func load(_ url: URL) async throws -> PendingSharedPackage {
         let accessing = url.startAccessingSecurityScopedResource()
-        defer { if accessing { url.stopAccessingSecurityScopedResource() } }
-        return try unlock(Data(contentsOf: url), password: DataPassword.current)
+        let data = Result { try Data(contentsOf: url) }
+        if accessing { url.stopAccessingSecurityScopedResource() }
+        return try await unlock(data.get(), password: DataPassword.current)
     }
 
-    static func unlock(_ data: Data, password: String) throws -> PendingSharedPackage {
+    /// Entschlüsseln im Hintergrund, Lesen des Pakets auf dem Main Thread.
+    static func unlock(_ data: Data, password: String) async throws -> PendingSharedPackage {
+        guard DataCrypto.isSealed(data) else { throw SyncError.unreadableShare }
+        let opened = await Task.detached { Result { try DataCrypto.open(data, password: password) } }.value
         do {
-            let package = try SyncEngine.decodeShare(data, password: password)
+            let package = try SyncEngine.decodeShareJSON(opened.get())
             try SyncEngine.validate(package, appVersion: AppInfo.version)
             return .ready(package)
         } catch DataCrypto.CryptoError.wrongPassword {
@@ -147,10 +154,12 @@ struct SharedPackageImport: ViewModifier {
         content
             .onOpenURL { url in
                 guard url.isFileURL else { return }
-                do {
-                    app.pendingSharedPackage = try Self.load(url)
-                } catch {
-                    toasts.error(error.localizedDescription)
+                Task {
+                    do {
+                        app.pendingSharedPackage = try await Self.load(url)
+                    } catch {
+                        toasts.error(error.localizedDescription)
+                    }
                 }
             }
             .alert("Passwort des Pakets", isPresented: lockedBinding) {
@@ -199,22 +208,20 @@ struct SharedPackageImport: ViewModifier {
         guard case .locked(let data) = app.pendingSharedPackage else { return }
         let password = enteredPassword
         enteredPassword = ""
-        do {
-            let unlocked = try Self.unlock(data, password: password)
-            if case .locked = unlocked {
-                toasts.error(DataCrypto.CryptoError.wrongPassword.localizedDescription)
-                app.pendingSharedPackage = nil
-            } else {
-                // Nach dem Schließen der Abfrage, sonst erscheint die Bestätigung nicht.
-                app.pendingSharedPackage = nil
-                Task {
+        // Abfrage schließen; die Bestätigung erscheint danach (zusammen geht nicht).
+        app.pendingSharedPackage = nil
+        Task {
+            do {
+                let unlocked = try await Self.unlock(data, password: password)
+                if case .locked = unlocked {
+                    toasts.error(DataCrypto.CryptoError.wrongPassword.localizedDescription)
+                } else {
                     try? await Task.sleep(for: .milliseconds(400))
                     app.pendingSharedPackage = unlocked
                 }
+            } catch {
+                toasts.error(error.localizedDescription)
             }
-        } catch {
-            app.pendingSharedPackage = nil
-            toasts.error(error.localizedDescription)
         }
     }
 

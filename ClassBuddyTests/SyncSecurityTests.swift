@@ -167,10 +167,10 @@ struct SyncSecurityTests {
     }
 
     @Test("Unvollständige Datei wird übersprungen und gemeldet")
-    func mergeSkipsCorruptFile() throws {
+    func mergeSkipsCorruptFile() async throws {
         let context = try Self.makeContext()
         let corrupt = try DataCrypto.seal(Data("kein Paket".utf8), password: "passwort-1")
-        let report = RemoteSync.merge([corrupt], in: context, settings: try Self.makeSettings(), password: "passwort-1")
+        let report = await RemoteSync.merge([corrupt], in: context, settings: try Self.makeSettings(), password: "passwort-1")
         #expect(report.devices == 0)
         #expect(report.problems == ["Eine Datei war unvollständig und wurde übersprungen."])
     }
@@ -217,14 +217,14 @@ struct SyncSecurityTests {
     // MARK: Kollegen-Paket
 
     @Test("Paket öffnen: falsches Passwort fragt nach, richtiges ist bereit")
-    func sharedPackageUnlock() throws {
+    func sharedPackageUnlock() async throws {
         let context = try Self.makeContext()
         context.insert(Student(firstName: "Mia", lastName: "Kraus"))
         try context.save()
         let package = try SyncEngine.sharePackage(in: context, settings: try Self.makeSettings())
         let file = try SyncEngine.encodeShare(package, password: "absender-passwort")
-        #expect(try SharedPackageImport.unlock(file, password: "anderes-passwort").package == nil)
-        let ready = try SharedPackageImport.unlock(file, password: "absender-passwort")
+        #expect(try await SharedPackageImport.unlock(file, password: "anderes-passwort").package == nil)
+        let ready = try await SharedPackageImport.unlock(file, password: "absender-passwort")
         #expect(ready.package?.entries.contains { $0.type == Student.syncRecordType } == true)
     }
 }

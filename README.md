@@ -9,6 +9,7 @@
 
 [![Semgrep](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml/badge.svg)](https://github.com/undeaDD/ClassBuddy/actions/workflows/semgrep.yml)
 [![Test coverage: logic 86%](https://img.shields.io/badge/test%20coverage%20(logic)-86%25-brightgreen)](scripts/coverage.sh)
+[![Tests: 300 passing](https://img.shields.io/badge/tests-300%20passing-brightgreen)](scripts/test.sh)
 [![Latest release](https://img.shields.io/github/v/release/undeaDD/ClassBuddy?label=version&color=9c6830)](https://github.com/undeaDD/ClassBuddy/releases/latest)
 ![Platform](https://img.shields.io/badge/iOS%20%7C%20iPadOS-17.7%2B-000000?logo=apple)
 [![License: PolyForm Strict](https://img.shields.io/badge/license-PolyForm%20Strict-blue)](LICENSE)

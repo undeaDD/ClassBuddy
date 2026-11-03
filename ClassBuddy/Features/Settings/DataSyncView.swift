@@ -351,9 +351,17 @@ private struct BackupSection: View {
     }
 
     /// Verschlüsselte Datei öffnen; passt das Passwort nicht, danach fragen.
+    /// Entschlüsseln im Hintergrund (100 000 Runden SHA-512), die App bleibt bedienbar.
     private func unlock(_ data: Data, password: String, isRetry: Bool = false) {
+        Task {
+            let result = await Task.detached { Result { try OfficeEncryption.decrypt(data, password: password) } }.value
+            handleUnlock(result, data: data, isRetry: isRetry)
+        }
+    }
+
+    private func handleUnlock(_ result: Result<Data, Error>, data: Data, isRetry: Bool) {
         do {
-            let xlsx = try OfficeEncryption.decrypt(data, password: password)
+            let xlsx = try result.get()
             // Nach dem Schließen der Abfrage, sonst erscheint die Bestätigung nicht.
             Task {
                 if isRetry { try? await Task.sleep(for: .milliseconds(400)) }
@@ -370,14 +378,18 @@ private struct BackupSection: View {
         }
     }
 
+    /// Tabellen auf dem Main Thread (SwiftData), Verschlüsseln im Hintergrund.
     private func export() {
-        do {
-            let xlsx = try Backup.export(context: modelContext, settings: settings.values, appearance: appearance)
-            let data = try OfficeEncryption.encrypt(xlsx, password: DataPassword.current)
-            exportFile = SpreadsheetFile(data: data)
-            isExporterPresented = true
-        } catch {
-            toasts.error(loc("Export fehlgeschlagen: \(error.localizedDescription)"))
+        Task {
+            do {
+                let xlsx = try Backup.export(context: modelContext, settings: settings.values, appearance: appearance)
+                let password = DataPassword.current
+                let data = try await Task.detached { try OfficeEncryption.encrypt(xlsx, password: password) }.value
+                exportFile = SpreadsheetFile(data: data)
+                isExporterPresented = true
+            } catch {
+                toasts.error(loc("Export fehlgeschlagen: \(error.localizedDescription)"))
+            }
         }
     }
 
@@ -443,10 +455,12 @@ private struct ShareSection: View {
                 .ignoresSafeArea()
         }
         .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: [.classBuddyPackage]) { result in
-            do {
-                app.pendingSharedPackage = try SharedPackageImport.load(try result.get())
-            } catch {
-                toasts.error(error.localizedDescription)
+            Task {
+                do {
+                    app.pendingSharedPackage = try await SharedPackageImport.load(result.get())
+                } catch {
+                    toasts.error(error.localizedDescription)
+                }
             }
         }
     }
@@ -459,12 +473,17 @@ private struct ShareSection: View {
             """)
     }
 
+    /// Paket auf dem Main Thread (SwiftData), Verschlüsseln und Schreiben im Hintergrund.
     private func share() {
-        do {
-            let package = try SyncEngine.sharePackage(in: modelContext, settings: settings)
-            shareFile = try SharedPackageFile.write(SyncEngine.encodeShare(package))
-        } catch {
-            toasts.error(loc("Paket konnte nicht erstellt werden: \(error.localizedDescription)"))
+        Task {
+            do {
+                let json = try JSONEncoder().encode(SyncEngine.sharePackage(in: modelContext, settings: settings))
+                let password = DataPassword.current
+                let sealed = try await Task.detached { try DataCrypto.seal(json, password: password) }.value
+                shareFile = try SharedPackageFile.write(sealed)
+            } catch {
+                toasts.error(loc("Paket konnte nicht erstellt werden: \(error.localizedDescription)"))
+            }
         }
     }
 }

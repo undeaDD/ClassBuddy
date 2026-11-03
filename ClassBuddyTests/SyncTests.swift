@@ -258,7 +258,7 @@ struct SyncTests {
     }
 
     @Test("Cloud-Ordner und iCloud: eine verschlüsselte Datei je Gerät, Zusammenführen, falsches Passwort meldet sich")
-    func remoteFiles() throws {
+    func remoteFiles() async throws {
         let deviceA = try Self.makeDevice(), deviceB = try Self.makeDevice()
         let settings = SchoolSettings(defaults: try #require(UserDefaults(suiteName: "SyncTests.F.\(UUID())")))
         deviceA.insert(Student(firstName: "Emma", lastName: "A"))
@@ -270,15 +270,15 @@ struct SyncTests {
         var packageB = try SyncEngine.makePackage(since: nil, in: deviceB, appVersion: AppInfo.version)
         packageB.deviceID = "anderes-geraet"
         let fileB = try DataCrypto.seal(JSONEncoder().encode(packageB), password: "gemeinsam-123")
-        let report = RemoteSync.merge([fileB], in: deviceA, settings: settings, password: "gemeinsam-123")
+        let report = await RemoteSync.merge([fileB], in: deviceA, settings: settings, password: "gemeinsam-123")
         #expect(report.devices == 1 && report.result.inserted == 1 && report.problems.isEmpty)
         #expect(Set(try deviceA.fetch(FetchDescriptor<Student>()).map(\.firstName)) == ["Emma", "Ben"])
 
-        let wrong = RemoteSync.merge([fileB], in: deviceA, settings: settings, password: "anderes-passwort")
+        let wrong = await RemoteSync.merge([fileB], in: deviceA, settings: settings, password: "anderes-passwort")
         #expect(wrong.devices == 0 && wrong.problems.count == 1)
         // Eigene Datei wird übersprungen.
-        let own = try RemoteSync.ownFile(in: deviceA, settings: settings, deviceName: "iPad", password: "gemeinsam-123")
-        #expect(RemoteSync.merge([own], in: deviceA, settings: settings, password: "gemeinsam-123").devices == 0)
+        let own = try await RemoteSync.ownFile(in: deviceA, settings: settings, deviceName: "iPad", password: "gemeinsam-123")
+        #expect(await RemoteSync.merge([own], in: deviceA, settings: settings, password: "gemeinsam-123").devices == 0)
         // Fingerabdruck ändert sich nur mit dem Stand oder dem Passwort.
         let first = try RemoteSync.fingerprint(in: deviceA, settings: settings, password: "gemeinsam-123")
         #expect(try RemoteSync.fingerprint(in: deviceA, settings: settings, password: "gemeinsam-123") == first)
