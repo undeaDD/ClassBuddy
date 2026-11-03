@@ -83,13 +83,14 @@
 </head>
 <body>
 <main>
-  <p class="intro">Datenschutzerklärung für die App ClassBuddy (iPad und iPhone) nach der Datenschutz-Grundverordnung (DSGVO). Stand: 8. Oktober 2026.</p>
+  <p class="intro">Datenschutzerklärung für die App ClassBuddy (iPad und iPhone) nach der Datenschutz-Grundverordnung (DSGVO). Stand: 3. November 2026.</p>
 
   <h2>Auf einen Blick</h2>
   <div class="card">
     <div class="row"><span class="ok">✓</span> Kein Konto, keine Registrierung</div>
     <div class="row"><span class="ok">✓</span> Kein Tracking, keine Analyse, keine Werbung, keine Drittanbieter-SDKs</div>
     <div class="row"><span class="ok">✓</span> Alle Daten bleiben lokal auf Ihrem Gerät. Es gibt keinen ClassBuddy-Server.</div>
+    <div class="row"><span class="ok">✓</span> Optional: Abgleich mit Ihren eigenen Geräten direkt über das WLAN und Weitergabe an Kollegen, nur wenn Sie es selbst einrichten bzw. auslösen.</div>
     <div class="row"><span class="ok">✓</span> Der Anbieter erhält keine Schülerdaten.</div>
     <div class="row"><span class="ok">✓</span> Der Quellcode ist öffentlich einsehbar.</div>
   </div>
@@ -183,6 +184,18 @@
     </div>
   </div>
 
+  <h2>Abgleich und Weitergabe (optional)</h2>
+  <div class="card">
+    <div class="row">
+      <div class="name">Eigene Geräte abgleichen</div>
+      <p class="muted">Unter Einstellungen › App-Einstellungen › Daten &amp; Sync können Sie Ihre eigenen Geräte (z. B. iPad und iPhone) per QR-Code koppeln. Abgeglichen wird direkt von Gerät zu Gerät im selben WLAN, ohne Server und ohne Internet. Die Verbindung ist mit einem Schlüssel verschlüsselt (TLS), den nur die gekoppelten Geräte kennen; er liegt im Schlüsselbund des Geräts. Übertragen werden alle Daten der App samt Schuleinstellungen und Profil, aber nur an gekoppelte Geräte und nur, solange ClassBuddy auf beiden geöffnet ist. Eine Kopplung lässt sich jederzeit entfernen.</p>
+    </div>
+    <div class="row">
+      <div class="name">An Kollegen weitergeben</div>
+      <p class="muted">„Weitergeben“ erstellt eine Datei mit allen Daten und den Schuleinstellungen, ohne Ihr Profil. Sie entscheiden selbst, ob und wie Sie diese verschicken (z. B. AirDrop, Mail, Dateien). Wer die Datei in ClassBuddy öffnet, ersetzt nach Bestätigung alle eigenen Daten. Der Anbieter erhält die Datei nicht.</p>
+    </div>
+  </div>
+
   <h2>Zugriffsrechte</h2>
   <div class="card">
     <div class="row">
@@ -199,7 +212,11 @@
     </div>
     <div class="row">
       <div class="name">Kamera</div>
-      <p class="muted">Nur zum Scannen des Tafelbilds. Das Foto wird lokal in der App gespeichert und nicht übertragen.</p>
+      <p class="muted">Nur zum Scannen des Tafelbilds und des Kopplungscodes beim Abgleich. Das Foto wird lokal in der App gespeichert und nicht übertragen.</p>
+    </div>
+    <div class="row">
+      <div class="name">Lokales Netzwerk</div>
+      <p class="muted">Nur für den Abgleich mit Ihren gekoppelten Geräten im selben WLAN (siehe oben). Ohne Kopplung wird nichts gesendet.</p>
     </div>
     <div class="row">
       <div class="name">Mikrofon</div>
@@ -220,7 +237,7 @@
     <div class="row">
       <p class="muted" style="margin-top:0">Für Daten, die Sie in der App verwalten, können Sie die Rechte der betroffenen Personen (Art. 15 bis 21 DSGVO) direkt in der App umsetzen:</p>
       <ul class="muted">
-        <li><strong>Auskunft und Übertragbarkeit:</strong> Einstellungen › App-Einstellungen › Exportieren</li>
+        <li><strong>Auskunft und Übertragbarkeit:</strong> Einstellungen › App-Einstellungen › Daten &amp; Sync › Exportieren</li>
         <li><strong>Berichtigung:</strong> Einträge jederzeit bearbeiten</li>
         <li><strong>Löschung:</strong> einzelne Einträge löschen, eine Klasse samt Schülern löschen, „Alle lokalen Daten löschen“ oder die App löschen</li>
       </ul>
@@ -235,7 +252,8 @@
         <li>Die Verarbeitung von Schülerdaten auf privaten Geräten ist je nach Bundesland und Schule genehmigungspflichtig oder an Auflagen gebunden. Bitte klären Sie dies vorab mit Ihrer Schulleitung bzw. der oder dem Datenschutzbeauftragten.</li>
         <li>Erfassen Sie nur, was Sie tatsächlich benötigen (Datenminimierung, Art. 5 Abs. 1 lit. c DSGVO).</li>
         <li>Richten Sie einen Gerätecode ein und lassen Sie die App-Sperre aktiviert.</li>
-        <li>Excel-Exporte sind nicht verschlüsselt: Bewahren Sie diese sicher auf, versenden Sie sie nicht per unverschlüsselter E-Mail und löschen Sie sie nach Gebrauch.</li>
+        <li>Excel-Exporte und weitergegebene Pakete sind nicht verschlüsselt: Bewahren Sie diese sicher auf, versenden Sie sie nicht per unverschlüsselter E-Mail und löschen Sie sie nach Gebrauch.</li>
+        <li>Ob Sie Daten an Kollegen weitergeben dürfen, klären Sie bitte mit Ihrer Schule.</li>
         <li>Löschen Sie Klassen, die Sie nicht mehr unterrichten (z. B. zum Schuljahresende).</li>
       </ul>
       <p class="muted">Diese Hinweise stellen keine Rechtsberatung dar.</p>

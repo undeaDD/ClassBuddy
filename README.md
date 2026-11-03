@@ -14,7 +14,7 @@
 [![License: PolyForm Strict](https://img.shields.io/badge/license-PolyForm%20Strict-blue)](LICENSE)
 
 **ClassBuddy** is a privacy-first classroom companion for teachers on iPad and iPhone.
-It keeps your classes, students and timetable in one place — **stored only on your device**,
+It keeps your classes, students and timetable in one place — **stored on your device**, synced only with your own devices if you choose,
 protected by biometrics (Face ID or Touch ID), with a one-tap privacy mode for when students are looking over your shoulder.
 
 > The app's interface is in **German** (made for teachers in Germany) but the app supports **English** as well.
@@ -47,6 +47,8 @@ protected by biometrics (Face ID or Touch ID), with a one-tap privacy mode for w
   - Biometric (Face ID / Touch ID) or passcode lock on launch and when returning to the app
   - Privacy mode hides names, grades, notes and more on every page (turning it off needs biometrics or the passcode)
   - Everything is stored locally with SwiftData — no account, no cloud, no tracking
+- **Sync & sharing (optional)** – pair your own iPad and iPhone by QR code and sync directly over Wi‑Fi (TLS, no server);
+  hand all data to a colleague as a `.classbuddy` file (AirDrop, Mail, Files), the receiver replaces their data
 - **Excel export / import** – one sheet per area (classes, students, lessons, appointments, settings, …),
   editable in Excel or Numbers
 - iPad and iPhone, light & dark mode, native SwiftUI, no third-party dependencies
@@ -82,7 +84,8 @@ ClassBuddy is built for GDPR-compliant use in German schools. The full privacy n
 
 - No account, no server, no cloud sync, no analytics, no ads, no third-party SDKs
 - All data (classes, students, timetable, notes, documents) stays in the app container on the device,
-  encrypted by extra iOS/iPadOS data protection when a device passcode is set
+  encrypted by extra iOS/iPadOS data protection when a device passcode is set; it only leaves the device when you
+  sync with your own paired devices, share with a colleague or export
 - The developer never receives student data; the teacher (or school) is the data controller for everything entered in the app
 - App lock via biometrics or passcode, bound to a keychain item released only by the Secure Enclave
 - Privacy mode hides names, grades and notes on every screen; content is blurred in the app switcher

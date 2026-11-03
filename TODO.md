@@ -49,10 +49,9 @@ QR-Kopplung, Bonjour + TLS mit gemeinsamem Schlüssel, „Jetzt synchronisieren�
       Container als Compound File), Datei öffnet in Excel/Numbers/LibreOffice nur mit Passwort; eigener Code wie
       `XLSX.swift` und `ZipArchive.swift`, CommonCrypto für AES-CBC, keine Bibliothek. Import probiert das gespeicherte
       Passwort und fragt nur nach, wenn es nicht passt. Teilen an Kollegen nutzt es nicht
-- [ ] Texte: `privacy.html` + `.en` (Auf einen Blick, gespeicherte Daten, Internet-Verbindungen, Zugriffsrechte lokales
-      Netzwerk, Hinweise für Lehrkräfte: Wahl des Cloud-Anbieters und Weitergabe an Kollegen liegt bei der Lehrkraft),
-      `site/` (Startseite, Support), README und FEATURES („kein Cloud-Sync“); `licenses.html` nur bei neuer Fremd-Bibliothek
-      (bisher keine geplant)
+- [ ] Texte für iCloud und Cloud-Ordner nachziehen: `privacy.html` + `.en` (Abschnitt „Abgleich und Weitergabe“,
+      Wahl des Cloud-Anbieters liegt bei der Lehrkraft), `site/` (FAQ, „keine Cloud“), README („no cloud sync“).
+      Lokaler Sync und Teilen sind seit 03.11.2026 beschrieben
 
 ## Anleitung
 

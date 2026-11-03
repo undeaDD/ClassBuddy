@@ -9,7 +9,8 @@ by Dominic Drees (Devsforge.de) as part of ClassBuddy under any license, includi
 
 ## Ground rules
 
-- **Privacy first:** student data never leaves the device. No analytics, no cloud sync, no third-party SDKs.
+- **Privacy first:** student data only leaves the device when the teacher syncs with their own paired devices
+  (direct, no server), shares with a colleague or exports. No analytics, no server, no third-party SDKs.
 - **Native only:** SwiftUI + Apple frameworks, no external dependencies.
 - **German UI:** the app is written for German teachers; UI strings are German, code comments too.
 - **Never commit real student data** – not in code, tests, screenshots or issues.
