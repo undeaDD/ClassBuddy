@@ -122,6 +122,7 @@ final class LocalSyncService {
     private(set) var pendingCode: PairingCode?
 
     private var context: ModelContext?
+    private var settings: SchoolSettings?
     private var deviceName = ""
     private var listeners: [String: NWListener] = [:]
     private var sessions: [ObjectIdentifier: LocalSyncSession] = [:]
@@ -144,8 +145,9 @@ final class LocalSyncService {
     // MARK: Lebenszyklus
 
     /// App im Vordergrund: auf gekoppelte Geräte warten.
-    func start(context: ModelContext, deviceName: String) {
+    func start(context: ModelContext, settings: SchoolSettings, deviceName: String) {
         self.context = context
+        self.settings = settings
         self.deviceName = deviceName
         for pairing in pairings where listeners[pairing.id] == nil {
             listen(for: pairing.id)
@@ -255,11 +257,13 @@ final class LocalSyncService {
     }
 
     private func run(_ connection: NWConnection, pairingID: String) {
-        guard let context else {
+        guard let context, let settings else {
             connection.cancel()
             return
         }
-        let session = LocalSyncSession(connection: connection, context: context, deviceName: deviceName) { [weak self] session, outcome in
+        let session = LocalSyncSession(
+            connection: connection, context: context, settings: settings, deviceName: deviceName
+        ) { [weak self] session, outcome in
             self?.finish(session, pairingID: pairingID, outcome: outcome)
         }
         sessions[ObjectIdentifier(session)] = session
@@ -296,8 +300,14 @@ final class LocalSyncService {
 
     static func summary(peer: String, result: SyncResult) -> String {
         let changes = result.inserted + result.updated + result.deleted
-        guard changes > 0 else { return loc("Mit \(peer) abgeglichen, alles war schon aktuell.") }
+        let settingsNote = result.settingsUpdated ? " " + loc("Einstellungen übernommen.") : ""
+        guard changes > 0 else {
+            return result.settingsUpdated
+                ? loc("Mit \(peer) abgeglichen.") + settingsNote
+                : loc("Mit \(peer) abgeglichen, alles war schon aktuell.")
+        }
         return loc("Mit \(peer) abgeglichen: \(result.inserted) neu, \(result.updated) aktualisiert, \(result.deleted) gelöscht.")
+            + settingsNote
     }
 
     /// TCP mit TLS 1.2 über den gemeinsamen Schlüssel (PSK); auch direkt zwischen Geräten (Peer-to-Peer-WLAN).
@@ -328,6 +338,7 @@ final class LocalSyncSession {
 
     private let connection: NWConnection
     private let context: ModelContext
+    private let settings: SchoolSettings
     private let deviceName: String
     private let onFinish: (LocalSyncSession, Outcome) -> Void
     private var peerName = ""
@@ -335,9 +346,13 @@ final class LocalSyncSession {
     private var peerIsDone = false
     private var isFinished = false
 
-    init(connection: NWConnection, context: ModelContext, deviceName: String, onFinish: @escaping (LocalSyncSession, Outcome) -> Void) {
+    init(
+        connection: NWConnection, context: ModelContext, settings: SchoolSettings, deviceName: String,
+        onFinish: @escaping (LocalSyncSession, Outcome) -> Void
+    ) {
         self.connection = connection
         self.context = context
+        self.settings = settings
         self.deviceName = deviceName
         self.onFinish = onFinish
     }
@@ -353,7 +368,8 @@ final class LocalSyncSession {
         switch state {
         case .ready:
             do {
-                send(.hello(.init(appVersion: AppInfo.version, deviceName: deviceName, manifest: try SyncEngine.manifest(in: context))))
+                let manifest = try SyncEngine.manifest(in: context, settings: settings)
+                send(.hello(.init(appVersion: AppInfo.version, deviceName: deviceName, manifest: manifest)))
                 receive()
             } catch {
                 fail(error.localizedDescription)
@@ -378,13 +394,13 @@ final class LocalSyncSession {
                 return
             }
             do {
-                send(.package(try SyncEngine.makePackage(for: hello.manifest, in: context)))
+                send(.package(try SyncEngine.makePackage(for: hello.manifest, in: context, settings: settings)))
             } catch {
                 fail(error.localizedDescription)
             }
         case .package(let package):
             do {
-                result = try SyncEngine.apply(package, in: context)
+                result = try SyncEngine.apply(package, in: context, settings: settings)
                 send(.done)
                 finishIfComplete()
             } catch {

@@ -56,23 +56,50 @@ final class SchoolSettings {
     }
 
     var values: Values {
-        didSet { save() }
+        didSet {
+            guard values != oldValue else { return }
+            if !isApplyingSynced { modifiedAt = .now }
+            save()
+        }
     }
 
-    private static let key = "school.settings"
+    /// Letzte Änderung auf diesem Gerät oder übernommener Stand eines anderen Geräts (für den Sync).
+    private(set) var modifiedAt: Date
 
-    init() {
-        if let data = UserDefaults.standard.data(forKey: Self.key),
+    private static let key = "school.settings"
+    private static let modifiedKey = "school.settings.modified"
+    private let defaults: UserDefaults
+    private var isApplyingSynced = false
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        if let data = defaults.data(forKey: Self.key),
            let decoded = try? JSONDecoder().decode(Values.self, from: data) {
             values = decoded
+            // Vor dem Sync gespeichert: gilt als eingerichtet und gewinnt gegen ein frisches Gerät.
+            modifiedAt = defaults.object(forKey: Self.modifiedKey) as? Date ?? Date(timeIntervalSinceReferenceDate: 0)
         } else {
             values = Values()
+            modifiedAt = .distantPast
         }
+    }
+
+    /// Stand eines anderen Geräts übernehmen, wenn er neuer ist; behält dessen Zeitstempel.
+    @discardableResult
+    func applySynced(_ synced: SyncSettings) -> Bool {
+        guard synced.modifiedAt > modifiedAt else { return false }
+        isApplyingSynced = true
+        defer { isApplyingSynced = false }
+        modifiedAt = synced.modifiedAt
+        values = synced.values
+        save()
+        return true
     }
 
     private func save() {
         guard let data = try? JSONEncoder().encode(values) else { return }
-        UserDefaults.standard.set(data, forKey: Self.key)
+        defaults.set(data, forKey: Self.key)
+        defaults.set(modifiedAt, forKey: Self.modifiedKey)
     }
 
     /// Angezeigte Wochentage (0 = Montag … 6 = Sonntag).

@@ -13,6 +13,8 @@ struct QuickRatingBar: View {
     let onClose: () -> Void
 
     @State private var lastSaved: StudentObservation?
+    /// Breite der Skala-Knöpfe: zu schmal für „− − −“ nebeneinander (iPhone, schmales iPad-Fenster) → übereinander.
+    @State private var scaleWidth: CGFloat = 0
     /// Ziehen nach unten zum Schließen.
     @State private var dragOffset: CGFloat = 0
     @State private var isNotePresented = false
@@ -95,14 +97,15 @@ struct QuickRatingBar: View {
 
     private var scaleButtons: some View {
         let options = settings.scale.options
-        // iPhone, 7 Stufen: „− − −“ steht übereinander, dafür etwas höhere Knöpfe (alle gleich hoch).
-        let height: CGFloat = settings.scale == .sevenStep && device.isPhone ? 68 : 52
+        // 7 Stufen in schmalen Knöpfen: alle Zeichen übereinander, dafür etwas höhere Knöpfe (alle gleich hoch).
+        let stacked = settings.scale == .sevenStep && scaleWidth / CGFloat(options.count) < 72
+        let height: CGFloat = stacked ? 68 : 52
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: options.count), spacing: 8) {
             ForEach(options, id: \.value) { option in
                 Button {
                     save(kind: .rating, value: option.value)
                 } label: {
-                    ScaleOptionLabel(option: option, iconSize: 26, stacked: settings.scale == .sevenStep && device.isPhone)
+                    ScaleOptionLabel(option: option, iconSize: 26, stacked: stacked)
                         .font(.title3.weight(.semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
@@ -111,6 +114,7 @@ struct QuickRatingBar: View {
                 .buttonStyle(RatingButtonStyle(tone: settings.scale == .counter ? .positive : ObservationScale.tone(of: option.value)))
             }
         }
+        .onGeometryChange(for: CGFloat.self, of: \.size.width) { scaleWidth = $0 }
     }
 
     /// Alle Aktionen immer sichtbar: iPhone zwei Spalten, iPad eine Zeile mit vier.

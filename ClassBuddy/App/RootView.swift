@@ -27,6 +27,7 @@ struct RootView: View {
             // Weiche Kanten für alle Scroll-Container (ScrollView, List, Form …).
             // Sheets, Popover und Vollbild-Cover erben das nicht → dort jeweils `.softScrollEdges()`.
             .softScrollEdges()
+            .modifier(SharedPackageImport())
             .redacted(reason: security.isPrivacyModeOn ? .privacy : [])
             // Gesperrt / im Hintergrund: Inhalt stark unscharf, darüber Milchglas.
             // Ohne Kaufentscheidung ebenso (auf dem iPad liegt die Kaufseite als Sheet über der App).
@@ -109,7 +110,10 @@ struct RootView: View {
                     // Frühere Bewertungs-Einstellungen je Fach übernehmen (jetzt je Stufe bzw. Klasse), einmalig.
                     SubjectSettings.migrateOnce(school: settings.values, in: modelContext)
                     // Auf gekoppelte Geräte warten, solange die App offen ist (lokaler Sync).
-                    localSync.start(context: modelContext, deviceName: LocalSyncService.deviceName(teacher: settings.values.teacher))
+                    localSync.start(
+                        context: modelContext, settings: settings,
+                        deviceName: LocalSyncService.deviceName(teacher: settings.values.teacher)
+                    )
                     Task { await security.sceneDidBecomeActive() }
                     // Tageszähler der Testphase und Ablauf aktuell halten.
                     Task { await purchases.load() }

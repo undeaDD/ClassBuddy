@@ -300,15 +300,20 @@ enum LocalDataStore {
 
     /// Löscht alle Datensätze und kopierten Dokumente.
     static func deleteAll(in context: ModelContext) throws {
+        try deleteRecords(in: context)
+        // „Lokal“ löschen: keine Löschungen für andere Geräte hinterlassen (`SyncTracking` legt sie beim Sichern an).
+        try context.deleteEach(DeletedRecord.self)
+        try context.save()
+    }
+
+    /// Alle Datensätze und Dokumente löschen; `SyncTracking` hält die Löschungen für gekoppelte Geräte fest.
+    static func deleteRecords(in context: ModelContext) throws {
         // Einzeln: Sammel-Löschen scheitert, sobald Schüler mit Beziehungen existieren.
         try context.deleteEach(
             SeatAssignment.self, BoardPhoto.self, ChecklistCheck.self, Checklist.self, StudentObservation.self, Absence.self,
             SubjectSettings.self, AssessmentResult.self, Assessment.self, PeriodGrade.self, Student.self, Lesson.self,
             DashboardLink.self, CalendarEntry.self, Holiday.self, SchoolClass.self, RoomElement.self, Room.self
         )
-        try context.save()
-        // „Lokal“ löschen: keine Löschungen für andere Geräte hinterlassen (`SyncTracking` legt sie beim Sichern an).
-        try context.deleteEach(DeletedRecord.self)
         try context.save()
         try? FileManager.default.removeItem(at: LinkFileStore.directory)
         FaviconStore.removeAll()

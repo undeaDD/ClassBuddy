@@ -42,6 +42,8 @@ final class AppModel {
     var boardSubject: String?
     /// Raumliste als Sheet (iPhone): „Räume“ liegt dort unter „Mehr“, ein Tab-Wechsel führte beim Zurück dorthin.
     var isRoomsSheetPresented = false
+    /// Empfangenes Kollegen-Paket, wartet auf Bestätigung (`SharedPackageImport`).
+    var pendingSharedPackage: PendingSharedPackage?
 
     var selectedClassID: UUID? {
         didSet { UserDefaults.standard.set(selectedClassID?.uuidString, forKey: Self.selectedClassKey) }

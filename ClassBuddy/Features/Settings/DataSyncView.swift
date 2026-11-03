@@ -4,7 +4,7 @@ import SwiftUI
 import VisionKit
 
 /// Einstellungen → Daten & Sync: gekoppelte Geräte im selben Netz abgleichen, Geräte koppeln (QR-Code zeigen oder
-/// scannen) und das Excel-Backup (Export & Import).
+/// scannen), an Kollegen weitergeben und das Excel-Backup (Export & Import).
 struct DataSyncView: View {
     @Environment(LocalSyncService.self) private var localSync
     @Environment(ToastCenter.self) private var toasts
@@ -30,6 +30,7 @@ struct DataSyncView: View {
                 Text(Self.localFooter)
             }
 
+            ShareSection()
             BackupSection()
         }
         .navigationTitle("Daten & Sync")
@@ -351,6 +352,63 @@ private struct BackupSection: View {
         } catch {
             modelContext.rollback()
             toasts.error(loc("Import fehlgeschlagen: \(error.localizedDescription)"))
+        }
+    }
+}
+
+/// An Kollegen weitergeben: alle Daten als `.classbuddy`-Datei (AirDrop, Mail, Dateien) bzw. ein Paket öffnen.
+private struct ShareSection: View {
+    @Environment(AppModel.self) private var app
+    @Environment(AppSecurity.self) private var security
+    @Environment(SchoolSettings.self) private var settings
+    @Environment(\.modelContext) private var modelContext
+    @Environment(ToastCenter.self) private var toasts
+    @State private var shareFile: SharedPackageFile?
+    @State private var isImporterPresented = false
+
+    var body: some View {
+        Section {
+            Button(action: share) {
+                SettingsActionLabel(title: loc("Weitergeben"), icon: .shareIos)
+            }
+            Button {
+                isImporterPresented = true
+            } label: {
+                SettingsActionLabel(title: loc("Paket öffnen"), icon: .import)
+            }
+        } header: {
+            Text("An Kollegen weitergeben")
+        } footer: {
+            Text(Self.footer)
+        }
+        .disabled(security.isPrivacyModeOn)
+        .sheet(item: $shareFile) { file in
+            ActivitySheet(items: [file.url])
+                .presentationDetents([.medium, .large])
+                .ignoresSafeArea()
+        }
+        .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: [.classBuddyPackage]) { result in
+            do {
+                app.pendingSharedPackage = try SharedPackageImport.load(try result.get())
+            } catch {
+                toasts.error(error.localizedDescription)
+            }
+        }
+    }
+
+    private static var footer: String {
+        loc("""
+            Alle Klassen, Schüler, Notizen, Räume und Kacheln samt Schuleinstellungen als eine Datei, ohne Ihr Profil. \
+            Wer das Paket öffnet, ersetzt damit alle eigenen Daten. Beide brauchen dieselbe App-Version.
+            """)
+    }
+
+    private func share() {
+        do {
+            let package = try SyncEngine.sharePackage(in: modelContext, settings: settings)
+            shareFile = try SharedPackageFile.write(SyncEngine.encodeShare(package))
+        } catch {
+            toasts.error(loc("Paket konnte nicht erstellt werden: \(error.localizedDescription)"))
         }
     }
 }

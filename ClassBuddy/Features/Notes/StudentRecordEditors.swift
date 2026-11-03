@@ -18,7 +18,6 @@ enum ObservationEditorRoute: Identifiable {
 struct ObservationEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.device) private var device
     let route: ObservationEditorRoute
     /// Skala für neue Beobachtungen (bestehende behalten ihre).
     let scale: ObservationScale
@@ -32,6 +31,8 @@ struct ObservationEditorView: View {
     /// Nach dem Anlegen offen bleiben (geleert) für die nächste Beobachtung.
     @State private var keepOpen = false
     @State private var lastCreated: String?
+    /// Breite der Skala-Knöpfe: zu schmal für „− − −“ nebeneinander → alle übereinander.
+    @State private var scaleWidth: CGFloat = 0
 
     private var isNew: Bool {
         if case .new = route { return true }
@@ -57,7 +58,10 @@ struct ObservationEditorView: View {
                                 Button {
                                     value = option.value
                                 } label: {
-                                    ScaleOptionLabel(option: option, iconSize: 22, stacked: activeScale == .sevenStep && device.isPhone)
+                                    ScaleOptionLabel(
+                                        option: option, iconSize: 22,
+                                        stacked: activeScale == .sevenStep && scaleWidth / CGFloat(activeScale.options.count) < 60
+                                    )
                                         .font(.headline)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.5)
@@ -72,6 +76,7 @@ struct ObservationEditorView: View {
                         }
                         // Alle gleich hoch, auch wenn „− − −“ übereinander steht.
                         .fixedSize(horizontal: false, vertical: true)
+                        .onGeometryChange(for: CGFloat.self, of: \.size.width) { scaleWidth = $0 }
                     }
                 }
                 Section {

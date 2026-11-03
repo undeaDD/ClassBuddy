@@ -58,10 +58,6 @@ QR-Kopplung, Bonjour + TLS mit gemeinsamem Schlüssel, „Jetzt synchronisieren�
 
 Umgesetzt (29.10.2026): `guide.html` + `guide.en.html` (Rechtstexte-Ordner), Einstellungen › Aktionen › „Anleitung“.
 
-- [ ] Abschnitt „Daten & Sync“ ergänzen, sobald Sync fertig ist: Daten-Passwort, lokal koppeln, iCloud, Cloud-Ordner mit
-      Kurzanleitungen (Google Drive, Nextcloud, OneDrive, Dropbox, iCloud Drive: App installieren, anmelden, in Dateien
-      aktivieren, Ordner wählen), Teilen an Kollegen; Verweis von der Sync-Seite
-
 ## Website (GitHub Pages)
 
 Startseite wird erzeugt: `python3 scripts/landing-page.py` → `site/index.html` + `index.en.html` (alle Texte de/en im

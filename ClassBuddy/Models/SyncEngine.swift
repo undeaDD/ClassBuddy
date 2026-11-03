@@ -17,6 +17,14 @@ struct SyncPackage: Codable {
     var deletions: [SyncDeletion]
     /// Dateien der Dokument- und Bild-Kacheln, nach Pfad in `LinkFileStore`.
     var files: [String: Data]
+    /// Schuleinstellungen samt Profil, wenn sie beim anderen Gerät älter sind (bzw. seit `since` geändert).
+    var settings: SyncSettings?
+}
+
+/// Schuleinstellungen als ein Eintrag: Der neuere Stand gewinnt als Ganzes.
+struct SyncSettings: Codable {
+    var modifiedAt: Date
+    var values: SchoolSettings.Values
 }
 
 /// Ein Eintrag im Paket; `payload` ist das `Payload` des Typs (siehe `SyncPayloads`).
@@ -57,6 +65,7 @@ extension SyncEntry: Codable {
 struct SyncManifest: Codable, Equatable {
     var entries: [String: Date] = [:]
     var deletions: [String: Date] = [:]
+    var settingsModified: Date?
 
     static func key(_ type: String, _ id: String) -> String { "\(type)/\(id)" }
 }
@@ -74,11 +83,13 @@ struct SyncResult: Equatable {
     var deleted = 0
     /// Lokal neuer, darum behalten.
     var keptLocal = 0
+    var settingsUpdated = false
 }
 
 enum SyncError: LocalizedError, Equatable {
     case versionMismatch(remote: String, local: String)
     case unsupportedFormat(Int)
+    case unreadableShare
 
     var errorDescription: String? {
         switch self {
@@ -86,6 +97,8 @@ enum SyncError: LocalizedError, Equatable {
             loc("Das andere Gerät hat ClassBuddy \(remote), dieses \(local). Bitte ClassBuddy auf allen Geräten aktualisieren.")
         case .unsupportedFormat:
             loc("Dieses Paket stammt aus einer anderen ClassBuddy-Version. Bitte ClassBuddy auf allen Geräten aktualisieren.")
+        case .unreadableShare:
+            loc("Die Datei ist kein ClassBuddy-Paket oder unvollständig.")
         }
     }
 }
@@ -115,16 +128,22 @@ enum SyncEngine {
 
     // MARK: Schreiben
 
-    static func makePackage(since: Date?, in context: ModelContext, appVersion: String = AppInfo.version) throws -> SyncPackage {
-        try makePackage(
+    static func makePackage(
+        since: Date?, in context: ModelContext, settings: SchoolSettings? = nil, appVersion: String = AppInfo.version
+    ) throws -> SyncPackage {
+        var package = try makePackage(
             in: context, appVersion: appVersion, since: since,
             includesEntry: { _, _, lastModified in since.map { lastModified > $0 } ?? true },
             includesDeletion: { _, deletedAt in since.map { deletedAt > $0 } ?? true }
         )
+        if let settings, since.map({ settings.modifiedAt > $0 }) ?? true {
+            package.settings = SyncSettings(modifiedAt: settings.modifiedAt, values: settings.values)
+        }
+        return package
     }
 
-    static func manifest(in context: ModelContext) throws -> SyncManifest {
-        var manifest = SyncManifest()
+    static func manifest(in context: ModelContext, settings: SchoolSettings? = nil) throws -> SyncManifest {
+        var manifest = SyncManifest(settingsModified: settings?.modifiedAt)
         for type in recordTypes {
             for (id, lastModified) in try type.stamps(in: context) {
                 manifest.entries[SyncManifest.key(type.syncRecordType, id)] = lastModified
@@ -139,9 +158,10 @@ enum SyncEngine {
 
     /// Alles, was beim anderen Gerät (laut `manifest`) fehlt oder älter ist; nichts, was es inzwischen gelöscht hat.
     static func makePackage(
-        for manifest: SyncManifest, in context: ModelContext, appVersion: String = AppInfo.version
+        for manifest: SyncManifest, in context: ModelContext, settings: SchoolSettings? = nil,
+        appVersion: String = AppInfo.version
     ) throws -> SyncPackage {
-        try makePackage(
+        var package = try makePackage(
             in: context, appVersion: appVersion, since: nil,
             includesEntry: { type, id, lastModified in
                 let key = SyncManifest.key(type, id)
@@ -150,6 +170,10 @@ enum SyncEngine {
             },
             includesDeletion: { key, deletedAt in manifest.deletions[key].map { deletedAt > $0 } ?? true }
         )
+        if let settings, settings.modifiedAt > manifest.settingsModified ?? .distantPast {
+            package.settings = SyncSettings(modifiedAt: settings.modifiedAt, values: settings.values)
+        }
+        return package
     }
 
     private static func makePackage(
@@ -180,11 +204,10 @@ enum SyncEngine {
     // MARK: Übernehmen
 
     @discardableResult
-    static func apply(_ package: SyncPackage, in context: ModelContext, appVersion: String = AppInfo.version) throws -> SyncResult {
-        guard package.format == SyncPackage.currentFormat else { throw SyncError.unsupportedFormat(package.format) }
-        guard package.appVersion == appVersion else {
-            throw SyncError.versionMismatch(remote: package.appVersion, local: appVersion)
-        }
+    static func apply(
+        _ package: SyncPackage, in context: ModelContext, settings: SchoolSettings? = nil, appVersion: String = AppInfo.version
+    ) throws -> SyncResult {
+        try validate(package, appVersion: appVersion)
         SyncTracking.isApplyingRemoteChanges = true
         defer { SyncTracking.isApplyingRemoteChanges = false }
 
@@ -208,7 +231,18 @@ enum SyncEngine {
 
         writeFiles(package.files)
         try context.save()
+        if let synced = package.settings, let settings {
+            result.settingsUpdated = settings.applySynced(synced)
+        }
         return result
+    }
+
+    /// Nur gleiches Paketformat und gleiche App-Version samt Build.
+    static func validate(_ package: SyncPackage, appVersion: String) throws {
+        guard package.format == SyncPackage.currentFormat else { throw SyncError.unsupportedFormat(package.format) }
+        guard package.appVersion == appVersion else {
+            throw SyncError.versionMismatch(remote: package.appVersion, local: appVersion)
+        }
     }
 
     /// Löschungen zuerst: lokal nur, wenn der Eintrag dort nicht später geändert wurde. Jede wird auch hier

@@ -1,0 +1,176 @@
+import Foundation
+import SwiftData
+import SwiftUI
+import UniformTypeIdentifiers
+
+/// Teilen an Kollegen: alle Daten samt Kachel-Dateien und Schuleinstellungen (ohne Profil der Lehrkraft) als eine
+/// `.classbuddy`-Datei. Der Empfänger bestätigt und ersetzt damit alle seine Daten; kein Zusammenführen.
+nonisolated extension UTType {
+    static let classBuddyPackage = UTType(exportedAs: "de.devsforge.classbuddy.package", conformingTo: .data)
+}
+
+extension SyncEngine {
+    /// Gesamtpaket zum Weitergeben: keine Löschungen, kein Profil (Name, Foto) der Lehrkraft.
+    static func sharePackage(
+        in context: ModelContext, settings: SchoolSettings, appVersion: String = AppInfo.version
+    ) throws -> SyncPackage {
+        var package = try makePackage(since: nil, in: context, appVersion: appVersion)
+        package.deletions = []
+        var values = settings.values
+        values.teacher = TeacherProfile()
+        package.settings = SyncSettings(modifiedAt: .now, values: values)
+        return package
+    }
+
+    static func encodeShare(_ package: SyncPackage) throws -> Data {
+        try JSONEncoder().encode(package)
+    }
+
+    static func decodeShare(_ data: Data) throws -> SyncPackage {
+        do {
+            return try JSONDecoder().decode(SyncPackage.self, from: data)
+        } catch {
+            throw SyncError.unreadableShare
+        }
+    }
+
+    /// Alle Daten durch das Paket ersetzen. Die Löschungen werden festgehalten, damit gekoppelte eigene Geräte beim
+    /// nächsten Abgleich ebenfalls ersetzen statt die alten Daten zurückzubringen.
+    /// Schuleinstellungen nur mit `replacesSettings`; das eigene Profil bleibt immer.
+    @discardableResult
+    static func replaceAll(
+        with package: SyncPackage, in context: ModelContext, settings: SchoolSettings, replacesSettings: Bool,
+        appVersion: String = AppInfo.version
+    ) throws -> SyncResult {
+        try validate(package, appVersion: appVersion)
+        try LocalDataStore.deleteRecords(in: context)
+        // Kamen Einträge früher von hier, hätten ihre frischen Löschungen Vorrang: diese wieder entfernen.
+        let incoming = Set(package.entries.map { SyncManifest.key($0.type, $0.id) })
+        for deletion in try context.fetch(FetchDescriptor<DeletedRecord>())
+        where incoming.contains(SyncManifest.key(deletion.recordType, deletion.recordID)) {
+            context.delete(deletion)
+        }
+        try context.save()
+
+        var contents = package
+        contents.deletions = []
+        contents.settings = nil
+        let result = try apply(contents, in: context, appVersion: appVersion)
+        if replacesSettings, var values = package.settings?.values {
+            values.teacher = settings.values.teacher
+            settings.values = values
+        }
+        return result
+    }
+}
+
+/// `.classbuddy`-Datei für das Teilen-Menü (AirDrop, Mail, Dateien).
+struct SharedPackageFile: Identifiable {
+    let id = UUID()
+    let url: URL
+
+    /// Schreibt das Paket in den temporären Ordner, Name mit Datum.
+    static func write(_ data: Data) throws -> SharedPackageFile {
+        let name = "ClassBuddy-\(Date.now.formatted(.iso8601.year().month().day())).classbuddy"
+        let directory = FileManager.default.temporaryDirectory.appending(path: "Share", directoryHint: .isDirectory)
+        try? FileManager.default.removeItem(at: directory)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let url = directory.appending(path: name)
+        try data.write(to: url, options: .completeFileProtection)
+        return SharedPackageFile(url: url)
+    }
+}
+
+/// Empfangenes Paket, wartet auf Bestätigung (aus „Öffnen“ in Daten & Sync oder über AirDrop/Dateien geöffnet).
+struct PendingSharedPackage: Identifiable {
+    let id = UUID()
+    let package: SyncPackage
+}
+
+/// Teilen-Menü des Systems (AirDrop, Mail, In Dateien sichern).
+struct ActivitySheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
+}
+
+/// Bestätigung für ein empfangenes Kollegen-Paket (aus „Paket öffnen“ oder über AirDrop/Dateien geöffnet).
+/// Liegt an der Wurzel der App, damit sie auch beim Öffnen von außen erscheint.
+struct SharedPackageImport: ViewModifier {
+    @Environment(AppModel.self) private var app
+    @Environment(AppSecurity.self) private var security
+    @Environment(SchoolSettings.self) private var settings
+    @Environment(\.modelContext) private var modelContext
+    @Environment(ToastCenter.self) private var toasts
+
+    static func load(_ url: URL) throws -> PendingSharedPackage {
+        let accessing = url.startAccessingSecurityScopedResource()
+        defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+        let package = try SyncEngine.decodeShare(Data(contentsOf: url))
+        try SyncEngine.validate(package, appVersion: AppInfo.version)
+        return PendingSharedPackage(package: package)
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .onOpenURL { url in
+                guard url.isFileURL else { return }
+                do {
+                    app.pendingSharedPackage = try Self.load(url)
+                } catch {
+                    toasts.error(error.localizedDescription)
+                }
+            }
+            .confirmationDialog(
+                "Paket übernehmen?",
+                isPresented: Binding(
+                    get: { app.pendingSharedPackage != nil && !security.isLocked },
+                    set: { if !$0 { app.pendingSharedPackage = nil } }
+                ),
+                titleVisibility: .visible,
+                presenting: app.pendingSharedPackage
+            ) { pending in
+                Button("Daten und Schuleinstellungen ersetzen", role: .destructive) {
+                    Task { await replace(with: pending, replacesSettings: true) }
+                }
+                Button("Nur Daten ersetzen", role: .destructive) {
+                    Task { await replace(with: pending, replacesSettings: false) }
+                }
+            } message: { pending in
+                Text(message(for: pending.package))
+            }
+    }
+
+    private func message(for package: SyncPackage) -> String {
+        let classes = package.entries.count { $0.type == SchoolClass.syncRecordType }
+        let students = package.entries.count { $0.type == Student.syncRecordType }
+        return loc("""
+            Das Paket enthält \(classes) Klassen mit \(students) Schülern. Alle Daten auf diesem Gerät werden ersetzt, \
+            gekoppelte Geräte übernehmen das beim nächsten Abgleich. Ihr Profil bleibt.
+            """)
+    }
+
+    private func replace(with pending: PendingSharedPackage, replacesSettings: Bool) async {
+        app.pendingSharedPackage = nil
+        guard await security.confirmDestructiveAction(reason: loc("Daten durch das Paket ersetzen")) else { return }
+        do {
+            let result = try SyncEngine.replaceAll(
+                with: pending.package, in: modelContext, settings: settings, replacesSettings: replacesSettings
+            )
+            SubjectSettings.migrate(school: settings.values, in: modelContext)
+            let classIDs = try modelContext.fetch(FetchDescriptor<SchoolClass>()).map(\.id)
+            if app.selectedClassID.map({ !classIDs.contains($0) }) ?? true {
+                app.selectedClassID = classIDs.first
+            }
+            app.calendarFocusClassID = nil
+            toasts.success(loc("Paket übernommen: \(result.inserted) Einträge."))
+        } catch {
+            modelContext.rollback()
+            toasts.error(loc("Übernehmen fehlgeschlagen: \(error.localizedDescription)"))
+        }
+    }
+}

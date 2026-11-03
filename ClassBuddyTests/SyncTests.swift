@@ -170,6 +170,74 @@ struct SyncTests {
         #expect(PairingCode(text: weak.text) == nil)
     }
 
+    @Test("Einstellungen: der neuere Stand kommt als Ganzes an, der ältere bleibt liegen")
+    func settingsSync() throws {
+        let deviceA = try Self.makeDevice(), deviceB = try Self.makeDevice()
+        let settingsA = SchoolSettings(defaults: try #require(UserDefaults(suiteName: "SyncTests.A.\(UUID())")))
+        let settingsB = SchoolSettings(defaults: try #require(UserDefaults(suiteName: "SyncTests.B.\(UUID())")))
+        settingsA.values.lessonDuration = 60
+        settingsA.values.teacher.firstName = "Dominic"
+
+        func exchange() throws -> SyncResult {
+            let toB = try SyncEngine.makePackage(
+                for: SyncEngine.manifest(in: deviceB, settings: settingsB), in: deviceA, settings: settingsA, appVersion: Self.version
+            )
+            return try SyncEngine.apply(toB, in: deviceB, settings: settingsB, appVersion: Self.version)
+        }
+        #expect(try exchange().settingsUpdated)
+        #expect(settingsB.values == settingsA.values && settingsB.modifiedAt == settingsA.modifiedAt)
+        // Nichts Neues: kein Einstellungs-Eintrag mehr im Paket.
+        let empty = try SyncEngine.makePackage(
+            for: SyncEngine.manifest(in: deviceB, settings: settingsB), in: deviceA, settings: settingsA, appVersion: Self.version
+        )
+        #expect(empty.settings == nil)
+
+        // B ändert danach: A schickt seinen älteren Stand, B behält seinen.
+        settingsB.values.lessonDuration = 45
+        let stale = try SyncEngine.makePackage(since: nil, in: deviceA, settings: settingsA, appVersion: Self.version)
+        #expect(try !SyncEngine.apply(stale, in: deviceB, settings: settingsB, appVersion: Self.version).settingsUpdated)
+        #expect(settingsB.values.lessonDuration == 45)
+    }
+
+    @Test("Teilen an Kollegen: ersetzt alle Daten, Profil bleibt, Löschungen gehen an eigene Geräte")
+    func shareReplacesEverything() throws {
+        let colleague = try Self.makeDevice(), receiver = try Self.makeDevice(), receiverPad = try Self.makeDevice()
+        let colleagueSettings = SchoolSettings(defaults: try #require(UserDefaults(suiteName: "SyncTests.C.\(UUID())")))
+        let receiverSettings = SchoolSettings(defaults: try #require(UserDefaults(suiteName: "SyncTests.R.\(UUID())")))
+        colleagueSettings.values.lessonDuration = 60
+        colleagueSettings.values.teacher.firstName = "Kollegin"
+        receiverSettings.values.teacher.firstName = "Dominic"
+
+        let shared = SchoolClass(shortName: "9c")
+        colleague.insert(shared)
+        colleague.insert(Student(firstName: "Mia", lastName: "Kraus", schoolClass: shared))
+        try colleague.save()
+        receiver.insert(Student(firstName: "Ben", lastName: "Alt"))
+        try receiver.save()
+        try Self.sync(from: receiver, to: receiverPad)
+
+        let package = try SyncEngine.sharePackage(in: colleague, settings: colleagueSettings, appVersion: Self.version)
+        #expect(package.settings?.values.teacher.firstName == "")
+        let decoded = try SyncEngine.decodeShare(SyncEngine.encodeShare(package))
+        try SyncEngine.replaceAll(
+            with: decoded, in: receiver, settings: receiverSettings, replacesSettings: true, appVersion: Self.version
+        )
+        #expect(try receiver.fetch(FetchDescriptor<Student>()).map(\.firstName) == ["Mia"])
+        #expect(try receiver.fetch(FetchDescriptor<Student>()).first?.schoolClass?.shortName == "9c")
+        #expect(receiverSettings.values.lessonDuration == 60 && receiverSettings.values.teacher.firstName == "Dominic")
+
+        // Das eigene iPad übernimmt beim nächsten Abgleich: Ben gelöscht, Mia neu.
+        try Self.sync(from: receiver, to: receiverPad)
+        #expect(try receiverPad.fetch(FetchDescriptor<Student>()).map(\.firstName) == ["Mia"])
+
+        // Ein zweites Mal dasselbe Paket: frische Löschungen blockieren die gleichen Einträge nicht.
+        try SyncEngine.replaceAll(
+            with: decoded, in: receiver, settings: receiverSettings, replacesSettings: false, appVersion: Self.version
+        )
+        #expect(try receiver.fetch(FetchDescriptor<Student>()).map(\.firstName) == ["Mia"])
+        #expect(throws: SyncError.unreadableShare) { try SyncEngine.decodeShare(Data("kaputt".utf8)) }
+    }
+
     @Test("Andere App-Version wird abgelehnt")
     func versionMismatch() throws {
         let deviceA = try Self.makeDevice(), deviceB = try Self.makeDevice()

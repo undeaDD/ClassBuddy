@@ -7,5 +7,41 @@
 	<array>
 		<string>_classbuddy._tcp</string>
 	</array>
+	<!-- Teilen an Kollegen: .classbuddy-Pakete (SyncSharing.swift), Öffnen aus AirDrop, Mail und Dateien. -->
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>de.devsforge.classbuddy.package</string>
+			<key>UTTypeDescription</key>
+			<string>ClassBuddy-Paket</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>classbuddy</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>ClassBuddy-Paket</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>de.devsforge.classbuddy.package</string>
+			</array>
+		</dict>
+	</array>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
 </dict>
 </plist>

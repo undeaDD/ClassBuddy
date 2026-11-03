@@ -1,6 +1,198 @@
 {
   "sourceLanguage" : "de",
   "strings" : {
+    "%@: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "%lld" : {},
+    "%lld Einträge, davon %lld Bewertungen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld entries, %lld of them ratings"
+          }
+        }
+      }
+    },
+    "Alle Klassen, Schüler, Notizen, Räume und Kacheln samt Schuleinstellungen als eine Datei, ohne Ihr Profil. Wer das Paket öffnet, ersetzt damit alle eigenen Daten. Beide brauchen dieselbe App-Version." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All classes, students, notes, rooms and tiles plus school settings in one file, without your profile. Opening the package replaces all of the recipient's data. Both need the same app version."
+          }
+        }
+      }
+    },
+    "An Kollegen weitergeben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share with colleagues"
+          }
+        }
+      }
+    },
+    "Das Paket enthält %lld Klassen mit %lld Schülern. Alle Daten auf diesem Gerät werden ersetzt, gekoppelte Geräte übernehmen das beim nächsten Abgleich. Ihr Profil bleibt." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The package contains %lld classes with %lld students. All data on this device will be replaced, paired devices follow at their next sync. Your profile stays."
+          }
+        }
+      }
+    },
+    "Daten durch das Paket ersetzen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace data with the package"
+          }
+        }
+      }
+    },
+    "Daten und Schuleinstellungen ersetzen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace data and school settings"
+          }
+        }
+      }
+    },
+    "Die Datei ist kein ClassBuddy-Paket oder unvollständig." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This file is not a ClassBuddy package or is incomplete."
+          }
+        }
+      }
+    },
+    "Einstellungen übernommen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings applied."
+          }
+        }
+      }
+    },
+    "Eintrag" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entry"
+          }
+        }
+      }
+    },
+    "Mit %@ abgeglichen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synced with %@."
+          }
+        }
+      }
+    },
+    "Nur Daten ersetzen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Replace data only"
+          }
+        }
+      }
+    },
+    "Paket konnte nicht erstellt werden: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not create the package: %@"
+          }
+        }
+      }
+    },
+    "Paket öffnen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open package"
+          }
+        }
+      }
+    },
+    "Paket übernehmen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apply package?"
+          }
+        }
+      }
+    },
+    "Paket übernommen: %lld Einträge." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Package applied: %lld entries."
+          }
+        }
+      }
+    },
+    "Weitergeben" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
+          }
+        }
+      }
+    },
+    "Übernehmen fehlgeschlagen: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not apply: %@"
+          }
+        }
+      }
+    },
+    "–" : {},
+    "… und %lld ältere" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "… and %lld older"
+          }
+        }
+      }
+    },
     "Zuletzt angelegt" : {
       "localizations" : {
         "en" : {
@@ -60,9 +252,6 @@
           }
         }
       }
-    },
-    "–" : {
-
     },
     "„%@“ aktualisiert" : {
       "localizations" : {
@@ -340,19 +529,6 @@
           }
         }
       }
-    },
-    "%@: %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@: %2$@"
-          }
-        }
-      }
-    },
-    "%lld" : {
-
     },
     "%lld %% geschafft · Ferien grau" : {
       "localizations" : {

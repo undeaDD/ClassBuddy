@@ -74,6 +74,7 @@
 		06B42AFC0443A42268DCCADB /* RecordSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B986554456A712314F2937F /* RecordSettings.swift */; };
 		7E71C33B24FD8AB12593976C /* LocalSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = B199A4B8AFB65077A83E0942 /* LocalSync.swift */; };
 		B7CCC55D3F9398CA9CFAC147 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0748D6BB4C27E0B91FA8224 /* SyncEngine.swift */; };
+		5A1C0E7B2F4D4E8A9B3C1D01 /* SyncSharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1C0E7B2F4D4E8A9B3C1D02 /* SyncSharing.swift */; };
 		36A349B7546B6E92D97F132E /* SyncPayloadsRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6A120530CA021DD976386E /* SyncPayloadsRecords.swift */; };
 		6D8592600D1F3BB02146AAEB /* SyncPayloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1259DB6D58D143A160C267A6 /* SyncPayloads.swift */; };
 		65C08AC814925D52DB9D76F8 /* SyncTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A205E5FF5613E83310F25C /* SyncTracking.swift */; };
@@ -274,6 +275,7 @@
 		2B986554456A712314F2937F /* RecordSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecordSettings.swift; sourceTree = "<group>"; };
 		B199A4B8AFB65077A83E0942 /* LocalSync.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LocalSync.swift; sourceTree = "<group>"; };
 		E0748D6BB4C27E0B91FA8224 /* SyncEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		5A1C0E7B2F4D4E8A9B3C1D02 /* SyncSharing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncSharing.swift; sourceTree = "<group>"; };
 		CC6A120530CA021DD976386E /* SyncPayloadsRecords.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncPayloadsRecords.swift; sourceTree = "<group>"; };
 		1259DB6D58D143A160C267A6 /* SyncPayloads.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncPayloads.swift; sourceTree = "<group>"; };
 		D3A205E5FF5613E83310F25C /* SyncTracking.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SyncTracking.swift; sourceTree = "<group>"; };
@@ -517,6 +519,7 @@
 				2B986554456A712314F2937F /* RecordSettings.swift */,
 				B199A4B8AFB65077A83E0942 /* LocalSync.swift */,
 				E0748D6BB4C27E0B91FA8224 /* SyncEngine.swift */,
+				5A1C0E7B2F4D4E8A9B3C1D02 /* SyncSharing.swift */,
 				CC6A120530CA021DD976386E /* SyncPayloadsRecords.swift */,
 				1259DB6D58D143A160C267A6 /* SyncPayloads.swift */,
 				D3A205E5FF5613E83310F25C /* SyncTracking.swift */,
@@ -1026,6 +1029,7 @@
 				06B42AFC0443A42268DCCADB /* RecordSettings.swift in Sources */,
 				7E71C33B24FD8AB12593976C /* LocalSync.swift in Sources */,
 				B7CCC55D3F9398CA9CFAC147 /* SyncEngine.swift in Sources */,
+				5A1C0E7B2F4D4E8A9B3C1D01 /* SyncSharing.swift in Sources */,
 				36A349B7546B6E92D97F132E /* SyncPayloadsRecords.swift in Sources */,
 				6D8592600D1F3BB02146AAEB /* SyncPayloads.swift in Sources */,
 				65C08AC814925D52DB9D76F8 /* SyncTracking.swift in Sources */,

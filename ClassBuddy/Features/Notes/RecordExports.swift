@@ -245,10 +245,9 @@ private struct StudentRecordPDFPage: View {
                 .font(.title3)
                 .foregroundStyle(.secondary)
             section(loc("Beobachtungen")) {
-                Text(loc("\(observations.count) Einträge · Bewertungen: \(ratings.prefix(12).map(\.label).joined(separator: " · "))"))
-                ForEach(observations.filter { !$0.note.isEmpty }.prefix(8)) { observation in
-                    Text("\(observation.date.appDate): \(observation.note)")
-                }
+                Text(loc("\(observations.count) Einträge, davon \(ratings.count) Bewertungen"))
+                    .foregroundStyle(.secondary)
+                observationTable(observations)
             }
             section(loc("Leistungen")) {
                 assessments
@@ -276,6 +275,43 @@ private struct StudentRecordPDFPage: View {
     }
 
     private var schoolYear: String { student.schoolClass?.schoolYear ?? "" }
+
+    /// Höchstens so viele Beobachtungen passen mit Leistungen und Fehlzeiten auf die Seite (die neuesten).
+    private static let observationLimit = 22
+
+    /// Tabelle: Datum, Stunde, Eintrag (Bewertung bzw. Art), Notiz; neueste zuerst.
+    @ViewBuilder
+    private func observationTable(_ observations: [StudentObservation]) -> some View {
+        if observations.isEmpty {
+            Text("–")
+        } else {
+            Grid(alignment: .leadingFirstTextBaseline, horizontalSpacing: 12, verticalSpacing: 3) {
+                GridRow {
+                    Text("Datum")
+                    Text("Stunde")
+                    Text("Eintrag")
+                    Text("Notiz")
+                }
+                .font(.system(size: 9, weight: .semibold))
+                .foregroundStyle(.secondary)
+                Divider()
+                ForEach(observations.prefix(Self.observationLimit)) { observation in
+                    GridRow {
+                        Text(observation.date.appDate).monospacedDigit()
+                        Text(observation.slotIndex >= 0 ? loc("\(observation.slotIndex + 1).") : "–").monospacedDigit()
+                        Text(observation.label).fontWeight(.semibold)
+                        Text(observation.note)
+                            .lineLimit(2)
+                            .gridColumnAlignment(.leading)
+                    }
+                }
+            }
+            if observations.count > Self.observationLimit {
+                Text(loc("… und \(observations.count - Self.observationLimit) ältere"))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
 
     private var periods: [(String, String)] {
         GradePeriod.allCases.compactMap { period in
