@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import Network
 import Security
@@ -5,8 +6,9 @@ import SwiftData
 import UIKit
 
 // Sync zwischen eigenen Geräten im selben Netz, ohne Server: einmal per QR-Code koppeln (gemeinsamer zufälliger
-// Schlüssel), danach finden sich die Geräte über Bonjour und verbinden sich verschlüsselt (TLS mit diesem Schlüssel,
-// nur gekoppelte Geräte kommen durch). Beide schicken sich ihr Manifest und dann nur, was beim anderen fehlt.
+// Schlüssel, dazu das Daten-Passwort des zeigenden Geräts), danach finden sich die Geräte über Bonjour und verbinden
+// sich verschlüsselt (TLS mit einem Schlüssel aus Kopplung und Daten-Passwort, nur gekoppelte Geräte mit gleichem
+// Passwort kommen durch). Beide schicken sich ihr Manifest und dann nur, was beim anderen fehlt. Immer von Hand.
 
 /// Gekoppeltes Gerät. Name und letzter Abgleich in UserDefaults, der Schlüssel in der Keychain (nur dieses Gerät).
 struct LocalPairing: Codable, Identifiable, Equatable {
@@ -16,28 +18,31 @@ struct LocalPairing: Codable, Identifiable, Equatable {
     var lastSync: Date?
 }
 
-/// Inhalt des QR-Codes: Kopplungs-ID, Schlüssel und Name des zeigenden Geräts.
+/// Inhalt des QR-Codes: Kopplungs-ID, Schlüssel, Name und Daten-Passwort des zeigenden Geräts.
 struct PairingCode: Codable, Equatable {
     var id: String
     var secret: Data
     var name: String
+    /// Übernimmt das scannende Gerät, damit beide dasselbe Daten-Passwort haben.
+    var password: String?
 
     private static let prefix = "classbuddy-pair:"
 
     static func make(name: String) -> PairingCode {
         var bytes = [UInt8](repeating: 0, count: 32)
         _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
-        return PairingCode(id: UUID().uuidString, secret: Data(bytes), name: name)
+        return PairingCode(id: UUID().uuidString, secret: Data(bytes), name: name, password: DataPassword.current)
     }
 
     var text: String {
         Self.prefix + ((try? JSONEncoder().encode(self))?.base64EncodedString() ?? "")
     }
 
-    init(id: String, secret: Data, name: String) {
+    init(id: String, secret: Data, name: String, password: String? = nil) {
         self.id = id
         self.secret = secret
         self.name = name
+        self.password = password
     }
 
     init?(text: String) {
@@ -120,6 +125,8 @@ final class LocalSyncService {
     private(set) var state: State = .idle
     /// Gezeigter Code, solange das andere Gerät noch nicht gescannt hat.
     private(set) var pendingCode: PairingCode?
+    /// Beim Koppeln übernommenes Daten-Passwort (Name des anderen Geräts) für die Meldung danach.
+    private var adoptedPasswordFrom: String?
 
     private var context: ModelContext?
     private var settings: SchoolSettings?
@@ -186,6 +193,11 @@ final class LocalSyncService {
 
     /// Code des anderen Geräts gescannt: koppeln und gleich abgleichen.
     func pair(with code: PairingCode) {
+        if let password = code.password, DataPassword.isValid(password), password != DataPassword.current {
+            DataPassword.set(password)
+            adoptedPasswordFrom = code.name
+            reloadKeys()
+        }
         LocalPairingStore.storeSecret(code.secret, for: code.id)
         let pairing = LocalPairing(id: code.id, peerName: code.name)
         pairings.removeAll { $0.id == code.id }
@@ -193,6 +205,14 @@ final class LocalSyncService {
         LocalPairingStore.save(pairings)
         listen(for: code.id)
         sync(pairing)
+    }
+
+    /// Neues Daten-Passwort: Dienste mit dem neuen Schlüssel neu starten.
+    func reloadKeys() {
+        let waiting = Array(listeners.keys)
+        listeners.values.forEach { $0.cancel() }
+        listeners = [:]
+        waiting.forEach(listen)
     }
 
     func remove(_ pairing: LocalPairing) {
@@ -276,7 +296,12 @@ final class LocalSyncService {
         switch outcome {
         case .success(let peerName, let result):
             completePairing(pairingID, peerName: peerName)
-            state = .finished(Self.summary(peer: peerName, result: result))
+            var message = Self.summary(peer: peerName, result: result)
+            if let source = adoptedPasswordFrom {
+                message += " " + loc("Daten-Passwort von \(source) übernommen.")
+                adoptedPasswordFrom = nil
+            }
+            state = .finished(message)
         case .failure(let message):
             state = .failed(message)
         }
@@ -311,10 +336,20 @@ final class LocalSyncService {
     }
 
     /// TCP mit TLS 1.2 über den gemeinsamen Schlüssel (PSK); auch direkt zwischen Geräten (Peer-to-Peer-WLAN).
-    nonisolated static func parameters(id: String, secret: Data) -> NWParameters {
+    /// Schlüssel der Verbindung aus Kopplung und Daten-Passwort: Ändert sich das Passwort nur auf einem Gerät,
+    /// kommt keine Verbindung mehr zustande.
+    nonisolated static func sessionKey(secret: Data, password: String) -> Data {
+        let key = HKDF<SHA256>.deriveKey(
+            inputKeyMaterial: SymmetricKey(data: secret), salt: Data(password.utf8),
+            info: Data("classbuddy-local-sync".utf8), outputByteCount: 32
+        )
+        return key.withUnsafeBytes { Data($0) }
+    }
+
+    nonisolated static func parameters(id: String, secret: Data, password: String = DataPassword.current) -> NWParameters {
         let tls = NWProtocolTLS.Options()
         let options = tls.securityProtocolOptions
-        let key = secret.withUnsafeBytes { DispatchData(bytes: $0) }
+        let key = sessionKey(secret: secret, password: password).withUnsafeBytes { DispatchData(bytes: $0) }
         let identity = Data(id.utf8).withUnsafeBytes { DispatchData(bytes: $0) }
         sec_protocol_options_add_pre_shared_key(options, key as __DispatchData, identity as __DispatchData)
         sec_protocol_options_append_tls_ciphersuite(options, tls_ciphersuite_t(rawValue: UInt16(TLS_PSK_WITH_AES_128_GCM_SHA256))!)
@@ -374,8 +409,12 @@ final class LocalSyncSession {
             } catch {
                 fail(error.localizedDescription)
             }
-        case .failed(let error):
-            fail(loc("Verbindung unterbrochen: \(error.localizedDescription)"))
+        case .failed(let error), .waiting(let error):
+            if case .tls = error {
+                fail(loc("Verbindung abgelehnt. Bitte prüfen, ob das Daten-Passwort auf beiden Geräten gleich ist."))
+            } else if case .failed = state {
+                fail(loc("Verbindung unterbrochen: \(error.localizedDescription)"))
+            }
         case .cancelled:
             if !isFinished { fail(loc("Verbindung unterbrochen.")) }
         default:

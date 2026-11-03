@@ -53,7 +53,7 @@ struct ModelTests {
         SyncTracking.start()
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, DeletedRecord.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = container.mainContext
         let student = Student(firstName: "Emma", lastName: "Schneider")

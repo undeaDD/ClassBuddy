@@ -23,7 +23,7 @@ struct SyncTests {
             Room.self, RoomElement.self, SeatAssignment.self, BoardPhoto.self, Checklist.self, ChecklistCheck.self,
             SubjectSettings.self, StudentObservation.self, Absence.self, Assessment.self, AssessmentResult.self,
             PeriodGrade.self, DeletedRecord.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         containers.append(container)
         return container.mainContext
@@ -218,7 +218,9 @@ struct SyncTests {
 
         let package = try SyncEngine.sharePackage(in: colleague, settings: colleagueSettings, appVersion: Self.version)
         #expect(package.settings?.values.teacher.firstName == "")
-        let decoded = try SyncEngine.decodeShare(SyncEngine.encodeShare(package))
+        let file = try SyncEngine.encodeShare(package, password: "kollegin-passwort")
+        #expect(throws: DataCrypto.CryptoError.wrongPassword) { try SyncEngine.decodeShare(file, password: "falsch-falsch") }
+        let decoded = try SyncEngine.decodeShare(file, password: "kollegin-passwort")
         try SyncEngine.replaceAll(
             with: decoded, in: receiver, settings: receiverSettings, replacesSettings: true, appVersion: Self.version
         )
@@ -235,7 +237,66 @@ struct SyncTests {
             with: decoded, in: receiver, settings: receiverSettings, replacesSettings: false, appVersion: Self.version
         )
         #expect(try receiver.fetch(FetchDescriptor<Student>()).map(\.firstName) == ["Mia"])
-        #expect(throws: SyncError.unreadableShare) { try SyncEngine.decodeShare(Data("kaputt".utf8)) }
+        #expect(throws: SyncError.unreadableShare) { try SyncEngine.decodeShare(Data("kaputt".utf8), password: "egal-egal") }
+    }
+
+    @Test("Daten-Passwort: verschlüsseln, falsches Passwort, lokaler Schlüssel hängt am Passwort")
+    func dataPassword() throws {
+        let password = DataPassword.generate()
+        #expect(password.count == 23 && DataPassword.isValid(password))
+        #expect(!DataPassword.isValid("kurz"))
+        let sealed = try DataCrypto.seal(Data("Emma".utf8), password: password)
+        #expect(DataCrypto.isSealed(sealed) && !sealed.contains(Data("Emma".utf8)))
+        #expect(try DataCrypto.open(sealed, password: password) == Data("Emma".utf8))
+        #expect(throws: DataCrypto.CryptoError.wrongPassword) { try DataCrypto.open(sealed, password: password + "x") }
+        let secret = Data(repeating: 7, count: 32)
+        let key = LocalSyncService.sessionKey(secret: secret, password: "a-passwort")
+        #expect(key == LocalSyncService.sessionKey(secret: secret, password: "a-passwort"))
+        #expect(key != LocalSyncService.sessionKey(secret: secret, password: "b-passwort"))
+        let code = PairingCode(id: UUID().uuidString, secret: secret, name: "iPad", password: password)
+        #expect(PairingCode(text: code.text)?.password == password)
+    }
+
+    @Test("Cloud-Ordner und iCloud: eine verschlüsselte Datei je Gerät, Zusammenführen, falsches Passwort meldet sich")
+    func remoteFiles() throws {
+        let deviceA = try Self.makeDevice(), deviceB = try Self.makeDevice()
+        let settings = SchoolSettings(defaults: try #require(UserDefaults(suiteName: "SyncTests.F.\(UUID())")))
+        deviceA.insert(Student(firstName: "Emma", lastName: "A"))
+        try deviceA.save()
+        deviceB.insert(Student(firstName: "Ben", lastName: "B"))
+        try deviceB.save()
+
+        // Fremde Geräte-ID simulieren: Paket von B mit anderer Kennung.
+        var packageB = try SyncEngine.makePackage(since: nil, in: deviceB, appVersion: AppInfo.version)
+        packageB.deviceID = "anderes-geraet"
+        let fileB = try DataCrypto.seal(JSONEncoder().encode(packageB), password: "gemeinsam-123")
+        let report = RemoteSync.merge([fileB], in: deviceA, settings: settings, password: "gemeinsam-123")
+        #expect(report.devices == 1 && report.result.inserted == 1 && report.problems.isEmpty)
+        #expect(Set(try deviceA.fetch(FetchDescriptor<Student>()).map(\.firstName)) == ["Emma", "Ben"])
+
+        let wrong = RemoteSync.merge([fileB], in: deviceA, settings: settings, password: "anderes-passwort")
+        #expect(wrong.devices == 0 && wrong.problems.count == 1)
+        // Eigene Datei wird übersprungen.
+        let own = try RemoteSync.ownFile(in: deviceA, settings: settings, deviceName: "iPad", password: "gemeinsam-123")
+        #expect(RemoteSync.merge([own], in: deviceA, settings: settings, password: "gemeinsam-123").devices == 0)
+        // Fingerabdruck ändert sich nur mit dem Stand oder dem Passwort.
+        let first = try RemoteSync.fingerprint(in: deviceA, settings: settings, password: "gemeinsam-123")
+        #expect(try RemoteSync.fingerprint(in: deviceA, settings: settings, password: "gemeinsam-123") == first)
+        #expect(try RemoteSync.fingerprint(in: deviceA, settings: settings, password: "neues-passwort") != first)
+    }
+
+    @Test("Excel-Verschlüsselung: Agile Encryption hin und zurück, falsches Passwort, große Datei")
+    func officeEncryption() throws {
+        let xlsx = XLSX.write([XLSXSheet(name: "Klassen", rows: [["Kürzel"], ["7b"], ["9c"]])])
+        let encrypted = try OfficeEncryption.encrypt(xlsx, password: "Lehrer-Passwort 1")
+        #expect(OfficeEncryption.isEncrypted(encrypted) && !OfficeEncryption.isEncrypted(xlsx))
+        #expect(try OfficeEncryption.decrypt(encrypted, password: "Lehrer-Passwort 1") == xlsx)
+        #expect(throws: OfficeEncryption.OfficeError.wrongPassword) {
+            try OfficeEncryption.decrypt(encrypted, password: "lehrer-passwort 1")
+        }
+        // Über 7 MB: braucht DIFAT-Sektoren.
+        let large = Data((0..<8_000_000).map { UInt8(truncatingIfNeeded: $0 &* 31) })
+        #expect(try OfficeEncryption.decrypt(OfficeEncryption.encrypt(large, password: "x"), password: "x") == large)
     }
 
     @Test("Andere App-Version wird abgelehnt")

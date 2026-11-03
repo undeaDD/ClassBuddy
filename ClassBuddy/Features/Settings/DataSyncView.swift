@@ -3,8 +3,9 @@ import SwiftData
 import SwiftUI
 import VisionKit
 
-/// Einstellungen → Daten & Sync: gekoppelte Geräte im selben Netz abgleichen, Geräte koppeln (QR-Code zeigen oder
-/// scannen), an Kollegen weitergeben und das Excel-Backup (Export & Import).
+/// Einstellungen → Daten & Sync: Daten-Passwort, gekoppelte Geräte im selben Netz abgleichen (QR-Code zeigen oder
+/// scannen), iCloud, Cloud-Ordner, an Kollegen weitergeben und das Excel-Backup (Export & Import).
+/// Nur iCloud gleicht automatisch ab (beim Öffnen), alles andere nur von Hand.
 struct DataSyncView: View {
     @Environment(LocalSyncService.self) private var localSync
     @Environment(ToastCenter.self) private var toasts
@@ -13,6 +14,8 @@ struct DataSyncView: View {
 
     var body: some View {
         Form {
+            DataPasswordSection()
+
             Section {
                 ForEach(localSync.pairings) { pairing in
                     deviceRow(pairing)
@@ -30,6 +33,8 @@ struct DataSyncView: View {
                 Text(Self.localFooter)
             }
 
+            ICloudSection()
+            CloudFolderSection()
             ShareSection()
             BackupSection()
         }
@@ -62,8 +67,9 @@ struct DataSyncView: View {
 
     private static var localFooter: String {
         loc("""
-            Gleicht Ihre eigenen Geräte direkt über das WLAN ab, ohne Server und ohne Internet. ClassBuddy muss auf \
-            beiden Geräten geöffnet sein, beide brauchen dieselbe App-Version.
+            Nur von Hand: Gleicht Ihre eigenen Geräte direkt über das WLAN ab, ohne Server und ohne Internet. ClassBuddy \
+            muss auf beiden Geräten geöffnet sein, beide brauchen dieselbe App-Version und dasselbe Daten-Passwort \
+            (beim Koppeln übernommen).
             """)
     }
 
@@ -259,9 +265,15 @@ private struct BackupSection: View {
     @State private var isExporterPresented = false
     @State private var isImporterPresented = false
     @State private var pendingImport: Data?
+    /// Mit einem anderen Daten-Passwort verschlüsselt: erst das Passwort abfragen.
+    @State private var lockedImport: Data?
+    @State private var enteredPassword = ""
 
     private static var transferInfo: String {
-        loc("Excel-Datei, bearbeitbar in Excel oder Numbers. Ein Import ersetzt alle Daten; Dokumente und Fotos fehlen.")
+        loc("""
+            Nur von Hand. Excel-Datei, geschützt mit Ihrem Daten-Passwort: Sie öffnet auch in Excel, Numbers und \
+            LibreOffice nur mit diesem Passwort. Ein Import ersetzt alle Daten; Dokumente und Fotos fehlen.
+            """)
     }
 
     var body: some View {
@@ -289,7 +301,7 @@ private struct BackupSection: View {
             if case .failure(let error) = result {
                 toasts.error(loc("Export fehlgeschlagen: \(error.localizedDescription)"))
             } else {
-                toasts.success(loc("Export gespeichert"))
+                toasts.success(loc("Export gespeichert, geschützt mit Ihrem Daten-Passwort"))
             }
         }
         .fileImporter(isPresented: $isImporterPresented, allowedContentTypes: [.xlsx]) { result in
@@ -297,10 +309,32 @@ private struct BackupSection: View {
                 let url = try result.get()
                 let accessing = url.startAccessingSecurityScopedResource()
                 defer { if accessing { url.stopAccessingSecurityScopedResource() } }
-                pendingImport = try Data(contentsOf: url)
+                let data = try Data(contentsOf: url)
+                if OfficeEncryption.isEncrypted(data) {
+                    unlock(data, password: DataPassword.current)
+                } else {
+                    pendingImport = data
+                }
             } catch {
                 toasts.error(loc("Datei konnte nicht gelesen werden: \(error.localizedDescription)"))
             }
+        }
+        .alert(
+            "Passwort der Datei",
+            isPresented: Binding(get: { lockedImport != nil }, set: { if !$0 { lockedImport = nil } })
+        ) {
+            SecureField("Daten-Passwort", text: $enteredPassword)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+            Button("Öffnen") {
+                let data = lockedImport
+                lockedImport = nil
+                if let data { unlock(data, password: enteredPassword, isRetry: true) }
+                enteredPassword = ""
+            }
+            Button("Abbrechen", role: .cancel) { enteredPassword = "" }
+        } message: {
+            Text("Die Datei ist mit einem anderen Daten-Passwort geschützt, etwa einem früheren. Bitte dieses Passwort eingeben.")
         }
         .confirmationDialog(
             "Daten importieren?",
@@ -316,9 +350,30 @@ private struct BackupSection: View {
         }
     }
 
+    /// Verschlüsselte Datei öffnen; passt das Passwort nicht, danach fragen.
+    private func unlock(_ data: Data, password: String, isRetry: Bool = false) {
+        do {
+            let xlsx = try OfficeEncryption.decrypt(data, password: password)
+            // Nach dem Schließen der Abfrage, sonst erscheint die Bestätigung nicht.
+            Task {
+                if isRetry { try? await Task.sleep(for: .milliseconds(400)) }
+                pendingImport = xlsx
+            }
+        } catch OfficeEncryption.OfficeError.wrongPassword {
+            if isRetry {
+                toasts.error(OfficeEncryption.OfficeError.wrongPassword.localizedDescription)
+            } else {
+                lockedImport = data
+            }
+        } catch {
+            toasts.error(error.localizedDescription)
+        }
+    }
+
     private func export() {
         do {
-            let data = try Backup.export(context: modelContext, settings: settings.values, appearance: appearance)
+            let xlsx = try Backup.export(context: modelContext, settings: settings.values, appearance: appearance)
+            let data = try OfficeEncryption.encrypt(xlsx, password: DataPassword.current)
             exportFile = SpreadsheetFile(data: data)
             isExporterPresented = true
         } catch {
@@ -398,8 +453,9 @@ private struct ShareSection: View {
 
     private static var footer: String {
         loc("""
-            Alle Klassen, Schüler, Notizen, Räume und Kacheln samt Schuleinstellungen als eine Datei, ohne Ihr Profil. \
-            Wer das Paket öffnet, ersetzt damit alle eigenen Daten. Beide brauchen dieselbe App-Version.
+            Nur von Hand. Alle Klassen, Schüler, Notizen, Räume und Kacheln samt Schuleinstellungen als eine Datei, \
+            ohne Ihr Profil, geschützt mit Ihrem Daten-Passwort. Geben Sie das Passwort getrennt weiter. Wer das Paket \
+            öffnet, ersetzt damit alle eigenen Daten. Beide brauchen dieselbe App-Version.
             """)
     }
 

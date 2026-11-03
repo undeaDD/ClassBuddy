@@ -90,7 +90,7 @@
     <div class="row"><span class="ok">✓</span> No account, no registration</div>
     <div class="row"><span class="ok">✓</span> No tracking, no analytics, no ads, no third-party SDKs</div>
     <div class="row"><span class="ok">✓</span> All data stays local on your device. There is no ClassBuddy server.</div>
-    <div class="row"><span class="ok">✓</span> Optional: sync with your own devices directly over Wi‑Fi and sharing with colleagues, only when you set it up or start it yourself.</div>
+    <div class="row"><span class="ok">✓</span> Optional: sync with your own devices (directly over Wi‑Fi, through your iCloud or a cloud folder) and sharing with colleagues, only when you set it up or start it yourself. Everything that leaves the device is encrypted with your data password.</div>
     <div class="row"><span class="ok">✓</span> The provider receives no student data.</div>
     <div class="row"><span class="ok">✓</span> The source code is publicly available.</div>
   </div>
@@ -144,7 +144,7 @@
   <h2>Internet connections</h2>
   <div class="card">
     <div class="row">
-      <p class="muted" style="margin-top:0">ClassBuddy only connects to the internet in the following cases. For technical reasons, your IP address is transmitted to the respective server. <strong>Student data is never transmitted.</strong></p>
+      <p class="muted" style="margin-top:0">ClassBuddy only connects to the internet in the following cases. For technical reasons, your IP address is transmitted to the respective server. <strong>Student data is never transmitted in these cases</strong> (for syncing through iCloud or a cloud folder see below, encrypted only).</p>
     </div>
     <div class="row">
       <div class="name">School and public holidays: openholidaysapi.org</div>
@@ -188,11 +188,19 @@
   <div class="card">
     <div class="row">
       <div class="name">Sync your own devices</div>
-      <p class="muted">Under Settings › App Settings › Data &amp; Sync you can pair your own devices (e.g. iPad and iPhone) with a QR code. Syncing runs directly from device to device on the same Wi‑Fi, without a server and without internet. The connection is encrypted (TLS) with a key only the paired devices know; it is kept in the device keychain. All app data including school settings and profile is transferred, but only to paired devices and only while ClassBuddy is open on both. A pairing can be removed at any time.</p>
+      <p class="muted">Manual only. Under Settings › App Settings › Data &amp; Sync you can pair your own devices (e.g. iPad and iPhone) with a QR code. Syncing runs directly from device to device on the same Wi‑Fi, without a server and without internet. The connection is encrypted (TLS) with a key derived from the pairing and your data password that only your devices know; it is kept in the device keychain. All app data including school settings and profile is transferred, but only to paired devices and only while ClassBuddy is open on both. A pairing can be removed at any time.</p>
+    </div>
+    <div class="row">
+      <div class="name">iCloud</div>
+      <p class="muted">Off until you turn it on. Then ClassBuddy syncs automatically every time you open the app (and manually whenever you like) through the private iCloud database of your Apple ID. Each device stores a file with all app data there, encrypted beforehand with your data password (AES-256): neither Apple nor the provider can read it. <a href="https://www.apple.com/legal/privacy/">Apple’s privacy policy</a> also applies. Turning it off stops syncing.</p>
+    </div>
+    <div class="row">
+      <div class="name">Cloud folder</div>
+      <p class="muted">Manual only. You choose a folder of a provider yourself (e.g. Google Drive, Nextcloud, OneDrive, Dropbox, iCloud Drive) through the Files app. ClassBuddy stores one file per device there, encrypted with your data password (AES-256); the provider’s app handles the transfer. The provider cannot read anything; its privacy policy applies to the storage.</p>
     </div>
     <div class="row">
       <div class="name">Share with colleagues</div>
-      <p class="muted">“Share” creates a file with all data and the school settings, without your profile. You decide whether and how to send it (e.g. AirDrop, Mail, Files). Whoever opens the file in ClassBuddy replaces all of their own data after confirming. The provider never receives the file.</p>
+      <p class="muted">Manual only. “Share” creates a file encrypted with your data password containing all data and the school settings, without your profile. You decide whether and how to send it (e.g. AirDrop, Mail, Files). Whoever opens the file in ClassBuddy replaces all of their own data after confirming. The provider never receives the file.</p>
     </div>
   </div>
 
@@ -252,7 +260,8 @@
         <li>Depending on the federal state and school, processing student data on private devices may require approval or be subject to conditions. Please clarify this in advance with your school management or the data protection officer.</li>
         <li>Only record what you actually need (data minimization, Art. 5(1)(c) GDPR).</li>
         <li>Set a device passcode and keep the app lock turned on.</li>
-        <li>Excel exports and shared packages are not encrypted: store them securely, do not send them by unencrypted email and delete them after use.</li>
+        <li>Excel exports, shared packages and sync files are encrypted with your data password. Only share the password separately (e.g. in person), store exports securely and delete them after use.</li>
+        <li>Whether you may use iCloud or a cloud provider for student data is up to you or your school; the data is encrypted there, but it is stored with that provider.</li>
         <li>Please check with your school whether you may share data with colleagues.</li>
         <li>Delete classes you no longer teach (e.g. at the end of the school year).</li>
       </ul>

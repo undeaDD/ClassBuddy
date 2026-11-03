@@ -46,10 +46,13 @@ protected by biometrics (Face ID or Touch ID), with a one-tap privacy mode for w
 - **Privacy**
   - Biometric (Face ID / Touch ID) or passcode lock on launch and when returning to the app
   - Privacy mode hides names, grades, notes and more on every page (turning it off needs biometrics or the passcode)
-  - Everything is stored locally with SwiftData — no account, no cloud, no tracking
-- **Sync & sharing (optional)** – pair your own iPad and iPhone by QR code and sync directly over Wi‑Fi (TLS, no server);
-  hand all data to a colleague as a `.classbuddy` file (AirDrop, Mail, Files), the receiver replaces their data
-- **Excel export / import** – one sheet per area (classes, students, lessons, appointments, settings, …),
+  - Everything is stored locally with SwiftData — no account, no tracking; cloud sync only if you turn it on, encrypted
+- **Sync & sharing (optional)** – one data password (Keychain) encrypts everything that leaves the device
+  - Local: pair your own iPad and iPhone by QR code and sync directly over Wi‑Fi (TLS, no server), manual only
+  - iCloud: one encrypted file per device in your private iCloud database, syncs automatically when the app opens
+  - Cloud folder: Google Drive, Nextcloud, OneDrive, Dropbox or iCloud Drive via the Files app, encrypted files, manual only
+  - Share with a colleague as an encrypted `.classbuddy` file (AirDrop, Mail, Files), the receiver replaces their data
+- **Excel export / import** – password protected with real Excel encryption (opens in Excel, Numbers, LibreOffice) – one sheet per area (classes, students, lessons, appointments, settings, …),
   editable in Excel or Numbers
 - iPad and iPhone, light & dark mode, native SwiftUI, no third-party dependencies
 - and many more features ...
@@ -82,7 +85,7 @@ ClassBuddy is built for GDPR-compliant use in German schools. The full privacy n
 
 **By design**
 
-- No account, no server, no cloud sync, no analytics, no ads, no third-party SDKs
+- No account, no ClassBuddy server, no analytics, no ads, no third-party SDKs; sync and cloud only if you turn them on
 - All data (classes, students, timetable, notes, documents) stays in the app container on the device,
   encrypted by extra iOS/iPadOS data protection when a device passcode is set; it only leaves the device when you
   sync with your own paired devices, share with a colleague or export

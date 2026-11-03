@@ -79,12 +79,16 @@ struct StatsTests {
 
     @Test("Zähler im Excel hin und zurück")
     func backupRoundTrip() throws {
-        let container = try ModelContainer(for: SchoolClass.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let container = try ModelContainer(
+            for: SchoolClass.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        )
         let values: [FunStat: Int] = [.appLaunches: 42, .groupsDealt: 7, .timerMinutes: 90]
         let data = try Backup.export(
             context: ModelContext(container), settings: SchoolSettings.Values(), appearance: .system, funStats: values
         )
-        let target = try ModelContainer(for: SchoolClass.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let target = try ModelContainer(
+            for: SchoolClass.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
+        )
         let result = try Backup.import(data, context: ModelContext(target), currentSettings: SchoolSettings.Values())
         let imported = try #require(result.settings.funStats)
         #expect(imported[.appLaunches] == 42)

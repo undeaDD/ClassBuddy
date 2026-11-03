@@ -15,7 +15,7 @@ struct HelperTests {
     private static func context() throws -> ModelContext {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, Lesson.self, Holiday.self, Checklist.self, ChecklistCheck.self, Room.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         return ModelContext(container)
     }

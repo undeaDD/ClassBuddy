@@ -12,7 +12,7 @@ struct StudentRecordTests {
     private static func context() throws -> ModelContext {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, StudentObservation.self, Absence.self, SubjectSettings.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         return ModelContext(container)
     }

@@ -19,6 +19,8 @@ struct SyncPackage: Codable {
     var files: [String: Data]
     /// Schuleinstellungen samt Profil, wenn sie beim anderen Gerät älter sind (bzw. seit `since` geändert).
     var settings: SyncSettings?
+    /// Name des Geräts (Cloud-Ordner, iCloud), nur zur Anzeige.
+    var deviceName: String?
 }
 
 /// Schuleinstellungen als ein Eintrag: Der neuere Stand gewinnt als Ganzes.

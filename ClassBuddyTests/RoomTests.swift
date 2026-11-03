@@ -255,7 +255,7 @@ struct RoomTests {
     func model() throws {
         let container = try ModelContainer(
             for: Room.self, RoomElement.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let room = Room(name: "R 204", subtitle: "Physikraum", category: .specialist, assignments: ["Physik"])

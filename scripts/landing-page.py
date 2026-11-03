@@ -37,8 +37,8 @@ T = {
         "en": "Timetable, seating plans, assessments and checklists for teachers. Everything stays on your iPad or iPhone, protected by Face ID.",
     },
     "og": {
-        "de": "Ihr digitaler Begleiter für den Schulalltag. Alles lokal auf dem Gerät, kein Konto, keine Cloud.",
-        "en": "Your digital companion for everyday school life. Everything stays on your device, no account, no cloud.",
+        "de": "Ihr digitaler Begleiter für den Schulalltag. Alles lokal auf dem Gerät, kein Konto, Abgleich nur wenn Sie möchten und verschlüsselt.",
+        "en": "Your digital companion for everyday school life. Everything stays on your device, no account, sync only if you want it and encrypted.",
     },
     "nav": {
         "de": [("funktionen", "Funktionen"), ("bilder", "Bilder"), ("download", "Download"), ("stimmen", "Stimmen"), ("fragen", "Fragen")],
@@ -100,8 +100,8 @@ T = {
         "en": "ClassBuddy has no server. What you enter only leaves your device when you sync, share or export it yourself.",
     },
     "privacyChecks": {
-        "de": ["Kein Konto, kein Tracking, keine Werbung", "Alle Daten lokal, mit der höchsten Datenschutzklasse des Geräts verschlüsselt", "App-Sperre mit Face ID oder Touch ID", "Privatsphäre-Modus blendet Namen und Noten aus, etwa am Beamer", "Optional: Abgleich mit eigenen Geräten direkt über das WLAN", "Export und Import als Excel-Datei", "Quellcode öffentlich einsehbar"],
-        "en": ["No account, no tracking, no ads", "All data stays local, encrypted with the device’s highest protection class", "App lock with Face ID or Touch ID", "Privacy mode hides names and grades, for example on a projector", "Optional: sync your own devices directly over Wi‑Fi", "Export and import as an Excel file", "Source code publicly available"],
+        "de": ["Kein Konto, kein Tracking, keine Werbung", "Alle Daten lokal, mit der höchsten Datenschutzklasse des Geräts verschlüsselt", "App-Sperre mit Face ID oder Touch ID", "Privatsphäre-Modus blendet Namen und Noten aus, etwa am Beamer", "Optional: Abgleich eigener Geräte über WLAN, iCloud oder Cloud-Ordner, verschlüsselt", "Export und Import als Excel-Datei mit Passwort", "Quellcode öffentlich einsehbar"],
+        "en": ["No account, no tracking, no ads", "All data stays local, encrypted with the device’s highest protection class", "App lock with Face ID or Touch ID", "Privacy mode hides names and grades, for example on a projector", "Optional: sync your own devices over Wi‑Fi, iCloud or a cloud folder, encrypted", "Export and import as a password protected Excel file", "Source code publicly available"],
     },
     "galleryEyebrow": {"de": "Bilder", "en": "Screenshots"},
     "galleryTitle": {"de": "So sieht ClassBuddy aus", "en": "See ClassBuddy in action"},
@@ -127,8 +127,8 @@ T = {
     "faqTitle": {"de": "Häufige Fragen", "en": "Frequently asked questions"},
     "faq": {
         "de": [
-            ("Wo liegen meine Daten?", "Auf Ihrem Gerät und, wenn Sie möchten, auf Ihren eigenen gekoppelten Geräten. Es gibt kein Konto und keinen ClassBuddy-Server, der Anbieter hat keinen Zugriff auf Ihre Daten. Details in der <a href=\"privacy.html\">Datenschutzerklärung</a>."),
-            ("Brauche ich eine Internetverbindung?", "Nein. ClassBuddy funktioniert komplett offline. Nur der Import der Ferien und die Wetter-Kachel brauchen kurz eine Verbindung."),
+            ("Wo liegen meine Daten?", "Auf Ihrem Gerät und, wenn Sie möchten, auf Ihren eigenen Geräten (direkt, über iCloud oder einen Cloud-Ordner, dort verschlüsselt). Es gibt kein Konto und keinen ClassBuddy-Server, der Anbieter hat keinen Zugriff auf Ihre Daten. Details in der <a href=\"privacy.html\">Datenschutzerklärung</a>."),
+            ("Brauche ich eine Internetverbindung?", "Nein. ClassBuddy funktioniert komplett offline. Nur der Import der Ferien, die Wetter-Kachel und der Abgleich über iCloud oder einen Cloud-Ordner brauchen eine Verbindung; der Abgleich eigener Geräte im WLAN kommt ohne Internet aus."),
             ("Darf ich Schülerdaten in ClassBuddy speichern?", "ClassBuddy ist für den datenschutzgerechten Einsatz an deutschen Schulen gebaut: Alles bleibt lokal, verschlüsselt und gesperrt. Ob und welche Daten Sie auf einem privaten Gerät verarbeiten dürfen, regeln Ihr Bundesland und Ihre Schule. Mehr dazu in den Hinweisen für Lehrkräfte in der <a href=\"privacy.html\">Datenschutzerklärung</a>."),
             ("Wie funktioniert die Testphase?", "Am Ende der Einführung starten Sie die Testphase: 30 Tage lang alle Funktionen kostenlos, ohne Abo und ohne automatische Verlängerung. Danach schalten Sie die Vollversion mit einem einmaligen Kauf frei. Möchten Sie nicht kaufen, exportieren Sie Ihre Daten vor dem Ende der Testphase."),
             ("Auf welchen Geräten läuft ClassBuddy?", "Auf iPad und iPhone ab iPadOS und iOS 17.7. Eine Version für Android folgt bei Google Play."),
@@ -141,8 +141,8 @@ T = {
             ("Gibt es Codes für unsere Schule?", "Ja. Schulen und Fachschaften können Codes für die Vollversion gerne in größeren Mengen anfragen, über einen der Feedback-Wege in der App oder per <a href=\"mailto:dominic.drees@live.de\">E-Mail</a>."),
         ],
         "en": [
-            ("Where is my data stored?", "On your device and, if you like, on your own paired devices. There is no account and no ClassBuddy server, the developer has no access to your data. Details in the <a href=\"privacy.en.html\">privacy policy</a>."),
-            ("Do I need an internet connection?", "No. ClassBuddy works completely offline. Only the holiday import and the weather card briefly need a connection."),
+            ("Where is my data stored?", "On your device and, if you like, on your own devices (directly, through iCloud or a cloud folder, encrypted there). There is no account and no ClassBuddy server, the developer has no access to your data. Details in the <a href=\"privacy.en.html\">privacy policy</a>."),
+            ("Do I need an internet connection?", "No. ClassBuddy works completely offline. Only the holiday import, the weather card and syncing through iCloud or a cloud folder need a connection; syncing your own devices on the same Wi‑Fi works without internet."),
             ("May I store student data in ClassBuddy?", "ClassBuddy is built for privacy-compliant use at German schools: everything stays local, encrypted and locked. Whether and which data you may process on a private device is up to your state and your school. More in the notes for teachers in the <a href=\"privacy.en.html\">privacy policy</a>."),
             ("How does the trial work?", "You start the trial at the end of the introduction: every feature free for 30 days, no subscription and no automatic renewal. Afterwards you unlock the full version with a one-time purchase. If you decide not to buy, export your data before the trial ends."),
             ("Which devices does ClassBuddy run on?", "On iPad and iPhone with iPadOS and iOS 17.7 or later. An Android version is coming to Google Play."),

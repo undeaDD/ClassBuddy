@@ -18,7 +18,7 @@ struct ChecklistTests {
     private static func fixture() throws -> Fixture {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, Checklist.self, ChecklistCheck.self, BoardPhoto.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let schoolClass = SchoolClass(shortName: "7b", subjects: ["Mathematik", "Deutsch"])

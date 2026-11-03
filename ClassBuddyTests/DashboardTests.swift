@@ -35,7 +35,7 @@ struct DashboardTests {
     func attendance() throws {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, Absence.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let schoolClass = SchoolClass(shortName: "7b", subjects: ["Mathematik"])

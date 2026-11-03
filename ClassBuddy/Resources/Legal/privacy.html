@@ -90,7 +90,7 @@
     <div class="row"><span class="ok">✓</span> Kein Konto, keine Registrierung</div>
     <div class="row"><span class="ok">✓</span> Kein Tracking, keine Analyse, keine Werbung, keine Drittanbieter-SDKs</div>
     <div class="row"><span class="ok">✓</span> Alle Daten bleiben lokal auf Ihrem Gerät. Es gibt keinen ClassBuddy-Server.</div>
-    <div class="row"><span class="ok">✓</span> Optional: Abgleich mit Ihren eigenen Geräten direkt über das WLAN und Weitergabe an Kollegen, nur wenn Sie es selbst einrichten bzw. auslösen.</div>
+    <div class="row"><span class="ok">✓</span> Optional: Abgleich mit Ihren eigenen Geräten (direkt über das WLAN, über Ihr iCloud oder einen Cloud-Ordner) und Weitergabe an Kollegen, nur wenn Sie es selbst einrichten bzw. auslösen. Alles, was das Gerät verlässt, ist mit Ihrem Daten-Passwort verschlüsselt.</div>
     <div class="row"><span class="ok">✓</span> Der Anbieter erhält keine Schülerdaten.</div>
     <div class="row"><span class="ok">✓</span> Der Quellcode ist öffentlich einsehbar.</div>
   </div>
@@ -144,7 +144,7 @@
   <h2>Verbindungen ins Internet</h2>
   <div class="card">
     <div class="row">
-      <p class="muted" style="margin-top:0">ClassBuddy baut nur in den folgenden Fällen Verbindungen auf. Dabei wird technisch bedingt Ihre IP-Adresse an den jeweiligen Server übertragen. <strong>Schülerdaten werden nie übertragen.</strong></p>
+      <p class="muted" style="margin-top:0">ClassBuddy baut nur in den folgenden Fällen Verbindungen auf. Dabei wird technisch bedingt Ihre IP-Adresse an den jeweiligen Server übertragen. <strong>Schülerdaten werden dabei nie übertragen</strong> (zum Abgleich über iCloud oder einen Cloud-Ordner siehe unten, dort nur verschlüsselt).</p>
     </div>
     <div class="row">
       <div class="name">Ferien und Feiertage: openholidaysapi.org</div>
@@ -188,11 +188,19 @@
   <div class="card">
     <div class="row">
       <div class="name">Eigene Geräte abgleichen</div>
-      <p class="muted">Unter Einstellungen › App-Einstellungen › Daten &amp; Sync können Sie Ihre eigenen Geräte (z. B. iPad und iPhone) per QR-Code koppeln. Abgeglichen wird direkt von Gerät zu Gerät im selben WLAN, ohne Server und ohne Internet. Die Verbindung ist mit einem Schlüssel verschlüsselt (TLS), den nur die gekoppelten Geräte kennen; er liegt im Schlüsselbund des Geräts. Übertragen werden alle Daten der App samt Schuleinstellungen und Profil, aber nur an gekoppelte Geräte und nur, solange ClassBuddy auf beiden geöffnet ist. Eine Kopplung lässt sich jederzeit entfernen.</p>
+      <p class="muted">Nur von Hand. Unter Einstellungen › App-Einstellungen › Daten &amp; Sync können Sie Ihre eigenen Geräte (z. B. iPad und iPhone) per QR-Code koppeln. Abgeglichen wird direkt von Gerät zu Gerät im selben WLAN, ohne Server und ohne Internet. Die Verbindung ist verschlüsselt (TLS) mit einem Schlüssel aus der Kopplung und Ihrem Daten-Passwort, den nur Ihre Geräte kennen; er liegt im Schlüsselbund des Geräts. Übertragen werden alle Daten der App samt Schuleinstellungen und Profil, aber nur an gekoppelte Geräte und nur, solange ClassBuddy auf beiden geöffnet ist. Eine Kopplung lässt sich jederzeit entfernen.</p>
+    </div>
+    <div class="row">
+      <div class="name">iCloud</div>
+      <p class="muted">Ausgeschaltet, bis Sie es einschalten. Dann gleicht ClassBuddy automatisch bei jedem Öffnen der App (und auf Wunsch von Hand) über die private iCloud-Datenbank Ihrer Apple-ID ab. Jedes Gerät legt dort eine Datei mit allen Daten der App ab, vorher verschlüsselt mit Ihrem Daten-Passwort (AES-256): Weder Apple noch der Anbieter können sie lesen. Es gelten zusätzlich die <a href="https://www.apple.com/de/legal/privacy/">Datenschutzbestimmungen von Apple</a>. Ausschalten beendet den Abgleich.</p>
+    </div>
+    <div class="row">
+      <div class="name">Cloud-Ordner</div>
+      <p class="muted">Nur von Hand. Sie wählen selbst einen Ordner eines Anbieters (z. B. Google Drive, Nextcloud, OneDrive, Dropbox, iCloud Drive) über die Dateien-App. ClassBuddy legt dort je Gerät eine mit Ihrem Daten-Passwort verschlüsselte Datei ab (AES-256); die Übertragung übernimmt die App des Anbieters. Der Anbieter sieht nichts Lesbares; für die Speicherung gelten seine Datenschutzbestimmungen.</p>
     </div>
     <div class="row">
       <div class="name">An Kollegen weitergeben</div>
-      <p class="muted">„Weitergeben“ erstellt eine Datei mit allen Daten und den Schuleinstellungen, ohne Ihr Profil. Sie entscheiden selbst, ob und wie Sie diese verschicken (z. B. AirDrop, Mail, Dateien). Wer die Datei in ClassBuddy öffnet, ersetzt nach Bestätigung alle eigenen Daten. Der Anbieter erhält die Datei nicht.</p>
+      <p class="muted">Nur von Hand. „Weitergeben“ erstellt eine mit Ihrem Daten-Passwort verschlüsselte Datei mit allen Daten und den Schuleinstellungen, ohne Ihr Profil. Sie entscheiden selbst, ob und wie Sie diese verschicken (z. B. AirDrop, Mail, Dateien). Wer die Datei in ClassBuddy öffnet, ersetzt nach Bestätigung alle eigenen Daten. Der Anbieter erhält die Datei nicht.</p>
     </div>
   </div>
 
@@ -252,7 +260,8 @@
         <li>Die Verarbeitung von Schülerdaten auf privaten Geräten ist je nach Bundesland und Schule genehmigungspflichtig oder an Auflagen gebunden. Bitte klären Sie dies vorab mit Ihrer Schulleitung bzw. der oder dem Datenschutzbeauftragten.</li>
         <li>Erfassen Sie nur, was Sie tatsächlich benötigen (Datenminimierung, Art. 5 Abs. 1 lit. c DSGVO).</li>
         <li>Richten Sie einen Gerätecode ein und lassen Sie die App-Sperre aktiviert.</li>
-        <li>Excel-Exporte und weitergegebene Pakete sind nicht verschlüsselt: Bewahren Sie diese sicher auf, versenden Sie sie nicht per unverschlüsselter E-Mail und löschen Sie sie nach Gebrauch.</li>
+        <li>Excel-Exporte, weitergegebene Pakete und Sync-Dateien sind mit Ihrem Daten-Passwort verschlüsselt. Geben Sie das Passwort nur getrennt weiter (z. B. persönlich), bewahren Sie Exporte sicher auf und löschen Sie sie nach Gebrauch.</li>
+        <li>Ob Sie iCloud oder einen Cloud-Anbieter für Schülerdaten nutzen dürfen, entscheiden Sie bzw. Ihre Schule; die Daten sind dort zwar verschlüsselt, liegen aber bei diesem Anbieter.</li>
         <li>Ob Sie Daten an Kollegen weitergeben dürfen, klären Sie bitte mit Ihrer Schule.</li>
         <li>Löschen Sie Klassen, die Sie nicht mehr unterrichten (z. B. zum Schuljahresende).</li>
       </ul>

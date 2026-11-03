@@ -12,6 +12,8 @@ struct ClassBuddyApp: App {
     @State private var timer = ClassTimer()
     @State private var purchases = PurchaseStore()
     @State private var localSync = LocalSyncService()
+    @State private var cloudFolder = CloudFolderSync()
+    @State private var iCloud = ICloudSync()
     @AppStorage(AppLanguage.storageKey) private var language: AppLanguage = .system
     @AppStorage(AppAccent.storageKey) private var accent = AppAccent.defaultValue
 
@@ -37,17 +39,30 @@ struct ClassBuddyApp: App {
                 .environment(timer)
                 .environment(purchases)
                 .environment(localSync)
+                .environment(cloudFolder)
+                .environment(iCloud)
                 .onAppear {
                     timer.onFinish = { [toasts] in toasts.success(loc("Timer abgelaufen")) }
                     HomeScreenAction.register()
                 }
         }
-        // Lokale Speicherung; `lastModified` und `DeletedRecord` bereiten den Abgleich zwischen Geräten vor (`SyncTracking`).
-        .modelContainer(for: [
+        .modelContainer(Self.container)
+    }
+
+    /// Lokale Speicherung; `lastModified` und `DeletedRecord` dienen dem Abgleich zwischen Geräten (`SyncTracking`).
+    /// Ohne SwiftData-CloudKit-Spiegelung: Die App hat iCloud für den eigenen, verschlüsselten Sync (`ICloudSync`),
+    /// SwiftData würde sonst selbst spiegeln wollen und den Speicher nicht laden.
+    private static let container: ModelContainer = {
+        let schema = Schema([
             SchoolClass.self, Student.self, Lesson.self, CalendarEntry.self, Holiday.self, DashboardLink.self,
             Room.self, RoomElement.self, SeatAssignment.self, BoardPhoto.self,
             Checklist.self, ChecklistCheck.self, SubjectSettings.self, StudentObservation.self, Absence.self,
             Assessment.self, AssessmentResult.self, PeriodGrade.self, DeletedRecord.self,
         ])
-    }
+        do {
+            return try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, cloudKitDatabase: .none))
+        } catch {
+            fatalError("Datenbank konnte nicht geladen werden: \(error)")
+        }
+    }()
 }

@@ -62,7 +62,7 @@ struct RandomGroupsTests {
     func storeAndResolve() throws {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let schoolClass = SchoolClass(shortName: "7b")

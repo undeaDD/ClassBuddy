@@ -21,7 +21,7 @@ struct RecordExportTests {
     private static func fixture() throws -> Fixture {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, StudentObservation.self, Absence.self, Assessment.self, AssessmentResult.self,
-            PeriodGrade.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            PeriodGrade.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         let context = ModelContext(container)
         let schoolClass = SchoolClass(shortName: "7b", subjects: ["Mathematik"], schoolYear: "2026/27")

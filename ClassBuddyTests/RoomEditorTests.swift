@@ -18,7 +18,7 @@ struct RoomEditorTests {
     private static func makeContext() throws -> ModelContext {
         let container = try ModelContainer(
             for: SchoolClass.self, Student.self, Lesson.self, Room.self, RoomElement.self, SeatAssignment.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         return ModelContext(container)
     }

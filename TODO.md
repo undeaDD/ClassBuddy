@@ -35,23 +35,15 @@ Umgesetzt (02./03.11.2026): `lastModified` an allen Modellen + `DeletedRecord` (
 (`SyncEngine`, `SyncPayloads*`: Manifest-Austausch, Pakete, neuerer Stand gewinnt), lokaler Sync (`LocalSync.swift`:
 QR-Kopplung, Bonjour + TLS mit gemeinsamem Schlüssel, „Jetzt synchronisieren“), Seite „Daten & Sync“ mit Export & Import.
 
-- [ ] Einstellungen (UserDefaults: Schule, Schultag, Pausen, Profil …) mit abgleichen (eigener Eintrag mit Zeitstempel)
-- [ ] Teilen an Kollegen: Gesamtpaket an ein Gerät in der Nähe oder als Datei (AirDrop/Mail), Empfänger ersetzt alles
-- [ ] iCloud: `CKSyncEngine`, Dateien als `CKAsset`, Einstellungen als eigener Eintrag
-- [ ] Cloud-Ordner: Ordnerwahl, verschlüsselte Änderungsdateien je Gerät, Zusammenführen beim Öffnen
-- [ ] „Daten & Sync“ ergänzen: iCloud, Cloud-Ordner, Teilen
-- [ ] Ein Daten-Passwort für Excel-Backup und Sync: sicheres Textfeld auf „Daten & Sync“ (Auge zum Anzeigen, Kopieren,
-      Neu erzeugen), im Schlüsselbund gespeichert. Beim ersten Start zufällig erzeugt (gut lesbar, z. B. 4 × 5 Zeichen),
-      jederzeit änderbar. Lokale Kopplung übernimmt das Passwort des anderen Geräts; Cloud-Ordner mit anderem Passwort →
-      Hinweis „Passwort muss auf allen Geräten gleich sein“; Ändern verschlüsselt den Cloud-Ordner neu, alte Backups
-      brauchen weiter das alte Passwort (Hinweis beim Ändern). Export zeigt das Passwort mit Hinweis „notieren“
-- [ ] Excel-Verschlüsselung mit dem Daten-Passwort: echte Excel-Verschlüsselung (ECMA-376 Agile, AES-256 + SHA-512,
-      Container als Compound File), Datei öffnet in Excel/Numbers/LibreOffice nur mit Passwort; eigener Code wie
-      `XLSX.swift` und `ZipArchive.swift`, CommonCrypto für AES-CBC, keine Bibliothek. Import probiert das gespeicherte
-      Passwort und fragt nur nach, wenn es nicht passt. Teilen an Kollegen nutzt es nicht
-- [ ] Texte für iCloud und Cloud-Ordner nachziehen: `privacy.html` + `.en` (Abschnitt „Abgleich und Weitergabe“,
-      Wahl des Cloud-Anbieters liegt bei der Lehrkraft), `site/` (FAQ, „keine Cloud“), README („no cloud sync“).
-      Lokaler Sync und Teilen sind seit 03.11.2026 beschrieben
+Umgesetzt (03.11.2026): Einstellungen samt Profil im Sync, Teilen an Kollegen (`.classbuddy`), Daten-Passwort
+(`DataPassword.swift`, Schlüsselbund; lokaler Sync, Paket, Cloud-Ordner, iCloud), Excel-Verschlüsselung
+(`OfficeEncryption.swift` + `CompoundFile.swift`, in Excel geprüft), Cloud-Ordner und iCloud (`RemoteSync.swift`, je
+Gerät eine verschlüsselte Datei). Nur iCloud gleicht automatisch ab (beim Öffnen), alles andere von Hand.
+
+- [ ] iCloud vor dem App-Store-Release: im CloudKit-Dashboard (Container `iCloud.de.devsforge.ClassBuddy`) das
+      Schema („DevicePackage“ in Zone „ClassBuddy“) von Development nach Production übernehmen
+- [ ] Auf zwei echten Geräten testen: lokaler Sync, iCloud, Cloud-Ordner (Google Drive, Nextcloud), Paket per AirDrop,
+      verschlüsseltes Excel in Excel/Numbers öffnen
 
 ## Anleitung
 

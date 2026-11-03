@@ -13,7 +13,7 @@ struct DummyDataTests {
             Room.self, RoomElement.self, SeatAssignment.self, BoardPhoto.self,
             Checklist.self, ChecklistCheck.self, SubjectSettings.self, StudentObservation.self, Absence.self,
             Assessment.self, AssessmentResult.self, PeriodGrade.self,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         )
         return ModelContext(container)
     }

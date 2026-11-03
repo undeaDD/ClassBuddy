@@ -18,9 +18,8 @@ struct RootView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.modelContext) private var modelContext
     @Environment(LocalSyncService.self) private var localSync
-    #if DEBUG
+    @Environment(ICloudSync.self) private var iCloud
     @Environment(SchoolSettings.self) private var settings
-    #endif
 
     var body: some View {
         AppTabView()
@@ -115,12 +114,15 @@ struct RootView: View {
                         deviceName: LocalSyncService.deviceName(teacher: settings.values.teacher)
                     )
                     Task { await security.sceneDidBecomeActive() }
+                    syncICloudOnOpen()
                     // Tageszähler der Testphase und Ablauf aktuell halten.
                     Task { await purchases.load() }
                     Task { await PrivacyModeTip.appOpened.donate() }
                 default: break
                 }
             }
+            // Kaufstatus wird erst nach dem Start geladen: dann ebenfalls abgleichen.
+            .onChange(of: purchases.status.requiresChoice) { _, _ in syncICloudOnOpen() }
             .onChange(of: tipsAllowed, initial: true) { _, isAllowed in
                 SetupTip.isAllowed = isAllowed
             }
@@ -138,6 +140,17 @@ struct RootView: View {
 }
 
 extension RootView {
+
+    /// iCloud gleicht als einziger Weg automatisch ab, beim Öffnen der App (nur Vollversion bzw. Testphase).
+    private func syncICloudOnOpen() {
+        guard scenePhase == .active, !purchases.status.requiresChoice else { return }
+        Task {
+            await iCloud.syncOnOpen(
+                context: modelContext, settings: settings,
+                deviceName: LocalSyncService.deviceName(teacher: settings.values.teacher)
+            )
+        }
+    }
     private func perform(_ action: HomeScreenAction) {
         switch action {
         case .calendar: app.open(.calendar)

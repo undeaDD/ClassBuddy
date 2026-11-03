@@ -4,7 +4,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 /// Teilen an Kollegen: alle Daten samt Kachel-Dateien und Schuleinstellungen (ohne Profil der Lehrkraft) als eine
-/// `.classbuddy`-Datei. Der Empfänger bestätigt und ersetzt damit alle seine Daten; kein Zusammenführen.
+/// `.classbuddy`-Datei, verschlüsselt mit dem Daten-Passwort. Der Empfänger gibt bei anderem Passwort das des
+/// Absenders ein, bestätigt und ersetzt damit alle seine Daten; kein Zusammenführen.
 nonisolated extension UTType {
     static let classBuddyPackage = UTType(exportedAs: "de.devsforge.classbuddy.package", conformingTo: .data)
 }
@@ -22,13 +23,17 @@ extension SyncEngine {
         return package
     }
 
-    static func encodeShare(_ package: SyncPackage) throws -> Data {
-        try JSONEncoder().encode(package)
+    /// Mit dem Daten-Passwort verschlüsselt; der Empfänger braucht das Passwort (getrennt weitergeben).
+    static func encodeShare(_ package: SyncPackage, password: String = DataPassword.current) throws -> Data {
+        try DataCrypto.seal(JSONEncoder().encode(package), password: password)
     }
 
-    static func decodeShare(_ data: Data) throws -> SyncPackage {
+    /// Wirft `DataCrypto.CryptoError.wrongPassword`, wenn das Passwort nicht passt.
+    static func decodeShare(_ data: Data, password: String = DataPassword.current) throws -> SyncPackage {
+        guard DataCrypto.isSealed(data) else { throw SyncError.unreadableShare }
+        let json = try DataCrypto.open(data, password: password)
         do {
-            return try JSONDecoder().decode(SyncPackage.self, from: data)
+            return try JSONDecoder().decode(SyncPackage.self, from: json)
         } catch {
             throw SyncError.unreadableShare
         }
@@ -82,9 +87,22 @@ struct SharedPackageFile: Identifiable {
 }
 
 /// Empfangenes Paket, wartet auf Bestätigung (aus „Öffnen“ in Daten & Sync oder über AirDrop/Dateien geöffnet).
-struct PendingSharedPackage: Identifiable {
-    let id = UUID()
-    let package: SyncPackage
+/// `locked`: mit einem anderen Daten-Passwort verschlüsselt, das Passwort wird zuerst abgefragt.
+enum PendingSharedPackage: Identifiable {
+    case ready(SyncPackage)
+    case locked(Data)
+
+    var id: String {
+        switch self {
+        case .ready(let package): "ready-\(package.deviceID)-\(package.createdAt.timeIntervalSince1970)"
+        case .locked(let data): "locked-\(data.count)-\(data.hashValue)"
+        }
+    }
+
+    var package: SyncPackage? {
+        if case .ready(let package) = self { return package }
+        return nil
+    }
 }
 
 /// Teilen-Menü des Systems (AirDrop, Mail, In Dateien sichern).
@@ -107,12 +125,22 @@ struct SharedPackageImport: ViewModifier {
     @Environment(\.modelContext) private var modelContext
     @Environment(ToastCenter.self) private var toasts
 
+    @State private var enteredPassword = ""
+
     static func load(_ url: URL) throws -> PendingSharedPackage {
         let accessing = url.startAccessingSecurityScopedResource()
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
-        let package = try SyncEngine.decodeShare(Data(contentsOf: url))
-        try SyncEngine.validate(package, appVersion: AppInfo.version)
-        return PendingSharedPackage(package: package)
+        return try unlock(Data(contentsOf: url), password: DataPassword.current)
+    }
+
+    static func unlock(_ data: Data, password: String) throws -> PendingSharedPackage {
+        do {
+            let package = try SyncEngine.decodeShare(data, password: password)
+            try SyncEngine.validate(package, appVersion: AppInfo.version)
+            return .ready(package)
+        } catch DataCrypto.CryptoError.wrongPassword {
+            return .locked(data)
+        }
     }
 
     func body(content: Content) -> some View {
@@ -125,24 +153,69 @@ struct SharedPackageImport: ViewModifier {
                     toasts.error(error.localizedDescription)
                 }
             }
+            .alert("Passwort des Pakets", isPresented: lockedBinding) {
+                SecureField("Daten-Passwort", text: $enteredPassword)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                Button("Öffnen") { unlockEntered() }
+                Button("Abbrechen", role: .cancel) { enteredPassword = "" }
+            } message: {
+                Text(loc("""
+                    Das Paket ist mit einem anderen Daten-Passwort geschützt. Bitte das Passwort der Person eingeben, \
+                    die es weitergegeben hat.
+                    """))
+            }
             .confirmationDialog(
                 "Paket übernehmen?",
                 isPresented: Binding(
-                    get: { app.pendingSharedPackage != nil && !security.isLocked },
+                    get: { app.pendingSharedPackage?.package != nil && !security.isLocked },
                     set: { if !$0 { app.pendingSharedPackage = nil } }
                 ),
                 titleVisibility: .visible,
-                presenting: app.pendingSharedPackage
-            ) { pending in
+                presenting: app.pendingSharedPackage?.package
+            ) { package in
                 Button("Daten und Schuleinstellungen ersetzen", role: .destructive) {
-                    Task { await replace(with: pending, replacesSettings: true) }
+                    Task { await replace(with: package, replacesSettings: true) }
                 }
                 Button("Nur Daten ersetzen", role: .destructive) {
-                    Task { await replace(with: pending, replacesSettings: false) }
+                    Task { await replace(with: package, replacesSettings: false) }
                 }
-            } message: { pending in
-                Text(message(for: pending.package))
+            } message: { package in
+                Text(message(for: package))
             }
+    }
+
+    private var lockedBinding: Binding<Bool> {
+        Binding(
+            get: {
+                if case .locked = app.pendingSharedPackage { return !security.isLocked }
+                return false
+            },
+            set: { if !$0, case .locked = app.pendingSharedPackage { app.pendingSharedPackage = nil } }
+        )
+    }
+
+    private func unlockEntered() {
+        guard case .locked(let data) = app.pendingSharedPackage else { return }
+        let password = enteredPassword
+        enteredPassword = ""
+        do {
+            let unlocked = try Self.unlock(data, password: password)
+            if case .locked = unlocked {
+                toasts.error(DataCrypto.CryptoError.wrongPassword.localizedDescription)
+                app.pendingSharedPackage = nil
+            } else {
+                // Nach dem Schließen der Abfrage, sonst erscheint die Bestätigung nicht.
+                app.pendingSharedPackage = nil
+                Task {
+                    try? await Task.sleep(for: .milliseconds(400))
+                    app.pendingSharedPackage = unlocked
+                }
+            }
+        } catch {
+            app.pendingSharedPackage = nil
+            toasts.error(error.localizedDescription)
+        }
     }
 
     private func message(for package: SyncPackage) -> String {
@@ -154,12 +227,12 @@ struct SharedPackageImport: ViewModifier {
             """)
     }
 
-    private func replace(with pending: PendingSharedPackage, replacesSettings: Bool) async {
+    private func replace(with package: SyncPackage, replacesSettings: Bool) async {
         app.pendingSharedPackage = nil
         guard await security.confirmDestructiveAction(reason: loc("Daten durch das Paket ersetzen")) else { return }
         do {
             let result = try SyncEngine.replaceAll(
-                with: pending.package, in: modelContext, settings: settings, replacesSettings: replacesSettings
+                with: package, in: modelContext, settings: settings, replacesSettings: replacesSettings
             )
             SubjectSettings.migrate(school: settings.values, in: modelContext)
             let classIDs = try modelContext.fetch(FetchDescriptor<SchoolClass>()).map(\.id)

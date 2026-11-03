@@ -11924,6 +11924,466 @@
           }
         }
       }
+    },
+    "Abgeglichen, alles war schon aktuell." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synced, everything was already up to date."
+          }
+        }
+      }
+    },
+    "Abgeglichen, noch keine anderen Geräte." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synced, no other devices yet."
+          }
+        }
+      }
+    },
+    "Abgeglichen: %lld neu, %lld aktualisiert, %lld gelöscht." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synced: %lld new, %lld updated, %lld deleted."
+          }
+        }
+      }
+    },
+    "Abgleich mit dem Ordner fehlgeschlagen: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not sync with the folder: %@"
+          }
+        }
+      }
+    },
+    "Abgleich mit iCloud fehlgeschlagen: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not sync with iCloud: %@"
+          }
+        }
+      }
+    },
+    "Anderen Ordner wählen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose another folder"
+          }
+        }
+      }
+    },
+    "Automatisch bei jedem Öffnen der App und auf Wunsch von Hand. Gleicht Ihre eigenen Geräte über Ihr iCloud ab, verschlüsselt mit dem Daten-Passwort: Apple sieht nichts Lesbares. Alle Geräte brauchen dieselbe Apple-ID, dasselbe Daten-Passwort und dieselbe App-Version." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically every time you open the app, and manually whenever you like. Syncs your own devices through your iCloud, encrypted with the data password: Apple cannot read anything. All devices need the same Apple ID, the same data password and the same app version."
+          }
+        }
+      }
+    },
+    "Bitte auf diesem Gerät in den iOS-Einstellungen bei iCloud anmelden." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please sign in to iCloud in the iOS Settings on this device."
+          }
+        }
+      }
+    },
+    "ClassBuddy gleicht dann nicht mehr über diesen Ordner ab. Die Dateien darin und Ihre Daten bleiben." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClassBuddy will no longer sync through this folder. The files in it and your data stay."
+          }
+        }
+      }
+    },
+    "Cloud-Ordner" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cloud folder"
+          }
+        }
+      }
+    },
+    "Das Daten-Passwort passt nicht. Es muss auf allen Geräten gleich sein." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The data password does not match. It must be the same on all devices."
+          }
+        }
+      }
+    },
+    "Das Paket ist mit einem anderen Daten-Passwort geschützt. Bitte das Passwort der Person eingeben, die es weitergegeben hat." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The package is protected with a different data password. Please enter the password of the person who shared it."
+          }
+        }
+      }
+    },
+    "Das Passwort braucht mindestens %lld Zeichen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The password needs at least %lld characters."
+          }
+        }
+      }
+    },
+    "Das Passwort passt nicht zu dieser Datei." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The password does not match this file."
+          }
+        }
+      }
+    },
+    "Daten-Passwort" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data password"
+          }
+        }
+      }
+    },
+    "Daten-Passwort geändert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data password changed"
+          }
+        }
+      }
+    },
+    "Daten-Passwort von %@ übernommen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data password taken over from %@."
+          }
+        }
+      }
+    },
+    "Daten-Passwort ändern?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change data password?"
+          }
+        }
+      }
+    },
+    "Der Ordner ist nicht mehr erreichbar. Bitte neu wählen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The folder is no longer reachable. Please choose it again."
+          }
+        }
+      }
+    },
+    "Der Ordner lässt sich nicht verwenden: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This folder cannot be used: %@"
+          }
+        }
+      }
+    },
+    "Die Datei ist mit einem anderen Daten-Passwort geschützt, etwa einem früheren. Bitte dieses Passwort eingeben." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is protected with a different data password, for example an earlier one. Please enter that password."
+          }
+        }
+      }
+    },
+    "Diese verschlüsselte Datei kann ClassBuddy nicht öffnen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ClassBuddy cannot open this encrypted file."
+          }
+        }
+      }
+    },
+    "Eine Datei war unvollständig und wurde übersprungen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One file was incomplete and was skipped."
+          }
+        }
+      }
+    },
+    "Export gespeichert, geschützt mit Ihrem Daten-Passwort" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export saved, protected with your data password"
+          }
+        }
+      }
+    },
+    "Kopieren" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        }
+      }
+    },
+    "Mindestens %lld Zeichen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At least %lld characters."
+          }
+        }
+      }
+    },
+    "Mit iCloud abgleichen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sync with iCloud"
+          }
+        }
+      }
+    },
+    "Neues Passwort" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New password"
+          }
+        }
+      }
+    },
+    "Neues Passwort erzeugen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generate new password"
+          }
+        }
+      }
+    },
+    "Nur von Hand. Alle Klassen, Schüler, Notizen, Räume und Kacheln samt Schuleinstellungen als eine Datei, ohne Ihr Profil, geschützt mit Ihrem Daten-Passwort. Geben Sie das Passwort getrennt weiter. Wer das Paket öffnet, ersetzt damit alle eigenen Daten. Beide brauchen dieselbe App-Version." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manual only. All classes, students, notes, rooms and tiles plus school settings in one file, without your profile, protected with your data password. Share the password separately. Opening the package replaces all of the recipient's data. Both need the same app version."
+          }
+        }
+      }
+    },
+    "Nur von Hand. Excel-Datei, geschützt mit Ihrem Daten-Passwort: Sie öffnet auch in Excel, Numbers und LibreOffice nur mit diesem Passwort. Ein Import ersetzt alle Daten; Dokumente und Fotos fehlen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manual only. Excel file protected with your data password: Excel, Numbers and LibreOffice also open it only with this password. An import replaces all data; documents and photos are not included."
+          }
+        }
+      }
+    },
+    "Nur von Hand. Wählen Sie einen Ordner in Google Drive, Nextcloud, OneDrive, Dropbox oder iCloud Drive (die App des Anbieters muss installiert und in der Dateien-App eingeschaltet sein) und auf jedem Gerät denselben Ordner. Jedes Gerät legt dort eine eigene Datei ab, verschlüsselt mit dem Daten-Passwort: Der Anbieter sieht nichts Lesbares. Alle Geräte brauchen dasselbe Daten-Passwort und dieselbe App-Version." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manual only. Choose a folder in Google Drive, Nextcloud, OneDrive, Dropbox or iCloud Drive (the provider's app must be installed and enabled in the Files app), and the same folder on every device. Each device stores its own file there, encrypted with the data password: the provider cannot read anything. All devices need the same data password and the same app version."
+          }
+        }
+      }
+    },
+    "Nur von Hand: Gleicht Ihre eigenen Geräte direkt über das WLAN ab, ohne Server und ohne Internet. ClassBuddy muss auf beiden Geräten geöffnet sein, beide brauchen dieselbe App-Version und dasselbe Daten-Passwort (beim Koppeln übernommen)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manual only: syncs your own devices directly over Wi-Fi, without a server and without internet. ClassBuddy must be open on both devices, and both need the same app version and the same data password (taken over when pairing)."
+          }
+        }
+      }
+    },
+    "Ordner entfernen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove folder"
+          }
+        }
+      }
+    },
+    "Ordner entfernen?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove folder?"
+          }
+        }
+      }
+    },
+    "Ordner wählen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose folder"
+          }
+        }
+      }
+    },
+    "Passwort der Datei" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "File password"
+          }
+        }
+      }
+    },
+    "Passwort des Pakets" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Package password"
+          }
+        }
+      }
+    },
+    "Passwort kopiert" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Password copied"
+          }
+        }
+      }
+    },
+    "Passwort ändern" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change password"
+          }
+        }
+      }
+    },
+    "Schützt Excel-Backups, Pakete für Kollegen und jeden Abgleich. Ihre eigenen Geräte brauchen dasselbe Passwort. Bitte notieren Sie es: Ohne das Passwort lassen sich Backups nicht mehr öffnen." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protects Excel backups, packages for colleagues and every sync. Your own devices need the same password. Please write it down: without it, backups can no longer be opened."
+          }
+        }
+      }
+    },
+    "Tragen Sie das neue Passwort danach auf allen eigenen Geräten ein, sonst gleichen sie sich nicht mehr ab. Ältere Backups und Pakete öffnen weiterhin nur mit dem bisherigen Passwort." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Then enter the new password on all your own devices, otherwise they will stop syncing. Older backups and packages still open only with the previous password."
+          }
+        }
+      }
+    },
+    "Verbindung abgelehnt. Bitte prüfen, ob das Daten-Passwort auf beiden Geräten gleich ist." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection refused. Please check that the data password is the same on both devices."
+          }
+        }
+      }
+    },
+    "%lld Geräte nutzen ein anderes Daten-Passwort. Es muss auf allen Geräten gleich sein." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld devices use a different data password. It must be the same on all devices."
+          }
+        }
+      }
+    },
+    "iCloud" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud"
+          }
+        }
+      }
+    },
+    "Ändern" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
